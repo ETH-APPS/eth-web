@@ -1,0 +1,28 @@
+# Git
+.git
+
+# Dependencies (diinstal ulang di dalam image, versi Linux)
+**/node_modules
+.pnpm-store
+
+# Build output dan cache
+**/.nuxt
+**/.nitro
+**/.output
+**/dist
+**/coverage
+.turbo
+**/*.tsbuildinfo
+
+# Environment dan secret
+**/.env
+**/.env.*
+!**/.env.example
+
+# Log
+**/*.log
+
+# Editor dan OS
+.DS_Store
+.idea
+.vscode

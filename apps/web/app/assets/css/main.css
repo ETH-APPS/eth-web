@@ -1,0 +1,35 @@
+@import "@fontsource/poppins/400.css";
+@import "@fontsource/poppins/500.css";
+@import "@fontsource/poppins/600.css";
+@import "@fontsource/poppins/700.css";
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Poppins", ui-sans-serif, system-ui, sans-serif;
+  --color-primary-50: #fef0ee;
+  --color-primary-100: #fdd5d0;
+  --color-primary-200: #fba89f;
+  --color-primary-300: #f9746a;
+  --color-primary-400: #db524b;
+  --color-primary-500: #b63733;
+  --color-primary-600: #962322;
+  --color-primary-700: #781013;
+  --color-primary-800: #5e090b;
+  --color-primary-900: #490507;
+
+  --color-text-secondary: #344051;
+  --color-text-tertiary: #637083;
+  --color-text-disable: #97A1AF;
+
+  --color-bg-0: #ffffff;
+  --color-bg-100: #F2F4F7;
+
+  --color-border-200: #e4e7ec;
+  --color-border-300: #ced2da;
+}
+
+@layer base {
+  html {
+    font-family: var(--font-sans);
+  }
+}

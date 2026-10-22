@@ -1,0 +1,11 @@
+{
+	# TLS ditangani Cloudflare Tunnel, jadi Caddy cukup HTTP biasa.
+	auto_https off
+	# Matikan admin API Caddy (tidak dibutuhkan).
+	admin off
+}
+
+:80 {
+	encode zstd gzip
+	reverse_proxy web:3000
+}
