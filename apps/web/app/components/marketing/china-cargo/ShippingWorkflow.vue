@@ -1,3 +1,4 @@
+
 <script setup lang="ts">
 import { ArrowUpRight, Layers3 } from 'lucide-vue-next'
 
@@ -29,72 +30,37 @@ const steps = [
   },
 ]
 
-// Durasi ini HARUS sama dengan durasi transisi CSS di template:
-// garis  -> duration-[400ms]
-// bulatan -> duration-300
-const LINE_DURATION = 400
-const CIRCLE_DURATION = 300
+const activeStep = ref(0)
+const lineStep = ref(0)
+const circleStep = ref(0)
 
-// activeStep  = step yang paling dekat dengan tengah layar (langsung berubah saat scroll)
-// lineStep    = jumlah garis yang sudah terisi (garis ke-i terisi kalau i < lineStep)
-// circleStep  = bulatan terakhir yang sudah merah (bulatan ke-i merah kalau i <= circleStep)
-const activeStep = ref(2)
-const lineStep = ref(activeStep.value)
-const circleStep = ref(activeStep.value)
 const sectionRef = ref<HTMLElement | null>(null)
 const stepRefs = ref<(HTMLElement | null)[]>([])
+
 let animationFrame: number | undefined
-let isAnimating = false
-let isUnmounted = false
 
 function setStepRef(element: unknown, index: number) {
   stepRefs.value[index] = (element as HTMLElement | null) ?? null
 }
 
-function wait(ms: number) {
-  return new Promise<void>((resolve) => setTimeout(resolve, ms))
-}
-
-// Mengejar activeStep satu langkah demi satu langkah.
-// Hanya ada SATU loop yang jalan, jadi scroll cepat tidak bisa melewati jeda animasi.
-async function syncDisplayToActive() {
-  if (isAnimating) {
-    return
-  }
-
-  isAnimating = true
-
-  while (!isUnmounted && circleStep.value !== activeStep.value) {
-    if (circleStep.value < activeStep.value) {
-      // Maju: garis terisi dulu, bulatan baru merah setelah garisnya selesai
-      lineStep.value = circleStep.value + 1
-      await wait(LINE_DURATION)
-      circleStep.value += 1
-      await wait(CIRCLE_DURATION)
-    } else {
-      // Mundur: bulatan kembali pudar dulu, baru garisnya menyusut
-      circleStep.value -= 1
-      await wait(CIRCLE_DURATION)
-      lineStep.value = circleStep.value
-      await wait(LINE_DURATION)
-    }
-  }
-
-  isAnimating = false
-}
-
-watch(activeStep, syncDisplayToActive)
+// Sinkronisasi langsung mengikuti posisi scroll terbaru.
+watch(activeStep, (nextStep) => {
+  lineStep.value = nextStep
+  circleStep.value = nextStep
+})
 
 function updateActiveStep() {
   const section = sectionRef.value
 
-  if (!section) {
-    return
-  }
+  if (!section) return
 
   const sectionRect = section.getBoundingClientRect()
 
-  if (sectionRect.bottom < 0 || sectionRect.top > window.innerHeight) {
+  // Lewati perhitungan jika section berada di luar viewport.
+  if (
+    sectionRect.bottom < 0 ||
+    sectionRect.top > window.innerHeight
+  ) {
     return
   }
 
@@ -103,12 +69,12 @@ function updateActiveStep() {
   let closestDistance = Number.POSITIVE_INFINITY
 
   stepRefs.value.forEach((step, index) => {
-    if (!step) {
-      return
-    }
+    if (!step) return
 
     const rect = step.getBoundingClientRect()
-    const distance = Math.abs(rect.top + rect.height / 2 - viewportCenter)
+    const distance = Math.abs(
+      rect.top + rect.height / 2 - viewportCenter,
+    )
 
     if (distance < closestDistance) {
       closestDistance = distance
@@ -120,12 +86,16 @@ function updateActiveStep() {
 }
 
 function handleScroll() {
-  cancelAnimationFrame(animationFrame ?? 0)
+  if (animationFrame !== undefined) {
+    cancelAnimationFrame(animationFrame)
+  }
+
   animationFrame = requestAnimationFrame(updateActiveStep)
 }
 
 function selectStep(index: number) {
   activeStep.value = index
+
   stepRefs.value[index]?.scrollIntoView({
     behavior: 'smooth',
     block: 'center',
@@ -133,16 +103,22 @@ function selectStep(index: number) {
 }
 
 onMounted(() => {
-  window.addEventListener('scroll', handleScroll, { passive: true })
+  window.addEventListener('scroll', handleScroll, {
+    passive: true,
+  })
+
   window.addEventListener('resize', handleScroll)
+
   updateActiveStep()
 })
 
 onBeforeUnmount(() => {
-  isUnmounted = true
   window.removeEventListener('scroll', handleScroll)
   window.removeEventListener('resize', handleScroll)
-  cancelAnimationFrame(animationFrame ?? 0)
+
+  if (animationFrame !== undefined) {
+    cancelAnimationFrame(animationFrame)
+  }
 })
 </script>
 
@@ -161,9 +137,12 @@ onBeforeUnmount(() => {
         >
           Cara Kerja Layanan Kargo
         </h2>
-        <p class="mx-auto mt-4 max-w-[590px] text-[14px] leading-[1.5] text-slate-500">
-          Proses pengiriman kargo yang simpel, transparan, dan terukur dari awal hingga barang tiba
-          di gudang Anda.
+
+        <p
+          class="mx-auto mt-4 max-w-[590px] text-[14px] leading-[1.5] text-slate-500"
+        >
+          Proses pengiriman kargo yang simpel, transparan, dan terukur
+          dari awal hingga barang tiba di gudang Anda.
         </p>
       </div>
 
@@ -175,36 +154,48 @@ onBeforeUnmount(() => {
           class="relative grid grid-cols-[40px_minmax(0,1fr)] gap-4 pb-4 last:pb-0"
         >
           <div class="relative flex justify-center">
+            <!-- Garis penghubung -->
             <span
               v-if="index < steps.length - 1"
               aria-hidden="true"
               class="absolute left-1/2 top-8 h-[calc(100%-1rem)] w-0.5 -translate-x-1/2 overflow-hidden bg-primary-100"
             >
               <span
-                class="block size-full origin-top bg-primary-500 transition-transform duration-[400ms] ease-linear"
-                :class="index < lineStep ? 'scale-y-100' : 'scale-y-0'"
+                class="block size-full origin-top bg-primary-500 transition-transform duration-[250ms] ease-linear"
+                :class="
+                  index < lineStep
+                    ? 'scale-y-100'
+                    : 'scale-y-0'
+                "
               />
             </span>
+
+            <!-- Bulatan nomor -->
             <button
               type="button"
               :aria-label="`Tampilkan langkah ${index + 1}: ${step.title}`"
               :aria-pressed="activeStep === index"
-              class="relative z-10 flex size-8 items-center justify-center rounded-full text-[15px] font-semibold transition-[background-color,color,transform] duration-300 hover:scale-105 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500"
-              :class="index <= circleStep
-                ? 'bg-primary-500 text-white'
-                : 'bg-primary-50 text-primary-500'"
+              class="relative z-10 flex size-8 items-center justify-center rounded-full text-[15px] font-semibold transition-[background-color,color,transform] duration-200 hover:scale-105 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500"
+              :class="
+                index <= circleStep
+                  ? 'bg-primary-500 text-white'
+                  : 'bg-primary-50 text-primary-500'
+              "
               @click="selectStep(index)"
             >
               {{ index + 1 }}
             </button>
           </div>
 
+          <!-- Konten langkah -->
           <button
             type="button"
-            class="w-full rounded-xl border p-3 text-left transition-[border-color,box-shadow] duration-300 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500"
-            :class="activeStep === index
-              ? 'border-primary-500 shadow-[0_5px_12px_rgba(15,23,42,0.08)]'
-              : 'border-transparent hover:border-primary-100'"
+            class="w-full rounded-xl border p-3 text-left transition-[border-color,box-shadow] duration-200 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500"
+            :class="
+              activeStep === index
+                ? 'border-primary-500 shadow-[0_5px_12px_rgba(15,23,42,0.08)]'
+                : 'border-transparent hover:border-primary-100'
+            "
             :aria-pressed="activeStep === index"
             @click="selectStep(index)"
           >
@@ -215,26 +206,33 @@ onBeforeUnmount(() => {
                 aria-hidden="true"
                 class="shrink-0 text-primary-500"
               />
+
               <span class="text-[16px] font-medium text-slate-800">
                 {{ step.title }}
               </span>
             </span>
-            <span class="mt-3 block text-[12px] leading-[1.5] text-slate-700">
+
+            <span
+              class="mt-3 block text-[12px] leading-[1.5] text-slate-700"
+            >
               {{ step.description }}
             </span>
           </button>
         </li>
       </ol>
 
+      <!-- CTA -->
       <div class="mt-10 text-center">
         <p class="text-[12px] text-slate-400">
           Siap memulai pengiriman kargo bisnis Anda hari ini?
         </p>
+
         <NuxtLink
           to="#quote"
           class="mt-3 inline-flex h-10 items-center gap-2 rounded-xl bg-primary-500 px-5 text-[12px] font-semibold text-white transition-[background-color,transform] duration-200 hover:-translate-y-0.5 hover:bg-primary-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500"
         >
           <span>Konsultasi Gratis</span>
+
           <ArrowUpRight
             :size="16"
             :stroke-width="2"

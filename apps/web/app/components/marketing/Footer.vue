@@ -1,12 +1,5 @@
 <script setup lang="ts">
-import {
-  ChevronDown,
-  Clock3,
-  Facebook,
-  Instagram,
-  Music2,
-  Youtube,
-} from 'lucide-vue-next'
+import { ChevronDown, Clock3 } from 'lucide-vue-next'
 import logoUrl from '~/assets/images/brand/logo-white.png'
 import logo1688 from '~/assets/images/brand/1688.png'
 import logoTaobao from '~/assets/images/brand/taobao.png'
@@ -15,21 +8,25 @@ import logoTmall from '~/assets/images/brand/tmall.png'
 import logoBca from '~/assets/images/brand/bca.png'
 import logoMandiri from '~/assets/images/brand/mandiri.png'
 import logoPermata from '~/assets/images/brand/permata.png'
+import iconFacebook from '~/assets/images/marketing/facebook.png'
+import iconInstagram from '~/assets/images/marketing/instagram.png'
+import iconTiktok from '~/assets/images/marketing/tiktok.png'
+import iconYoutube from '~/assets/images/marketing/youtube.png'
 
 const currentYear = new Date().getFullYear()
 
 const socials = [
-  { label: 'Facebook ETH Cargo', icon: Facebook },
-  { label: 'Instagram ETH Cargo', icon: Instagram },
-  { label: 'TikTok ETH Cargo', icon: Music2 },
-  { label: 'YouTube ETH Cargo', icon: Youtube },
+  { label: 'Facebook ETH Cargo', icon: iconFacebook },
+  { label: 'Instagram ETH Cargo', icon: iconInstagram },
+  { label: 'TikTok ETH Cargo', icon: iconTiktok },
+  { label: 'YouTube ETH Cargo', icon: iconYoutube },
 ]
 
 const marketplaceLogos = [
-  { name: '1688', src: logo1688, class: 'h-9' },
-  { name: 'Taobao', src: logoTaobao, class: 'h-6' },
-  { name: 'Alibaba.com', src: logoAlibaba, class: 'h-5' },
-  { name: 'Tmall', src: logoTmall, class: 'h-5' },
+  { name: '1688', src: logo1688, class: 'h-6' },
+  { name: 'Taobao', src: logoTaobao, class: 'h-5' },
+  { name: 'Alibaba.com', src: logoAlibaba, class: 'h-[18px]' },
+  { name: 'Tmall', src: logoTmall, class: 'h-[18px]' },
 ]
 
 const bankLogos = [
@@ -100,7 +97,7 @@ const navHeadingClass = 'text-[16px] font-medium text-text-disable'
           </p>
 
           <div
-            class="mt-4 flex items-center gap-5 text-primary-500"
+            class="mt-4 flex items-center gap-6"
             aria-label="Media sosial ETH Cargo"
           >
             <a
@@ -110,12 +107,14 @@ const navHeadingClass = 'text-[16px] font-medium text-text-disable'
               :aria-label="social.label"
               class="rounded-md transition-transform hover:-translate-y-0.5 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500"
             >
-              <component
-                :is="social.icon"
-                :size="20"
-                :stroke-width="2"
+              <img
+                :src="social.icon"
+                alt=""
                 aria-hidden="true"
-              />
+                width="16"
+                height="16"
+                class="size-4 object-contain"
+              >
             </a>
           </div>
 
@@ -136,7 +135,7 @@ const navHeadingClass = 'text-[16px] font-medium text-text-disable'
           </div>
 
           <ul
-            class="mt-6 flex flex-wrap items-center gap-x-7 gap-y-4"
+            class="mt-6 flex flex-wrap items-center gap-x-5 gap-y-3"
             aria-label="Marketplace"
           >
             <li

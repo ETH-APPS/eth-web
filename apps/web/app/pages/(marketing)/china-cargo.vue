@@ -110,4 +110,5 @@ const services = ['FCL Cargo', 'LCL Cargo', 'Air Cargo']
   <MarketingChinaCargoStats />
   <MarketingChinaCargoAirFreight />
   <MarketingChinaCargoShippingWorkflow />
+  <MarketingChinaCargoRateEstimator />
 </template>
