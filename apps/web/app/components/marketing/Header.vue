@@ -18,6 +18,8 @@ const menuComponents: Partial<Record<NavigationLabel, Component>> = {
   Layanan: ServicesMenu,
 }
 
+const route = useRoute()
+
 const isLight = computed(() => props.variant === 'light')
 const isScrolled = ref(false)
 const activeMenu = ref<NavigationLabel | null>(null)
@@ -74,6 +76,19 @@ function closeMenu(label: NavigationLabel) {
   }, 180)
 }
 
+function closeAllMenus() {
+  clearCloseMenuTimer()
+  activeMenu.value = null
+}
+
+function handleMenuClick(event: MouseEvent) {
+  const target = event.target as HTMLElement | null
+
+  if (target?.closest('a')) {
+    closeAllMenus()
+  }
+}
+
 function handleMenuFocusOut(label: NavigationLabel, event: FocusEvent) {
   if (!getMenuComponent(label)) return
 
@@ -84,6 +99,8 @@ function handleMenuFocusOut(label: NavigationLabel, event: FocusEvent) {
 
   closeMenu(label)
 }
+
+watch(() => route.fullPath, closeAllMenus)
 
 onMounted(() => {
   updateHeaderStyle()
@@ -177,6 +194,7 @@ onBeforeUnmount(() => {
                 : 'invisible delay-300'"
               @mouseenter="openMenu(item.label)"
               @focusin="openMenu(item.label)"
+              @click="handleMenuClick"
             >
               <div
                 class="grid transition-[grid-template-rows,opacity] duration-300 ease-out"
