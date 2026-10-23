@@ -188,7 +188,7 @@ onBeforeUnmount(() => {
 
             <div
               v-if="getMenuComponent(item.label)"
-              class="absolute inset-x-0 top-full border-t border-border-200 bg-white shadow-[0_18px_35px_rgba(15,23,42,0.12)] transition-[visibility] duration-0 [contain:layout]"
+              class="absolute inset-x-0 top-full border-y border-border-200 bg-white shadow-[0_22px_34px_-12px_rgba(15,23,42,0.28)] transition-[visibility] duration-0 [contain:layout]"
               :class="activeMenu === item.label
                 ? 'visible delay-0'
                 : 'invisible delay-300'"

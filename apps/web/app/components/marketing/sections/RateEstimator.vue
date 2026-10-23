@@ -1,40 +1,65 @@
 <script setup lang="ts">
 import { ArrowUpRight, ChevronDown } from 'lucide-vue-next'
 
-const categories = [
-  'Barang umum',
-  'Elektronik',
-  'Fashion & tekstil',
-  'Mesin & perlengkapan industri',
-  'Furnitur & perlengkapan rumah',
-  'Kosmetik & perawatan diri',
-]
+const props = withDefaults(
+  defineProps<{
+    title?: string
+    description?: string
+    categories?: readonly string[]
+    cargoServices?: readonly string[]
+    submitLabel?: string
+    guidePrompt?: string
+    guideLabel?: string
+    guideTo?: string
+    contactTo?: string
+    sectionId?: string
+  }>(),
+  {
+    title: 'Hitung Estimasi Tarif',
+    description:
+      'Dapatkan kalkulasi perkiraan biaya pengiriman All-In dari China ke Indonesia secara instan untuk perencanaan modal bisnis Anda.',
+    categories: () => [
+      'Barang umum',
+      'Elektronik',
+      'Fashion & tekstil',
+      'Mesin & perlengkapan industri',
+      'Furnitur & perlengkapan rumah',
+      'Kosmetik & perawatan diri',
+    ],
+    cargoServices: () => [
+      'FCL Cargo',
+      'LCL Cargo',
+      'Air Cargo',
+    ],
+    submitLabel: 'Hitung Estimasi Tarif',
+    guidePrompt: 'Pelajari panduan pengkategorian barang',
+    guideLabel: 'Lihat Panduan Kategori',
+    guideTo: '/#sourcing',
+    contactTo: '#quote',
+    sectionId: 'rate-estimator',
+  },
+)
 
-const cargoServices = [
-  'FCL Cargo',
-  'LCL Cargo',
-  'Air Cargo',
-]
+const titleId = computed(() => `${props.sectionId}-title`)
 </script>
 
 <template>
   <section
-    id="rate-estimator"
-    aria-labelledby="rate-estimator-title"
+    :id="sectionId"
+    :aria-labelledby="titleId"
     class="bg-bg-100 py-16 sm:py-20"
   >
     <UiContainer>
       <div class="text-center">
         <h2
-          id="rate-estimator-title"
+          :id="titleId"
           class="text-[32px] font-bold leading-tight text-primary-500"
         >
-          Hitung Estimasi Tarif
+          {{ title }}
         </h2>
 
         <p class="mx-auto mt-6 max-w-[900px] text-[20px] leading-[1.5]  text-text-tertiary">
-          Dapatkan kalkulasi perkiraan biaya pengiriman All-In dari China ke Indonesia secara
-          instan untuk perencanaan modal bisnis Anda.
+          {{ description }}
         </p>
       </div>
 
@@ -99,7 +124,7 @@ const cargoServices = [
             <p class="mt-1.5 text-[12px] leading-tight text-text-tertiary">
               Bingung kategori?
               <NuxtLink
-                to="#quote"
+                :to="contactTo"
                 class="font-medium text-primary-500 underline underline-offset-2 hover:text-primary-700"
               >
                 Hubungi Customer Service
@@ -229,21 +254,21 @@ const cargoServices = [
             type="submit"
             class="inline-flex h-14 w-full items-center justify-center rounded-xl bg-primary-500 px-6 text-[15px] font-semibold text-bg-0 transition-[background-color,transform] duration-200 hover:-translate-y-0.5 hover:bg-primary-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500 sm:w-auto"
           >
-            Hitung Estimasi Tarif
+            {{ submitLabel }}
           </button>
         </div>
       </form>
 
       <div class="mt-14 flex flex-col items-center justify-center gap-3 text-center sm:flex-row sm:gap-5">
         <p class="text-[16px] font-normal text-text-tertiary">
-          Pelajari panduan pengkategorian barang
+          {{ guidePrompt }}
         </p>
 
         <NuxtLink
-          to="/#sourcing"
+          :to="guideTo"
           class="inline-flex h-11 items-center gap-2 rounded-xl bg-primary-50 px-5 text-[14px] font-medium text-primary-500 transition-colors hover:bg-primary-100 hover:text-primary-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500"
         >
-          <span>Lihat Panduan Kategori</span>
+          <span>{{ guideLabel }}</span>
           <ArrowUpRight
             :size="16"
             :stroke-width="2"

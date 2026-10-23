@@ -1,0 +1,4 @@
+# Allow the isolated GitHub runner to request one root-owned, no-argument helper.
+Defaults:github-runner secure_path=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+github-runner ALL=(root) NOPASSWD: /usr/local/sbin/deploy-eth-web ""
+

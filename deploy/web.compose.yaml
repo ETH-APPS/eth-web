@@ -1,0 +1,23 @@
+# Root-owned production runtime definition used by the automatic deploy helper.
+# It contains only the web service, so a deploy cannot recreate Caddy or the
+# Cloudflare Tunnel container.
+services:
+  web:
+    image: eth-web-web:${IMAGE_TAG:?IMAGE_TAG must be set}
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:3000/').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+networks:
+  default:
+    external: true
+    name: eth-web_default
