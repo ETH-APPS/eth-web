@@ -4,6 +4,8 @@ const route = useRoute()
 const headerVariant = computed(() => (
   route.path === '/' ? 'overlay' : 'light'
 ))
+
+const showMultinationalRoutes = computed(() => route.path !== '/')
 </script>
 
 <template>
@@ -15,6 +17,7 @@ const headerVariant = computed(() => (
     </main>
 
     <MarketingSectionsFaq />
+    <MarketingSectionsMultinationalRoutes v-if="showMultinationalRoutes" />
     <MarketingFooter />
   </div>
 </template>

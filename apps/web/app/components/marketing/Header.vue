@@ -1,5 +1,7 @@
 <script setup lang="ts">
+import type { Component } from 'vue'
 import { ArrowUpRight } from 'lucide-vue-next'
+import ServicesMenu from './header-menus/ServicesMenu.vue'
 import logoUrl from '~/assets/images/brand/logo.png'
 import logoWhiteUrl from '~/assets/images/brand/logo-white.png'
 import { marketingNavigation, quoteNavigation } from '~/constants/navigation'
@@ -10,27 +12,97 @@ const props = withDefaults(defineProps<{
   variant: 'overlay',
 })
 
+type NavigationLabel = typeof marketingNavigation[number]['label']
+
+const menuComponents: Partial<Record<NavigationLabel, Component>> = {
+  Layanan: ServicesMenu,
+}
+
 const isLight = computed(() => props.variant === 'light')
 const isScrolled = ref(false)
-const useLightStyle = computed(() => isLight.value || isScrolled.value)
+const activeMenu = ref<NavigationLabel | null>(null)
+let closeMenuTimer: ReturnType<typeof setTimeout> | undefined
+let scrollAnimationFrame: number | undefined
+
+const isMenuOpen = computed(() => activeMenu.value !== null)
+const useLightStyle = computed(() => (
+  isLight.value || isScrolled.value || isMenuOpen.value
+))
 
 function updateHeaderStyle() {
   isScrolled.value = window.scrollY > 24
 }
 
+function handleScroll() {
+  if (scrollAnimationFrame !== undefined) return
+
+  scrollAnimationFrame = requestAnimationFrame(() => {
+    updateHeaderStyle()
+    scrollAnimationFrame = undefined
+  })
+}
+
+function getMenuComponent(label: NavigationLabel) {
+  return menuComponents[label]
+}
+
+function clearCloseMenuTimer() {
+  if (!closeMenuTimer) return
+
+  clearTimeout(closeMenuTimer)
+  closeMenuTimer = undefined
+}
+
+function openMenu(label: NavigationLabel) {
+  if (!getMenuComponent(label)) return
+
+  clearCloseMenuTimer()
+  activeMenu.value = label
+}
+
+function closeMenu(label: NavigationLabel) {
+  if (!getMenuComponent(label) || activeMenu.value !== label) return
+
+  clearCloseMenuTimer()
+
+  closeMenuTimer = setTimeout(() => {
+    if (activeMenu.value === label) {
+      activeMenu.value = null
+    }
+
+    closeMenuTimer = undefined
+  }, 180)
+}
+
+function handleMenuFocusOut(label: NavigationLabel, event: FocusEvent) {
+  if (!getMenuComponent(label)) return
+
+  const wrapper = event.currentTarget as HTMLElement | null
+  const nextTarget = event.relatedTarget as Node | null
+
+  if (wrapper && nextTarget && wrapper.contains(nextTarget)) return
+
+  closeMenu(label)
+}
+
 onMounted(() => {
   updateHeaderStyle()
-  window.addEventListener('scroll', updateHeaderStyle, { passive: true })
+  window.addEventListener('scroll', handleScroll, { passive: true })
 })
 
 onBeforeUnmount(() => {
-  window.removeEventListener('scroll', updateHeaderStyle)
+  window.removeEventListener('scroll', handleScroll)
+  clearCloseMenuTimer()
+
+  if (scrollAnimationFrame !== undefined) {
+    cancelAnimationFrame(scrollAnimationFrame)
+  }
 })
 </script>
 
 <template>
   <header
-    class="sticky inset-x-0 top-0 z-30 h-[70px] transition-[background-color,box-shadow,backdrop-filter] duration-300"
+    class="sticky inset-x-0 top-0 z-30 h-[70px] transition-colors duration-300"
     :class="[
       props.variant === 'overlay' ? '-mb-[70px]' : '',
       useLightStyle
@@ -54,18 +126,28 @@ onBeforeUnmount(() => {
         >
       </NuxtLink>
 
-      <nav aria-label="Navigasi utama">
-        <ul class="flex items-center gap-8">
+      <nav
+        aria-label="Navigasi utama"
+        class="h-full"
+      >
+        <ul class="flex h-full items-center gap-8">
           <li
             v-for="item in marketingNavigation"
             :key="item.label"
+            class="flex h-full items-center"
+            @mouseleave="closeMenu(item.label)"
+            @focusout="handleMenuFocusOut(item.label, $event)"
           >
             <NuxtLink
               :to="item.to"
-              class="group flex items-center gap-2 rounded-sm text-sm font-regular transition-colors focus-visible:outline-2 focus-visible:outline-offset-4"
+              class="group flex items-center gap-2 rounded-md px-2 py-2 text-sm font-regular transition-colors focus-visible:outline-2 focus-visible:outline-offset-2"
               :class="useLightStyle
                 ? 'text-slate-700 hover:text-primary-500 focus-visible:outline-primary-500'
                 : 'text-white hover:text-primary-200 focus-visible:outline-white'"
+              :aria-haspopup="getMenuComponent(item.label) ? 'true' : undefined"
+              :aria-expanded="getMenuComponent(item.label) ? activeMenu === item.label : undefined"
+              @mouseenter="openMenu(item.label)"
+              @focus="openMenu(item.label)"
             >
               <span>{{ item.label }}</span>
 
@@ -74,7 +156,8 @@ onBeforeUnmount(() => {
                 aria-hidden="true"
                 viewBox="0 0 16 16"
                 fill="none"
-                class="size-4 transition-transform group-hover:translate-y-0.5"
+                class="size-4 transition-transform duration-200 group-hover:rotate-180"
+                :class="activeMenu === item.label ? 'rotate-180' : ''"
               >
                 <path
                   d="m3 6 5 5 5-5"
@@ -85,6 +168,27 @@ onBeforeUnmount(() => {
                 />
               </svg>
             </NuxtLink>
+
+            <div
+              v-if="getMenuComponent(item.label)"
+              class="absolute inset-x-0 top-full border-t border-border-200 bg-white shadow-[0_18px_35px_rgba(15,23,42,0.12)] transition-[visibility] duration-0 [contain:layout]"
+              :class="activeMenu === item.label
+                ? 'visible delay-0'
+                : 'invisible delay-300'"
+              @mouseenter="openMenu(item.label)"
+              @focusin="openMenu(item.label)"
+            >
+              <div
+                class="grid transition-[grid-template-rows,opacity] duration-300 ease-out"
+                :class="activeMenu === item.label
+                  ? 'grid-rows-[1fr] opacity-100'
+                  : 'grid-rows-[0fr] opacity-0'"
+              >
+                <div class="min-h-0 overflow-hidden">
+                  <component :is="getMenuComponent(item.label)" />
+                </div>
+              </div>
+            </div>
           </li>
         </ul>
       </nav>
