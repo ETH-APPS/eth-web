@@ -6,7 +6,8 @@ export const marketingNavigation = [
   },
   {
     label: 'Fitur',
-    to: '#fitur'
+    to: '#fitur',
+    hasMenu: true
   },
   {
     label: 'Informasi',
@@ -14,7 +15,7 @@ export const marketingNavigation = [
     hasMenu: true
   },
   {
-    label: 'Insight',
+    label: 'Insights',
     to: '#insight',
     hasMenu: true
   }

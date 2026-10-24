@@ -7,35 +7,52 @@ import {
 } from 'lucide-vue-next'
 import whatsappUrl from '~/assets/images/marketing/whatsapp.png'
 
-const faqs = [
-  {
-    question: 'Apa itu ETH Cargo?',
-    answer:
-      'ETH Cargo adalah perusahaan jasa pengiriman barang internasional (freight forwarder) spesialis rute China–Indonesia. Kami berfokus memberikan solusi logistik All-In Door-to-Door yang aman, transparan, dan terintegrasi khusus untuk kebutuhan bisnis (B2B), manufaktur, distributor, dan pelaku usaha di Indonesia.',
-  },
-  {
-    question: 'Mengapa harus memilih ETH Cargo dibandingkan forwarder lain?',
-    answer:
-      'ETH Cargo menghadirkan keunggulan utama berupa garansi biaya All-In yang transparan tanpa hidden fee, jaringan gudang penerimaan sendiri di titik strategis China, sistem tracking real-time, garansi perlindungan kargo 100%, serta Dedicated Account Manager yang siap mendampingi operasional bisnis Anda.',
-  },
-  {
-    question: 'Apakah ETH Cargo melayani pengiriman resmi & legalitas penuh?',
-    answer:
-      'Ya. ETH Cargo mengelola seluruh proses kepabeanan (customs clearance) secara resmi dan profesional, lengkap dengan kepengurusan dokumen pajak dan izin impor yang sesuai dengan regulasi pemerintah Indonesia.',
-  },
-  {
-    question: 'Di mana saja lokasi gudang operasional ETH Cargo?',
-    answer:
-      'Gudang konsolidasi utama kami di China terletak di Guangzhou dan Yiwu. Sementara untuk gudang penerimaan, penyortiran, dan distribusi di Indonesia berpusat di Jakarta untuk menjangkau pengiriman ke seluruh wilayah Indonesia.',
-  },
-  {
-    question: 'Bagaimana komitmen ETH Cargo terhadap keamanan barang?',
-    answer:
-      'Keamanan kargo adalah prioritas utama kami. Setiap pengiriman yang terdaftar di ETH Cargo dilindungi oleh jaminan asuransi kargo dengan skema ganti rugi hingga 100% untuk memastikan risiko operasional bisnis Anda tetap terproteksi.',
-  },
-]
+const props = withDefaults(defineProps<{
+  title?: string
+  subtitle: string
+  description: string
+  items: readonly {
+    question: string
+    answer: string
+  }[]
+  defaultOpenIndex?: number | null
+  sectionId?: string
+  quoteSectionId?: string
+  quoteTitle?: string
+  quoteDescription?: string
+  emailLabel?: string
+  email?: string
+  calculatorLabel?: string
+  calculatorTo?: string
+  consultationLabel?: string
+  consultationTo?: string
+}>(), {
+  title: 'FAQ',
+  defaultOpenIndex: 1,
+  sectionId: 'faq',
+  quoteSectionId: 'quote',
+  quoteTitle: 'Siap Kirim Kargo Impor Anda?',
+  quoteDescription:
+    'Hitung estimasi pengiriman dengan kalkulator kargo kami, atau konsultasikan kebutuhan impor bisnis Anda langsung bersama tim ahli ETH Cargo.',
+  emailLabel: 'Atau hubungi kami via email:',
+  email: 'email@ethcargo.co.id',
+  calculatorLabel: 'Hitung Biaya',
+  calculatorTo: '#main-services',
+  consultationLabel: 'Konsultasi Gratis',
+  consultationTo: '#quote',
+})
 
-const activeFaq = ref<number | null>(1)
+const activeFaq = ref<number | null>(props.defaultOpenIndex)
+const titleId = computed(() => `${props.sectionId}-title`)
+const quoteTitleId = computed(() => `${props.quoteSectionId}-title`)
+const emailHref = computed(() => `mailto:${props.email}`)
+
+watch(
+  [() => props.items, () => props.defaultOpenIndex],
+  () => {
+    activeFaq.value = props.defaultOpenIndex
+  },
+)
 
 function toggleFaq(index: number) {
   activeFaq.value = activeFaq.value === index ? null : index
@@ -44,31 +61,30 @@ function toggleFaq(index: number) {
 
 <template>
   <section
-    id="faq"
-    aria-labelledby="faq-title"
+    :id="sectionId"
+    :aria-labelledby="titleId"
     class="bg-bg-0 py-16"
   >
     <UiContainer>
       <div class="grid grid-cols-[380px_minmax(0,1fr)] items-start gap-8">
         <div>
           <h2
-            id="faq-title"
+            :id="titleId"
             class="text-[120px] font-bold leading-none tracking-tight text-primary-500"
           >
-            FAQ
+            {{ title }}
           </h2>
           <p class="mt-5 text-[24px] font-normal text-text-disable">
-            Mengenal ETH Cargo
+            {{ subtitle }}
           </p>
           <p class="mt-8 text-[16px] font-normal leading-[1.55] text-text-secondary">
-            Segala hal yang perlu Anda ketahui tentang ETH Cargo, komitmen layanan kami, dan
-            bagaimana kami menjadi mitra terpercaya untuk ekosistem logistik bisnis Anda.
+            {{ description }}
           </p>
         </div>
 
         <div class="space-y-2">
           <article
-            v-for="(faq, index) in faqs"
+            v-for="(faq, index) in items"
             :key="faq.question"
             class="rounded-2xl border transition-[border-color,box-shadow] duration-300"
             :class="activeFaq === index
@@ -80,7 +96,7 @@ function toggleFaq(index: number) {
                 type="button"
                 class="flex w-full items-center gap-3 rounded-2xl px-5 py-4 text-left focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500"
                 :aria-expanded="activeFaq === index"
-                :aria-controls="`faq-answer-${index}`"
+                :aria-controls="`${sectionId}-answer-${index}`"
                 @click="toggleFaq(index)"
               >
                 <span
@@ -106,7 +122,7 @@ function toggleFaq(index: number) {
             </h3>
 
             <div
-              :id="`faq-answer-${index}`"
+              :id="`${sectionId}-answer-${index}`"
               class="grid transition-[grid-template-rows] duration-300 ease-out"
               :class="activeFaq === index ? 'grid-rows-[1fr]' : 'grid-rows-[0fr]'"
             >
@@ -130,30 +146,31 @@ function toggleFaq(index: number) {
     </UiContainer>
   </section>
 
+  <slot />
+
   <section
-    id="quote"
-    aria-labelledby="quote-title"
+    :id="quoteSectionId"
+    :aria-labelledby="quoteTitleId"
     class="bg-primary-600 py-14 text-bg-0"
   >
     <div class="mx-auto w-full max-w-[1250px] px-6">
       <div class="flex items-end justify-between gap-14">
         <div class="max-w-[600px]">
           <h2
-            id="quote-title"
+            :id="quoteTitleId"
             class="text-[30px] font-semibold leading-tight"
           >
-            Siap Kirim Kargo Impor Anda?
+            {{ quoteTitle }}
           </h2>
           <p class="mt-3 text-[20px] font-medium leading-[1.35] text-bg-0/95">
-            Hitung estimasi pengiriman dengan kalkulator kargo kami, atau konsultasikan kebutuhan
-            impor bisnis Anda langsung bersama tim ahli ETH Cargo.
+            {{ quoteDescription }}
           </p>
 
           <p class="mt-6 text-[13px] font-medium text-bg-0/90">
-            Atau hubungi kami via email:
+            {{ emailLabel }}
           </p>
           <a
-            href="mailto:email@ethcargo.co.id"
+            :href="emailHref"
             class="mt-1.5 inline-flex items-center gap-2 text-[13px] text-bg-0 transition-opacity hover:opacity-80 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-bg-0"
           >
             <Mail
@@ -161,13 +178,13 @@ function toggleFaq(index: number) {
               :stroke-width="1.8"
               aria-hidden="true"
             />
-            <span>email@ethcargo.co.id</span>
+            <span>{{ email }}</span>
           </a>
         </div>
 
         <div class="flex shrink-0 items-center gap-3">
-          <a
-            href="#main-services"
+          <NuxtLink
+            :to="calculatorTo"
             class="inline-flex h-12 items-center gap-2 rounded-xl bg-primary-500 px-6 text-[14px] text-bg-0 transition-transform duration-200 hover:-translate-y-0.5 hover:bg-primary-400 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-bg-0"
           >
             <Calculator
@@ -175,13 +192,13 @@ function toggleFaq(index: number) {
               :stroke-width="1.8"
               aria-hidden="true"
             />
-            <span>Hitung Biaya</span>
-          </a>
-          <a
-            href="#quote"
+            <span>{{ calculatorLabel }}</span>
+          </NuxtLink>
+          <NuxtLink
+            :to="consultationTo"
             class="inline-flex h-12 items-center gap-2 rounded-xl bg-green-500 px-6 text-[14px] text-bg-0 transition-transform duration-200 hover:-translate-y-0.5 hover:bg-[#059669] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-bg-0"
           >
-            <span>Konsultasi Gratis</span>
+            <span>{{ consultationLabel }}</span>
             <img
               :src="whatsappUrl"
               alt=""
@@ -190,7 +207,7 @@ function toggleFaq(index: number) {
               height="16"
               class="size-5 shrink-0 object-contain"
             >
-          </a>
+          </NuxtLink>
         </div>
       </div>
     </div>

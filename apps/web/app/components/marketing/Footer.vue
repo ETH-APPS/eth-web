@@ -36,8 +36,8 @@ const bankLogos = [
 ]
 
 const serviceLinks = [
-  { label: 'Kargo Laut', to: '#layanan' },
-  { label: 'Kargo Udara', to: '#layanan' },
+  { label: 'Kargo Laut', to: '/sea-freight' },
+  { label: 'Kargo Udara', to: '/air-freight' },
   { label: 'Jasa Kargo China', to: '#sourcing' },
   { label: 'Transfer RMB', to: '#layanan' },
   { label: 'Titip Beli', to: '#sourcing' },

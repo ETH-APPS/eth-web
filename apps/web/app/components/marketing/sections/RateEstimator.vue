@@ -11,6 +11,7 @@ const props = withDefaults(
     guidePrompt?: string
     guideLabel?: string
     guideTo?: string
+    showGuideAction?: boolean
     contactTo?: string
     sectionId?: string
   }>(),
@@ -35,6 +36,7 @@ const props = withDefaults(
     guidePrompt: 'Pelajari panduan pengkategorian barang',
     guideLabel: 'Lihat Panduan Kategori',
     guideTo: '/#sourcing',
+    showGuideAction: true,
     contactTo: '#quote',
     sectionId: 'rate-estimator',
   },
@@ -265,6 +267,7 @@ const titleId = computed(() => `${props.sectionId}-title`)
         </p>
 
         <NuxtLink
+          v-if="showGuideAction"
           :to="guideTo"
           class="inline-flex h-11 items-center gap-2 rounded-xl bg-primary-50 px-5 text-[14px] font-medium text-primary-500 transition-colors hover:bg-primary-100 hover:text-primary-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500"
         >

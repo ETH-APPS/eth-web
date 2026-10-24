@@ -65,7 +65,7 @@ const multinationalCountries = [
         </NuxtLink>
 
         <NuxtLink
-          to="/china-cargo#sea-freight"
+          to="/sea-freight"
           class="group/item flex items-center gap-4 rounded-lg focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary-500"
         >
           <span class="flex size-10 shrink-0 items-center justify-center rounded-full bg-primary-50 text-primary-500">
@@ -81,7 +81,7 @@ const multinationalCountries = [
         </NuxtLink>
 
         <NuxtLink
-          to="/china-cargo#air-freight"
+          to="/air-freight"
           class="group/item flex items-center gap-4 rounded-lg focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary-500"
         >
           <span class="flex size-10 shrink-0 items-center justify-center rounded-full bg-primary-50 text-primary-500">

@@ -1,0 +1,74 @@
+[
+  {
+    "title": "Elektronik",
+    "icon": "electronics",
+    "items": ["Smartphone", "Laptop & tablet", "Kamera", "Perangkat audio", "Aksesori elektronik", "Perangkat jaringan"],
+    "note": "Baterai dan perangkat tertentu memerlukan pemeriksaan khusus sebelum dikirim."
+  },
+  {
+    "title": "Fashion & Tekstil",
+    "icon": "fashion",
+    "items": ["Pakaian", "Sepatu", "Tas", "Kain"],
+    "note": "Sertakan jenis bahan dan jumlah produk untuk membantu proses kategorisasi."
+  },
+  {
+    "title": "Mesin & Industri",
+    "icon": "industrial",
+    "items": ["Mesin produksi", "Spare part", "Peralatan bengkel", "Pompa & kompresor", "Komponen mekanik"],
+    "note": "Informasikan ukuran, berat, dan fungsi mesin secara lengkap."
+  },
+  {
+    "title": "Otomotif & Aksesori",
+    "icon": "automotive",
+    "items": ["Aksesori mobil", "Aksesori motor", "Lampu kendaraan", "Komponen interior"],
+    "note": "Komponen bermesin atau mengandung cairan perlu dikonsultasikan terlebih dahulu."
+  },
+  {
+    "title": "Furniture",
+    "icon": "furniture",
+    "items": ["Meja & kursi", "Lemari", "Rak penyimpanan", "Dekorasi interior", "Perabot kantor", "Furnitur bongkar-pasang"],
+    "note": "Gunakan ukuran kemasan setelah packing untuk perhitungan volume."
+  },
+  {
+    "title": "Kosmetik & Perawatan",
+    "icon": "beauty",
+    "items": ["Alat kecantikan", "Kemasan kosmetik", "Aksesori salon", "Produk perawatan noncair"],
+    "note": "Produk cair, bubuk, atau berbahan aktif memerlukan konfirmasi tim kami."
+  },
+  {
+    "title": "Mainan & Hobi",
+    "icon": "toys",
+    "items": ["Mainan anak", "Action figure", "Board game", "Perlengkapan koleksi", "Model kit"],
+    "note": "Mainan dengan baterai atau magnet perlu diinformasikan saat konsultasi."
+  },
+  {
+    "title": "Peralatan Rumah",
+    "icon": "household",
+    "items": ["Peralatan dapur", "Perlengkapan kamar", "Alat kebersihan", "Wadah penyimpanan", "Peralatan makan", "Aksesori rumah"],
+    "note": "Pastikan barang mudah pecah menggunakan perlindungan packing yang sesuai."
+  },
+  {
+    "title": "Olahraga & Outdoor",
+    "icon": "sports",
+    "items": ["Alat kebugaran", "Perlengkapan camping", "Aksesori sepeda", "Pakaian olahraga"],
+    "note": "Barang panjang atau berukuran besar akan dihitung berdasarkan volume."
+  },
+  {
+    "title": "Kerajinan & Dekorasi",
+    "icon": "craft",
+    "items": ["Kerajinan tangan", "Dekorasi acara", "Bingkai", "Ornamen", "Perlengkapan DIY"],
+    "note": "Berikan detail bahan barang untuk memastikan jalur pengiriman yang sesuai."
+  },
+  {
+    "title": "Alat Tulis & Kantor",
+    "icon": "stationery",
+    "items": ["Buku & notebook", "Alat tulis", "Perlengkapan meja", "Map & organizer", "Peralatan presentasi", "Aksesori kantor"],
+    "note": "Cantumkan bahan dan jumlah kemasan untuk perhitungan yang lebih tepat."
+  },
+  {
+    "title": "Bayi & Anak",
+    "icon": "baby",
+    "items": ["Pakaian bayi", "Peralatan makan", "Aksesori stroller", "Perlengkapan kamar"],
+    "note": "Produk konsumsi dan cairan perlu dikonsultasikan sebelum pengiriman."
+  }
+]

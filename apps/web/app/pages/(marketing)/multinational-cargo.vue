@@ -65,5 +65,8 @@ const shippingWorkflowSteps = Array.from({ length: 5 }, () => ({
     cta-label="Get a Quote"
     cta-to="#quote"
   />
-  <MarketingSectionsRateEstimator />
+  <MarketingSectionsRateEstimator
+    title="Hitung Estimasi Tarif Multinasional"
+    description="Dapatkan kalkulasi perkiraan biaya pengiriman internasional secara instan untuk membantu perencanaan logistik dan anggaran bisnis Anda."
+  />
 </template>

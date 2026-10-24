@@ -1,6 +1,9 @@
 <script setup lang="ts">
 import type { Component } from 'vue'
 import { ArrowUpRight } from 'lucide-vue-next'
+import FeaturesMenu from './header-menus/FeaturesMenu.vue'
+import InformationMenu from './header-menus/InformationMenu.vue'
+import InsightsMenu from './header-menus/InsightsMenu.vue'
 import ServicesMenu from './header-menus/ServicesMenu.vue'
 import logoUrl from '~/assets/images/brand/logo.png'
 import logoWhiteUrl from '~/assets/images/brand/logo-white.png'
@@ -16,6 +19,9 @@ type NavigationLabel = typeof marketingNavigation[number]['label']
 
 const menuComponents: Partial<Record<NavigationLabel, Component>> = {
   Layanan: ServicesMenu,
+  Fitur: FeaturesMenu,
+  Informasi: InformationMenu,
+  Insights: InsightsMenu,
 }
 
 const route = useRoute()
@@ -158,9 +164,11 @@ onBeforeUnmount(() => {
             <NuxtLink
               :to="item.to"
               class="group flex items-center gap-2 rounded-md px-2 py-2 text-sm font-regular transition-colors focus-visible:outline-2 focus-visible:outline-offset-2"
-              :class="useLightStyle
-                ? 'text-slate-700 hover:text-primary-500 focus-visible:outline-primary-500'
-                : 'text-white hover:text-primary-200 focus-visible:outline-white'"
+              :class="activeMenu === item.label
+                ? 'text-primary-500 focus-visible:outline-primary-500'
+                : useLightStyle
+                  ? 'text-slate-700 hover:text-primary-500 focus-visible:outline-primary-500'
+                  : 'text-white hover:text-primary-200 focus-visible:outline-white'"
               :aria-haspopup="getMenuComponent(item.label) ? 'true' : undefined"
               :aria-expanded="getMenuComponent(item.label) ? activeMenu === item.label : undefined"
               @mouseenter="openMenu(item.label)"

@@ -71,5 +71,8 @@ const serviceStats = [
     :services="airFreightServices"
   />
   <MarketingChinaCargoShippingWorkflow />
-  <MarketingSectionsRateEstimator />
+  <MarketingSectionsRateEstimator
+    title="Hitung Estimasi Tarif"
+    description="Dapatkan kalkulasi perkiraan biaya pengiriman All-In dari China ke Indonesia secara instan untuk perencanaan modal bisnis Anda."
+  />
 </template>
