@@ -67,7 +67,7 @@ function serviceIcon(mode: CargoShippingType['mode']) {
         <article
           v-for="service in services"
           :key="service.mode"
-          class="border border-border-200 bg-bg-0"
+          class="flex h-full flex-col border border-border-200 bg-bg-0"
           :class="variant === 'compact' ? 'overflow-hidden rounded-[16px]' : 'rounded-[18px] p-5'"
         >
           <div
@@ -97,7 +97,10 @@ function serviceIcon(mode: CargoShippingType['mode']) {
             </h3>
           </div>
 
-          <div :class="variant === 'compact' ? 'p-4' : ''">
+          <div
+            class="flex flex-1 flex-col"
+            :class="variant === 'compact' ? 'p-4' : ''"
+          >
             <p
               class="text-[12px] font-normal leading-[1.55] text-text-secondary"
               :class="variant === 'compact' ? '' : 'mt-4'"
@@ -105,7 +108,7 @@ function serviceIcon(mode: CargoShippingType['mode']) {
               {{ service.description }}
             </p>
 
-            <div class="mt-5 flex min-h-10 items-center justify-between gap-4">
+            <div class="mt-auto flex min-h-10 items-center justify-between gap-4 pt-5">
               <p
                 v-if="service.eta"
                 class="flex items-center gap-2 text-[12px] font-normal text-text-disable"

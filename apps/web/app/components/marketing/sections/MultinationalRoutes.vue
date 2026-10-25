@@ -8,6 +8,12 @@ import koreaFlagUrl from '~/assets/images/flag/korea.png'
 import usaFlagUrl from '~/assets/images/flag/USA.png'
 import australiaFlagUrl from '~/assets/images/flag/australia.png'
 
+withDefaults(defineProps<{
+  showTopBorder?: boolean
+}>(), {
+  showTopBorder: true,
+})
+
 const countries = [
   { name: 'China', label: 'CHINA', flag: chinaFlagUrl },
   { name: 'Taiwan', label: 'TAIWAN', flag: taiwanFlagUrl },
@@ -23,7 +29,8 @@ const countries = [
   <section
     id="multinational-routes"
     aria-labelledby="multinational-routes-title"
-    class="border-t-4 border-primary-700 bg-bg-0 py-14"
+    class="bg-bg-0 py-14"
+    :class="showTopBorder ? 'border-t-4 border-primary-700' : ''"
   >
     <UiContainer>
       <div class="text-center">

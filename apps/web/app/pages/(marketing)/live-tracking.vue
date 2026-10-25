@@ -27,11 +27,11 @@ const initialPin = queryValue(route.query.pin)
 const trackingResult = {
   caseNumber: initialPin || '2413-OVCA',
   cargoType: 'FCL Cargo',
-  currentStatus: 'Your Home',
+  currentStatus: 'Dalam Pengiriman ke Lokasi Tujuan',
   checkpoints: [
     {
       location: 'Guangzhou',
-      label: 'Seller',
+      label: 'Pabrik / Penjual',
       kind: 'seller',
       events: [
         { label: 'Packed', value: '04/04/26', status: 'complete' },
@@ -40,7 +40,7 @@ const trackingResult = {
     },
     {
       location: 'Foshan',
-      label: 'Warehouse',
+      label: 'Gudang Transit',
       kind: 'warehouse',
       events: [
         { label: 'Packed', value: '04/04/26', status: 'complete' },
@@ -49,7 +49,7 @@ const trackingResult = {
     },
     {
       location: 'Jakarta',
-      label: 'Warehouse',
+      label: 'Gudang Jakarta',
       kind: 'warehouse',
       events: [
         { label: 'Packed', value: '04/04/26', status: 'complete' },
@@ -60,11 +60,11 @@ const trackingResult = {
     },
     {
       location: 'Your Home',
-      label: 'Address',
+      label: 'Alamat Tujuan',
       kind: 'destination',
       active: true,
       events: [
-        { label: 'ETA', value: '26 Sep 2026', status: 'current' },
+        { label: 'ETA', value: '26, SEP 2026', status: 'current' },
         { label: 'Duration', value: '4 Weeks', status: 'pending' },
       ],
     },
@@ -98,13 +98,14 @@ const shippingTypes = [
 
 <template>
   <MarketingSectionsLiveTracking
-    description="Pantau posisi dan status pengiriman kargo Anda secara real-time menggunakan Marking ID dan PIN yang telah diberikan."
+    title="Lacak Pengiriman Kargo Real-Time"
+    description="Pantau status dan posisi pengiriman kargo Anda secara transparan 24/7. Masukkan kode marking atau nomor resi pengiriman Anda untuk melihat detail perjalanan pengiriman dari China ke Indonesia."
     :result="trackingResult"
     :initial-marking-id="initialMarkingId"
     :initial-pin="initialPin"
     :initial-show-result="Boolean(initialMarkingId && initialPin)"
-    cta-prompt="Perlu bantuan memahami status perjalanan kargo Anda?"
-    cta-label="Get a Quote"
+    cta-prompt="Butuh bantuan mengenai status kendala pengiriman kargo Anda?"
+    cta-label="Hubungi Customer Service"
     cta-to="#quote"
   />
 

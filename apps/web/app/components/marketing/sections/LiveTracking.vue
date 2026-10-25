@@ -90,20 +90,20 @@ function submitSearch() {
       <div class="text-center">
         <h1
           :id="titleId"
-          class="text-[32px] font-bold uppercase leading-tight text-primary-500"
+          class="text-[32px] font-semibold leading-tight text-primary-500"
         >
           {{ title }}
         </h1>
-        <p class="mx-auto mt-6 max-w-[820px] text-[20px] leading-[1.5] text-text-tertiary">
+        <p class="mx-auto mt-8 max-w-[900px] text-[22px] leading-[1.45] text-text-secondary">
           {{ description }}
         </p>
       </div>
 
       <form
-        class="mx-auto mt-8 max-w-[760px] rounded-[28px] border border-border-200 bg-bg-0 p-5 shadow-[0_10px_20px_rgba(15,23,42,0.12)]"
+        class="mx-auto mt-10 max-w-[920px] rounded-[36px] border border-border-200 bg-bg-0 p-5 shadow-[0_10px_20px_rgba(15,23,42,0.12)] sm:p-7"
         @submit.prevent="submitSearch"
       >
-        <div class="grid gap-3 sm:grid-cols-[1fr_1fr_48px]">
+        <div class="mx-auto grid max-w-[760px] gap-3 sm:grid-cols-[1fr_1fr_60px]">
           <label class="relative block">
             <span class="sr-only">Marking ID</span>
             <Bookmark
@@ -119,7 +119,7 @@ function submitSearch() {
               required
               autocomplete="off"
               placeholder="Marking ID"
-              class="h-12 w-full rounded-full border border-border-200 bg-bg-0 pl-11 pr-4 text-[15px] text-text-secondary outline-none transition-[border-color,box-shadow] placeholder:text-text-disable focus:border-primary-500 focus:ring-2 focus:ring-primary-100"
+              class="h-[60px] w-full rounded-full border border-border-200 bg-bg-0 pl-12 pr-4 text-[16px] text-text-secondary outline-none transition-colors placeholder:text-text-disable focus:border-primary-500"
             >
           </label>
 
@@ -138,36 +138,38 @@ function submitSearch() {
               required
               autocomplete="off"
               placeholder="PIN"
-              class="h-12 w-full rounded-full border border-border-200 bg-bg-0 pl-11 pr-4 text-[15px] text-text-secondary outline-none transition-[border-color,box-shadow] placeholder:text-text-disable focus:border-primary-500 focus:ring-2 focus:ring-primary-100"
+              class="h-[60px] w-full rounded-full border border-border-200 bg-bg-0 pl-12 pr-4 text-[16px] text-text-secondary outline-none transition-colors placeholder:text-text-disable focus:border-primary-500"
             >
           </label>
 
           <button
             type="submit"
             aria-label="Cari status pengiriman"
-            class="flex size-12 items-center justify-center justify-self-center rounded-full bg-primary-500 text-bg-0 transition-[background-color,transform] duration-200 hover:scale-105 hover:bg-primary-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500"
+            class="flex size-[60px] items-center justify-center justify-self-center rounded-full bg-primary-500 text-bg-0 transition-[background-color,transform] duration-200 hover:scale-105 hover:bg-primary-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500"
           >
-            <Search :size="22" aria-hidden="true" />
+            <Search :size="27" aria-hidden="true" />
           </button>
         </div>
 
-        <div class="mt-5 flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-[14px] text-text-secondary">
+        <div class="mt-8 flex flex-wrap items-center justify-center gap-x-4 gap-y-3 text-[20px] font-medium text-text-secondary sm:justify-between">
           <span class="flex items-center gap-2">
-            <CalendarClock :size="19" class="text-primary-500" aria-hidden="true" />
+            <CalendarClock :size="26" class="text-primary-500" aria-hidden="true" />
             Update 24/7
           </span>
-          <span aria-hidden="true" class="hidden h-5 w-px bg-border-200 sm:block" />
+          <span aria-hidden="true" class="hidden h-6 w-px bg-border-200 sm:block" />
           <span class="flex items-center gap-2">
-            <Crosshair :size="19" class="text-primary-500" aria-hidden="true" />
-            Hasil Akurat
+            <Crosshair :size="26" class="text-primary-500" aria-hidden="true" />
+            Akurat &amp; Real-Time
           </span>
-          <span aria-hidden="true" class="hidden h-5 w-px bg-border-200 sm:block" />
+          <span aria-hidden="true" class="hidden h-6 w-px bg-border-200 sm:block" />
           <span class="flex items-center gap-2">
-            <ShieldCheck :size="19" class="text-primary-500" aria-hidden="true" />
-            Koneksi Terjamin
+            <ShieldCheck :size="26" class="text-primary-500" aria-hidden="true" />
+            Koneksi Terjamin &amp; Aman
           </span>
         </div>
       </form>
+
+      <div aria-hidden="true" class="mt-12 h-px bg-border-200" />
 
       <Transition
         enter-active-class="transition duration-300 ease-out"
@@ -176,97 +178,134 @@ function submitSearch() {
       >
         <div
           v-if="hasSearched"
-          class="mt-10 border-t border-border-200 pt-8"
+          class="mt-8"
         >
-          <article class="rounded-[18px] border border-border-200 bg-bg-0 p-6">
-            <p class="text-[13px] text-text-tertiary">
+          <article class="rounded-[18px] border border-border-200 bg-bg-0 p-7">
+            <p class="text-[16px] text-text-tertiary">
               Case
             </p>
-            <p class="mt-1 text-[24px] font-semibold text-primary-500">
+            <p class="mt-1 text-[28px] font-semibold text-primary-500">
               {{ searchedCaseNumber }}
             </p>
 
-            <dl class="mt-6 grid gap-2 text-[13px] sm:grid-cols-[110px_1fr]">
-              <dt class="text-text-tertiary">Cargo Type</dt>
-              <dd class="font-medium text-primary-500">{{ result.cargoType }}</dd>
-              <dt class="text-text-tertiary">Current Status</dt>
+            <dl class="mt-8 grid gap-3 text-[16px] sm:grid-cols-[150px_1fr]">
+              <dt class="text-text-tertiary">Jenis Layanan:</dt>
+              <dd class="font-semibold text-primary-500">{{ result.cargoType }}</dd>
+              <dt class="text-text-tertiary">Status Terakhir:</dt>
               <dd class="text-text-secondary">
-                To&nbsp;&nbsp; <span class="font-medium text-primary-500">{{ result.currentStatus }}</span>
+                <span class="font-semibold text-primary-500">{{ result.currentStatus }}</span>
               </dd>
             </dl>
 
-            <div class="mt-6 grid gap-8 border-t border-border-200 pt-6 md:grid-cols-4 md:gap-5">
-              <div
-                v-for="(checkpoint, index) in result.checkpoints"
-                :key="`${checkpoint.location}-${checkpoint.label}`"
-                class="relative"
-              >
-                <div class="flex items-center gap-2">
-                  <span
-                    class="flex size-7 shrink-0 items-center justify-center rounded-full"
-                    :class="checkpoint.active ? 'bg-primary-500 text-bg-0' : 'bg-primary-50 text-primary-500'"
-                  >
-                    <component
-                      :is="checkpointIcon(checkpoint.kind)"
-                      :size="15"
-                      :stroke-width="1.8"
-                      aria-hidden="true"
-                    />
-                  </span>
-                  <h2
-                    class="text-[18px] font-medium"
-                    :class="checkpoint.active ? 'text-primary-500' : 'text-text-secondary'"
-                  >
-                    {{ checkpoint.location }}
-                  </h2>
-                </div>
-                <p class="ml-9 mt-1 text-[11px] text-primary-500">
-                  {{ checkpoint.label }}
-                </p>
+            <div class="mt-6 border-t border-border-200 pt-6">
+              <div class="grid gap-8 md:grid-cols-[minmax(0,1fr)_76px_minmax(0,1fr)_76px_minmax(0,1fr)_76px_minmax(0,1fr)] md:gap-2">
+                <template
+                  v-for="(checkpoint, index) in result.checkpoints"
+                  :key="`${checkpoint.location}-${checkpoint.label}`"
+                >
+                  <div class="min-w-0">
+                    <div class="flex items-center gap-2">
+                      <span
+                        class="flex size-7 shrink-0 items-center justify-center rounded-full"
+                        :class="checkpoint.active ? 'bg-primary-500 text-bg-0' : 'bg-primary-50 text-primary-500'"
+                      >
+                        <component
+                          :is="checkpointIcon(checkpoint.kind)"
+                          :size="15"
+                          :stroke-width="1.8"
+                          aria-hidden="true"
+                        />
+                      </span>
+                      <h2
+                        class="whitespace-nowrap text-[24px] font-medium"
+                        :class="checkpoint.active ? 'text-primary-500' : 'text-text-secondary'"
+                      >
+                        {{ checkpoint.location }}
+                      </h2>
+                    </div>
+                    <p class="ml-9 mt-1 text-[12px] text-primary-500">
+                      {{ checkpoint.label }}
+                    </p>
 
-                <ArrowRight
-                  v-if="index < result.checkpoints.length - 1"
-                  :size="22"
-                  aria-hidden="true"
-                  class="absolute -right-4 top-1 hidden text-primary-500 md:block"
-                />
+                    <ul
+                      v-if="checkpoint.kind === 'destination'"
+                      class="ml-9 mt-3 space-y-2 border-t border-border-200 pt-3"
+                    >
+                      <li
+                        v-for="event in checkpoint.events"
+                        :key="`${event.label}-${event.value}`"
+                        class="grid grid-cols-[14px_12px_1fr] items-center gap-2 text-[12px]"
+                      >
+                        <Clock3
+                          v-if="event.status === 'current'"
+                          :size="14"
+                          aria-hidden="true"
+                          class="text-primary-500"
+                        />
+                        <span v-else aria-hidden="true" />
+                        <span aria-hidden="true" class="h-px w-3 bg-border-200" />
+                        <span :class="event.status === 'current' ? 'font-medium text-primary-500' : 'text-text-tertiary'">
+                          {{ event.value }}
+                        </span>
+                      </li>
+                    </ul>
 
-                <ul class="ml-9 mt-3 space-y-2 border-t border-border-200 pt-2">
-                  <li
-                    v-for="event in checkpoint.events"
-                    :key="`${event.label}-${event.value}`"
-                    class="grid grid-cols-[14px_1fr_auto] items-center gap-1 text-[10px]"
-                  >
-                    <Check
-                      v-if="event.status === 'complete'"
-                      :size="13"
-                      aria-hidden="true"
-                      class="text-green-500"
-                    />
-                    <Clock3
-                      v-else-if="event.status === 'current'"
-                      :size="13"
-                      aria-hidden="true"
-                      class="text-primary-500"
-                    />
-                    <CircleDot
+                    <ul
                       v-else
-                      :size="12"
-                      aria-hidden="true"
-                      class="text-text-disable"
-                    />
-                    <span class="text-text-tertiary">{{ event.label }}</span>
-                    <span :class="event.status === 'current' ? 'text-primary-500' : 'text-text-tertiary'">
-                      {{ event.value }}
-                    </span>
-                  </li>
-                </ul>
+                      class="ml-9 mt-3 space-y-2 border-t border-border-200 pt-2"
+                    >
+                      <li
+                        v-for="event in checkpoint.events"
+                        :key="`${event.label}-${event.value}`"
+                        class="grid grid-cols-[18px_1fr_auto] items-center gap-1 text-[12px]"
+                        :class="event.label === 'Depart' ? 'mt-3 border-t border-border-200 pt-3' : ''"
+                      >
+                        <Check
+                          v-if="event.status === 'complete'"
+                          :size="17"
+                          :stroke-width="2.2"
+                          aria-hidden="true"
+                          class="text-green-500"
+                        />
+                        <Clock3
+                          v-else-if="event.status === 'current'"
+                          :size="13"
+                          aria-hidden="true"
+                          class="text-primary-500"
+                        />
+                        <CircleDot
+                          v-else
+                          :size="12"
+                          aria-hidden="true"
+                          class="text-text-disable"
+                        />
+                        <span :class="event.label === 'Depart' ? 'text-green-500' : 'text-text-tertiary'">
+                          {{ event.label }}
+                        </span>
+                        <span :class="event.status === 'current' || event.label === 'Depart' ? 'text-primary-500' : 'text-text-tertiary'">
+                          {{ event.value }}
+                        </span>
+                      </li>
+                    </ul>
+                  </div>
+
+                  <div
+                    v-if="index < result.checkpoints.length - 1"
+                    aria-hidden="true"
+                    class="hidden items-center justify-center self-start pt-2 md:flex"
+                    :class="index === result.checkpoints.length - 2 ? 'text-border-200' : 'text-primary-500'"
+                  >
+                    <span class="mr-0.5 h-0.5 w-0.5 rounded-full bg-current" />
+                    <span class="mr-0.5 h-0.5 w-0.5 rounded-full bg-current" />
+                    <ArrowRight :size="22" :stroke-width="1.8" />
+                  </div>
+                </template>
               </div>
             </div>
           </article>
 
           <div class="mt-12 text-center">
-            <p class="text-[14px] text-text-tertiary">
+            <p class="text-[16px] font-normal text-text-tertiary">
               {{ ctaPrompt }}
             </p>
             <NuxtLink

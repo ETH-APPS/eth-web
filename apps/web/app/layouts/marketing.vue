@@ -21,7 +21,10 @@ const showMultinationalRoutes = computed(() => (
       <slot />
     </main>
 
-    <MarketingSectionsMultinationalRoutes v-if="showMultinationalRoutes" />
+    <MarketingSectionsMultinationalRoutes
+      v-if="showMultinationalRoutes"
+      :show-top-border="route.path !== '/about-us'"
+    />
     <MarketingFooter />
   </div>
 </template>

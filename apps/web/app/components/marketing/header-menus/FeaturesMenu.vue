@@ -10,12 +10,14 @@ const trackingCode = ref('')
 const trackingPin = ref('')
 
 async function submitTracking() {
+  const query = {
+    ...(trackingCode.value ? { markingId: trackingCode.value } : {}),
+    ...(trackingPin.value ? { pin: trackingPin.value } : {}),
+  }
+
   await navigateTo({
     path: '/live-tracking',
-    query: {
-      markingId: trackingCode.value,
-      pin: trackingPin.value,
-    },
+    query,
   })
 }
 </script>
@@ -95,7 +97,6 @@ async function submitTracking() {
               v-model="trackingCode"
               name="tracking-code"
               type="text"
-              required
               autocomplete="off"
               placeholder="Marking ID"
               class="h-10 min-w-0 rounded-xl border border-border-200 bg-bg-0 px-3 text-sm text-text-secondary outline-none transition-[border-color,box-shadow] placeholder:italic placeholder:text-text-tertiary focus:border-primary-500 focus:ring-2 focus:ring-primary-100"
@@ -109,7 +110,6 @@ async function submitTracking() {
               v-model="trackingPin"
               name="tracking-pin"
               type="text"
-              required
               autocomplete="off"
               placeholder="PIN"
               class="h-10 min-w-0 rounded-xl border border-border-200 bg-bg-0 px-3 text-sm text-text-secondary outline-none transition-[border-color,box-shadow] placeholder:italic placeholder:text-text-tertiary focus:border-primary-500 focus:ring-2 focus:ring-primary-100"
