@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import cargoAirUrl from '~/assets/images/marketing/cargo-air-landscape.png'
 import cargoSeaUrl from '~/assets/images/marketing/cargo-sea-landscape.png'
+import { faqContentByPath, homeFaqContent } from '~/constants/faq'
 
 definePageMeta({
   layout: 'marketing',
@@ -28,6 +29,8 @@ const shippingWorkflowSteps = Array.from({ length: 5 }, () => ({
   description:
     'Lorem ipsum dolor sit amet consectetur adipiscing elit. Quisque faucibus ex sapien vitae pellentesque sem placerat.',
 }))
+
+const faqContent = faqContentByPath['/multinational-cargo'] ?? homeFaqContent
 </script>
 
 <template>
@@ -69,4 +72,5 @@ const shippingWorkflowSteps = Array.from({ length: 5 }, () => ({
     title="Hitung Estimasi Tarif Multinasional"
     description="Dapatkan kalkulasi perkiraan biaya pengiriman internasional secara instan untuk membantu perencanaan logistik dan anggaran bisnis Anda."
   />
+  <MarketingSectionsFaq v-bind="faqContent" />
 </template>

@@ -57,29 +57,29 @@ export const faqContentByPath: Record<string, MarketingFaqContent> = {
       'Temukan jawaban mengenai layanan impor China–Indonesia, pilihan jalur pengiriman, estimasi waktu, serta proses pengurusan kargo bersama ETH Cargo.',
     items: [
       {
-        question: 'Layanan apa saja yang tersedia untuk pengiriman dari China?',
+        question: 'Apa saja yang sudah termasuk dalam tarif pengiriman All-In ETH Cargo?',
         answer:
-          'ETH Cargo menyediakan pengiriman laut melalui FCL dan LCL, pengiriman udara untuk kebutuhan prioritas, serta layanan All-In Door-to-Door hingga alamat tujuan Anda.',
+          'Tarif All-In kami sudah mencakup ongkos kirim internasional (laut/udara), biaya bongkar muat di gudang China & Indonesia, bea masuk clearance, pajak impor (PPN & PPh), serta pengantaran Door-to-Door langsung ke alamat gudang Anda tanpa ada biaya tersembunyi.',
       },
       {
-        question: 'Apa perbedaan pengiriman FCL, LCL, dan Air Cargo?',
+        question: 'Bagaimana cara perhitungan biaya untuk pengiriman kargo laut (LCL & FCL)?',
         answer:
-          'FCL menggunakan satu kontainer penuh untuk satu pengirim, LCL berbagi ruang kontainer sesuai volume barang, sedangkan Air Cargo menggunakan jalur udara untuk waktu transit yang lebih singkat.',
+          'Untuk LCL (Less Container Load), biaya dihitung berdasarkan volume barang dalam kubikasi (CBM). Sedangkan untuk FCL (Full Container Load), biaya dihitung flat per unit kontainer (ukuran 20ft atau 40ft) tanpa mempedulikan berat kargo.',
       },
       {
-        question: 'Berapa lama estimasi pengiriman dari China ke Indonesia?',
+        question: 'Berapa batas minimum pengiriman (MOQ) untuk kargo laut dan udara?',
         answer:
-          'Estimasi Air Cargo berkisar 3–7 hari, sementara jalur laut FCL atau LCL berkisar 3–4 minggu. Durasi dapat menyesuaikan jadwal keberangkatan dan proses clearance.',
+          'Minimum pengiriman Kargo Laut (LCL) adalah 0.1 CBM, sementara Kargo Udara (Air Freight) mulai dari 1 kg. Untuk skema FCL, minimum pengiriman adalah 1 kontainer utuh.',
       },
       {
-        question: 'Apakah biaya pengiriman sudah termasuk pajak dan clearance?',
+        question: 'Berapa lama estimasi waktu pengiriman dari China ke Indonesia?',
         answer:
-          'Ya. Penawaran All-In dari ETH Cargo mencakup komponen biaya yang telah disepakati, termasuk pengurusan customs clearance sesuai kategori barang dan ketentuan yang berlaku.',
+          'Estimasi pengiriman Kargo Laut (FCL/LCL) membutuhkan waktu sekitar 3 hingga 4 minggu sejak kapal berlayar. Untuk Kargo Udara Express, estimasi ketibaan adalah 3 hingga 7 hari kerja sejak kargo diberangkatkan.',
       },
       {
-        question: 'Bagaimana cara memantau posisi barang?',
+        question: 'Bagaimana prosedur penerimaan barang di gudang Guangzhou & Yiwu?',
         answer:
-          'Setiap pengiriman dapat dipantau menggunakan Marking ID dan PIN melalui layanan tracking ETH Cargo, dengan dukungan tim customer service apabila Anda membutuhkan bantuan.',
+          'Setelah mendapatkan Kode Marking dari tim kami, instruksikan supplier untuk mengirim kargo ke alamat gudang kami di Guangzhou atau Yiwu dengan mencantumkan Kode Marking tersebut pada kemasan/koli. Tim kami di China akan melakukan verifikasi & penimbangan saat kargo tiba.',
       },
     ],
     quoteTitle: 'Siap Kirim Barang dari China?',
@@ -93,29 +93,29 @@ export const faqContentByPath: Record<string, MarketingFaqContent> = {
       'Pelajari pilihan FCL dan LCL, perhitungan volume, estimasi waktu, serta proses pengiriman kargo laut dari China ke Indonesia.',
     items: [
       {
-        question: 'Apa perbedaan FCL dan LCL Cargo?',
+        question: 'Apa perbedaan utama antara pengiriman FCL dan LCL?',
         answer:
-          'FCL menyewa satu kontainer utuh untuk kargo Anda, sedangkan LCL menggabungkan barang beberapa pengirim dalam satu kontainer dan biayanya dihitung berdasarkan volume yang digunakan.',
+          'FCL (Full Container Load) adalah sewa kontainer utuh khusus kargo Anda tanpa bercampur barang lain, sangat ideal untuk volume besar. Sedangkan LCL (Less Container Load) adalah pengiriman eceran di mana barang Anda berbagi ruang kontainer dengan pengirim lain dan biayanya dihitung berdasarkan kubikasi (CBM).',
       },
       {
-        question: 'Kapan sebaiknya memilih FCL?',
+        question: 'Bagaimana cara menghitung kubikasi (CBM) untuk pengiriman LCL?',
         answer:
-          'FCL ideal untuk volume pengiriman besar, kebutuhan ruang khusus, atau kargo yang membutuhkan kontrol dan keamanan lebih tinggi tanpa bercampur dengan barang pengirim lain.',
+          'CBM dihitung dengan rumus: Panjang (m) × Lebar (m) × Tinggi (m) × Jumlah Koli. Minimum pengiriman LCL di ETH Cargo adalah 0.1 CBM, sehingga sangat fleksibel untuk pengiriman skala kecil hingga menengah.',
       },
       {
-        question: 'Berapa lama estimasi pengiriman kargo laut?',
+        question: 'Berapa lama estimasi waktu pengiriman jalur laut dari China ke Indonesia?',
         answer:
-          'Estimasi pengiriman FCL maupun LCL umumnya sekitar 3–4 minggu, menyesuaikan jadwal kapal, proses konsolidasi, kondisi pelabuhan, dan customs clearance.',
+          'Estimasi ketibaan kargo laut (FCL & LCL) dari China ke Indonesia adalah sekitar 3 hingga 4 minggu terhitung sejak kapal berlayar dari pelabuhan di China (Guangzhou/Yiwu) hingga tiba di gudang Jakarta.',
       },
       {
-        question: 'Bagaimana biaya LCL dihitung?',
+        question: 'Apakah harga kargo laut All-In sudah termasuk dokumen ekspor dan bea cukai?',
         answer:
-          'Biaya LCL terutama dihitung berdasarkan kubikasi atau CBM, jenis barang, rute pengiriman, serta kebutuhan penanganan dan dokumen khusus jika ada.',
+          'Ya, tarif All-In kargo laut kami sudah mencakup ongkos pelayaran, pajak impor (PPN/PPh), biaya clearance bea cukai resmi, serta pengantaran akhir (Door-to-Door) sampai ke gudang Anda tanpa biaya tersembunyi.',
       },
       {
-        question: 'Apakah pengiriman laut sudah termasuk layanan door-to-door?',
+        question: 'Barang apa saja yang dilarang dikirim melalui kargo laut?',
         answer:
-          'Ya. ETH Cargo dapat menangani proses dari gudang China, keberangkatan laut, customs clearance, hingga pengantaran akhir ke alamat tujuan Anda.',
+          'Kami tidak melayani pengiriman barang ilegal, bahan kimia berbahaya (HAZMAT) tanpa dokumen MSDS, senjata, narkotika, serta barang imitasi/KW tanpa lisensi resmi. Untuk kepastian jenis barang Anda, silakan konsultasikan dengan tim kami.',
       },
     ],
     quoteTitle: 'Siap Mengirim Kargo Laut Anda?',
@@ -129,29 +129,29 @@ export const faqContentByPath: Record<string, MarketingFaqContent> = {
       'Temukan informasi penting tentang berat volume, jadwal penerbangan, estimasi transit, serta penanganan kargo udara prioritas.',
     items: [
       {
-        question: 'Bagaimana tarif Air Cargo dihitung?',
+        question: 'Berapa lama estimasi waktu pengiriman (ETA) untuk kargo udara?',
         answer:
-          'Tarif dihitung menggunakan nilai yang lebih besar antara berat aktual dan berat volume. Tim ETH Cargo akan membantu melakukan kalkulasi sesuai dimensi serta karakter barang Anda.',
+          'Estimasi pengiriman Kargo Udara dari China ke Indonesia adalah 3 hingga 7 hari kerja terhitung sejak penerbangan kargo diberangkatkan dari bandara China (Guangzhou/Shenzhen) hingga kargo selesai diurus bea cukainya dan siap dikirim ke gudang Anda.',
       },
       {
-        question: 'Berapa lama estimasi pengiriman kargo udara?',
+        question: 'Bagaimana cara perhitungan berat kargo udara (Berat Volumetrik vs Berat Aktual)?',
         answer:
-          'Estimasi pengiriman Air Cargo dari China ke Indonesia berkisar 3–7 hari, bergantung pada jadwal penerbangan, lokasi penerimaan, dan proses customs clearance.',
+          'Biaya dihitung berdasarkan nilai terbesar antara Berat Aktual (timbangan) dan Berat Volumetrik. Rumus berat volumetrik udara adalah: [Panjang (cm) × Lebar (cm) × Tinggi (cm)] ÷ 6.000. Nilai tertinggi dari keduanya akan menjadi dasar tagihan (chargeable weight).',
       },
       {
-        question: 'Barang apa yang cocok dikirim melalui jalur udara?',
+        question: 'Berapa batas minimum pengiriman (MOQ) untuk layanan Air Cargo?',
         answer:
-          'Jalur udara ideal untuk sampel produk, barang bernilai tinggi, produk fast-moving, stok mendesak, atau pengiriman lain yang sensitif terhadap waktu.',
+          'Batas minimum pengiriman kargo udara di ETH Cargo adalah 1 kg. Opsi ini sangat ideal bagi bisnis yang butuh mengirimkan sampel produk, kargo mendesak, atau komponen stok berukuran kecil.',
       },
       {
-        question: 'Apakah ETH Cargo menangani dokumen dan clearance?',
+        question: 'Apakah kargo udara melayani pengiriman barang sensitif seperti cairan, baterai, atau kosmetik?',
         answer:
-          'Ya. Tim kami menangani dokumen penerbangan, Air Waybill, proses customs clearance, serta pengantaran hingga alamat tujuan sesuai layanan yang dipilih.',
+          'Ya, kami menyediakan penanganan khusus untuk barang sensitif (DG / Dangerous Goods & Sensitive Cargo) seperti kosmetik, elektronik berdosis baterai, dan cairan berizin. Namun, diperlukan sertifikat SDS/MSDS resmi dari supplier untuk persetujuan maskapai penerbangan.',
       },
       {
-        question: 'Apakah status kargo udara dapat dilacak?',
+        question: 'Apakah tarif kargo udara All-In sudah termasuk pajak impor dan pengantaran ke alamat?',
         answer:
-          'Ya. Status pengiriman dapat dipantau menggunakan sistem tracking ETH Cargo dan didukung pembaruan dari tim operasional kami.',
+          'Ya, skema tarif All-In udara kami sudah mencakup freight cost, bea masuk, pajak impor (PPN/PPh), clearance resmi bandara, serta layanan Door-to-Door langsung ke alamat tujuan Anda.',
       },
     ],
     quoteTitle: 'Butuh Pengiriman Udara yang Lebih Cepat?',
@@ -195,5 +195,40 @@ export const faqContentByPath: Record<string, MarketingFaqContent> = {
       'Hitung estimasi biaya atau konsultasikan rute Sea Freight dan Air Freight yang tepat untuk kebutuhan logistik internasional Anda.',
     calculatorTo: '#rate-estimator',
   },
-  '/calculator': homeFaqContent,
+  '/calculator': {
+    subtitle: 'Seputar Kalkulator Impor',
+    description:
+      'Pelajari cara kerja kalkulator, dasar perhitungan berat, cakupan tarif All-In, minimum pengiriman, dan status hasil estimasi biaya.',
+    items: [
+      {
+        question: 'Bagaimana cara kerja kalkulator tarif impor ETH Cargo?',
+        answer:
+          'Kalkulator ini menghitung estimasi biaya awal berbasis ukuran dimensi (Panjang × Lebar × Tinggi) serta berat kotor (gross weight) paket Anda. Sistem akan otomatis membandingkan berat volume dan berat fisik untuk menentukan tarif pengiriman All-In Door-to-Door yang paling efisien.',
+      },
+      {
+        question: 'Apa perbedaannya perhitungan berat aktual (kg) dan berat volume (CBM)?',
+        answer:
+          'Untuk pengiriman Kargo Laut (Sea Freight), tarif dihitung berdasarkan kubikasi/volume (CBM). Sedangkan untuk Kargo Udara (Air Freight), tarif menggunakan perbandingan antara berat timbangan aktual (kg) dan berat volume (P x L x T / 6000). Tagihan akan mengacu pada nilai terbesar di antara keduanya.',
+      },
+      {
+        question: 'Apakah harga yang tertera di kalkulator ini sudah termasuk pajak & Bea Cukai (All-In)?',
+        answer:
+          'Ya, estimasi tarif layanan ETH Cargo sudah mencakup seluruh biaya pengiriman internasional, pengurusan customs clearance di pelabuhan/bandara, pajak impor, hingga pengantaran ke gudang/lokasi Anda di Indonesia (All-In Door-to-Door).',
+      },
+      {
+        question: 'Berapa minimum pengiriman (minimum order) untuk Kargo Laut dan Udara?',
+        answer:
+          'Untuk Kargo Laut LCL, minimum pengiriman umumnya adalah 0,1 CBM atau 1 koli/dus. Sedangkan untuk Kargo Udara Express, minimum pengiriman mulai dari 1 kg atau 5 kg tergantung pada kategori barang yang dikirim.',
+      },
+      {
+        question: 'Apakah hasil kalkulasi di web ini bersifat final?',
+        answer:
+          'Perhitungan ini bersifat estimasi transparan awal. Total biaya final yang presisi akan dikonfirmasi ulang oleh tim kami setelah barang ditimbang dan diukur secara akurat saat tiba di gudang transit China ETH Cargo.',
+      },
+    ],
+    quoteTitle: 'Siap Menghitung Tarif Impor Anda?',
+    quoteDescription:
+      'Masukkan detail barang pada kalkulator atau konsultasikan kebutuhan pengiriman Anda bersama tim ETH Cargo.',
+    calculatorTo: '#calculator-estimator',
+  },
 }

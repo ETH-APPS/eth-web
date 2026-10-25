@@ -1,74 +1,38 @@
 [
   {
-    "title": "Elektronik",
+    "title": "Elektronik & Gadget",
     "icon": "electronics",
-    "items": ["Smartphone", "Laptop & tablet", "Kamera", "Perangkat audio", "Aksesori elektronik", "Perangkat jaringan"],
-    "note": "Baterai dan perangkat tertentu memerlukan pemeriksaan khusus sebelum dikirim."
+    "items": ["Smartphone & Aksesori", "Laptop & Perangkat Komputer", "Kamera & Aksesori Fotografi", "Audio & Smart Home Devices"],
+    "note": "Membutuhkan penanganan proteksi ekstra standar ekspor."
   },
   {
-    "title": "Fashion & Tekstil",
-    "icon": "fashion",
-    "items": ["Pakaian", "Sepatu", "Tas", "Kain"],
-    "note": "Sertakan jenis bahan dan jumlah produk untuk membantu proses kategorisasi."
-  },
-  {
-    "title": "Mesin & Industri",
-    "icon": "industrial",
-    "items": ["Mesin produksi", "Spare part", "Peralatan bengkel", "Pompa & kompresor", "Komponen mekanik"],
-    "note": "Informasikan ukuran, berat, dan fungsi mesin secara lengkap."
-  },
-  {
-    "title": "Otomotif & Aksesori",
+    "title": "Aksesoris & Suku Cadang Otomotif",
     "icon": "automotive",
-    "items": ["Aksesori mobil", "Aksesori motor", "Lampu kendaraan", "Komponen interior"],
-    "note": "Komponen bermesin atau mengandung cairan perlu dikonsultasikan terlebih dahulu."
+    "items": ["Sparepart Mobil & Motor", "Aksesori Interior & Eksterior", "Ban & Velg", "Perlengkap Workshop / Bengkel"],
+    "note": "Tersedia layanan FCL/LCL untuk komoditas berat/besar."
   },
   {
-    "title": "Furniture",
+    "title": "Mesin & Peralatan Industri",
+    "icon": "industrial",
+    "items": ["Mesin Cetak & Kemasan", "Alat Berat & Komponen Pabrik", "Peralatan Listrik & Otomasi", "Hardware & Perkakas Pertukangan"],
+    "note": "Mendukung pengiriman FCL Container & clearance resmi."
+  },
+  {
+    "title": "Tekstil & Pakaian",
+    "icon": "fashion",
+    "items": ["Pakaian Pria & Wanita", "Kain, Bahan, & Benang", "Sepatu, Tas, & Aksesori Fashion", "Perlengkapan Jahit & Konveksi"],
+    "note": "Hitungan tarif hemat berbasis volume CBM via Kargo Laut."
+  },
+  {
+    "title": "Furniture & Perangkat Rumah",
     "icon": "furniture",
-    "items": ["Meja & kursi", "Lemari", "Rak penyimpanan", "Dekorasi interior", "Perabot kantor", "Furnitur bongkar-pasang"],
-    "note": "Gunakan ukuran kemasan setelah packing untuk perhitungan volume."
+    "items": ["Meja, Kursi, & Lemari", "Lampu & Pencahayaan", "Dekorasi Interior & Dapur", "Peralatan Rumah Tangga"],
+    "note": "Fasilitas repacking/wooden crate untuk keamanan transit."
   },
   {
-    "title": "Kosmetik & Perawatan",
+    "title": "Kosmetik & Personal Care",
     "icon": "beauty",
-    "items": ["Alat kecantikan", "Kemasan kosmetik", "Aksesori salon", "Produk perawatan noncair"],
-    "note": "Produk cair, bubuk, atau berbahan aktif memerlukan konfirmasi tim kami."
-  },
-  {
-    "title": "Mainan & Hobi",
-    "icon": "toys",
-    "items": ["Mainan anak", "Action figure", "Board game", "Perlengkapan koleksi", "Model kit"],
-    "note": "Mainan dengan baterai atau magnet perlu diinformasikan saat konsultasi."
-  },
-  {
-    "title": "Peralatan Rumah",
-    "icon": "household",
-    "items": ["Peralatan dapur", "Perlengkapan kamar", "Alat kebersihan", "Wadah penyimpanan", "Peralatan makan", "Aksesori rumah"],
-    "note": "Pastikan barang mudah pecah menggunakan perlindungan packing yang sesuai."
-  },
-  {
-    "title": "Olahraga & Outdoor",
-    "icon": "sports",
-    "items": ["Alat kebugaran", "Perlengkapan camping", "Aksesori sepeda", "Pakaian olahraga"],
-    "note": "Barang panjang atau berukuran besar akan dihitung berdasarkan volume."
-  },
-  {
-    "title": "Kerajinan & Dekorasi",
-    "icon": "craft",
-    "items": ["Kerajinan tangan", "Dekorasi acara", "Bingkai", "Ornamen", "Perlengkapan DIY"],
-    "note": "Berikan detail bahan barang untuk memastikan jalur pengiriman yang sesuai."
-  },
-  {
-    "title": "Alat Tulis & Kantor",
-    "icon": "stationery",
-    "items": ["Buku & notebook", "Alat tulis", "Perlengkapan meja", "Map & organizer", "Peralatan presentasi", "Aksesori kantor"],
-    "note": "Cantumkan bahan dan jumlah kemasan untuk perhitungan yang lebih tepat."
-  },
-  {
-    "title": "Bayi & Anak",
-    "icon": "baby",
-    "items": ["Pakaian bayi", "Peralatan makan", "Aksesori stroller", "Perlengkapan kamar"],
-    "note": "Produk konsumsi dan cairan perlu dikonsultasikan sebelum pengiriman."
+    "items": ["Alat Kecantikan & Skincare", "Kemasan Botol & Jar Kosmetik", "Peralatan Salon & Spa"],
+    "note": "Wajib mematuhi regulasi izin edar / kepabeanan khusus."
   }
 ]

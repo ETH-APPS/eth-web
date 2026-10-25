@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import cargoAirUrl from '~/assets/images/marketing/cargo-air-landscape.png'
+import { faqContentByPath, homeFaqContent } from '~/constants/faq'
 
 definePageMeta({
   layout: 'marketing',
@@ -76,6 +77,8 @@ const airFreightWorkflowSteps = [
       'Kargo ditimbang dan diperiksa ulang, lalu segera didistribusikan langsung ke alamat gudang atau pabrik Anda.',
   },
 ]
+
+const faqContent = faqContentByPath['/air-freight'] ?? homeFaqContent
 </script>
 
 <template>
@@ -121,4 +124,5 @@ const airFreightWorkflowSteps = [
     guide-prompt="Pelajari panduan perhitungan berat volume"
     guide-label="Selengkapnya"
   />
+  <MarketingSectionsFaq v-bind="faqContent" />
 </template>

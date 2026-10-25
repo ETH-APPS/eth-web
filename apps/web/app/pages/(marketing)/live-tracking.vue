@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { homeFaqContent } from '~/constants/faq'
+
 definePageMeta({
   layout: 'marketing',
 })
@@ -112,4 +114,5 @@ const shippingTypes = [
     description="Pilih fitur dan jalur pengiriman yang paling sesuai dengan kebutuhan operasional bisnis Anda."
     :services="shippingTypes"
   />
+  <MarketingSectionsFaq v-bind="homeFaqContent" />
 </template>

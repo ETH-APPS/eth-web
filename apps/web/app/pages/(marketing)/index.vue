@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { homeFaqContent } from '~/constants/faq'
+
 definePageMeta({
   layout: 'marketing'
 })
@@ -26,4 +28,5 @@ useSeoMeta({
   <MarketingSectionsShippingFlow />
   <MarketingSectionsProductSourcing />
   <MarketingSectionsTestimonials />
+  <MarketingSectionsFaq v-bind="homeFaqContent" />
 </template>

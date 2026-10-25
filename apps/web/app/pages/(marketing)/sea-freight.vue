@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import cargoSeaUrl from '~/assets/images/marketing/cargo-sea-landscape.png'
+import { faqContentByPath, homeFaqContent } from '~/constants/faq'
 
 definePageMeta({
   layout: 'marketing',
@@ -103,6 +104,8 @@ const seaFreightWorkflowSteps = [
       'Kargo ditimbang dan diperiksa ulang, lalu segera didistribusikan langsung ke alamat gudang atau pabrik Anda.',
   },
 ]
+
+const faqContent = faqContentByPath['/sea-freight'] ?? homeFaqContent
 </script>
 
 <template>
@@ -161,4 +164,5 @@ const seaFreightWorkflowSteps = [
     fixed-cargo-service="LCL CARGO"
     guide-prompt="Pelajari panduan pengkategorian produk"
   />
+  <MarketingSectionsFaq v-bind="faqContent" />
 </template>

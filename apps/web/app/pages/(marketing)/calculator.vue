@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import cargoCategories from '~/data/cargo-categories.json'
+import { faqContentByPath, homeFaqContent } from '~/constants/faq'
 
 definePageMeta({
   layout: 'marketing',
@@ -15,21 +16,70 @@ useSeoMeta({
   ogType: 'website',
 })
 
+const calculatorShippingTypes = [
+  {
+    mode: 'fcl',
+    title: 'FCL Cargo',
+    description:
+      'Sewa kontainer utuh untuk pengiriman muatan besar dengan kepastian kapasitas dan efisiensi biaya tertinggi.',
+    eta: '3~4 minggu',
+    to: '/sea-freight#fcl-overview',
+  },
+  {
+    mode: 'lcl',
+    title: 'LCL Cargo',
+    description:
+      'Solusi kargo laut hemat untuk impor skala menengah tanpa harus menyewa satu kontainer penuh.',
+    eta: '3~4 minggu',
+    to: '/sea-freight#lcl-overview',
+  },
+  {
+    mode: 'air',
+    title: 'Air Cargo',
+    description:
+      'Pengiriman super cepat jalur udara untuk produk sensitif, sampel barang, atau kebutuhan restok mendesak.',
+    eta: '3~7 Hari',
+    to: '/air-freight',
+  },
+] as const
+
+const faqContent = faqContentByPath['/calculator'] ?? homeFaqContent
 </script>
 
 <template>
   <MarketingSectionsRateEstimator
     section-id="calculator-estimator"
-    title="Hitung Estimasi Tarif"
-    description="Dapatkan perkiraan biaya pengiriman kargo laut maupun udara berdasarkan detail barang Anda secara mudah, cepat, dan transparan."
-    guide-prompt="Masukkan detail barang secara lengkap untuk mendapatkan estimasi tarif yang lebih akurat."
+    title="Kalkulator Impor All-In"
+    description="Hitung perkiraan biaya pengiriman kargo Anda dari China ke Indonesia secara cepat dan transparan. Masukkan rincian jenis barang, dimensi, serta jumlah koli untuk mendapatkan estimasi tarif pengiriman All-In."
+    guide-prompt="Hasil perhitungan merupakan estimasi awal berbasis volume (CBM) dan berat kargo. Biaya final All-In akan dikonfirmasi ulang oleh tim profesional ETH Cargo saat barang ditimbang di gudang China."
     :show-guide-action="false"
   />
   <MarketingSectionsCargoCategories
-    description="Kenali kategori barang yang dapat dikirim untuk membantu menentukan layanan, penanganan, dan estimasi biaya yang paling sesuai."
+    section-id="import-cargo-categories"
+    title="Kategori Barang Impor"
+    description="Temukan klasifikasi jenis komoditas produk impor Anda di bawah ini untuk memastikan perhitungan estimasi tarif dan penanganan kepabeanan yang sesuai."
     :categories="cargoCategories"
-    cta-prompt="Kategori barang Anda belum tercantum dalam daftar?"
-    cta-label="Get a Quote"
+    cta-prompt="Tidak menemukan kategori komoditas barang Anda di atas?"
+    cta-label="Konsultasi Kategori Kargo"
     cta-to="#quote"
   />
+  <MarketingSectionsCargoCategories
+    section-id="restricted-cargo-categories"
+    title="Ketentuan Barang Dilarang & Pembatasan (Lartas)"
+    description="Demi menjamin keamanan, kepatuhan hukum, dan kelancaran proses customs clearance di pelabuhan/bandara, ETH Cargo memberlakukan regulasi ketat terkait jenis komoditas yang dapat dikirimkan. Pastikan barang Anda tidak termasuk dalam kategori di bawah ini sebelum menghitung estimasi biaya."
+    :categories="cargoCategories"
+    cta-prompt="Ragu Apakah Barang Anda Termasuk Lartas?"
+    cta-label="Konsultasi Kategori Kargo"
+    cta-to="#quote"
+  />
+  <MarketingSectionsFaq v-bind="faqContent">
+    <MarketingSectionsCargoShippingTypes
+      section-id="calculator-shipping-types"
+      variant="compact"
+      surface="muted"
+      prominent-header
+      description="Pilih metode pengiriman kargo yang sesuai dengan skala bisnis, volume muatan, dan urgensi estimasi waktu tiba Anda dari China ke Indonesia."
+      :services="calculatorShippingTypes"
+    />
+  </MarketingSectionsFaq>
 </template>

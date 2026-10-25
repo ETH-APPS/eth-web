@@ -2,6 +2,7 @@
 import airFreightUrl from '~/assets/images/marketing/air-freight.png'
 import fclCargoUrl from '~/assets/images/marketing/fcl-cargo.png'
 import lclCargoUrl from '~/assets/images/marketing/lcl-cargo.png'
+import { faqContentByPath, homeFaqContent } from '~/constants/faq'
 
 definePageMeta({
   layout: 'marketing',
@@ -52,6 +53,8 @@ const serviceStats = [
   { value: '98%', label: 'Ketepatan Waktu' },
   { value: '+5', label: 'Cakupan Rute Impor' },
 ]
+
+const faqContent = faqContentByPath['/china-cargo'] ?? homeFaqContent
 </script>
 
 <template>
@@ -75,4 +78,5 @@ const serviceStats = [
     title="Hitung Estimasi Tarif"
     description="Dapatkan kalkulasi perkiraan biaya pengiriman All-In dari China ke Indonesia secara instan untuk perencanaan modal bisnis Anda."
   />
+  <MarketingSectionsFaq v-bind="faqContent" />
 </template>

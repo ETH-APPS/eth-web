@@ -79,7 +79,7 @@ function categoryIcon(icon?: string) {
         </p>
       </div>
 
-      <div class="mt-6 -mb-6 columns-1 gap-6 sm:columns-2 lg:columns-4">
+      <div class="mx-auto mt-8 max-w-[800px] columns-1 gap-6 sm:columns-2 lg:columns-3">
         <div
           v-for="(category, index) in categories"
           :key="`${category.title}-${index}`"
