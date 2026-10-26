@@ -69,9 +69,9 @@ onBeforeUnmount(() => {
           aria-modal="true"
           :aria-labelledby="`promo-modal-title-${promo.id}`"
           tabindex="-1"
-          class="my-auto w-full max-w-[420px] overflow-hidden rounded-[20px] bg-bg-0 shadow-[0_24px_70px_rgba(0,0,0,0.35)] outline-none"
+          class="my-auto w-full max-w-[590px] overflow-hidden rounded-[24px] bg-bg-0 p-6 pb-10 shadow-[0_24px_70px_rgba(0,0,0,0.35)] outline-none"
         >
-          <div class="aspect-[1.06/1] overflow-hidden bg-bg-100">
+          <div class="aspect-square overflow-hidden rounded-[18px] bg-bg-100">
             <img
               :src="promo.image"
               :alt="promo.imageAlt"
@@ -80,45 +80,42 @@ onBeforeUnmount(() => {
             >
           </div>
 
-          <div class="p-5 sm:p-6">
+          <div class="mt-3">
             <h2
               :id="`promo-modal-title-${promo.id}`"
-              class="text-base font-semibold text-text-secondary"
+              class="text-[24px] font-semibold leading-tight text-text-secondary"
             >
               {{ promo.title }}
             </h2>
 
-            <div class="mt-2 flex items-center gap-3 text-xs">
+            <div class="mt-3 flex items-center gap-3 text-[20px] font-medium">
               <span class="text-text-tertiary">Status</span>
-              <span class="h-px w-5 bg-border-300" aria-hidden="true" />
-              <span
-                class="font-medium"
-                :class="promo.inactive ? 'text-text-tertiary' : 'text-emerald-500'"
-              >
+              <span class="h-px w-6 bg-border-300" aria-hidden="true" />
+              <span :class="promo.inactive ? 'text-text-tertiary' : 'text-emerald-500'">
                 {{ promo.status }}
               </span>
             </div>
 
-            <p class="mt-4 text-xs leading-[1.6] text-text-secondary">
+            <p class="mt-3 text-justify text-[20px] font-medium leading-[1.4] text-text-tertiary">
               {{ promo.description }}
             </p>
 
             <div class="mt-6 flex items-center justify-between gap-5">
               <button
                 type="button"
-                class="inline-flex items-center gap-2 rounded-md text-xs text-text-tertiary transition-colors hover:text-primary-500 focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-primary-500"
+                class="inline-flex items-center gap-3 rounded-md text-[16px] font-medium text-text-tertiary transition-colors hover:text-primary-500 focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-primary-500"
                 @click="emit('close')"
               >
-                <ArrowLeft :size="15" :stroke-width="1.8" aria-hidden="true" />
+                <ArrowLeft :size="18" :stroke-width="1.8" aria-hidden="true" />
                 <span>Kembali</span>
               </button>
 
               <NuxtLink
                 :to="promo.termsTo || '/terms-and-conditions'"
-                class="inline-flex items-center gap-2 rounded-md text-xs font-medium text-primary-500 transition-colors hover:text-primary-600 focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-primary-500"
+                class="inline-flex items-center gap-3 rounded-md text-[16px] font-medium text-primary-500 transition-colors hover:text-primary-600 focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-primary-500"
               >
                 <span>{{ promo.termsLabel || 'Terms & Conditions' }}</span>
-                <FileText :size="15" :stroke-width="1.8" aria-hidden="true" />
+                <FileText :size="18" :stroke-width="1.8" aria-hidden="true" />
               </NuxtLink>
             </div>
           </div>

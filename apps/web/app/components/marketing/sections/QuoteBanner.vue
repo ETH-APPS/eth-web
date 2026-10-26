@@ -37,7 +37,7 @@ const emailHref = computed(() => `mailto:${props.email}`)
         >
           {{ title }}
         </h2>
-        <p class="mt-4 text-[20px] font-medium leading-relaxed text-bg-0/95">
+        <p class="mt-3 text-[20px] font-medium leading-relaxed text-bg-0/95">
           {{ description }}
         </p>
 
@@ -48,7 +48,7 @@ const emailHref = computed(() => `mailto:${props.email}`)
             </p>
             <a
               :href="emailHref"
-              class="mt-1.5 inline-flex items-center gap-2 text-[16px] text-bg-0 transition-opacity hover:opacity-80 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-bg-0"
+              class="mt-1.5 inline-flex items-center gap-2 text-[14px] text-bg-0 transition-opacity hover:opacity-80 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-bg-0"
             >
               <Mail :size="18" :stroke-width="1.8" aria-hidden="true" />
               <span>{{ email }}</span>

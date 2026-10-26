@@ -120,7 +120,7 @@ function selectPolicy(policyId: string, shouldScroll = true) {
             Other Policies
           </h2>
 
-          <div v-if="filteredNavigation.length" class="space-y-5">
+          <div v-if="filteredNavigation.length" class="space-y-4">
             <section
               v-for="group in filteredNavigation"
               :key="group.label"
@@ -132,17 +132,17 @@ function selectPolicy(policyId: string, shouldScroll = true) {
               >
                 {{ group.label }}
               </h3>
-              <ul class="space-y-2.5 text-[12px]">
+              <ul class="text-[12px] leading-[18px]">
                 <li
                   v-for="item in group.items"
                   :key="item.id"
                 >
                   <button
                     type="button"
-                    class="group flex w-full items-center justify-between gap-3 rounded-md px-2 py-1.5 text-left transition-colors focus-visible:outline-2 focus-visible:outline-primary-500"
+                    class="group flex w-full items-center justify-between gap-3 py-1 text-left transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500"
                     :class="item.id === activePolicyId
-                      ? 'bg-primary-50 font-medium text-primary-500'
-                      : 'text-text-secondary hover:bg-primary-50 hover:text-primary-500'"
+                      ? 'font-medium text-primary-500'
+                      : 'text-text-secondary hover:text-primary-500'"
                     :aria-current="item.id === activePolicyId ? 'page' : undefined"
                     @click="selectPolicy(item.id)"
                   >

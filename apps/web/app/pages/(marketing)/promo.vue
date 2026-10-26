@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import promoImage from '~/assets/images/marketing/cargo-air-landscape.png'
-import quoteImage from '~/assets/images/marketing/cargo-sea-landscape.png'
+import promoImage from '~/assets/images/marketing/promo.png'
+import quoteImage from '~/assets/images/marketing/promo.png'
 
 definePageMeta({
   layout: 'marketing',
@@ -24,15 +24,16 @@ interface PromoDetail {
   status: string
   description: string
   inactive?: boolean
-  termsLabel: string
-  termsTo: string
+  termsLabel?: string
+  termsTo?: string
 }
 
 const promoDescription =
-  'Lorem ipsum dolor sit amet consectetur adipiscing elit. Quisque faucibus ex sapien vitae pellentesque sem placerat. In id cursus mi pretium tellus duis convallis. Tempus leo eu aenean sed diam urna tempor. Pulvinar vivamus fringilla lacus nec metus bibendum egestas.'
+  'Lorem ipsum dolor sit amet consectetur adipiscing elit. Quisque faucibus ex sapien vitae pellentesque sem placerat. In id cursus mi pretium tellus duis convallis. '
 
 const selectedPromo = ref<PromoDetail | null>(null)
 
+// Data untuk hero (satu promo unggulan)
 const promos = [
   {
     id: 'promo-placeholder',
@@ -46,32 +47,42 @@ const promos = [
   },
 ] as const
 
-const activePromos = Array.from({ length: 9 }, (_, index) => ({
-  id: `active-promo-${index + 1}`,
-  image: promoImage,
-  imageAlt: `Promo aktif ETH Cargo ${index + 1}`,
-  period: 'Januari',
-  remainingLabel: '28 days left',
-  title: 'Lorem Ipsum',
-  status: 'Active',
-  description: promoDescription,
-  termsLabel: 'Terms & Conditions',
-  termsTo: '/terms-and-conditions',
-}))
+// Pembuat data placeholder, nanti diganti data asli dari API
+function createPlaceholderPromos(idPrefix: string, count: number, inactive = false): PromoDetail[] {
+  return Array.from({ length: count }, (_, index) => ({
+    id: `${idPrefix}-${index + 1}`,
+    image: promoImage,
+    imageAlt: `Promo ${inactive ? 'tidak aktif' : 'aktif'} ETH Cargo ${index + 1}`,
+    period: 'Januari',
+    remainingLabel: inactive ? 'Expired' : '28 days left',
+    title: 'Lorem Ipsum',
+    status: inactive ? 'Inactive' : 'Active',
+    description: promoDescription,
+    inactive,
+    termsLabel: 'Terms & Conditions',
+    termsTo: '/terms-and-conditions',
+  }))
+}
 
-const inactivePromos = Array.from({ length: 8 }, (_, index) => ({
-  id: `inactive-promo-${index + 1}`,
-  image: promoImage,
-  imageAlt: `Promo tidak aktif ETH Cargo ${index + 1}`,
-  period: 'Januari',
-  remainingLabel: 'Expired',
-  title: 'Lorem Ipsum',
-  status: 'Inactive',
-  description: promoDescription,
-  inactive: true,
-  termsLabel: 'Terms & Conditions',
-  termsTo: '/terms-and-conditions',
-}))
+// Satu objek = satu blok tahun di halaman (sesuai Figma)
+const promoGroups = [
+  {
+    id: 'promo-group-1',
+    year: '2026',
+    activeTotal: 12,
+    inactiveTotal: 12,
+    activePromos: createPlaceholderPromos('group-1-active', 9),
+    inactivePromos: createPlaceholderPromos('group-1-inactive', 2, true),
+  },
+  {
+    id: 'promo-group-2',
+    year: '2026',
+    activeTotal: 8,
+    inactiveTotal: 8,
+    activePromos: [] as PromoDetail[],
+    inactivePromos: createPlaceholderPromos('group-2-inactive', 6, true),
+  },
+]
 </script>
 
 <template>
@@ -81,14 +92,18 @@ const inactivePromos = Array.from({ length: 8 }, (_, index) => ({
     description="Lorem ipsum dolor sit amet consectetur adipiscing elit. Quisque faucibus ex sapien vitae pellentesque sem placerat."
     :promos="promos"
   />
+
   <MarketingPromoGallery
-    year="2026"
-    :active-promos="activePromos"
-    :inactive-promos="inactivePromos"
-    :active-total="12"
-    :inactive-total="8"
+    v-for="group in promoGroups"
+    :key="group.id"
+    :year="group.year"
+    :active-promos="group.activePromos"
+    :inactive-promos="group.inactivePromos"
+    :active-total="group.activeTotal"
+    :inactive-total="group.inactiveTotal"
     @select="selectedPromo = $event"
   />
+
   <MarketingSectionsQuoteBanner
     section-id="promo-quote"
     title="Book your LCL Cargo"
@@ -100,6 +115,7 @@ const inactivePromos = Array.from({ length: 8 }, (_, index) => ({
     :image="quoteImage"
     image-alt="Layanan pengiriman LCL Cargo ETH Cargo"
   />
+
   <MarketingPromoDetailModal
     :promo="selectedPromo"
     @close="selectedPromo = null"

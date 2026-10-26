@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { CalendarDays } from 'lucide-vue-next'
 
-export interface PromoGalleryItem {
+interface PromoItem {
   id: string
   image: string
   imageAlt: string
@@ -17,8 +17,8 @@ export interface PromoGalleryItem {
 
 withDefaults(defineProps<{
   year?: string
-  activePromos: readonly PromoGalleryItem[]
-  inactivePromos?: readonly PromoGalleryItem[]
+  activePromos: readonly PromoItem[]
+  inactivePromos?: readonly PromoItem[]
   activeTotal?: number
   inactiveTotal?: number
 }>(), {
@@ -29,23 +29,26 @@ withDefaults(defineProps<{
 })
 
 const emit = defineEmits<{
-  select: [promo: PromoGalleryItem]
+  select: [promo: PromoItem]
 }>()
 </script>
 
 <template>
-  <section class="border-t border-border-200 bg-bg-0 py-12 shadow-[0_-4px_14px_rgba(16,24,40,0.04)] sm:py-16">
+  <section class="bg-bg-0 py-12">
     <UiContainer>
       <div class="flex items-center justify-between gap-6">
-        <h2 class="text-xl font-semibold text-primary-500 sm:text-2xl">
+        <h2 class="text-[32px] font-semibold text-primary-500">
           {{ year }} PROMOS
         </h2>
-        <p class="text-sm text-text-tertiary sm:text-base">
+        <p class="text-[20px] text-text-tertiary">
           Total {{ activeTotal ?? activePromos.length }} Promos
         </p>
       </div>
 
-      <div class="mt-5 grid grid-cols-1 gap-x-5 gap-y-7 sm:grid-cols-2 lg:grid-cols-3">
+      <div
+        v-if="activePromos.length"
+        class="mt-5 grid grid-cols-1 gap-x-5 gap-y-7 sm:grid-cols-2 lg:grid-cols-3 lg:px-16"
+      >
         <article
           v-for="promo in activePromos"
           :key="promo.id"
@@ -66,13 +69,13 @@ const emit = defineEmits<{
               >
             </div>
 
-            <div class="mt-3 flex items-center justify-between gap-4 text-sm">
-              <div class="flex min-w-0 items-center gap-2 text-text-tertiary">
+            <div class="mt-3 flex items-center justify-between gap-4">
+              <div class="flex min-w-0 items-center gap-2 text-[20px] font-medium text-text-tertiary">
                 <CalendarDays :size="16" :stroke-width="1.8" aria-hidden="true" />
                 <span aria-hidden="true">—</span>
                 <span class="truncate">{{ promo.period }}</span>
               </div>
-              <span class="shrink-0 text-xs font-medium text-primary-500 sm:text-sm">
+              <span class="shrink-0 text-[16px] font-medium text-primary-500">
                 {{ promo.remainingLabel }}
               </span>
             </div>
@@ -81,7 +84,10 @@ const emit = defineEmits<{
       </div>
 
       <template v-if="inactivePromos.length">
-        <div class="mt-10 flex items-center justify-between gap-6 sm:mt-12">
+        <div
+          class="flex items-center justify-between gap-6 lg:px-16"
+          :class="activePromos.length ? 'mt-10 sm:mt-12' : 'mt-5'"
+        >
           <h3 class="text-base font-medium text-text-tertiary sm:text-lg">
             Inactive
           </h3>
@@ -90,7 +96,7 @@ const emit = defineEmits<{
           </p>
         </div>
 
-        <div class="mt-5 grid grid-cols-1 gap-x-5 gap-y-7 sm:grid-cols-2 lg:grid-cols-3">
+        <div class="mt-5 grid grid-cols-1 gap-x-5 gap-y-7 sm:grid-cols-2 lg:grid-cols-3 lg:px-16">
           <article
             v-for="promo in inactivePromos"
             :key="promo.id"
@@ -111,13 +117,13 @@ const emit = defineEmits<{
                 >
               </div>
 
-              <div class="mt-3 flex items-center justify-between gap-4 text-sm">
-                <div class="flex min-w-0 items-center gap-2 text-primary-500">
+              <div class="mt-3 flex items-center justify-between gap-4">
+                <div class="flex min-w-0 items-center gap-2 text-[20px] font-medium text-primary-500">
                   <CalendarDays :size="16" :stroke-width="1.8" aria-hidden="true" />
                   <span aria-hidden="true">—</span>
                   <span class="truncate">{{ promo.period }}</span>
                 </div>
-                <span class="shrink-0 text-xs font-medium uppercase text-text-tertiary sm:text-sm">
+                <span class="shrink-0 text-[16px] font-medium uppercase text-text-tertiary">
                   {{ promo.remainingLabel }}
                 </span>
               </div>
