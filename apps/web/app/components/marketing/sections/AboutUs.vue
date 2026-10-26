@@ -2,7 +2,7 @@
 import type { Component } from 'vue'
 import {
   Headphones,
-  Package,
+  Cuboid,
   ShieldCheck,
 } from 'lucide-vue-next'
 import logoUrl from '~/assets/images/brand/logo-white.png'
@@ -33,7 +33,7 @@ const props = withDefaults(defineProps<{
 const titleId = computed(() => `${props.sectionId}-title`)
 
 const serviceIcons: Record<AboutServiceIcon, Component> = {
-  cargo: Package,
+  cargo: Cuboid,
   sourcing: Headphones,
   transfer: ShieldCheck,
 }
@@ -47,7 +47,7 @@ const serviceIcons: Record<AboutServiceIcon, Component> = {
   >
     <UiContainer>
       <div class="text-center">
-        <p class="text-[20px] font-normal text-primary-700">
+        <p class="text-[20px] text-primary-700">
           {{ eyebrow }}
         </p>
 
@@ -64,17 +64,17 @@ const serviceIcons: Record<AboutServiceIcon, Component> = {
           >
         </div>
 
-        <p class="mx-auto mt-14 max-w-[960px] text-[23px] font-normal leading-[1.4] text-text-secondary">
+        <p class="mx-auto mt-10 text-2xl font-normal leading-[1.4] text-text-secondary">
           {{ description }}
         </p>
       </div>
 
-      <div class="mt-16 grid gap-8 rounded-[22px] border border-border-200 bg-bg-0 px-8 py-10 shadow-[0_5px_10px_rgba(15,23,42,0.10)] md:grid-cols-[380px_minmax(0,1fr)] md:px-12">
+      <div class="mt-16 grid gap-10 rounded-[22px] border border-border-200 bg-bg-0 px-8 py-10 shadow-[0_5px_10px_rgba(15,23,42,0.10)] md:grid-cols-[380px_minmax(0,1fr)] md:px-12">
         <div>
-          <p class="text-[31px] font-semibold leading-tight text-text-secondary">
+          <p class="text-[32px] font-semibold leading-tight text-text-secondary">
             {{ overviewEyebrow }}
           </p>
-          <h2 class="mt-3 text-[40px] font-semibold leading-tight text-primary-500">
+          <h2 class="mt-1 text-[41px] font-bold leading-tight text-primary-500">
             {{ overviewTitle }}
           </h2>
         </div>

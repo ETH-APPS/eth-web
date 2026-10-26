@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import supplyChainImage from '~/assets/images/marketing/cargo-air-landscape.png'
+
 definePageMeta({
   layout: 'marketing',
 })
@@ -53,4 +55,17 @@ const companyStats = [
   />
   <MarketingSectionsAboutCargoService />
   <MarketingSectionsAboutDigitalFeatures />
+  <MarketingSectionsAboutImportSupport />
+  <MarketingSectionsMultinationalRoutes :show-top-border="false" />
+  <MarketingSectionsQuoteBanner
+    section-id="about-quote"
+    title="Siap Mengoptimalkan Rantai Pasok Impor Anda?"
+    description="Percayakan kebutuhan logistik, pengadaan produk, dan pembayaran supplier China Anda kepada ETH Cargo. Tim profesional kami siap memberikan solusi All-In Door-to-Door yang efisien dan terpercaya."
+    email-label="Atau hubungi kami via email:"
+    email="testing-mail@gmail.co.id"
+    cta-label="Konsultasi Gratis"
+    cta-to="/#quote"
+    :image="supplyChainImage"
+    image-alt="Solusi rantai pasok impor ETH Cargo"
+  />
 </template>

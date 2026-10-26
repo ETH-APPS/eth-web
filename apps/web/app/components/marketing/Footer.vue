@@ -51,17 +51,17 @@ const featureLinks = [
 
 const guideLinks = [
   { label: 'Proses Impor Barang', to: '#alur-pengiriman' },
-  { label: 'Insights', to: '#footer' },
+  { label: 'Insights', to: '/blog' },
 ]
 
 const promoLinks = [
-  { label: 'This Months Promo', to: '#footer' },
-  { label: 'All Promo', to: '#footer' },
+  { label: 'This Months Promo', to: '/promo' },
+  { label: 'All Promo', to: '/promo' },
 ]
 
 const informationLinks = [
   { label: 'Tentang Kami', to: '#why-us' },
-  { label: 'FAQ', to: '#faq' },
+  { label: 'FAQ', to: '/faq' },
 ]
 
 const linkClass =

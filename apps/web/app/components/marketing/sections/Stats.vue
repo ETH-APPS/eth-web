@@ -50,14 +50,14 @@ const labelClass = computed(() => (
           :key="stat.label"
         >
           <dt
-            class="text-[52px] font-bold leading-none"
+            class="text-[46px] font-bold leading-none"
             :class="valueClass"
           >
             {{ stat.value }}
           </dt>
 
           <dd
-            class="mt-3 whitespace-pre-line text-[28px] font-bold"
+            class="mt-3 whitespace-pre-line text-[24px] font-semibold"
             :class="[
               labelClass,
               stat.uppercase ? 'uppercase' : '',

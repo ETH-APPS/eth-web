@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import { ArrowUpRight, Package, Plane } from 'lucide-vue-next'
+import { ArrowUpRight, Container, Plane } from 'lucide-vue-next'
 import cargoSeaUrl from '~/assets/images/marketing/cargo-sea-landscape.png'
 
 const shippingMethods = [
   {
-    icon: Package,
+    icon: Container,
     title: 'Sea Cargo',
     description:
       'Solusi paling ekonomis untuk pengiriman kargo volume besar via container FCL (Full Container) maupun LCL (Eceran/CBM) dengan jadwal kapal rutin.',
@@ -36,23 +36,23 @@ const shippingMethods = [
       >
 
       <div class="mt-10 text-center">
-        <p class="text-[16px] font-normal text-primary-700">
+        <p class="text-[20px] font-normal text-primary-700">
           Layanan Utama
         </p>
 
         <h2
           id="main-cargo-service-title"
-          class="mt-2 text-[36px] font-semibold leading-tight text-primary-500"
+          class="mt-2 text-[48px] font-bold leading-tight text-primary-500"
         >
           Pengiriman Kargo
         </h2>
 
-        <p class="mx-auto mt-7 max-w-[760px] text-[15px] font-normal leading-[1.55] text-text-secondary">
+        <p class="mx-auto mt-7 max-w-[980px] text-[20px] font-normal leading-[1.55] text-text-secondary">
           Kami menyediakan solusi pengiriman kargo internasional terpercaya untuk skala bisnis kecil hingga industri. Dengan sistem pengiriman All-In Door-to-Door, kami memastikan proses pengurusan bea cukai, kepabeanan, hingga pengantaran barang ke alamat tujuan berjalan lancar dan tepat waktu.
         </p>
       </div>
 
-      <h3 class="mt-10 text-center text-[28px] font-semibold leading-tight text-primary-500">
+      <h3 class="mt-10 text-center text-[32px] font-semibold leading-tight text-primary-500">
         Pilihan Metode Pengiriman
       </h3>
 
@@ -60,7 +60,7 @@ const shippingMethods = [
         <li
           v-for="method in shippingMethods"
           :key="method.title"
-          class="rounded-[18px] border border-border-200 bg-bg-0 px-5 py-4 text-center sm:px-7"
+          class="rounded-[18px] border border-border-200 px-4 bg-bg-0 py-4 text-center"
         >
           <span class="mx-auto flex size-10 items-center justify-center rounded-xl bg-primary-50 text-primary-500">
             <component
@@ -71,11 +71,11 @@ const shippingMethods = [
             />
           </span>
 
-          <h4 class="mt-3 text-[16px] font-medium text-text-secondary">
+          <h4 class="mt-3 text-[20px] font-medium text-text-secondary">
             {{ method.title }}
           </h4>
 
-          <p class="mt-4 text-[13px] font-normal leading-[1.5] text-text-secondary">
+          <p class="mt-4 text-[16px] font-normal leading-[1.5] text-text-secondary">
             {{ method.description }}
           </p>
         </li>

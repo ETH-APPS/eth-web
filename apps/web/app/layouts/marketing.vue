@@ -5,11 +5,11 @@ const isPolicyPage = computed(() => (
 ))
 
 const headerVariant = computed(() => (
-  route.path === '/' ? 'overlay' : 'light'
+  route.path === '/' || route.path.startsWith('/blog/') ? 'overlay' : 'light'
 ))
 
 const showMultinationalRoutes = computed(() => (
-  route.path !== '/' && route.path !== '/calculator' && !isPolicyPage.value
+  route.path !== '/' && route.path !== '/about-us' && !route.path.startsWith('/blog') && route.path !== '/calculator' && route.path !== '/faq' && route.path !== '/promo' && !isPolicyPage.value
 ))
 </script>
 
@@ -23,7 +23,7 @@ const showMultinationalRoutes = computed(() => (
 
     <MarketingSectionsMultinationalRoutes
       v-if="showMultinationalRoutes"
-      :show-top-border="route.path !== '/about-us'"
+      :show-top-border="true"
     />
     <MarketingFooter />
   </div>

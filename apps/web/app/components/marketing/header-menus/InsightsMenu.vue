@@ -20,7 +20,7 @@ import {
 
       <div class="space-y-5">
         <NuxtLink
-          to="#footer"
+          to="/promo"
           class="group/item flex items-start gap-4 rounded-lg focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary-500"
         >
           <span class="flex size-10 shrink-0 items-center justify-center rounded-full bg-primary-50 text-primary-500">
@@ -42,7 +42,7 @@ import {
         </NuxtLink>
 
         <NuxtLink
-          to="#footer"
+          to="/blog"
           class="group/item flex items-start gap-4 rounded-lg focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary-500"
         >
           <span class="flex size-10 shrink-0 items-center justify-center rounded-full bg-primary-50 text-primary-500">
