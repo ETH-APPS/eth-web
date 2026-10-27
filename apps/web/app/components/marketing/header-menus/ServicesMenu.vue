@@ -50,12 +50,12 @@ const multinationalCountries = [
             >
           </span>
           <span>
-            <span class="flex items-center gap-2 text-md font-medium text-text-secondary transition-colors group-hover/item:text-primary-500">
+            <span class="flex items-center gap-2 text-md font-medium text-text-secondary transition-colors group-hover/item:text-primary-500 group-focus-visible/item:text-primary-500">
               Cargo China
               <ArrowUpRight
                 :size="19"
                 aria-hidden="true"
-                class="text-primary-500"
+                class="-translate-x-1 translate-y-1 text-primary-500 opacity-0 transition duration-200 motion-reduce:transition-none motion-reduce:transform-none group-hover/item:translate-x-0 group-hover/item:translate-y-0 group-hover/item:opacity-100 group-focus-visible/item:translate-x-0 group-focus-visible/item:translate-y-0 group-focus-visible/item:opacity-100"
               />
             </span>
             <span class="mt-1 block max-w-72 text-xs leading-6 text-text-tertiary">
@@ -68,11 +68,20 @@ const multinationalCountries = [
           to="/sea-freight"
           class="group/item flex items-center gap-4 rounded-lg focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary-500"
         >
-          <span class="flex size-10 shrink-0 items-center justify-center rounded-full bg-primary-50 text-primary-500">
+          <span
+            class="flex size-10 shrink-0 items-center justify-center rounded-full bg-primary-50 text-primary-500 transition duration-200 ease-out motion-reduce:transition-none group-hover/item:bg-primary-500 group-hover/item:text-white group-hover/item:shadow-md group-focus-visible/item:bg-primary-500 group-focus-visible/item:text-white group-focus-visible/item:shadow-md"
+          >
             <Ship :size="20" aria-hidden="true" />
           </span>
           <span>
-            <span class="text-base font-semibold text-text-secondary transition-colors group-hover/item:text-primary-500">Kargo Laut</span>
+            <span class="flex items-center gap-2 text-base font-semibold text-text-secondary transition-colors group-hover/item:text-primary-500 group-focus-visible/item:text-primary-500">
+              Kargo Laut
+              <ArrowUpRight
+                :size="18"
+                aria-hidden="true"
+                class="-translate-x-1 translate-y-1 text-primary-500 opacity-0 transition duration-200 motion-reduce:transition-none motion-reduce:transform-none group-hover/item:translate-x-0 group-hover/item:translate-y-0 group-hover/item:opacity-100 group-focus-visible/item:translate-x-0 group-focus-visible/item:translate-y-0 group-focus-visible/item:opacity-100"
+              />
+            </span>
             <span class="mt-1 flex gap-2 text-xs font-medium text-primary-500">
               <span class="rounded bg-bg-100 px-2 py-0.5">FCL</span>
               <span class="rounded bg-bg-100 px-2 py-0.5">LCL</span>
@@ -84,10 +93,19 @@ const multinationalCountries = [
           to="/air-freight"
           class="group/item flex items-center gap-4 rounded-lg focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary-500"
         >
-          <span class="flex size-10 shrink-0 items-center justify-center rounded-full bg-primary-50 text-primary-500">
+          <span
+            class="flex size-10 shrink-0 items-center justify-center rounded-full bg-primary-50 text-primary-500 transition duration-200 ease-out motion-reduce:transition-none group-hover/item:bg-primary-500 group-hover/item:text-white group-hover/item:shadow-md group-focus-visible/item:bg-primary-500 group-focus-visible/item:text-white group-focus-visible/item:shadow-md"
+          >
             <Plane :size="20" aria-hidden="true" />
           </span>
-          <span class="text-base font-medium text-text-secondary transition-colors group-hover/item:text-primary-500">Kargo Udara</span>
+          <span class="flex items-center gap-2 text-base font-medium text-text-secondary transition-colors group-hover/item:text-primary-500 group-focus-visible/item:text-primary-500">
+            Kargo Udara
+            <ArrowUpRight
+              :size="18"
+              aria-hidden="true"
+              class="-translate-x-1 translate-y-1 text-primary-500 opacity-0 transition duration-200 motion-reduce:transition-none motion-reduce:transform-none group-hover/item:translate-x-0 group-hover/item:translate-y-0 group-hover/item:opacity-100 group-focus-visible/item:translate-x-0 group-focus-visible/item:translate-y-0 group-focus-visible/item:opacity-100"
+            />
+          </span>
         </NuxtLink>
       </div>
     </div>
@@ -102,11 +120,20 @@ const multinationalCountries = [
           to="/#layanan"
           class="group/item flex items-start gap-4 rounded-lg focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary-500"
         >
-          <span class="flex size-10 shrink-0 items-center justify-center rounded-full bg-primary-50 text-primary-500">
+          <span
+            class="flex size-10 shrink-0 items-center justify-center rounded-full bg-primary-50 text-primary-500 transition duration-200 ease-out motion-reduce:transition-none group-hover/item:bg-primary-500 group-hover/item:text-white group-hover/item:shadow-md group-focus-visible/item:bg-primary-500 group-focus-visible/item:text-white group-focus-visible/item:shadow-md"
+          >
             <Banknote :size="20" aria-hidden="true" />
           </span>
           <span>
-            <span class="text-base font-medium text-text-secondary transition-colors group-hover/item:text-primary-500">Jasa Transfer RMB</span>
+            <span class="flex items-center gap-2 text-base font-medium text-text-secondary transition-colors group-hover/item:text-primary-500 group-focus-visible/item:text-primary-500">
+              Jasa Transfer RMB
+              <ArrowUpRight
+                :size="18"
+                aria-hidden="true"
+                class="-translate-x-1 translate-y-1 text-primary-500 opacity-0 transition duration-200 motion-reduce:transition-none motion-reduce:transform-none group-hover/item:translate-x-0 group-hover/item:translate-y-0 group-hover/item:opacity-100 group-focus-visible/item:translate-x-0 group-focus-visible/item:translate-y-0 group-focus-visible/item:opacity-100"
+              />
+            </span>
             <span class="mt-2 block text-xs leading-6 text-text-tertiary">Pembayaran supplier China cepat dengan kurs kompetitif.</span>
             <span class="mt-2 block text-[10px] text-text-disable">Alipay &nbsp; Alibaba &nbsp; Bank of China &nbsp; WeChat Pay &nbsp; 1688 &nbsp; Taobao</span>
           </span>
@@ -116,11 +143,20 @@ const multinationalCountries = [
           to="/#sourcing"
           class="group/item flex items-start gap-4 rounded-lg focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary-500"
         >
-          <span class="flex size-10 shrink-0 items-center justify-center rounded-full bg-primary-50 text-primary-500">
+          <span
+            class="flex size-10 shrink-0 items-center justify-center rounded-full bg-primary-50 text-primary-500 transition duration-200 ease-out motion-reduce:transition-none group-hover/item:bg-primary-500 group-hover/item:text-white group-hover/item:shadow-md group-focus-visible/item:bg-primary-500 group-focus-visible/item:text-white group-focus-visible/item:shadow-md"
+          >
             <ShoppingBag :size="20" aria-hidden="true" />
           </span>
           <span>
-            <span class="text-base font-medium text-text-secondary transition-colors group-hover/item:text-primary-500">Jasa Titip Beli</span>
+            <span class="flex items-center gap-2 text-base font-medium text-text-secondary transition-colors group-hover/item:text-primary-500 group-focus-visible/item:text-primary-500">
+              Jasa Titip Beli
+              <ArrowUpRight
+                :size="18"
+                aria-hidden="true"
+                class="-translate-x-1 translate-y-1 text-primary-500 opacity-0 transition duration-200 motion-reduce:transition-none motion-reduce:transform-none group-hover/item:translate-x-0 group-hover/item:translate-y-0 group-hover/item:opacity-100 group-focus-visible/item:translate-x-0 group-focus-visible/item:translate-y-0 group-focus-visible/item:opacity-100"
+              />
+            </span>
             <span class="mt-2 block text-xs leading-6 text-text-tertiary">Bantu sourcing dan pembelian produk langsung dari China.</span>
           </span>
         </NuxtLink>
@@ -132,13 +168,13 @@ const multinationalCountries = [
         </p>
         <NuxtLink
           to="/multinational-cargo"
-          class="flex w-fit gap-5 rounded-lg focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary-500"
+          class="group/link flex w-fit gap-5 rounded-lg focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary-500"
           aria-label="Lihat layanan multinational shipping"
         >
           <span
             v-for="country in multinationalCountries"
             :key="country.name"
-            class="block size-11 rounded-full bg-bg-0 p-[2.5px] shadow-[2px_4px_5px_rgb(52_64_81/0.3)]"
+            class="group/flag relative block size-11 rounded-full bg-bg-0 p-[2.5px] shadow-[2px_4px_5px_rgb(52_64_81/0.3)]"
             :title="country.name"
           >
             <img
@@ -150,6 +186,13 @@ const multinationalCountries = [
               decoding="async"
               class="size-full rounded-full object-cover object-center"
             >
+
+            <ArrowUpRight
+              :size="16"
+              :stroke-width="2"
+              aria-hidden="true"
+              class="pointer-events-none absolute inset-x-0 top-full mx-auto mt-1 translate-y-1 text-primary-500 opacity-0 transition duration-300 ease-out motion-reduce:transition-none motion-reduce:transform-none group-hover/flag:translate-y-0 group-hover/flag:opacity-100 group-focus-visible/link:translate-y-0 group-focus-visible/link:opacity-100"
+            />
           </span>
         </NuxtLink>
       </div>

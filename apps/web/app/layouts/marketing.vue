@@ -12,7 +12,7 @@ const headerVariant = computed(() => {
 })
 
 const showMultinationalRoutes = computed(() => (
-  route.path !== '/' && route.path !== '/about-us' && !route.path.startsWith('/blog') && route.path !== '/calculator' && route.path !== '/faq' && route.path !== '/promo' && !isPolicyPage.value
+  route.path !== '/' && route.path !== '/about-us' && !route.path.startsWith('/blog') && route.path !== '/calculator' && route.path !== '/faq' && !route.path.startsWith('/glossary') && route.path !== '/promo' && !isPolicyPage.value
 ))
 </script>
 
