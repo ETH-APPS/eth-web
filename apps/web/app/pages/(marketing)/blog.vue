@@ -8,6 +8,10 @@ definePageMeta({
   layout: 'marketing',
 })
 
+const route = useRoute()
+const isBlogChildPage = computed(() => route.path !== '/blog' && route.path !== '/blog/')
+const { allArticles } = useAllBlogArticles()
+
 useSeoMeta({
   title: 'Blog | ETH Cargo',
   description: 'Artikel, kabar, dan insight terbaru seputar logistik, impor, serta pengiriman internasional dari ETH Cargo.',
@@ -27,7 +31,7 @@ const featuredPosts = [
     tags: ['FCL Cargo', 'Sea Freight', 'Import', 'Export'],
     image: seaCargoImage,
     imageAlt: 'Pengiriman kargo laut ETH Cargo',
-    to: '#featured-blog',
+    to: '/blog/fcl-cargo-guide',
   },
   {
     id: 'air-cargo-guide',
@@ -39,7 +43,7 @@ const featuredPosts = [
     tags: ['Air Cargo', 'Air Freight', 'Business', 'Import'],
     image: airCargoImage,
     imageAlt: 'Pesawat pengiriman kargo udara ETH Cargo',
-    to: '#featured-blog',
+    to: '/blog/air-cargo-guide',
   },
   {
     id: 'supplier-payment-guide',
@@ -51,7 +55,7 @@ const featuredPosts = [
     tags: ['Transfer RMB', 'Supplier', 'China', 'Sourcing'],
     image: transferImage,
     imageAlt: 'Layanan transaksi supplier China ETH Cargo',
-    to: '#featured-blog',
+    to: '/blog/supplier-payment-guide',
   },
 ] as const
 
@@ -62,7 +66,7 @@ const popularPosts = [
     releaseDate: '12 Desember 2026',
     image: seaCargoImage,
     imageAlt: 'Kapal pengiriman kargo laut',
-    to: '#featured-blog',
+    to: '/blog/popular-sea-freight',
   },
   {
     id: 'popular-import-guide',
@@ -70,7 +74,7 @@ const popularPosts = [
     releaseDate: '12 Desember 2026',
     image: cargoHeroImage,
     imageAlt: 'Aktivitas pengiriman kargo internasional',
-    to: '#featured-blog',
+    to: '/blog/popular-import-guide',
   },
   {
     id: 'popular-fcl-lcl',
@@ -78,7 +82,7 @@ const popularPosts = [
     releaseDate: '12 Desember 2026',
     image: seaCargoImage,
     imageAlt: 'Kapal kargo untuk pengiriman FCL dan LCL',
-    to: '#featured-blog',
+    to: '/blog/popular-fcl-lcl',
   },
   {
     id: 'popular-air-cargo',
@@ -86,7 +90,7 @@ const popularPosts = [
     releaseDate: '12 Desember 2026',
     image: airCargoImage,
     imageAlt: 'Pesawat untuk layanan air cargo',
-    to: '#featured-blog',
+    to: '/blog/popular-air-cargo',
   },
   {
     id: 'popular-supplier-payment',
@@ -94,7 +98,7 @@ const popularPosts = [
     releaseDate: '8 Desember 2026',
     image: transferImage,
     imageAlt: 'Layanan pembayaran supplier China',
-    to: '#featured-blog',
+    to: '/blog/popular-supplier-payment',
   },
 ] as const
 
@@ -106,7 +110,7 @@ const exportPosts = [
     tags: ['Export', 'Business'],
     image: seaCargoImage,
     imageAlt: 'Kapal kargo untuk kegiatan ekspor',
-    to: '#featured-blog',
+    to: '/blog/export-market-guide',
   },
   {
     id: 'export-document-guide',
@@ -115,7 +119,7 @@ const exportPosts = [
     tags: ['Export', 'Documentation'],
     image: cargoHeroImage,
     imageAlt: 'Aktivitas logistik untuk proses ekspor',
-    to: '#featured-blog',
+    to: '/blog/export-document-guide',
   },
   {
     id: 'export-sea-freight',
@@ -124,7 +128,7 @@ const exportPosts = [
     tags: ['FCL Cargo', 'Sea Freight'],
     image: seaCargoImage,
     imageAlt: 'Pengiriman ekspor melalui jalur laut',
-    to: '#featured-blog',
+    to: '/blog/export-sea-freight',
   },
   {
     id: 'export-air-freight',
@@ -133,7 +137,7 @@ const exportPosts = [
     tags: ['Air Cargo', 'Export'],
     image: airCargoImage,
     imageAlt: 'Pengiriman produk ekspor melalui udara',
-    to: '#featured-blog',
+    to: '/blog/export-air-freight',
   },
   {
     id: 'export-cost-guide',
@@ -142,7 +146,7 @@ const exportPosts = [
     tags: ['Export', 'Cost'],
     image: transferImage,
     imageAlt: 'Perhitungan biaya kegiatan ekspor',
-    to: '#featured-blog',
+    to: '/blog/export-cost-guide',
   },
 ] as const
 
@@ -154,7 +158,7 @@ const importPosts = [
     tags: ['Import', 'China'],
     image: cargoHeroImage,
     imageAlt: 'Pengiriman barang impor dari China',
-    to: '#featured-blog',
+    to: '/blog/import-china-guide',
   },
   {
     id: 'import-supplier-guide',
@@ -163,7 +167,7 @@ const importPosts = [
     tags: ['Import', 'Supplier'],
     image: transferImage,
     imageAlt: 'Proses transaksi dengan supplier China',
-    to: '#featured-blog',
+    to: '/blog/import-supplier-guide',
   },
   {
     id: 'import-fcl-lcl',
@@ -172,7 +176,7 @@ const importPosts = [
     tags: ['FCL Cargo', 'Sea Freight'],
     image: seaCargoImage,
     imageAlt: 'Kapal kargo untuk pengiriman impor FCL dan LCL',
-    to: '#featured-blog',
+    to: '/blog/import-fcl-lcl',
   },
   {
     id: 'import-customs-guide',
@@ -181,7 +185,7 @@ const importPosts = [
     tags: ['Import', 'Customs'],
     image: cargoHeroImage,
     imageAlt: 'Proses kepabeanan barang impor',
-    to: '#featured-blog',
+    to: '/blog/import-customs-guide',
   },
   {
     id: 'import-air-cargo',
@@ -190,68 +194,16 @@ const importPosts = [
     tags: ['Air Cargo', 'Import'],
     image: airCargoImage,
     imageAlt: 'Pesawat untuk pengiriman impor melalui udara',
-    to: '#featured-blog',
+    to: '/blog/import-air-cargo',
   },
 ] as const
 
-const articleTemplates = [
-  {
-    title: 'Panduan lengkap pengiriman kargo laut untuk kebutuhan bisnis',
-    tags: ['FCL Cargo', 'Sea Freight'],
-    image: seaCargoImage,
-    imageAlt: 'Kapal pengiriman kargo laut',
-  },
-  {
-    title: 'Cara memulai impor barang dari China dengan aman dan transparan',
-    tags: ['Import', 'China'],
-    image: cargoHeroImage,
-    imageAlt: 'Aktivitas pengiriman impor internasional',
-  },
-  {
-    title: 'Solusi air cargo untuk pengiriman cepat dan barang sensitif',
-    tags: ['Air Cargo', 'Air Freight'],
-    image: airCargoImage,
-    imageAlt: 'Pesawat untuk layanan kargo udara',
-  },
-  {
-    title: 'Tips memilih supplier China terpercaya untuk bisnis Anda',
-    tags: ['Supplier', 'Sourcing'],
-    image: transferImage,
-    imageAlt: 'Layanan transaksi dan sourcing supplier China',
-  },
-  {
-    title: 'Mengenal dokumen dan proses kepabeanan untuk kegiatan ekspor',
-    tags: ['Export', 'Customs'],
-    image: seaCargoImage,
-    imageAlt: 'Kapal kargo untuk kegiatan ekspor',
-  },
-  {
-    title: 'Perbedaan FCL dan LCL serta cara memilih layanan yang tepat',
-    tags: ['FCL Cargo', 'LCL Cargo'],
-    image: cargoHeroImage,
-    imageAlt: 'Kontainer untuk layanan FCL dan LCL',
-  },
-] as const
-
-const articleMonths = ['Oktober', 'September', 'Agustus', 'Juli'] as const
-
-const allArticles = Array.from({ length: 120 }, (_, index) => {
-  const template = articleTemplates[index % articleTemplates.length]!
-
-  return {
-    id: `article-${index + 1}`,
-    title: template.title,
-    releaseDate: `${28 - (index % 28)} ${articleMonths[Math.floor(index / 28) % articleMonths.length]} 2026`,
-    tags: template.tags,
-    image: template.image,
-    imageAlt: template.imageAlt,
-    to: '#featured-blog',
-  }
-})
 </script>
 
 <template>
-  <div>
+  <NuxtPage v-if="isBlogChildPage" />
+
+  <div v-else>
     <MarketingBlogHeroCarousel
       :posts="featuredPosts"
       :autoplay-delay="5000"
@@ -267,7 +219,6 @@ const allArticles = Array.from({ length: 120 }, (_, index) => {
       title="Ekspor"
       :posts="exportPosts"
       view-all-to="#export-articles"
-      tone="plain"
       :autoplay-delay="5000"
     />
 
@@ -276,7 +227,6 @@ const allArticles = Array.from({ length: 120 }, (_, index) => {
       title="Impor"
       :posts="importPosts"
       view-all-to="#import-articles"
-      tone="soft"
       :autoplay-delay="5500"
     />
 

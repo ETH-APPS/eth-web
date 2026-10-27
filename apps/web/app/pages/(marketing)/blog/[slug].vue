@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import airCargoImage from '~/assets/images/marketing/cargo-air-landscape.png'
+import articleImage from '~/assets/images/marketing/article.png'
 import cargoHeroImage from '~/assets/images/marketing/multinational-cargo-hero.png'
 import seaCargoImage from '~/assets/images/marketing/cargo-sea-landscape.png'
-import transferImage from '~/assets/images/marketing/transfer.png'
 
 definePageMeta({
   layout: 'marketing',
@@ -65,26 +65,6 @@ const articleTitle = computed(() => {
   }
 
   return titleFromSlug(slug.value)
-})
-
-const articleImage = computed(() => {
-  const value = slug.value
-
-  if (value.includes('air'))
-    return airCargoImage
-
-  if (value.includes('supplier') || value.includes('payment') || value.includes('cost'))
-    return transferImage
-
-  if (value.includes('import') || value.includes('customs'))
-    return cargoHeroImage
-
-  if (articleNumber.value) {
-    const imageIndex = (articleNumber.value - 1) % 4
-    return [seaCargoImage, cargoHeroImage, airCargoImage, transferImage][imageIndex]!
-  }
-
-  return seaCargoImage
 })
 
 const articleDate = computed(() => {

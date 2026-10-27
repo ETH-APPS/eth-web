@@ -1,14 +1,15 @@
 <script setup lang="ts">
 import {
-  ArrowUpRight,
   ChevronDown,
   ChevronRight,
   ChevronUp,
-  Facebook,
-  Instagram,
-  Link2,
-  Music2,
 } from 'lucide-vue-next'
+import facebookDark from '~/assets/images/marketing/facebook-dark.png'
+import instagramDark from '~/assets/images/marketing/Instagram-dark.png'
+import linkDark from '~/assets/images/marketing/Link-dark.png'
+import threadsDark from '~/assets/images/marketing/Threads-dark.png'
+import tiktokDark from '~/assets/images/marketing/Tiktok-dark.png'
+import xDark from '~/assets/images/marketing/X-dark.png'
 
 interface RelatedArticle {
   id: string
@@ -56,7 +57,12 @@ const expandedSections = ref<string[]>(['memahami-kebutuhan', 'memilih-layanan']
 const activeSection = ref('memahami-kebutuhan')
 const shareUrl = ref('')
 const copied = ref(false)
-let headingObserver: IntersectionObserver | undefined
+
+// Garis acuan dari tepi atas layar (px). Heading terakhir yang sudah melewati garis ini dianggap aktif.
+// Harus sedikit lebih besar dari scroll-mt-28 (112px) supaya heading hasil klik sidebar langsung aktif.
+const ACTIVE_OFFSET = 130
+let headingElements: HTMLElement[] = []
+let isScrollQueued = false
 
 function isExpanded(id: string) {
   return expandedSections.value.includes(id)
@@ -86,39 +92,51 @@ async function copyArticleLink() {
   }, 1800)
 }
 
+function updateActiveSection() {
+  let currentId = headingElements[0]?.id ?? ''
+
+  for (const heading of headingElements) {
+    if (heading.getBoundingClientRect().top <= ACTIVE_OFFSET)
+      currentId = heading.id
+  }
+
+  activeSection.value = currentId
+}
+
+function handleScroll() {
+  if (isScrollQueued)
+    return
+
+  isScrollQueued = true
+  requestAnimationFrame(() => {
+    updateActiveSection()
+    isScrollQueued = false
+  })
+}
+
 onMounted(() => {
   shareUrl.value = window.location.href
 
-  const headings = tableOfContents.flatMap(section => [
+  // Urutan sama dengan urutan di halaman: 1, 1.1, 1.2, 2, 2.1, 3
+  headingElements = tableOfContents.flatMap(section => [
     document.getElementById(section.id),
     ...section.children.map(child => document.getElementById(child.id)),
   ]).filter((heading): heading is HTMLElement => Boolean(heading))
 
-  headingObserver = new IntersectionObserver((entries) => {
-    const visibleHeading = entries
-      .filter(entry => entry.isIntersecting)
-      .sort((first, second) => first.boundingClientRect.top - second.boundingClientRect.top)[0]
-
-    if (visibleHeading?.target.id)
-      activeSection.value = visibleHeading.target.id
-  }, {
-    rootMargin: '-90px 0px -62% 0px',
-    threshold: [0, 1],
-  })
-
-  headings.forEach(heading => headingObserver?.observe(heading))
+  updateActiveSection()
+  window.addEventListener('scroll', handleScroll, { passive: true })
 })
 
 onBeforeUnmount(() => {
-  headingObserver?.disconnect()
+  window.removeEventListener('scroll', handleScroll)
 })
 </script>
 
 <template>
-  <section class="bg-bg-0 py-10 sm:py-12 lg:py-16">
+  <section class="bg-bg-0 py-16">
     <UiContainer>
       <nav aria-label="Breadcrumb" class="mx-auto max-w-[1080px]">
-        <ol class="flex flex-wrap items-center gap-2 text-[11px] text-text-tertiary">
+        <ol class="flex flex-wrap items-center gap-2 text-[10px] font-normal text-text-tertiary">
           <li>
             <NuxtLink to="/" class="transition-colors hover:text-primary-500">
               Home
@@ -141,10 +159,10 @@ onBeforeUnmount(() => {
         </ol>
       </nav>
 
-      <div class="mx-auto mt-8 grid max-w-[1080px] items-start gap-8 lg:grid-cols-[250px_minmax(0,1fr)] lg:gap-6">
-        <aside class="lg:sticky lg:top-[90px]">
-          <div class="rounded-2xl border border-border-200 bg-white p-4 shadow-[0_3px_12px_rgba(15,23,42,0.04)]">
-            <h2 class="text-[18px] font-medium text-primary-500">
+      <div class="mx-auto mt-8 grid max-w-[1080px] grid-cols-[300px_minmax(0,1fr)] items-start gap-6">
+        <aside class="sticky top-[90px]">
+          <div class="rounded-2xl border border-border-200 bg-white p-4 shadow-md">
+            <h2 class="text-[20px] font-medium text-primary-500">
               Daftar isi
             </h2>
 
@@ -153,7 +171,7 @@ onBeforeUnmount(() => {
                 <div class="flex items-start gap-2">
                   <button
                     type="button"
-                    class="grid min-w-0 flex-1 grid-cols-[22px_1fr] gap-2 text-left text-[12px] font-medium leading-[1.4] text-text-secondary transition-colors hover:text-primary-500"
+                    class="grid min-w-0 flex-1 grid-cols-[18px_1fr] gap-x-1.5 text-left text-[16px] font-medium leading-[1.4] text-text-secondary transition-colors hover:text-primary-500"
                     @click="scrollToSection(section.id)"
                   >
                     <span>{{ section.number }}</span>
@@ -182,7 +200,7 @@ onBeforeUnmount(() => {
                     <li v-for="child in section.children" :key="child.id">
                       <button
                         type="button"
-                        class="grid w-full grid-cols-[26px_1fr] gap-2 rounded-lg px-2 py-2 text-left text-[11px] leading-[1.4] transition-colors"
+                        class="grid w-full grid-cols-[20px_1fr] gap-x-1.5 rounded-lg px-2 py-2 text-left text-[14px] font-normal leading-[1.4] transition-colors"
                         :class="activeSection === child.id
                           ? 'bg-primary-50 text-primary-500'
                           : 'text-text-tertiary hover:bg-bg-100 hover:text-text-secondary'"
@@ -198,7 +216,7 @@ onBeforeUnmount(() => {
             </ol>
           </div>
 
-          <div class="mt-4 hidden aspect-[4/5] overflow-hidden rounded-2xl bg-bg-200 lg:block">
+          <div class="mt-4 aspect-[4/5] overflow-hidden rounded-2xl bg-bg-200">
             <img
               :src="props.sidebarImage"
               alt="Layanan pengiriman ETH Cargo"
@@ -207,12 +225,12 @@ onBeforeUnmount(() => {
           </div>
         </aside>
 
-        <article class="min-w-0 text-[13px] leading-[1.65] text-text-secondary sm:text-[14px]">
+        <article class="min-w-0 text-[14px] leading-[1.65] text-text-secondary">
           <section class="overflow-hidden rounded-xl border border-border-200">
-            <h2 class="bg-border-200 px-4 py-3 text-[14px] font-medium text-primary-500">
+            <h2 class="bg-border-200 px-4 py-3 text-[14px] font-semibold text-primary-500">
               Key Points
             </h2>
-            <ul class="divide-y divide-border-200">
+            <ul class="divide-y divide-border-200 text-[14px]">
               <li class="flex gap-3 px-4 py-3">
                 <span class="text-primary-500" aria-hidden="true">–</span>
                 <span>Pahami karakter, volume, dan tingkat urgensi barang sebelum menentukan metode pengiriman.</span>
@@ -302,63 +320,73 @@ onBeforeUnmount(() => {
 
           <div class="mt-10 border-y border-border-200 py-4">
             <div class="flex flex-wrap items-center gap-2.5">
-              <span class="mr-1 text-[12px] text-text-tertiary">Tag</span>
+              <span class="mr-1 text-[14px] text-text-tertiary">Tag</span>
               <span class="h-px w-5 bg-border-200" aria-hidden="true" />
-              <span
+              <NuxtLink
                 v-for="tag in props.tags"
                 :key="tag"
-                class="rounded-md bg-primary-500 px-2.5 py-1 text-[11px] text-white"
+                :to="{ path: '/blog/tags', query: { tag } }"
+                class="rounded-md bg-primary-500 px-2.5 py-1 text-[14px] text-white"
               >
                 {{ tag }}
-              </span>
+              </NuxtLink>
             </div>
 
             <div class="mt-4 flex flex-wrap items-center gap-3">
-              <span class="mr-1 text-[12px] text-text-tertiary">Share</span>
+              <span class="mr-1 text-[14px] text-text-tertiary">Share</span>
               <span class="h-px w-5 bg-border-200" aria-hidden="true" />
               <a
                 :href="`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`"
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="Bagikan ke Facebook"
-                class="text-text-secondary transition-colors hover:text-primary-500"
+                class="transition-opacity hover:opacity-70"
               >
-                <Facebook :size="20" :stroke-width="1.8" aria-hidden="true" />
+                <img :src="facebookDark" alt="" aria-hidden="true" class="size-5 object-contain">
               </a>
               <a
                 href="https://www.instagram.com/"
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="Buka Instagram"
-                class="text-text-secondary transition-colors hover:text-primary-500"
+                class="transition-opacity hover:opacity-70"
               >
-                <Instagram :size="20" :stroke-width="1.8" aria-hidden="true" />
+                <img :src="instagramDark" alt="" aria-hidden="true" class="size-5 object-contain">
+              </a>
+              <a
+                href="https://www.threads.net/"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Buka Threads"
+                class="transition-opacity hover:opacity-70"
+              >
+                <img :src="threadsDark" alt="" aria-hidden="true" class="size-5 object-contain">
               </a>
               <a
                 href="https://www.tiktok.com/"
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="Buka TikTok"
-                class="text-text-secondary transition-colors hover:text-primary-500"
+                class="transition-opacity hover:opacity-70"
               >
-                <Music2 :size="20" :stroke-width="1.8" aria-hidden="true" />
+                <img :src="tiktokDark" alt="" aria-hidden="true" class="size-5 object-contain">
               </a>
               <a
                 :href="`https://twitter.com/intent/tweet?url=${encodeURIComponent(shareUrl)}&text=${encodeURIComponent(props.title)}`"
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="Bagikan ke X"
-                class="flex size-5 items-center justify-center text-[17px] font-medium text-text-secondary transition-colors hover:text-primary-500"
+                class="transition-opacity hover:opacity-70"
               >
-                X
+                <img :src="xDark" alt="" aria-hidden="true" class="size-5 object-contain">
               </a>
               <button
                 type="button"
                 :aria-label="copied ? 'Tautan tersalin' : 'Salin tautan artikel'"
-                class="relative text-text-secondary transition-colors hover:text-primary-500"
+                class="relative transition-opacity hover:opacity-70"
                 @click="copyArticleLink"
               >
-                <Link2 :size="20" :stroke-width="1.8" aria-hidden="true" />
+                <img :src="linkDark" alt="" aria-hidden="true" class="size-5 object-contain">
                 <span
                   v-if="copied"
                   class="absolute bottom-full left-1/2 mb-2 -translate-x-1/2 whitespace-nowrap rounded bg-slate-800 px-2 py-1 text-[10px] text-white"
@@ -374,34 +402,20 @@ onBeforeUnmount(() => {
               Related Article
             </h2>
 
-            <div class="mt-4 grid gap-4 sm:grid-cols-3">
-              <NuxtLink
+            <div class="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              <MarketingBlogArticlePreviewCard
                 v-for="relatedArticle in props.relatedArticles"
+                :id="relatedArticle.id"
                 :key="relatedArticle.id"
-                :to="relatedArticle.to || `/blog/${relatedArticle.id}`"
-                class="group overflow-hidden rounded-xl bg-white shadow-[0_2px_8px_rgba(15,23,42,0.06)] transition-[box-shadow,transform] hover:-translate-y-0.5 hover:shadow-[0_8px_20px_rgba(15,23,42,0.12)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500"
-              >
-                <div class="aspect-[16/9] overflow-hidden bg-bg-200">
-                  <img
-                    :src="relatedArticle.image"
-                    :alt="relatedArticle.imageAlt"
-                    class="size-full object-cover transition-transform duration-300 group-hover:scale-[1.03]"
-                  >
-                </div>
-                <div class="px-3 pb-3 pt-2.5">
-                  <h3 class="line-clamp-1 text-[12px] text-text-secondary transition-colors group-hover:text-primary-500">
-                    {{ relatedArticle.title }}
-                  </h3>
-                  <div class="mt-3 flex items-end justify-between gap-2">
-                    <time class="text-[9px] text-text-tertiary">
-                      {{ relatedArticle.releaseDate }}
-                    </time>
-                    <ArrowUpRight :size="15" class="text-primary-500" aria-hidden="true" />
-                  </div>
-                </div>
-              </NuxtLink>
+                :title="relatedArticle.title"
+                :release-date="relatedArticle.releaseDate"
+                :image="relatedArticle.image"
+                :image-alt="relatedArticle.imageAlt"
+                :to="relatedArticle.to"
+              />
             </div>
           </section>
+
         </article>
       </div>
     </UiContainer>

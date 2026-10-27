@@ -4,9 +4,12 @@ const isPolicyPage = computed(() => (
   route.path === '/terms-and-conditions' || route.path === '/legalities'
 ))
 
-const headerVariant = computed(() => (
-  route.path === '/' || route.path.startsWith('/blog/') ? 'overlay' : 'light'
-))
+const headerVariant = computed(() => {
+  const isBlogDirectoryPage = route.path === '/blog/search' || route.path === '/blog/tags'
+  const isBlogDetail = route.path.startsWith('/blog/') && !isBlogDirectoryPage
+
+  return route.path === '/' || isBlogDetail ? 'overlay' : 'light'
+})
 
 const showMultinationalRoutes = computed(() => (
   route.path !== '/' && route.path !== '/about-us' && !route.path.startsWith('/blog') && route.path !== '/calculator' && route.path !== '/faq' && route.path !== '/promo' && !isPolicyPage.value

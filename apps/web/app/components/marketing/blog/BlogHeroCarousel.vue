@@ -86,7 +86,7 @@ onBeforeUnmount(clearAutoplay)
     <UiContainer>
       <div
         v-if="currentPost"
-        class="relative px-9 sm:px-11"
+        class="relative px-9 sm:px-11 xl:px-0"
         @mouseenter="clearAutoplay"
         @mouseleave="startAutoplay"
         @focusin="clearAutoplay"
@@ -95,7 +95,7 @@ onBeforeUnmount(clearAutoplay)
         <button
           type="button"
           aria-label="Tampilkan artikel sebelumnya"
-          class="absolute left-0 top-1/2 z-10 flex size-8 -translate-y-1/2 items-center justify-center rounded-full text-text-secondary transition-[background-color,color,transform] hover:scale-105 hover:bg-primary-50 hover:text-primary-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500"
+          class="absolute left-0 top-1/2 z-10 flex size-8 -translate-y-1/2 items-center justify-center rounded-full text-text-secondary transition-[background-color,color,transform] hover:scale-105 hover:bg-primary-50 hover:text-primary-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500 xl:-left-12"
           @click="showPrevious"
         >
           <ChevronLeft :size="25" :stroke-width="1.8" aria-hidden="true" />
@@ -104,27 +104,30 @@ onBeforeUnmount(clearAutoplay)
         <Transition :name="transitionName" mode="out-in">
           <article
             :key="currentPost.id"
-            class="grid items-center gap-8 md:grid-cols-[minmax(0,1.45fr)_minmax(300px,0.95fr)] lg:gap-10"
+            class="grid items-stretch gap-8 md:grid-cols-[minmax(0,1.45fr)_minmax(300px,0.95fr)] lg:gap-10"
             aria-live="polite"
           >
-            <div class="aspect-[16/9] overflow-hidden rounded-[18px] bg-bg-100">
+            <div class="relative aspect-[16/9] overflow-hidden rounded-[18px] bg-bg-100 md:aspect-auto">
               <img
                 :src="currentPost.image"
                 :alt="currentPost.imageAlt"
-                class="size-full object-cover"
+                class="absolute inset-0 size-full object-cover"
               >
             </div>
 
             <div class="min-w-0">
-              <h1 class="text-[28px] font-semibold leading-tight text-text-secondary sm:text-[32px]">
+              <h1
+                :title="currentPost.title"
+                class="truncate text-[32px] font-semibold leading-tight text-text-secondary"
+              >
                 {{ currentPost.title }}
               </h1>
 
-              <p class="mt-4 text-[15px] font-normal leading-[1.55] text-text-secondary sm:text-[16px]">
+              <p class="mt-4 line-clamp-4 text-justify text-[16px] font-normal leading-[1.55] text-text-secondary md:min-h-[6.2em]">
                 {{ currentPost.description }}
               </p>
 
-              <dl class="mt-5 space-y-2 text-[13px] text-text-secondary sm:text-[14px]">
+              <dl class="mt-5 space-y-2 text-[14px] text-text-secondary">
                 <div class="flex items-center gap-3">
                   <dt>Author</dt>
                   <span class="h-px w-5 bg-border-300" aria-hidden="true" />
@@ -145,9 +148,13 @@ onBeforeUnmount(clearAutoplay)
                   <li
                     v-for="tag in currentPost.tags"
                     :key="tag"
-                    class="rounded-md bg-bg-100 px-2.5 py-1.5 text-[13px] text-primary-500"
                   >
-                    {{ tag }}
+                    <NuxtLink
+                      :to="{ path: '/blog/tags', query: { tag } }"
+                      class="block rounded-md bg-bg-100 px-2.5 py-1.5 text-[14px] text-primary-500 transition-colors hover:bg-primary-50 focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-primary-500"
+                    >
+                      {{ tag }}
+                    </NuxtLink>
                   </li>
                 </ul>
               </div>
@@ -168,7 +175,7 @@ onBeforeUnmount(clearAutoplay)
         <button
           type="button"
           aria-label="Tampilkan artikel berikutnya"
-          class="absolute right-0 top-1/2 z-10 flex size-8 -translate-y-1/2 items-center justify-center rounded-full text-text-secondary transition-[background-color,color,transform] hover:scale-105 hover:bg-primary-50 hover:text-primary-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500"
+          class="absolute right-0 top-1/2 z-10 flex size-8 -translate-y-1/2 items-center justify-center rounded-full text-text-secondary transition-[background-color,color,transform] hover:scale-105 hover:bg-primary-50 hover:text-primary-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500 xl:-right-12"
           @click="showNext"
         >
           <ChevronRight :size="25" :stroke-width="1.8" aria-hidden="true" />

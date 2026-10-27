@@ -16,20 +16,28 @@ const props = withDefaults(defineProps<{
   title: string
   posts: readonly CategoryPost[]
   viewAllTo?: string
-  tone?: 'plain' | 'soft'
   autoplayDelay?: number
 }>(), {
   viewAllTo: '#featured-blog',
-  tone: 'plain',
   autoplayDelay: 5000,
 })
 
 const carouselViewport = ref<HTMLElement>()
+const router = useRouter()
+const isReady = ref(false)
 let autoplayTimer: ReturnType<typeof setInterval> | undefined
+let normalizeTimer: ReturnType<typeof setTimeout> | undefined
 
-const sectionClass = computed(() => (
-  props.tone === 'soft' ? 'bg-[#F5F6F8]' : 'bg-bg-0'
-))
+const isLooping = computed(() => props.posts.length > 4)
+
+const sets = computed(() => (isReady.value && isLooping.value ? [0, 1, 2] : [1]))
+
+function goToTag(tag: string) {
+  router.push({
+    path: '/blog/tags',
+    query: { tag },
+  })
+}
 
 function clearAutoplay() {
   if (autoplayTimer) {
@@ -38,51 +46,73 @@ function clearAutoplay() {
   }
 }
 
-function getScrollAmount() {
-  const viewport = carouselViewport.value
-  const firstCard = viewport?.querySelector<HTMLElement>('[data-category-card]')
+function getCards() {
+  return Array.from(carouselViewport.value?.querySelectorAll<HTMLElement>('[data-category-card]') ?? [])
+}
 
-  if (!viewport || !firstCard)
+function getScrollAmount() {
+  const [firstCard, secondCard] = getCards()
+
+  if (!firstCard || !secondCard)
     return 0
 
-  const gap = Number.parseFloat(getComputedStyle(viewport).columnGap || '0')
-  return firstCard.offsetWidth + gap
+  return secondCard.getBoundingClientRect().left - firstCard.getBoundingClientRect().left
+}
+
+function getSetWidth() {
+  const cards = getCards()
+  const firstCard = cards[0]
+  const firstCardOfNextSet = cards[props.posts.length]
+
+  if (!firstCard || !firstCardOfNextSet)
+    return 0
+
+  return firstCardOfNextSet.getBoundingClientRect().left - firstCard.getBoundingClientRect().left
+}
+
+function centerCarousel() {
+  const viewport = carouselViewport.value
+  const setWidth = getSetWidth()
+
+  if (!viewport || !setWidth)
+    return
+
+  viewport.scrollTo({ left: setWidth, behavior: 'instant' })
+}
+
+function normalizePosition() {
+  const viewport = carouselViewport.value
+  const setWidth = getSetWidth()
+
+  if (!viewport || !setWidth)
+    return
+
+  if (viewport.scrollLeft >= setWidth * 2 - 1)
+    viewport.scrollTo({ left: viewport.scrollLeft - setWidth, behavior: 'instant' })
+  else if (viewport.scrollLeft < setWidth - 1)
+    viewport.scrollTo({ left: viewport.scrollLeft + setWidth, behavior: 'instant' })
+}
+
+function scheduleNormalize() {
+  if (!isLooping.value)
+    return
+
+  clearTimeout(normalizeTimer)
+  normalizeTimer = setTimeout(normalizePosition, 150)
 }
 
 function scrollToPrevious() {
-  const viewport = carouselViewport.value
-
-  if (!viewport)
-    return
-
-  const amount = getScrollAmount()
-  const isAtStart = viewport.scrollLeft <= 2
-
-  viewport.scrollTo({
-    left: isAtStart ? viewport.scrollWidth - viewport.clientWidth : viewport.scrollLeft - amount,
-    behavior: 'smooth',
-  })
+  carouselViewport.value?.scrollBy({ left: -getScrollAmount(), behavior: 'smooth' })
 }
 
 function scrollToNext() {
-  const viewport = carouselViewport.value
-
-  if (!viewport)
-    return
-
-  const amount = getScrollAmount()
-  const isAtEnd = viewport.scrollLeft + viewport.clientWidth >= viewport.scrollWidth - 2
-
-  viewport.scrollTo({
-    left: isAtEnd ? 0 : viewport.scrollLeft + amount,
-    behavior: 'smooth',
-  })
+  carouselViewport.value?.scrollBy({ left: getScrollAmount(), behavior: 'smooth' })
 }
 
 function startAutoplay() {
   clearAutoplay()
 
-  if (!import.meta.client || props.posts.length < 2)
+  if (!import.meta.client || !isLooping.value)
     return
 
   if (window.matchMedia('(prefers-reduced-motion: reduce)').matches)
@@ -101,16 +131,26 @@ function showNext() {
   startAutoplay()
 }
 
-onMounted(startAutoplay)
-onBeforeUnmount(clearAutoplay)
+onMounted(async () => {
+  isReady.value = true
+  await nextTick()
+  centerCarousel()
+  startAutoplay()
+  window.addEventListener('resize', centerCarousel)
+})
+
+onBeforeUnmount(() => {
+  clearAutoplay()
+  clearTimeout(normalizeTimer)
+  window.removeEventListener('resize', centerCarousel)
+})
 </script>
 
 <template>
   <section
     :id="sectionId"
     :aria-labelledby="`${sectionId}-title`"
-    :class="sectionClass"
-    class="py-12 sm:py-14 lg:py-16"
+    class="bg-bg-0 py-12 sm:py-14 lg:py-16"
   >
     <UiContainer>
       <div
@@ -120,10 +160,10 @@ onBeforeUnmount(clearAutoplay)
         @focusin="clearAutoplay"
         @focusout="startAutoplay"
       >
-        <div class="flex items-center justify-between gap-5 px-8 sm:px-10">
+        <div class="flex items-center justify-between gap-5 px-8 sm:px-10 lg:px-[58px]">
           <h2
             :id="`${sectionId}-title`"
-            class="text-[24px] font-semibold text-primary-500 sm:text-[28px]"
+            class="text-[28px] font-semibold text-primary-500"
           >
             {{ title }}
           </h2>
@@ -137,72 +177,81 @@ onBeforeUnmount(clearAutoplay)
           </NuxtLink>
         </div>
 
-        <div class="relative mt-6 px-8 sm:px-10">
+        <div class="relative mt-5 flow-root px-8 sm:px-10 lg:px-[58px]">
           <button
             type="button"
             :aria-label="`Tampilkan artikel ${title} sebelumnya`"
-            class="absolute left-0 top-1/2 z-10 flex size-7 -translate-y-1/2 items-center justify-center rounded-full text-primary-500 transition-[background-color,transform] hover:scale-105 hover:bg-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500"
+            class="absolute left-0 top-1/2 z-10 flex size-7 -translate-y-1/2 items-center justify-center rounded-full text-primary-500 transition-[background-color,transform] hover:scale-105 hover:bg-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500 lg:left-2.5"
             @click="showPrevious"
           >
-            <ChevronLeft :size="21" :stroke-width="1.8" aria-hidden="true" />
+            <ChevronLeft :size="26" :stroke-width="1.8" aria-hidden="true" />
           </button>
 
           <div
             ref="carouselViewport"
-            class="category-posts-scroll flex snap-x snap-mandatory gap-4 overflow-x-auto scroll-smooth"
+            class="category-posts-scroll -mb-4 -mt-1.5 flex snap-x snap-mandatory gap-4 overflow-x-auto scroll-smooth pb-4 pt-1.5"
+            @scroll="scheduleNormalize"
           >
-            <NuxtLink
-              v-for="post in posts"
-              :key="post.id"
-              :to="post.to?.startsWith('/') ? post.to : `/blog/${post.id}`"
-              data-category-card
-              class="category-post-card group flex min-w-0 shrink-0 snap-start flex-col overflow-hidden rounded-xl border border-transparent bg-white shadow-[0_2px_7px_rgba(15,23,42,0.03)] transition-[border-color,box-shadow,transform] hover:-translate-y-0.5 hover:border-border-200 hover:shadow-[0_8px_20px_rgba(15,23,42,0.11)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500"
-            >
-              <div class="aspect-[16/9] overflow-hidden bg-bg-200">
-                <img
-                  :src="post.image"
-                  :alt="post.imageAlt"
-                  class="size-full object-cover transition-transform duration-300 group-hover:scale-[1.03]"
-                >
-              </div>
-
-              <div class="flex min-h-[142px] flex-1 flex-col px-3 pb-3 pt-3">
-                <h3 class="line-clamp-2 text-[14px] font-normal leading-[1.45] text-text-secondary transition-colors group-hover:text-primary-500">
-                  {{ post.title }}
-                </h3>
-
-                <ul class="mt-3 flex flex-wrap gap-2" aria-label="Tag artikel">
-                  <li
-                    v-for="tag in post.tags"
-                    :key="tag"
-                    class="rounded bg-bg-100 px-2 py-1 text-[10px] text-primary-500"
+            <template v-for="setIndex in sets" :key="setIndex">
+              <NuxtLink
+                v-for="post in posts"
+                :key="`${setIndex}-${post.id}`"
+                :to="post.to?.startsWith('/') ? post.to : `/blog/${post.id}`"
+                :inert="setIndex === 1 ? undefined : true"
+                data-category-card
+                class="category-post-card group flex min-w-0 shrink-0 snap-start flex-col overflow-hidden rounded-xl bg-white shadow-[0_2px_8px_rgba(15,23,42,0.04)] transition-shadow hover:shadow-md focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500"
+              >
+                <div class="aspect-[16/9] overflow-hidden bg-bg-200">
+                  <img
+                    :src="post.image"
+                    :alt="post.imageAlt"
+                    class="size-full object-cover transition-transform duration-300 group-hover:scale-[1.03]"
                   >
-                    {{ tag }}
-                  </li>
-                </ul>
-
-                <div class="mt-auto flex items-end justify-between gap-2 pt-3">
-                  <time class="text-[10px] text-text-tertiary">
-                    {{ post.releaseDate }}
-                  </time>
-                  <ArrowUpRight
-                    :size="16"
-                    :stroke-width="1.9"
-                    class="shrink-0 text-primary-500"
-                    aria-hidden="true"
-                  />
                 </div>
-              </div>
-            </NuxtLink>
+
+                <div class="flex min-h-[144px] flex-1 flex-col px-2.5 pb-3 pt-2.5">
+                  <h3 class="line-clamp-2 text-[16px] font-normal leading-6 text-text-secondary transition-colors group-hover:text-primary-500 group-focus-visible:text-primary-500">
+                    {{ post.title }}
+                  </h3>
+
+                  <ul class="mt-3 flex flex-wrap gap-2" aria-label="Tag artikel">
+                    <li
+                      v-for="tag in post.tags"
+                      :key="tag"
+                    >
+                      <button
+                        type="button"
+                        class="rounded bg-bg-100 px-2 py-1 text-[12px] text-primary-500 transition-colors hover:bg-primary-50 focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-primary-500"
+                        @click.prevent.stop="goToTag(tag)"
+                      >
+                        {{ tag }}
+                      </button>
+                    </li>
+                  </ul>
+
+                  <div class="mt-auto flex items-center justify-between gap-2 pt-3">
+                    <time class="text-[12px] font-normal text-text-tertiary">
+                      {{ post.releaseDate }}
+                    </time>
+                    <ArrowUpRight
+                      :size="24"
+                      :stroke-width="1.9"
+                      class="shrink-0 text-primary-500 opacity-0 transition-opacity duration-200 group-hover:opacity-100 group-focus-visible:opacity-100"
+                      aria-hidden="true"
+                    />
+                  </div>
+                </div>
+              </NuxtLink>
+            </template>
           </div>
 
           <button
             type="button"
             :aria-label="`Tampilkan artikel ${title} berikutnya`"
-            class="absolute right-0 top-1/2 z-10 flex size-7 -translate-y-1/2 items-center justify-center rounded-full text-primary-500 transition-[background-color,transform] hover:scale-105 hover:bg-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500"
+            class="absolute right-0 top-1/2 z-10 flex size-7 -translate-y-1/2 items-center justify-center rounded-full text-primary-500 transition-[background-color,transform] hover:scale-105 hover:bg-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500 lg:right-2.5"
             @click="showNext"
           >
-            <ChevronRight :size="21" :stroke-width="1.8" aria-hidden="true" />
+            <ChevronRight :size="26" :stroke-width="1.8" aria-hidden="true" />
           </button>
         </div>
       </div>
