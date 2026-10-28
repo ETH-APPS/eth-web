@@ -10,6 +10,7 @@ import {
   Newspaper,
   PackageSearch,
   Plane,
+  Search,
   Ship,
   ShoppingBag,
   X,
@@ -31,6 +32,8 @@ const emit = defineEmits<{
 type MobileSection = 'Layanan' | 'Fitur' | 'Informasi' | 'Insights'
 
 const activeSection = ref<MobileSection | null>('Layanan')
+const trackingCode = ref('')
+const trackingPin = ref('')
 
 const multinationalCountries = [
   { name: 'Taiwan', flag: taiwanFlagUrl },
@@ -42,20 +45,6 @@ const multinationalCountries = [
 ] as const
 
 const simpleSections = {
-  Fitur: [
-    {
-      to: '/calculator',
-      label: 'Kalkulator Impor',
-      description: 'Hitung estimasi biaya pengiriman sesuai kebutuhan kargo Anda.',
-      icon: Calculator,
-    },
-    {
-      to: '/live-tracking',
-      label: 'Live Tracking',
-      description: 'Pantau status dan perjalanan kargo secara real-time.',
-      icon: PackageSearch,
-    },
-  ],
   Informasi: [
     {
       to: '/about-us',
@@ -100,6 +89,18 @@ const simpleSections = {
 
 function toggleSection(section: MobileSection) {
   activeSection.value = activeSection.value === section ? null : section
+}
+
+async function submitTracking() {
+  await navigateTo({
+    path: '/live-tracking',
+    query: {
+      ...(trackingCode.value ? { markingId: trackingCode.value } : {}),
+      ...(trackingPin.value ? { pin: trackingPin.value } : {}),
+    },
+  })
+
+  emit('close')
 }
 </script>
 
@@ -279,7 +280,136 @@ function toggleSection(section: MobileSection) {
           </div>
         </section>
 
-        <section v-for="section in (['Fitur', 'Informasi', 'Insights'] as const)" :key="section">
+        <section>
+          <button
+            type="button"
+            class="flex w-full items-center justify-between py-3 text-left text-2xl font-semibold transition-colors hover:text-primary-500 focus-visible:outline-2 focus-visible:outline-primary-500"
+            :class="activeSection === 'Fitur' ? 'text-primary-500' : 'text-text-secondary'"
+            :aria-expanded="activeSection === 'Fitur'"
+            aria-controls="mobile-features-menu"
+            @click="toggleSection('Fitur')"
+          >
+            <span>Fitur</span>
+            <ChevronDown
+              :size="20"
+              aria-hidden="true"
+              class="transition-transform duration-200"
+              :class="activeSection === 'Fitur' ? 'rotate-180' : ''"
+            />
+          </button>
+
+          <div
+            id="mobile-features-menu"
+            class="grid transition-[grid-template-rows,opacity] duration-300"
+            :class="activeSection === 'Fitur' ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0'"
+          >
+            <div class="min-h-0 overflow-hidden">
+              <div class="border-l-[3px] border-primary-500 pb-4 pl-10 pr-0.5 pt-1">
+                <section aria-labelledby="mobile-quotation-service-title">
+                  <p
+                    id="mobile-quotation-service-title"
+                    class="mb-3 text-sm font-medium text-text-tertiary"
+                  >
+                    Quotation Service
+                  </p>
+
+                  <NuxtLink
+                    to="/calculator"
+                    class="group flex w-fit items-center gap-3 rounded-lg focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500"
+                    @click="emit('close')"
+                  >
+                    <span class="flex size-9 shrink-0 items-center justify-center rounded-full bg-primary-50 text-primary-500 transition-colors group-hover:bg-primary-500 group-hover:text-white">
+                      <Calculator :size="18" aria-hidden="true" />
+                    </span>
+                    <span class="text-lg font-medium text-black">Kalkulator</span>
+                  </NuxtLink>
+
+                  <p class="mt-3 text-sm leading-5 text-text-tertiary">
+                    Hitung estimasi biaya pengiriman sesuai jenis dan kebutuhan kargo Anda.
+                  </p>
+
+                  <div class="mt-4 flex flex-wrap items-center justify-between gap-3">
+                    <div class="flex items-center gap-2 text-sm text-text-tertiary">
+                      <span>Cargo</span>
+                      <span class="rounded bg-bg-100 px-2 py-1 font-medium text-primary-500">Sea</span>
+                      <span class="rounded bg-bg-100 px-2 py-1 font-medium text-primary-500">Air</span>
+                    </div>
+
+                    <NuxtLink
+                      to="/calculator"
+                      class="ml-auto inline-flex h-12 shrink-0 items-center gap-2 rounded-2xl bg-primary-500 px-4 text-base font-medium text-white transition-colors hover:bg-primary-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500"
+                      @click="emit('close')"
+                    >
+                      <span>Calculate</span>
+                      <ArrowUpRight :size="18" aria-hidden="true" />
+                    </NuxtLink>
+                  </div>
+                </section>
+
+                <section class="mt-7" aria-labelledby="mobile-tracking-service-title">
+                  <p
+                    id="mobile-tracking-service-title"
+                    class="mb-3 text-sm font-medium text-text-tertiary"
+                  >
+                    Tracking Service
+                  </p>
+
+                  <NuxtLink
+                    to="/live-tracking"
+                    class="group flex w-fit items-center gap-3 rounded-lg focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500"
+                    @click="emit('close')"
+                  >
+                    <span class="flex size-9 shrink-0 items-center justify-center rounded-full bg-primary-50 text-primary-500 transition-colors group-hover:bg-primary-500 group-hover:text-white">
+                      <PackageSearch :size="18" aria-hidden="true" />
+                    </span>
+                    <span class="text-lg font-medium text-black">Live Tracking Order</span>
+                  </NuxtLink>
+
+                  <p class="mt-3 text-sm leading-5 text-text-tertiary">
+                    Pantau status dan perjalanan kargo Anda secara cepat melalui Marking ID dan PIN.
+                  </p>
+
+                  <form
+                    class="mt-4 space-y-2"
+                    @submit.prevent="submitTracking"
+                  >
+                    <label class="sr-only" for="mobile-tracking-code">Marking ID</label>
+                    <input
+                      id="mobile-tracking-code"
+                      v-model="trackingCode"
+                      name="mobile-tracking-code"
+                      type="text"
+                      autocomplete="off"
+                      placeholder="Marking ID"
+                      class="h-12 w-full rounded-2xl border border-border-200 bg-bg-0 px-4 text-base text-text-secondary outline-none transition-[border-color,box-shadow] placeholder:italic placeholder:text-text-tertiary focus:border-primary-500 focus:ring-2 focus:ring-primary-100"
+                    >
+
+                    <label class="sr-only" for="mobile-tracking-pin">PIN</label>
+                    <input
+                      id="mobile-tracking-pin"
+                      v-model="trackingPin"
+                      name="mobile-tracking-pin"
+                      type="text"
+                      autocomplete="off"
+                      placeholder="PIN"
+                      class="h-12 w-full rounded-2xl border border-border-200 bg-bg-0 px-4 text-base text-text-secondary outline-none transition-[border-color,box-shadow] placeholder:italic placeholder:text-text-tertiary focus:border-primary-500 focus:ring-2 focus:ring-primary-100"
+                    >
+
+                    <button
+                      type="submit"
+                      class="ml-auto flex h-12 items-center gap-2 rounded-2xl bg-primary-500 px-5 text-base font-medium text-white transition-colors hover:bg-primary-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500"
+                    >
+                      <span>Track</span>
+                      <Search :size="19" aria-hidden="true" />
+                    </button>
+                  </form>
+                </section>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section v-for="section in (['Informasi', 'Insights'] as const)" :key="section">
           <button
             type="button"
             class="flex w-full items-center justify-between py-3 text-left text-2xl font-semibold text-text-secondary transition-colors hover:text-primary-500 focus-visible:outline-2 focus-visible:outline-primary-500"
