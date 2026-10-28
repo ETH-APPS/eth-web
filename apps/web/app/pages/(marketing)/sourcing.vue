@@ -68,7 +68,7 @@ const faqContent = faqContentByPath['/sourcing'] ?? homeFaqContent
     cta-label="Konsultasi Gratis"
     cta-to="/#quote"
   />
-  <MarketingSectionsMultinationalRoutes :show-top-border="true" />
+  <MarketingSectionsMultinationalRoutes :show-top-border="false" />
   <MarketingSectionsSourcingOtherServices />
   <MarketingSectionsFaq
     v-bind="faqContent"

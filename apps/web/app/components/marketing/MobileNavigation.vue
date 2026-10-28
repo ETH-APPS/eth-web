@@ -1,16 +1,17 @@
 <script setup lang="ts">
 import {
   ArrowUpRight,
+  BadgeInfo,
   Banknote,
   BookOpenText,
   Calculator,
   ChevronDown,
   Gift,
-  Info,
   Newspaper,
   PackageSearch,
   Plane,
   Search,
+  ScrollText,
   Ship,
   ShoppingBag,
   X,
@@ -45,26 +46,6 @@ const multinationalCountries = [
 ] as const
 
 const simpleSections = {
-  Informasi: [
-    {
-      to: '/about-us',
-      label: 'Tentang Kami',
-      description: 'Kenali ETH Cargo dan layanan logistik terintegrasi kami.',
-      icon: Info,
-    },
-    {
-      to: '/faq',
-      label: 'FAQ',
-      description: 'Jawaban untuk pertanyaan umum seputar layanan ETH Cargo.',
-      icon: BookOpenText,
-    },
-    {
-      to: '/terms-and-conditions',
-      label: 'Syarat & Ketentuan',
-      description: 'Informasi ketentuan penggunaan layanan ETH Cargo.',
-      icon: BookOpenText,
-    },
-  ],
   Insights: [
     {
       to: '/promo',
@@ -86,6 +67,39 @@ const simpleSections = {
     },
   ],
 } as const
+
+const informationSections = [
+  {
+    id: 'mobile-about-eth-cargo-title',
+    title: 'About ETH Cargo',
+    items: [
+      {
+        to: '/about-us',
+        label: 'About Us',
+        description: 'Kenali ETH Cargo dan komitmen kami dalam mendukung kebutuhan logistik bisnis Anda.',
+        icon: BadgeInfo,
+      },
+      {
+        to: '/faq',
+        label: 'FAQ',
+        description: 'Temukan jawaban atas pertanyaan umum seputar layanan dan proses pengiriman.',
+        icon: BookOpenText,
+      },
+    ],
+  },
+  {
+    id: 'mobile-legalities-title',
+    title: 'Legalities',
+    items: [
+      {
+        to: '/terms-and-conditions',
+        label: 'Syarat & Ketentuan',
+        description: 'Pelajari ketentuan penggunaan layanan dan informasi legal ETH Cargo.',
+        icon: ScrollText,
+      },
+    ],
+  },
+] as const
 
 function toggleSection(section: MobileSection) {
   activeSection.value = activeSection.value === section ? null : section
@@ -409,7 +423,71 @@ async function submitTracking() {
           </div>
         </section>
 
-        <section v-for="section in (['Informasi', 'Insights'] as const)" :key="section">
+        <section>
+          <button
+            type="button"
+            class="flex w-full items-center justify-between py-3 text-left text-2xl font-semibold transition-colors hover:text-primary-500 focus-visible:outline-2 focus-visible:outline-primary-500"
+            :class="activeSection === 'Informasi' ? 'text-primary-500' : 'text-text-secondary'"
+            :aria-expanded="activeSection === 'Informasi'"
+            aria-controls="mobile-information-menu"
+            @click="toggleSection('Informasi')"
+          >
+            <span>Information</span>
+            <ChevronDown
+              :size="20"
+              aria-hidden="true"
+              class="transition-transform duration-200"
+              :class="activeSection === 'Informasi' ? 'rotate-180' : ''"
+            />
+          </button>
+
+          <div
+            id="mobile-information-menu"
+            class="grid transition-[grid-template-rows,opacity] duration-300"
+            :class="activeSection === 'Informasi' ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0'"
+          >
+            <div class="min-h-0 overflow-hidden">
+              <div class="space-y-8 border-l-[3px] border-primary-500 pb-8 pl-6 pt-1">
+                <section
+                  v-for="informationSection in informationSections"
+                  :key="informationSection.id"
+                  :aria-labelledby="informationSection.id"
+                >
+                  <p
+                    :id="informationSection.id"
+                    class="mb-4 text-sm font-medium text-text-tertiary"
+                  >
+                    {{ informationSection.title }}
+                  </p>
+
+                  <div class="space-y-6">
+                    <NuxtLink
+                      v-for="item in informationSection.items"
+                      :key="item.to"
+                      :to="item.to"
+                      class="group flex items-start gap-4 rounded-lg focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500"
+                      @click="emit('close')"
+                    >
+                      <span class="flex size-10 shrink-0 items-center justify-center rounded-full bg-primary-50 text-primary-500 transition-colors group-hover:bg-primary-500 group-hover:text-white">
+                        <component :is="item.icon" :size="20" aria-hidden="true" />
+                      </span>
+                      <span class="min-w-0 pt-1">
+                        <span class="block text-lg font-medium text-black">
+                          {{ item.label }}
+                        </span>
+                        <span class="mt-3 block text-sm leading-6 text-text-tertiary">
+                          {{ item.description }}
+                        </span>
+                      </span>
+                    </NuxtLink>
+                  </div>
+                </section>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section v-for="section in (['Insights'] as const)" :key="section">
           <button
             type="button"
             class="flex w-full items-center justify-between py-3 text-left text-2xl font-semibold text-text-secondary transition-colors hover:text-primary-500 focus-visible:outline-2 focus-visible:outline-primary-500"

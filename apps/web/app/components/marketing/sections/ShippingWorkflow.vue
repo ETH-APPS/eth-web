@@ -141,7 +141,7 @@ onBeforeUnmount(() => {
         </p>
       </div>
 
-      <ol class="mx-auto mt-10 max-w-[610px]">
+      <ol class="mx-auto mt-10 max-w-[450px]">
         <li
           v-for="(step, index) in steps"
           :key="`${index}-${step.title}`"
