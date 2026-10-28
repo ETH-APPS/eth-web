@@ -97,7 +97,7 @@ import {
         </NuxtLink>
 
         <NuxtLink
-          to="/#alur-pengiriman"
+          to="/complete-guide"
           class="group/item flex items-start gap-4 rounded-lg focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary-500"
         >
           <span class="flex size-10 shrink-0 items-center justify-center rounded-full bg-primary-50 text-primary-500 transition-colors duration-200 motion-reduce:transition-none group-hover/item:bg-primary-500 group-hover/item:text-white group-focus-visible/item:bg-primary-500 group-focus-visible/item:text-white">
@@ -105,7 +105,7 @@ import {
           </span>
           <span>
             <span class="flex items-center gap-2 text-base font-medium text-text-secondary transition-colors group-hover/item:text-primary-500">
-              Proses Impor
+              Cara Impor
               <ArrowUpRight
                 :size="18"
                 aria-hidden="true"

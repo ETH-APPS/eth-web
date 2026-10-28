@@ -41,12 +41,5 @@ const guideShippingServices = [
     :default-open-index="1"
     :show-quote="false"
   />
-  <MarketingSectionsTestimonials />
-  <MarketingSectionsCargoShippingTypes
-    section-id="complete-guide-shipping-types"
-    title="Tipe Pengiriman Kargo"
-    description="Quisque faucibus ex sapien vitae pellentesque sem placerat. In id cursus mi pretium tellus duis convallis."
-    :services="guideShippingServices"
-    surface="muted"
-  />
+  <!-- <MarketingSectionsTestimonials /> -->
 </template>

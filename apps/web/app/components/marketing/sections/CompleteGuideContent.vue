@@ -3,7 +3,11 @@ import {
   ChevronDown,
   ChevronUp,
 } from 'lucide-vue-next'
+import articleImage from '~/assets/images/marketing/article.png'
+import cargoAirLandscapeImage from '~/assets/images/marketing/cargo-air-landscape.png'
+import cargoSeaLandscapeImage from '~/assets/images/marketing/cargo-sea-landscape.png'
 import facebookDark from '~/assets/images/marketing/facebook-dark.png'
+import heroImage from '~/assets/images/marketing/hero.png'
 import instagramDark from '~/assets/images/marketing/Instagram-dark.png'
 import linkDark from '~/assets/images/marketing/Link-dark.png'
 import threadsDark from '~/assets/images/marketing/Threads-dark.png'
@@ -154,10 +158,10 @@ onBeforeUnmount(() => {
   <section class="bg-bg-0 pb-20 pt-14">
     <UiContainer>
       <header class="text-center">
-        <p class="text-[12px] font-medium uppercase text-primary-700">
+        <p class="text-[20px] font-normal uppercase text-primary-700">
           Documentation
         </p>
-        <h1 class="mt-2 text-[36px] font-semibold leading-tight text-primary-500">
+        <h1 class="mt-2 text-[48px] font-semibold leading-tight text-primary-500">
           OUR COMPLETE GUIDE
         </h1>
       </header>
@@ -177,7 +181,7 @@ onBeforeUnmount(() => {
                 <div class="flex items-start gap-2">
                   <button
                     type="button"
-                    class="grid min-w-0 flex-1 grid-cols-[18px_1fr] gap-x-1.5 text-left text-[14px] font-medium leading-[1.4] text-text-secondary transition-colors hover:text-primary-500"
+                    class="grid min-w-0 flex-1 grid-cols-[20px_1fr] gap-x-1.5 text-left text-[16px] font-medium leading-[1.4] text-text-secondary transition-colors hover:text-primary-500"
                     :class="activeSection === section.id ? 'text-primary-500' : ''"
                     @click="scrollToSection(section.id)"
                   >
@@ -207,7 +211,7 @@ onBeforeUnmount(() => {
                     <li v-for="child in section.children" :key="child.id">
                       <button
                         type="button"
-                        class="grid w-full grid-cols-[20px_1fr] gap-x-1.5 rounded-lg px-2 py-2 text-left text-[12px] leading-[1.4] transition-colors"
+                        class="grid w-full grid-cols-[24px_1fr] gap-x-1.5 rounded-lg px-2 py-2 text-left text-[14px] font-normal leading-[1.4] transition-colors"
                         :class="activeSection === child.id
                           ? 'bg-primary-50 text-primary-500'
                           : 'text-text-tertiary hover:bg-primary-50 hover:text-primary-500'"
@@ -223,21 +227,19 @@ onBeforeUnmount(() => {
             </ol>
           </nav>
 
-          <div
-            role="img"
-            aria-label="Placeholder gambar dokumentasi ETH Cargo"
-            class="mt-4 flex aspect-[4/5] items-center justify-center rounded-2xl bg-bg-200 text-[14px] text-text-tertiary"
+          <img
+            :src="heroImage"
+            alt="Kapal kargo membawa kontainer dalam perjalanan pengiriman internasional"
+            class="mt-4 aspect-[4/5] w-full rounded-2xl object-cover"
           >
-            Image
-          </div>
         </aside>
 
-        <article class="min-w-0 text-[14px] leading-[1.65] text-text-secondary">
+        <article class="min-w-0 text-[14px] font-normal leading-[1.65] text-text-secondary">
           <section class="overflow-hidden rounded-xl border border-border-200">
             <h2 class="bg-border-200 px-4 py-3 text-[14px] font-semibold text-primary-500">
               Key Points
             </h2>
-            <ul class="divide-y divide-border-200">
+            <ul class="divide-y divide-border-200 text-[14px] font-normal">
               <li class="flex gap-3 px-4 py-3">
                 <span class="text-primary-500" aria-hidden="true">–</span>
                 <span>Siapkan spesifikasi barang dan dokumen pendukung sebelum memulai proses pengiriman.</span>
@@ -254,7 +256,7 @@ onBeforeUnmount(() => {
           </section>
 
           <section id="persiapan-impor" class="mt-6 scroll-mt-28">
-            <h2 class="text-[20px] font-semibold text-primary-500">
+            <h2 class="text-[20px] font-medium text-primary-500">
               1. Persiapan proses impor
             </h2>
             <p class="mt-4">
@@ -264,16 +266,15 @@ onBeforeUnmount(() => {
               Data yang akurat membantu tim logistik mengidentifikasi kebutuhan izin, memilih jalur pengiriman, dan menghitung estimasi biaya secara transparan sejak awal.
             </p>
 
-            <div
-              role="img"
-              aria-label="Placeholder ilustrasi persiapan proses impor"
-              class="mx-auto my-7 flex aspect-[16/8] w-[78%] items-center justify-center bg-bg-200 text-text-tertiary"
+            <img
+              :src="articleImage"
+              alt="Tumpukan kontainer sebagai bagian dari persiapan proses impor"
+              loading="lazy"
+              class="mx-auto my-7 aspect-[16/8] w-[78%] rounded-xl object-cover"
             >
-              Image
-            </div>
 
             <section id="data-dan-spesifikasi" class="scroll-mt-28">
-              <h3 class="text-[18px] font-semibold text-primary-500">
+              <h3 class="text-[14px] font-semibold text-primary-500">
                 1.1 Menyiapkan data dan spesifikasi barang
               </h3>
               <p class="mt-4">
@@ -288,7 +289,7 @@ onBeforeUnmount(() => {
             </section>
 
             <section id="dokumen-pengiriman" class="mt-7 scroll-mt-28">
-              <h3 class="text-[18px] font-semibold text-primary-500">
+              <h3 class="text-[14px] font-semibold text-primary-500">
                 1.2 Memahami dokumen pengiriman
               </h3>
               <p class="mt-4">
@@ -298,23 +299,22 @@ onBeforeUnmount(() => {
           </section>
 
           <section id="metode-pengiriman" class="mt-9 scroll-mt-28">
-            <h2 class="text-[20px] font-semibold text-primary-500">
+            <h2 class="text-[20px] font-medium text-primary-500">
               2. Memilih metode pengiriman
             </h2>
             <p class="mt-4">
               Setiap moda pengiriman memiliki struktur biaya dan estimasi waktu yang berbeda. Pemilihan yang tepat harus mempertimbangkan skala bisnis, urgensi, volume muatan, dan karakter produk.
             </p>
 
-            <div
-              role="img"
-              aria-label="Placeholder ilustrasi metode pengiriman"
-              class="mx-auto my-7 flex aspect-[16/8] w-[78%] items-center justify-center bg-bg-200 text-text-tertiary"
+            <img
+              :src="cargoAirLandscapeImage"
+              alt="Pesawat kargo untuk metode pengiriman melalui jalur udara"
+              loading="lazy"
+              class="mx-auto my-7 aspect-[16/8] w-[78%] rounded-xl object-cover"
             >
-              Image
-            </div>
 
             <section id="laut-atau-udara" class="scroll-mt-28">
-              <h3 class="text-[18px] font-semibold text-primary-500">
+              <h3 class="text-[14px] font-semibold text-primary-500">
                 2.1 Menentukan jalur laut atau udara
               </h3>
               <p class="mt-4">
@@ -327,20 +327,19 @@ onBeforeUnmount(() => {
           </section>
 
           <section id="pengiriman-dan-pemantauan" class="mt-9 scroll-mt-28">
-            <h2 class="text-[20px] font-semibold text-primary-500">
+            <h2 class="text-[20px] font-medium text-primary-500">
               3. Pengiriman dan pemantauan
             </h2>
             <p class="mt-4">
               Setelah dokumen dan metode pengiriman dikonfirmasi, barang diterima di gudang asal untuk proses verifikasi, pengukuran, konsolidasi, dan persiapan keberangkatan. Status kargo kemudian diperbarui selama perjalanan hingga tiba di Indonesia.
             </p>
 
-            <div
-              role="img"
-              aria-label="Placeholder ilustrasi pemantauan pengiriman"
-              class="my-7 flex aspect-[16/9] w-full items-center justify-center bg-bg-200 text-text-tertiary"
+            <img
+              :src="cargoSeaLandscapeImage"
+              alt="Kapal kontainer di pelabuhan dalam proses pengiriman kargo"
+              loading="lazy"
+              class="my-7 aspect-[16/9] w-full rounded-xl object-cover"
             >
-              Image
-            </div>
 
             <p>
               Tim operasional membantu proses kepabeanan, pembongkaran, dan pengiriman akhir menuju lokasi tujuan. Simpan seluruh bukti transaksi serta dokumen pengiriman sebagai arsip operasional bisnis Anda.
@@ -349,18 +348,18 @@ onBeforeUnmount(() => {
 
           <div class="mt-10 border-y border-border-200 py-5">
             <div class="flex items-center gap-3">
-              <span class="text-[14px] text-text-tertiary">Tag</span>
+              <span class="text-[14px] font-normal text-text-tertiary">Tag</span>
               <span aria-hidden="true" class="h-px w-6 bg-border-200" />
-              <NuxtLink to="/blog/tags?tag=FCL%20Cargo" class="rounded-md bg-primary-500 px-2.5 py-1 text-[12px] text-white hover:bg-primary-600">
+              <NuxtLink to="/blog/tags?tag=FCL%20Cargo" class="rounded-md bg-primary-500 px-2.5 py-1 text-[14px] font-normal text-white hover:bg-primary-600">
                 FCL Cargo
               </NuxtLink>
-              <NuxtLink to="/blog/tags?tag=Sea%20Freight" class="rounded-md bg-primary-500 px-2.5 py-1 text-[12px] text-white hover:bg-primary-600">
+              <NuxtLink to="/blog/tags?tag=Sea%20Freight" class="rounded-md bg-primary-500 px-2.5 py-1 text-[14px] font-normal text-white hover:bg-primary-600">
                 Sea Freight
               </NuxtLink>
             </div>
 
             <div class="mt-4 flex items-center gap-3">
-              <span class="text-[14px] text-text-tertiary">Share</span>
+              <span class="text-[14px] font-normal text-text-tertiary">Share</span>
               <span aria-hidden="true" class="h-px w-6 bg-border-200" />
               <a
                 v-for="social in socials"
@@ -381,7 +380,7 @@ onBeforeUnmount(() => {
               >
                 <img :src="linkDark" alt="" aria-hidden="true" class="size-6 object-contain">
               </button>
-              <span v-if="copied" role="status" class="text-[11px] text-primary-500">Tersalin</span>
+              <span v-if="copied" role="status" class="text-[14px] font-normal text-primary-500">Tersalin</span>
             </div>
           </div>
         </article>

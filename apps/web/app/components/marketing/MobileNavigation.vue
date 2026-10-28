@@ -10,6 +10,7 @@ import {
   Newspaper,
   PackageSearch,
   Plane,
+  Route,
   Search,
   ScrollText,
   Ship,
@@ -64,6 +65,12 @@ const simpleSections = {
       label: 'Glossary',
       description: 'Pelajari istilah penting dalam pengiriman dan logistik.',
       icon: BookOpenText,
+    },
+    {
+      to: '/complete-guide',
+      label: 'Cara Impor',
+      description: 'Pahami tahapan pengiriman dan proses impor barang bersama ETH Cargo.',
+      icon: Route,
     },
   ],
 } as const
