@@ -8,7 +8,7 @@ const supportServices = [
     description:
       'Pendampingan pencarian pabrik/supplier terpercaya di China, negosiasi harga grosir modal, hingga pengecekan sampel produk tanpa kendala bahasa.',
     ctaLabel: 'Learn more',
-    to: '/#sourcing',
+    to: '/sourcing',
   },
   {
     icon: Landmark,
@@ -16,7 +16,7 @@ const supportServices = [
     description:
       'Fasilitas pembayaran kilat dan aman ke rekening bank China, Alipay, WeChat Pay, atau tagihan 1688 dengan kurs real-time dan bukti transfer resmi.',
     ctaLabel: 'Learn more',
-    to: '/#layanan',
+    to: '/transfer-rmb',
   },
 ] as const
 </script>

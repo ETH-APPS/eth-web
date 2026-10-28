@@ -26,6 +26,7 @@ const props = withDefaults(defineProps<{
   calculatorTo?: string
   consultationLabel?: string
   consultationTo?: string
+  showQuote?: boolean
 }>(), {
   title: 'FAQ',
   defaultOpenIndex: 1,
@@ -40,6 +41,7 @@ const props = withDefaults(defineProps<{
   calculatorTo: '#main-services',
   consultationLabel: 'Konsultasi Gratis',
   consultationTo: '#quote',
+  showQuote: true,
 })
 
 const activeFaq = ref<number | null>(props.defaultOpenIndex)
@@ -149,6 +151,7 @@ function toggleFaq(index: number) {
   <slot />
 
   <section
+    v-if="showQuote"
     :id="quoteSectionId"
     :aria-labelledby="quoteTitleId"
     class="bg-primary-600 py-14 text-bg-0"

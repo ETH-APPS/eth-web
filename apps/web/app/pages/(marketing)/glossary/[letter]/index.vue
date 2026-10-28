@@ -7,21 +7,16 @@ import {
 
 definePageMeta({
   layout: 'marketing',
-  path: '/glossary/:letter',
+  validate: route => {
+    const letter = String(route.params.letter ?? '').toLowerCase()
+    return Boolean(getGlossaryGroup(letter))
+  },
 })
 
 const route = useRoute()
-const letters = [...'ABCDEFGHIJKLMNOPQRSTUVWXYZ', '#']
-const validSlugs = [...'abcdefghijklmnopqrstuvwxyz', 'other']
-
-const activeLetter = computed(() => {
-  const routeLetter = String(route.params.letter ?? '').toLowerCase()
-
-  if (!validSlugs.includes(routeLetter))
-    return 'A'
-
-  return routeLetter === 'other' ? '#' : routeLetter.toUpperCase()
-})
+const { letters } = useGlossaryData()
+const activeGroup = computed(() => getGlossaryGroup(String(route.params.letter ?? '').toLowerCase()))
+const activeLetter = computed(() => activeGroup.value?.letter ?? '')
 
 useSeoMeta({
   title: () => `${activeLetter.value} Glossary | ETH Cargo`,
@@ -31,21 +26,8 @@ useSeoMeta({
   ogType: 'website',
 })
 
-const termTemplates = [
-  'Lorem ipsum dolor sit amet consectetur adipiscing elit.',
-  'Lorem ipsum dolor sit amet consectetur',
-  'Quisque faucibus ex sapien',
-  'Tempus leo eu aenean',
-  'Pulvinar vivamus fringilla lacus',
-  'Pulvinar vivamus fringilla lacus',
-]
-
 const searchQuery = ref('')
-
-const terms = computed(() => Array.from({ length: 18 }, (_, index) => ({
-  id: `term-${index + 1}`,
-  title: termTemplates[index % termTemplates.length]!,
-})))
+const terms = computed(() => activeGroup.value?.terms ?? [])
 
 const filteredTerms = computed(() => {
   const normalizedQuery = searchQuery.value.trim().toLocaleLowerCase('id-ID')
@@ -66,7 +48,7 @@ const termColumns = computed(() => {
 })
 
 function letterPath(letter: string) {
-  return `/glossary/${letter === '#' ? 'other' : letter.toLowerCase()}`
+  return glossaryLetterPath(letter)
 }
 </script>
 
@@ -76,11 +58,11 @@ function letterPath(letter: string) {
       <header class="text-center">
         <NuxtLink
           to="/glossary"
-          class="text-[24px] font-semibold leading-tight text-primary-500 focus-visible:rounded focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500"
+          class="text-[28px] font-semibold leading-tight text-primary-500 focus-visible:rounded focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500"
         >
           Glossary
         </NuxtLink>
-        <p class="mx-auto mt-5 max-w-[660px] text-[12px] leading-5 text-text-tertiary">
+        <p class="mx-auto mt-5 max-w-[660px] text-[16px] font-normal leading-5 text-text-tertiary">
           Lorem ipsum dolor sit amet consectetur adipiscing elit. Quisque faucibus ex sapien vitae<br>
           pellentesque sem placerat. In id cursus mi pretium tellus duis convallis.
         </p>
@@ -97,7 +79,7 @@ function letterPath(letter: string) {
             v-model="searchQuery"
             type="search"
             placeholder="Cari pembahasan"
-            class="h-10 w-full rounded-full border border-primary-300 bg-bg-0 pl-11 pr-5 text-[12px] text-text-secondary outline-none transition-[border-color,box-shadow] placeholder:text-text-disable focus:border-primary-500 focus:shadow-[0_0_0_3px_var(--color-primary-50)]"
+            class="h-10 w-full rounded-full border border-primary-300 bg-bg-0 pl-11 pr-5 text-[16px] font-normal text-text-secondary outline-none transition-[border-color,box-shadow] placeholder:text-text-disable focus:border-primary-500 focus:shadow-[0_0_0_3px_var(--color-primary-50)]"
           >
         </label>
       </header>
@@ -111,18 +93,18 @@ function letterPath(letter: string) {
           :key="letter"
           :to="letterPath(letter)"
           :aria-current="letter === activeLetter ? 'page' : undefined"
-          class="text-[13px] font-semibold text-text-secondary transition-colors hover:text-primary-500 focus-visible:rounded focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500"
+          class="text-[22px] font-semibold text-text-secondary transition-colors hover:text-primary-500 focus-visible:rounded focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500"
         >
           {{ letter }}
         </NuxtLink>
       </nav>
 
       <div class="mt-10">
-        <h1 class="text-[32px] font-semibold leading-none text-primary-500">
+        <h1 class="text-[42px] font-semibold leading-none text-primary-500">
           {{ activeLetter }}
         </h1>
-        <p class="mt-5 text-[11px] text-text-tertiary">
-          Found 120 articles
+        <p class="mt-5 text-[14px] font-normal text-text-tertiary">
+          Found {{ terms.length }} articles
         </p>
         <div class="mt-5 h-px bg-border-300" />
       </div>
@@ -140,8 +122,8 @@ function letterPath(letter: string) {
             v-for="term in column"
             :key="term.id"
           >
-            <button
-              type="button"
+            <NuxtLink
+              :to="glossaryTermPath(term)"
               class="group flex w-full items-start gap-3 text-left focus-visible:rounded focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500"
             >
               <FileText
@@ -151,7 +133,7 @@ function letterPath(letter: string) {
                 class="mt-0.5 shrink-0 text-text-tertiary transition-colors group-hover:text-primary-500"
               />
               <span
-                class="flex min-w-0 flex-1 items-start justify-between gap-3 text-[12px] leading-[1.5] text-text-secondary transition-colors group-hover:text-primary-500"
+                class="flex min-w-0 flex-1 items-start justify-between gap-3 text-[16px] font-normal leading-[1.5] text-text-secondary transition-colors group-hover:text-primary-500"
               >
                 <span>{{ term.title }}</span>
                 <ArrowUpRight
@@ -161,7 +143,7 @@ function letterPath(letter: string) {
                   class="mt-0.5 shrink-0 translate-y-1 opacity-0 transition-[opacity,transform] group-hover:translate-y-0 group-hover:opacity-100"
                 />
               </span>
-            </button>
+            </NuxtLink>
           </li>
         </ul>
       </div>
@@ -179,13 +161,13 @@ function letterPath(letter: string) {
       </div>
 
       <footer class="mt-14 border-t border-border-200 pt-8 text-center">
-        <p class="mx-auto max-w-[700px] text-[11px] leading-[1.6] text-text-tertiary">
+        <p class="mx-auto max-w-[700px] text-[14px] font-normal leading-[1.6] text-text-tertiary">
           Lorem ipsum dolor sit amet consectetur adipiscing elit. Quisque faucibus ex sapien vitae pellentesque<br>
           sem placerat. In id cursus mi pretium tellus duis convallis.
         </p>
         <NuxtLink
           to="/calculator"
-          class="mt-4 inline-flex h-9 items-center gap-2 rounded-lg bg-primary-500 px-5 text-[12px] font-medium text-bg-0 transition-[background-color,transform] hover:-translate-y-0.5 hover:bg-primary-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500"
+          class="mt-4 inline-flex h-9 items-center gap-2 rounded-lg bg-primary-500 px-5 text-[14px] font-medium text-bg-0 transition-[background-color,transform] hover:-translate-y-0.5 hover:bg-primary-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500"
         >
           <span>Get a Quote</span>
           <ArrowUpRight :size="15" :stroke-width="2" aria-hidden="true" />

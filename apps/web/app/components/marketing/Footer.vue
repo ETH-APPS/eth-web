@@ -39,8 +39,8 @@ const serviceLinks = [
   { label: 'Kargo Laut', to: '/sea-freight' },
   { label: 'Kargo Udara', to: '/air-freight' },
   { label: 'Jasa Kargo China', to: '#sourcing' },
-  { label: 'Transfer RMB', to: '#layanan' },
-  { label: 'Titip Beli', to: '#sourcing' },
+  { label: 'Transfer RMB', to: '/transfer-rmb' },
+  { label: 'Jasa Sourcing', to: '/sourcing' },
 ]
 
 const featureLinks = [
@@ -50,6 +50,7 @@ const featureLinks = [
 ]
 
 const guideLinks = [
+  { label: 'Complete Guide', to: '/complete-guide' },
   { label: 'Proses Impor Barang', to: '#alur-pengiriman' },
   { label: 'Insights', to: '/blog' },
 ]

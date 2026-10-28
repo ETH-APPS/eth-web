@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { Component } from 'vue'
-import { ArrowUpRight } from 'lucide-vue-next'
+import { ArrowUpRight, Menu } from 'lucide-vue-next'
 import FeaturesMenu from './header-menus/FeaturesMenu.vue'
 import InformationMenu from './header-menus/InformationMenu.vue'
 import InsightsMenu from './header-menus/InsightsMenu.vue'
@@ -29,12 +29,13 @@ const route = useRoute()
 const isLight = computed(() => props.variant === 'light')
 const isScrolled = ref(false)
 const activeMenu = ref<NavigationLabel | null>(null)
+const isMobileMenuOpen = ref(false)
 let closeMenuTimer: ReturnType<typeof setTimeout> | undefined
 let scrollAnimationFrame: number | undefined
 
 const isMenuOpen = computed(() => activeMenu.value !== null)
 const useLightStyle = computed(() => (
-  isLight.value || isScrolled.value || isMenuOpen.value
+  isLight.value || isScrolled.value || isMenuOpen.value || isMobileMenuOpen.value
 ))
 
 function updateHeaderStyle() {
@@ -87,6 +88,21 @@ function closeAllMenus() {
   activeMenu.value = null
 }
 
+function openMobileMenu() {
+  closeAllMenus()
+  isMobileMenuOpen.value = true
+}
+
+function closeMobileMenu() {
+  isMobileMenuOpen.value = false
+}
+
+function handleEscape(event: KeyboardEvent) {
+  if (event.key === 'Escape' && isMobileMenuOpen.value) {
+    closeMobileMenu()
+  }
+}
+
 function handleMenuClick(event: MouseEvent) {
   const target = event.target as HTMLElement | null
 
@@ -106,15 +122,27 @@ function handleMenuFocusOut(label: NavigationLabel, event: FocusEvent) {
   closeMenu(label)
 }
 
-watch(() => route.fullPath, closeAllMenus)
+watch(() => route.fullPath, () => {
+  closeAllMenus()
+  closeMobileMenu()
+})
+
+watch(isMobileMenuOpen, (isOpen) => {
+  if (!import.meta.client) return
+
+  document.documentElement.style.overflow = isOpen ? 'hidden' : ''
+})
 
 onMounted(() => {
   updateHeaderStyle()
   window.addEventListener('scroll', handleScroll, { passive: true })
+  window.addEventListener('keydown', handleEscape)
 })
 
 onBeforeUnmount(() => {
   window.removeEventListener('scroll', handleScroll)
+  window.removeEventListener('keydown', handleEscape)
+  document.documentElement.style.overflow = ''
   clearCloseMenuTimer()
 
   if (scrollAnimationFrame !== undefined) {
@@ -125,12 +153,12 @@ onBeforeUnmount(() => {
 
 <template>
   <header
-    class="sticky inset-x-0 top-0 z-30 h-[70px] transition-colors duration-300"
+    class="sticky inset-x-0 top-0 z-30 h-16 transition-colors duration-300 lg:h-[70px]"
     :class="[
-      props.variant === 'overlay' ? '-mb-[70px]' : '',
+      props.variant === 'overlay' ? 'lg:-mb-[70px]' : '',
       useLightStyle
         ? 'bg-white shadow-[0_4px_12px_rgba(15,23,42,0.08)]'
-        : 'bg-[rgba(17,17,17,0.12)] shadow-[0_4px_4px_rgba(0,0,0,0.25)] backdrop-blur-[3px]',
+        : 'bg-white shadow-[0_4px_12px_rgba(15,23,42,0.08)] lg:bg-[rgba(17,17,17,0.12)] lg:shadow-[0_4px_4px_rgba(0,0,0,0.25)] lg:backdrop-blur-[3px]',
     ]"
   >
     <UiContainer class="flex h-full items-center justify-between">
@@ -141,17 +169,24 @@ onBeforeUnmount(() => {
         :class="useLightStyle ? 'focus-visible:outline-primary-500' : 'focus-visible:outline-white'"
       >
         <img
+          :src="logoWhiteUrl"
+          width="128"
+          height="40"
+          alt="ETH Cargo"
+          class="h-10 w-32 object-contain object-left lg:hidden"
+        >
+        <img
           :src="useLightStyle ? logoWhiteUrl : logoUrl"
           width="160"
           height="48"
           alt="ETH Cargo"
-          class="h-12 w-40 object-contain"
+          class="hidden h-12 w-40 object-contain lg:block"
         >
       </NuxtLink>
 
       <nav
         aria-label="Navigasi utama"
-        class="h-full"
+        class="hidden h-full lg:block"
       >
         <ul class="flex h-full items-center gap-8">
           <li
@@ -221,7 +256,7 @@ onBeforeUnmount(() => {
 
       <NuxtLink
         :to="quoteNavigation.to"
-        class="flex h-9 shrink-0 items-center gap-1 rounded-lg bg-primary-500 px-3 text-sm text-white shadow-lg shadow-black/10 transition-colors hover:bg-primary-600 focus-visible:outline-2 focus-visible:outline-offset-4"
+        class="hidden h-9 shrink-0 items-center gap-1 rounded-lg bg-primary-500 px-3 text-sm text-white shadow-lg shadow-black/10 transition-colors hover:bg-primary-600 focus-visible:outline-2 focus-visible:outline-offset-4 lg:flex"
         :class="useLightStyle ? 'focus-visible:outline-primary-500' : 'focus-visible:outline-white'"
       >
         <span>{{ quoteNavigation.label }}</span>
@@ -233,6 +268,36 @@ onBeforeUnmount(() => {
           absolute-stroke-width
         />
       </NuxtLink>
+
+      <button
+        type="button"
+        aria-label="Buka menu navigasi"
+        aria-controls="mobile-navigation"
+        :aria-expanded="isMobileMenuOpen"
+        class="flex size-11 items-center justify-center rounded-lg text-primary-500 transition-colors hover:bg-primary-50 focus-visible:outline-2 focus-visible:outline-primary-500 lg:hidden"
+        @click="openMobileMenu"
+      >
+        <Menu :size="27" :stroke-width="2" aria-hidden="true" />
+      </button>
     </UiContainer>
+
+    <Teleport to="body">
+      <Transition
+        enter-active-class="transition duration-300 ease-out"
+        enter-from-class="translate-x-full opacity-0"
+        enter-to-class="translate-x-0 opacity-100"
+        leave-active-class="transition duration-250 ease-in"
+        leave-from-class="translate-x-0 opacity-100"
+        leave-to-class="translate-x-full opacity-0"
+      >
+        <div
+          v-if="isMobileMenuOpen"
+          id="mobile-navigation"
+          class="fixed inset-0 z-[100] overflow-y-auto bg-bg-0 lg:hidden"
+        >
+          <MarketingMobileNavigation @close="closeMobileMenu" />
+        </div>
+      </Transition>
+    </Teleport>
   </header>
 </template>

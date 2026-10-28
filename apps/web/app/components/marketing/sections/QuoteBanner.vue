@@ -10,13 +10,17 @@ const props = withDefaults(defineProps<{
   email: string
   ctaLabel?: string
   ctaTo?: string
-  image: string
-  imageAlt: string
+  image?: string
+  imageAlt?: string
+  imagePlaceholder?: string
 }>(), {
   sectionId: 'quote',
   emailLabel: 'via Email',
   ctaLabel: 'Get A Quote',
   ctaTo: '#quote',
+  image: '',
+  imageAlt: '',
+  imagePlaceholder: 'Image\nW: 532   x   H: 230',
 })
 
 const titleId = computed(() => `${props.sectionId}-title`)
@@ -74,11 +78,20 @@ const emailHref = computed(() => `mailto:${props.email}`)
 
       <div class="aspect-[532/230] overflow-hidden bg-bg-100">
         <img
+          v-if="image"
           :src="image"
           :alt="imageAlt"
           loading="lazy"
           class="size-full object-cover"
         >
+        <div
+          v-else
+          role="img"
+          :aria-label="imageAlt || 'Placeholder gambar banner'"
+          class="flex size-full items-center justify-center whitespace-pre-line text-center text-[18px] leading-[1.8] text-slate-950"
+        >
+          {{ imagePlaceholder }}
+        </div>
       </div>
     </div>
   </section>

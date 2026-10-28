@@ -26,6 +26,13 @@
 
   --color-border-200: #e4e7ec;
   --color-border-300: #ced2da;
+
+  --color-error-600: #F62C2C;
+  --color-error-700: #DE1212;
+
+  --color-warning-400: #FBBF24;
+  --color-warning-700: #B45309;
+
 }
 
 @layer base {

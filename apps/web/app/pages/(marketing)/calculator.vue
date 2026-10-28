@@ -63,15 +63,7 @@ const faqContent = faqContentByPath['/calculator'] ?? homeFaqContent
     cta-label="Konsultasi Kategori Kargo"
     cta-to="#quote"
   />
-  <MarketingSectionsCargoCategories
-    section-id="restricted-cargo-categories"
-    title="Ketentuan Barang Dilarang & Pembatasan (Lartas)"
-    description="Demi menjamin keamanan, kepatuhan hukum, dan kelancaran proses customs clearance di pelabuhan/bandara, ETH Cargo memberlakukan regulasi ketat terkait jenis komoditas yang dapat dikirimkan. Pastikan barang Anda tidak termasuk dalam kategori di bawah ini sebelum menghitung estimasi biaya."
-    :categories="cargoCategories"
-    cta-prompt="Ragu Apakah Barang Anda Termasuk Lartas?"
-    cta-label="Konsultasi Kategori Kargo"
-    cta-to="#quote"
-  />
+  <MarketingSectionsLartasRestrictions />
   <MarketingSectionsFaq v-bind="faqContent">
     <MarketingSectionsCargoShippingTypes
       section-id="calculator-shipping-types"

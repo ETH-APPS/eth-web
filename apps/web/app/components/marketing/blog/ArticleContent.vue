@@ -1,15 +1,18 @@
 <script setup lang="ts">
 import {
+  ArrowUpRight,
   ChevronDown,
   ChevronRight,
   ChevronUp,
 } from 'lucide-vue-next'
+import { PhFileText } from '@phosphor-icons/vue'
 import facebookDark from '~/assets/images/marketing/facebook-dark.png'
 import instagramDark from '~/assets/images/marketing/Instagram-dark.png'
 import linkDark from '~/assets/images/marketing/Link-dark.png'
 import threadsDark from '~/assets/images/marketing/Threads-dark.png'
 import tiktokDark from '~/assets/images/marketing/Tiktok-dark.png'
 import xDark from '~/assets/images/marketing/X-dark.png'
+import youtubeDark from '~/assets/images/marketing/youtube.png'
 
 interface RelatedArticle {
   id: string
@@ -317,6 +320,85 @@ onBeforeUnmount(() => {
               ETH Cargo menyediakan solusi pengiriman All-In Door-to-Door untuk membantu bisnis mengelola kebutuhan impor dan ekspor secara lebih efisien, mulai dari penjemputan, kepabeanan, hingga pengantaran akhir.
             </p>
           </section>
+
+          <div class="mt-10 border-t border-border-200 pt-6">
+            <section
+              aria-labelledby="article-author-title"
+              class="rounded-2xl border border-border-200 bg-bg-0 p-5 shadow-md"
+            >
+              <div class="flex items-start gap-4">
+                <div
+                  class="size-16 shrink-0 rounded-full bg-border-200"
+                  role="img"
+                  aria-label="Foto profil ETH Cargo Team"
+                />
+
+                <div class="min-w-0 flex-1">
+                  <h2 id="article-author-title" class="text-[24px] font-semibold leading-tight text-text-secondary">
+                    ETH Cargo Team
+                  </h2>
+                  <p class="mt-1 text-[16px] font-medium text-text-secondary">
+                    Logistics Specialist
+                  </p>
+                </div>
+
+                <NuxtLink
+                  to="/about-us"
+                  class="mt-2 inline-flex shrink-0 items-center gap-2 text-[14px] font-medium text-primary-500 transition-colors hover:text-primary-600 focus-visible:rounded focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500"
+                >
+                  <span>Lihat Profil</span>
+                  <ArrowUpRight :size="16" :stroke-width="2" aria-hidden="true" />
+                </NuxtLink>
+              </div>
+
+              <div class="mt-5 flex flex-wrap items-center justify-between gap-x-8 gap-y-4 pl-20">
+                <div class="inline-flex h-10 items-center gap-2 rounded-full bg-primary-50 px-4 text-[14px] font-normal tracking-wide text-primary-500">
+                  <PhFileText :size="18" weight="fill" aria-hidden="true" />
+                  <span>32 Articles</span>
+                </div>
+
+                <div class="flex items-center gap-6">
+                  <span class="text-[14px] text-text-tertiary">Social</span>
+                  <a
+                    href="https://www.facebook.com/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label="Facebook ETH Cargo"
+                    class="transition-opacity hover:opacity-70"
+                  >
+                    <img :src="facebookDark" alt="" aria-hidden="true" class="size-6 object-contain">
+                  </a>
+                  <a
+                    href="https://www.instagram.com/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label="Instagram ETH Cargo"
+                    class="transition-opacity hover:opacity-70"
+                  >
+                    <img :src="instagramDark" alt="" aria-hidden="true" class="size-6 object-contain">
+                  </a>
+                  <a
+                    href="https://www.tiktok.com/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label="TikTok ETH Cargo"
+                    class="transition-opacity hover:opacity-70"
+                  >
+                    <img :src="tiktokDark" alt="" aria-hidden="true" class="size-6 object-contain">
+                  </a>
+                  <a
+                    href="https://www.youtube.com/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label="YouTube ETH Cargo"
+                    class="transition-opacity hover:opacity-70"
+                  >
+                    <img :src="youtubeDark" alt="" aria-hidden="true" class="size-6 object-contain grayscale">
+                  </a>
+                </div>
+              </div>
+            </section>
+          </div>
 
           <div class="mt-10 border-y border-border-200 py-4">
             <div class="flex flex-wrap items-center gap-2.5">

@@ -231,4 +231,116 @@ export const faqContentByPath: Record<string, MarketingFaqContent> = {
       'Masukkan detail barang pada kalkulator atau konsultasikan kebutuhan pengiriman Anda bersama tim ETH Cargo.',
     calculatorTo: '#calculator-estimator',
   },
+  '/transfer-rmb': {
+    subtitle: 'Seputar Transfer RMB',
+    description:
+      'Temukan informasi mengenai waktu pemrosesan, bukti transfer resmi, nilai kurs, keamanan transaksi, serta batas nominal layanan Transfer RMB ETH Cargo.',
+    items: [
+      {
+        question: 'Berapa lama waktu yang dibutuhkan sampai dana masuk ke rekening supplier di China?',
+        answer:
+          'Untuk transaksi via Alipay dan WeChat Pay, dana umumnya langsung masuk secara instan hingga maksimal 1–2 jam. Untuk transfer ke rekening bank lokal China (seperti Bank of China/UnionPay), estimasi pemrosesan adalah pada hari yang sama (Same-Day Transfer) jika konfirmasi pembayaran dilakukan sebelum batas waktu operasional.',
+      },
+      {
+        question: 'Apakah saya mendapatkan bukti transfer resmi setelah transaksi selesai?',
+        answer:
+          'Ya. Setelah transaksi berhasil diproses oleh sistem kami, Anda akan langsung menerima bukti transfer digital resmi (bank receipt / payment voucher) yang berisi rincian tanggal, nama penerima, nominal RMB, dan nomor referensi transaksi sebagai dokumen pendukung pembukuan bisnis Anda.',
+      },
+      {
+        question: 'Bagaimana menentukan nilai kurs RMB yang berlaku untuk transaksi saya?',
+        answer:
+          'Nilai kurs RMB menggunakan patokan harga real-time transparan yang diperbarui setiap hari sesuai fluktuasi pasar finansial. Kurs yang Anda dapatkan akan dikunci (rate lock) saat Anda mengonfirmasi pesanan transfer bersama Account Manager kami.',
+      },
+      {
+        question: 'Apakah aman bayar ke supplier via 1688 / Taobao / Alipay tanpa risiko pembekuan akun?',
+        answer:
+          'Sangat aman. ETH Cargo menggunakan saluran transaksi resmi dan legal yang terverifikasi. Kami memastikan seluruh proses bantu bayar (Pay for Others) maupun transfer Alipay mematuhi regulasi perbankan sehingga terhindar dari risiko pembekuan akun (account freeze).',
+      },
+      {
+        question: 'Berapa batas minimum dan maksimum transfer RMB di ETH Cargo?',
+        answer:
+          'Kami melayani transaksi mulai dari skala kecil hingga order B2B bernilai besar. Tidak ada batasan ketat untuk transaksi perusahaan; tim kami siap memproses pembayaran bernilai tinggi sesuai dengan invoice dan kebutuhan belanja supplier Anda.',
+      },
+    ],
+    quoteTitle: 'Siap Membayar Supplier China Anda?',
+    quoteDescription:
+      'Hitung estimasi pembayaran atau konsultasikan kebutuhan transfer RMB bisnis Anda bersama tim ETH Cargo.',
+    calculatorTo: '#rmb-calculator',
+  },
+  '/sourcing': {
+    subtitle: 'Seputar Jasa Sourcing',
+    description:
+      'Temukan jawaban mengenai verifikasi supplier, pemesanan sampel, biaya layanan, integrasi pengiriman kargo, serta persiapan awal untuk memulai proses sourcing di China.',
+    items: [
+      {
+        question: 'Bagaimana cara ETH Cargo memastikan supplier di China aman dan bukan penipu?',
+        answer:
+          'Tim kami verifikasi legalitas perusahaan (business license), mengecek rekam jejak transaksi di marketplace seperti 1688/Alibaba, serta dapat melakukan audit pabrik langsung untuk memastikan kredibilitas dan kapasitas produksi supplier sebelum Anda melakukan transaksi.',
+      },
+      {
+        question: 'Apakah saya bisa meminta sampel produk (sample check) terlebih dahulu sebelum order skala besar?',
+        answer:
+          'Bisa. Kami akan memfasilitasi pembelian dan pengiriman sampel produk langsung dari supplier China ke alamat Anda di Indonesia via Air Cargo express, sehingga Anda dapat mengecek kualitas dan spesifikasi fisik barang sebelum menyetujui pemesanan massal (bulk order).',
+      },
+      {
+        question: 'Bagaimana skema biaya atau komisi untuk layanan Jasa Sourcing ini?',
+        answer:
+          'Biaya layanan sourcing dihitung secara transparan berdasarkan kompleksitas pencarian dan nilai transaksi produk Anda. Seluruh rincian biaya komisi, estimasi pengiriman kargo All-In, serta pajak/bea cukai diinfokan secara jujur di awal tanpa biaya tersembunyi.',
+      },
+      {
+        question: 'Apakah saya harus menggunakan pengiriman kargo ETH Cargo setelah proses sourcing selesai?',
+        answer:
+          'Ya, layanan sourcing kami terintegrasi langsung dengan ekosistem pengiriman kargo (Laut FCL/LCL & Udara) ETH Cargo. Hal ini memastikan proses konsolidasi barang di gudang China, inspeksi kualitas, hingga pengurusan bea cukai berjalan mulus satu pintu tanpa kendala pihak ketiga.',
+      },
+      {
+        question: 'Informasi apa saja yang perlu saya siapkan untuk memulai permintaan sourcing?',
+        answer:
+          'Anda cukup menyiapkan foto/spesifikasi produk, link referensi (jika ada dari 1688/Taobao/Alibaba), target harga modal yang diinginkan, serta estimasi kuantitas yang ingin dipesan. Tim kami akan langsung memproses pencarian supplier terbaik sesuai kriteria Anda.',
+      },
+    ],
+    quoteTitle: 'Siap Menemukan Supplier Terpercaya?',
+    quoteDescription:
+      'Konsultasikan kebutuhan produk Anda dan mulai proses sourcing bersama tim ETH Cargo.',
+    calculatorTo: '#sourcing-workflow',
+  },
+  '/complete-guide': {
+    subtitle: 'Frequently Asked Question',
+    description:
+      'Lorem ipsum dolor sit amet consectetur adipiscing elit. Quisque faucibus ex sapien vitae pellentesque sem placerat.',
+    items: [
+      {
+        question: 'Lorem Ipsum',
+        answer:
+          'Lorem ipsum dolor sit amet consectetur adipiscing elit. Quisque faucibus ex sapien vitae pellentesque sem placerat.',
+      },
+      {
+        question: 'Quisque faucibus ex sapien vitae pellentesque sem placerat. In id cursus mi pretium tellus duis convallis. Tempus leo eu aenean sed diam urna tempor.',
+        answer:
+          'Lorem ipsum dolor sit amet consectetur adipiscing elit. Quisque faucibus ex sapien vitae pellentesque sem placerat. In id cursus mi pretium tellus duis convallis. Tempus leo eu aenean sed diam urna tempor. Pulvinar vivamus fringilla lacus nec metus bibendum egestas. Iaculis massa nisl malesuada lacinia integer nunc posuere. Ut hendrerit semper vel class aptent taciti sociosqu. Ad litora torquent per conubia nostra inceptos himenaeos.',
+      },
+      {
+        question: 'Lorem Ipsum',
+        answer:
+          'Pulvinar vivamus fringilla lacus nec metus bibendum egestas. Iaculis massa nisl malesuada lacinia integer nunc posuere.',
+      },
+      {
+        question: 'Lorem Ipsum',
+        answer:
+          'Tempus leo eu aenean sed diam urna tempor. Pulvinar vivamus fringilla lacus nec metus bibendum egestas.',
+      },
+      {
+        question: 'Ut hendrerit semper vel class aptent taciti sociosqu. Ad litora torquent per conubia nostra inceptos himenaeos.',
+        answer:
+          'Quisque faucibus ex sapien vitae pellentesque sem placerat. In id cursus mi pretium tellus duis convallis.',
+      },
+      {
+        question: 'Lorem Ipsum',
+        answer:
+          'Lorem ipsum dolor sit amet consectetur adipiscing elit. Tempus leo eu aenean sed diam urna tempor.',
+      },
+    ],
+    quoteTitle: 'Lorem Ipsum',
+    quoteDescription: 'Lorem ipsum dolor sit amet consectetur adipiscing elit.',
+    calculatorTo: '/calculator',
+  },
 }

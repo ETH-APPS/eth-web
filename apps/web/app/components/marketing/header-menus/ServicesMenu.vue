@@ -117,7 +117,7 @@ const multinationalCountries = [
 
       <div class="grid grid-cols-2 gap-10">
         <NuxtLink
-          to="/#layanan"
+          to="/transfer-rmb"
           class="group/item flex items-start gap-4 rounded-lg focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary-500"
         >
           <span
@@ -140,7 +140,7 @@ const multinationalCountries = [
         </NuxtLink>
 
         <NuxtLink
-          to="/#sourcing"
+          to="/sourcing"
           class="group/item flex items-start gap-4 rounded-lg focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary-500"
         >
           <span
@@ -150,7 +150,7 @@ const multinationalCountries = [
           </span>
           <span>
             <span class="flex items-center gap-2 text-base font-medium text-text-secondary transition-colors group-hover/item:text-primary-500 group-focus-visible/item:text-primary-500">
-              Jasa Titip Beli
+              Jasa Sourcing
               <ArrowUpRight
                 :size="18"
                 aria-hidden="true"

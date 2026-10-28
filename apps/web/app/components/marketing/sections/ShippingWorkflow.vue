@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ArrowUpRight, Layers3 } from 'lucide-vue-next'
+import { ArrowUpRight, Info, Layers3 } from 'lucide-vue-next'
 
 interface ShippingWorkflowStep {
   title: string
@@ -15,9 +15,15 @@ const props = withDefaults(
     ctaLabel: string
     ctaTo: string
     sectionId?: string
+    showCta?: boolean
+    importantNote?: string
+    importantNoteLabel?: string
   }>(),
   {
     sectionId: 'shipping-workflow',
+    showCta: true,
+    importantNote: '',
+    importantNoteLabel: 'Catatan Penting:',
   },
 )
 
@@ -207,7 +213,23 @@ onBeforeUnmount(() => {
         </li>
       </ol>
 
-      <div class="mt-10 text-center">
+      <div
+        v-if="importantNote"
+        class="mx-auto mt-10 flex max-w-[650px] items-start gap-3 rounded-2xl border border-primary-500 px-5 py-4 text-left"
+      >
+        <Info
+          :size="18"
+          :stroke-width="2"
+          aria-hidden="true"
+          class="mt-0.5 shrink-0 text-primary-500"
+        />
+        <p class="text-[12px] leading-[1.55] text-slate-600">
+          <strong class="font-semibold text-slate-700">{{ importantNoteLabel }}</strong>
+          {{ importantNote }}
+        </p>
+      </div>
+
+      <div v-if="showCta" class="mt-10 text-center">
         <p class="text-[12px] text-slate-400">
           {{ ctaPrompt }}
         </p>
