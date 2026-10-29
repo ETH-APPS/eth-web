@@ -82,7 +82,7 @@ function handleTabKeydown(event: KeyboardEvent) {
   <section
     id="home"
     aria-labelledby="hero-title"
-    class="relative isolate h-[100svh] min-h-[810px] overflow-hidden bg-[#075474]"
+    class="relative isolate h-[100svh] min-h-[720px] overflow-hidden bg-[#075474]"
   >
     <img
       :src="heroUrl"
@@ -101,7 +101,7 @@ function handleTabKeydown(event: KeyboardEvent) {
       class="absolute inset-0 bg-[radial-gradient(ellipse_at_50%_45%,transparent_0%,transparent_38%,rgba(0,0,0,0.72)_100%)] opacity-[0.86]"
     />
 
-    <UiContainer class="relative z-10 flex h-full flex-col pb-[49px] pt-[120px]">
+    <UiContainer class="relative z-10 flex h-full flex-col pb-6 pt-[120px]">
       <h1
         id="hero-title"
         class="text-center text-[64px] font-bold leading-normal tracking-[0.01em] text-white drop-shadow-sm"
@@ -128,9 +128,9 @@ function handleTabKeydown(event: KeyboardEvent) {
         <section
           id="layanan"
           aria-label="Layanan ETH Cargo"
-          class="relative rounded-[24px] bg-[rgba(17,17,17,0.14)] px-6 pb-5 pt-6 text-white backdrop-blur-[4px]"
+          class="relative rounded-[24px] bg-[rgba(17,17,17,0.14)] px-6 pb-4 pt-5 text-white backdrop-blur-[4px]"
         >
-          <div class="relative h-[150px] overflow-hidden">
+          <div class="relative h-[130px] overflow-hidden">
             <div
               role="tablist"
               aria-label="Pilih layanan"
@@ -142,7 +142,7 @@ function handleTabKeydown(event: KeyboardEvent) {
                 v-for="service in services"
                 :key="service.id"
                 class="text-center transition-transform duration-300 ease-out"
-                :class="service.id === activeId ? 'translate-y-0' : 'translate-y-[94px]'"
+                :class="service.id === activeId ? 'translate-y-0' : 'translate-y-[78px]'"
               >
                 <button
                   :id="`service-tab-${service.id}`"
@@ -151,7 +151,7 @@ function handleTabKeydown(event: KeyboardEvent) {
                   :aria-controls="`service-panel-${service.id}`"
                   :aria-selected="service.id === activeId"
                   :tabindex="service.id === activeId ? 0 : -1"
-                  class="whitespace-nowrap rounded-md px-2 text-[21px] font-medium uppercase leading-tight tracking-[0.01em] text-white transition-colors hover:text-primary-200 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white"
+                  class="whitespace-nowrap rounded-md px-2 text-[22px] font-medium uppercase leading-tight tracking-[0.01em] text-white transition-colors hover:text-primary-200 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white"
                   @click="selectService(service.id)"
                 >
                   {{ service.label }}
@@ -164,13 +164,13 @@ function handleTabKeydown(event: KeyboardEvent) {
                   :aria-labelledby="`service-tab-${service.id}`"
                   class="px-3 pt-2"
                 >
-                  <p class="mx-auto max-w-[220px] text-[12px] leading-[1.45] text-white/90">
+                  <p class="mx-auto max-w-[220px] text-[12px] font-normal leading-[1.45] text-white/90">
                     {{ service.description }}
                   </p>
 
                   <a
                     href="#layanan"
-                    class="mt-2 inline-flex h-8 items-center gap-1 whitespace-nowrap rounded-[10px] bg-primary-500 px-2 text-[13px] text-white transition-colors hover:bg-primary-600 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white"
+                    class="mt-2 inline-flex h-9 items-center gap-1 whitespace-nowrap rounded-[10px] bg-primary-500 px-3 text-[14px] font-medium text-white transition-colors hover:bg-primary-600 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white"
                   >
                     <span>Pelajari {{ service.label }}</span>
 
@@ -188,7 +188,7 @@ function handleTabKeydown(event: KeyboardEvent) {
 
           <div
             aria-hidden="true"
-            class="relative h-6"
+            class="relative h-5"
           >
             <div class="absolute inset-x-0 top-1/2 h-px -translate-y-1/2 bg-primary-500" />
             <span

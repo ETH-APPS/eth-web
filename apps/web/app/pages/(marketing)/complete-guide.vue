@@ -41,5 +41,4 @@ const guideShippingServices = [
     :default-open-index="1"
     :show-quote="false"
   />
-  <!-- <MarketingSectionsTestimonials /> -->
 </template>

@@ -284,11 +284,11 @@ onBeforeUnmount(() => {
     <Teleport to="body">
       <Transition
         enter-active-class="transition duration-300 ease-out"
-        enter-from-class="translate-x-full opacity-0"
-        enter-to-class="translate-x-0 opacity-100"
+        enter-from-class="-translate-y-full opacity-0"
+        enter-to-class="translate-y-0 opacity-100"
         leave-active-class="transition duration-250 ease-in"
-        leave-from-class="translate-x-0 opacity-100"
-        leave-to-class="translate-x-full opacity-0"
+        leave-from-class="translate-y-0 opacity-100"
+        leave-to-class="-translate-y-full opacity-0"
       >
         <div
           v-if="isMobileMenuOpen"
