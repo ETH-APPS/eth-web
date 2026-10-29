@@ -124,5 +124,6 @@ const faqContent = faqContentByPath['/air-freight'] ?? homeFaqContent
     guide-prompt="Pelajari panduan perhitungan berat volume"
     guide-label="Selengkapnya"
   />
-  <MarketingSectionsFaq v-bind="faqContent" />
+  <MarketingSectionsFaq :content="faqContent" />
+  <MarketingSectionsQuoteActionBanner :content="faqContent" />
 </template>

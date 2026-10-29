@@ -81,7 +81,7 @@ const paymentChannels = [
         </p>
       </div>
 
-      <div class="mx-auto mt-10 grid max-w-[1200px] gap-6 md:grid-cols-2 xl:grid-cols-4">
+      <div class="mx-auto mt-10 grid max-w-[1200px] gap-6 xl:grid-cols-4">
         <article
           v-for="channel in paymentChannels"
           :key="channel.id"

@@ -64,7 +64,7 @@ const faqContent = faqContentByPath['/calculator'] ?? homeFaqContent
     cta-to="#quote"
   />
   <MarketingSectionsLartasRestrictions />
-  <MarketingSectionsFaq v-bind="faqContent">
+  <MarketingSectionsFaq :content="faqContent">
     <MarketingSectionsCargoShippingTypes
       section-id="calculator-shipping-types"
       variant="compact"
@@ -74,4 +74,5 @@ const faqContent = faqContentByPath['/calculator'] ?? homeFaqContent
       :services="calculatorShippingTypes"
     />
   </MarketingSectionsFaq>
+  <MarketingSectionsQuoteActionBanner :content="faqContent" />
 </template>

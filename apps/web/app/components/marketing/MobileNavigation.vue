@@ -46,34 +46,45 @@ const multinationalCountries = [
   { name: 'Amerika Serikat', flag: usaFlagUrl },
 ] as const
 
-const simpleSections = {
-  Insights: [
-    {
-      to: '/promo',
-      label: 'Our Promo',
-      description: 'Lihat promo dan penawaran terbaru dari ETH Cargo.',
-      icon: Gift,
-    },
-    {
-      to: '/blog',
-      label: 'Our Blog',
-      description: 'Artikel dan kabar terbaru seputar logistik dan impor.',
-      icon: Newspaper,
-    },
-    {
-      to: '/glossary',
-      label: 'Glossary',
-      description: 'Pelajari istilah penting dalam pengiriman dan logistik.',
-      icon: BookOpenText,
-    },
-    {
-      to: '/complete-guide',
-      label: 'Cara Impor',
-      description: 'Pahami tahapan pengiriman dan proses impor barang bersama ETH Cargo.',
-      icon: Route,
-    },
-  ],
-} as const
+const insightSections = [
+  {
+    id: 'mobile-articles-news-title',
+    title: 'Articles & News',
+    items: [
+      {
+        to: '/promo',
+        label: 'Our Promo',
+        description: 'Lihat promo dan penawaran terbaru dari ETH Cargo.',
+        icon: Gift,
+        showArrow: true,
+      },
+      {
+        to: '/blog',
+        label: 'Our Blog',
+        description: 'Artikel dan kabar terbaru seputar logistik dan impor.',
+        icon: Newspaper,
+      },
+    ],
+  },
+  {
+    id: 'mobile-guides-title',
+    title: 'Guides',
+    items: [
+      {
+        to: '/glossary',
+        label: 'Glossary',
+        description: 'Pelajari istilah penting dalam pengiriman dan logistik.',
+        icon: BookOpenText,
+      },
+      {
+        to: '/complete-guide',
+        label: 'Cara Impor',
+        description: 'Pahami tahapan pengiriman dan proses impor barang bersama ETH Cargo.',
+        icon: Route,
+      },
+    ],
+  },
+] as const
 
 const informationSections = [
   {
@@ -216,7 +227,7 @@ async function submitTracking() {
                     </span>
                     <span>
                       <span class="block text-base font-medium text-black">Kargo Laut</span>
-                      <span class="mt-1 flex gap-2 text-[10px] font-medium text-primary-500">
+                      <span class="mt-1 flex gap-2 text-xs font-medium text-primary-500">
                         <span class="rounded bg-bg-100 px-2 py-0.5">FCL</span>
                         <span class="rounded bg-bg-100 px-2 py-0.5">LCL</span>
                       </span>
@@ -329,7 +340,7 @@ async function submitTracking() {
                 <section aria-labelledby="mobile-quotation-service-title">
                   <p
                     id="mobile-quotation-service-title"
-                    class="mb-3 text-sm font-medium text-text-tertiary"
+                    class="mb-3 text-xs font-medium text-text-tertiary"
                   >
                     Quotation Service
                   </p>
@@ -342,15 +353,15 @@ async function submitTracking() {
                     <span class="flex size-9 shrink-0 items-center justify-center rounded-full bg-primary-50 text-primary-500 transition-colors group-hover:bg-primary-500 group-hover:text-white">
                       <Calculator :size="18" aria-hidden="true" />
                     </span>
-                    <span class="text-lg font-medium text-black">Kalkulator</span>
+                    <span class="text-base font-medium text-black">Kalkulator</span>
                   </NuxtLink>
 
-                  <p class="mt-3 text-sm leading-5 text-text-tertiary">
+                  <p class="mt-3 text-xs leading-5 text-text-tertiary">
                     Hitung estimasi biaya pengiriman sesuai jenis dan kebutuhan kargo Anda.
                   </p>
 
                   <div class="mt-4 flex flex-wrap items-center justify-between gap-3">
-                    <div class="flex items-center gap-2 text-sm text-text-tertiary">
+                    <div class="flex items-center gap-2 text-xs text-text-tertiary">
                       <span>Cargo</span>
                       <span class="rounded bg-bg-100 px-2 py-1 font-medium text-primary-500">Sea</span>
                       <span class="rounded bg-bg-100 px-2 py-1 font-medium text-primary-500">Air</span>
@@ -358,7 +369,7 @@ async function submitTracking() {
 
                     <NuxtLink
                       to="/calculator"
-                      class="ml-auto inline-flex h-12 shrink-0 items-center gap-2 rounded-2xl bg-primary-500 px-4 text-base font-medium text-white transition-colors hover:bg-primary-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500"
+                      class="ml-auto inline-flex h-12 shrink-0 items-center gap-2 rounded-2xl bg-primary-500 px-4 text-sm font-medium text-white transition-colors hover:bg-primary-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500"
                       @click="emit('close')"
                     >
                       <span>Calculate</span>
@@ -370,7 +381,7 @@ async function submitTracking() {
                 <section class="mt-7" aria-labelledby="mobile-tracking-service-title">
                   <p
                     id="mobile-tracking-service-title"
-                    class="mb-3 text-sm font-medium text-text-tertiary"
+                    class="mb-3 text-xs font-medium text-text-tertiary"
                   >
                     Tracking Service
                   </p>
@@ -383,10 +394,10 @@ async function submitTracking() {
                     <span class="flex size-9 shrink-0 items-center justify-center rounded-full bg-primary-50 text-primary-500 transition-colors group-hover:bg-primary-500 group-hover:text-white">
                       <PackageSearch :size="18" aria-hidden="true" />
                     </span>
-                    <span class="text-lg font-medium text-black">Live Tracking Order</span>
+                    <span class="text-base font-medium text-black">Live Tracking Order</span>
                   </NuxtLink>
 
-                  <p class="mt-3 text-sm leading-5 text-text-tertiary">
+                  <p class="mt-3 text-xs leading-5 text-text-tertiary">
                     Pantau status dan perjalanan kargo Anda secara cepat melalui Marking ID dan PIN.
                   </p>
 
@@ -418,7 +429,7 @@ async function submitTracking() {
 
                     <button
                       type="submit"
-                      class="ml-auto flex h-12 items-center gap-2 rounded-2xl bg-primary-500 px-5 text-base font-medium text-white transition-colors hover:bg-primary-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500"
+                      class="ml-auto flex h-12 items-center gap-2 rounded-2xl bg-primary-500 px-5 text-sm font-medium text-white transition-colors hover:bg-primary-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500"
                     >
                       <span>Track</span>
                       <Search :size="19" aria-hidden="true" />
@@ -462,7 +473,7 @@ async function submitTracking() {
                 >
                   <p
                     :id="informationSection.id"
-                    class="mb-4 text-sm font-medium text-text-tertiary"
+                    class="mb-4 text-xs font-medium text-text-tertiary"
                   >
                     {{ informationSection.title }}
                   </p>
@@ -479,10 +490,10 @@ async function submitTracking() {
                         <component :is="item.icon" :size="20" aria-hidden="true" />
                       </span>
                       <span class="min-w-0 pt-1">
-                        <span class="block text-lg font-medium text-black">
+                        <span class="block text-base font-medium text-black">
                           {{ item.label }}
                         </span>
-                        <span class="mt-3 block text-sm leading-6 text-text-tertiary">
+                        <span class="mt-3 block text-xs leading-6 text-text-tertiary">
                           {{ item.description }}
                         </span>
                       </span>
@@ -494,45 +505,68 @@ async function submitTracking() {
           </div>
         </section>
 
-        <section v-for="section in (['Insights'] as const)" :key="section">
+        <section>
           <button
             type="button"
-            class="flex w-full items-center justify-between py-3 text-left text-2xl font-semibold text-text-secondary transition-colors hover:text-primary-500 focus-visible:outline-2 focus-visible:outline-primary-500"
-            :aria-expanded="activeSection === section"
-            :aria-controls="`mobile-${section.toLowerCase()}-menu`"
-            @click="toggleSection(section)"
+            class="flex w-full items-center justify-between py-3 text-left text-[25px] font-semibold text-text-secondary transition-colors hover:text-primary-500 focus-visible:outline-2 focus-visible:outline-primary-500"
+            :aria-expanded="activeSection === 'Insights'"
+            aria-controls="mobile-insights-menu"
+            @click="toggleSection('Insights')"
           >
-            <span>{{ section }}</span>
+            <span>Insights</span>
             <ChevronDown
               :size="20"
               aria-hidden="true"
               class="transition-transform duration-200"
-              :class="activeSection === section ? 'rotate-180' : ''"
+              :class="activeSection === 'Insights' ? 'rotate-180' : ''"
             />
           </button>
 
           <div
-            :id="`mobile-${section.toLowerCase()}-menu`"
+            id="mobile-insights-menu"
             class="grid transition-[grid-template-rows,opacity] duration-300"
-            :class="activeSection === section ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0'"
+            :class="activeSection === 'Insights' ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0'"
           >
             <div class="min-h-0 overflow-hidden">
-              <div class="space-y-4 border-l-[3px] border-primary-500 pb-4 pl-4 pt-2">
-                <NuxtLink
-                  v-for="item in simpleSections[section]"
-                  :key="item.to"
-                  :to="item.to"
-                  class="flex items-start gap-3 rounded-lg focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500"
-                  @click="emit('close')"
+              <div class="space-y-8 border-l-[3px] border-primary-500 pb-4 pl-4 pt-1">
+                <section
+                  v-for="insightSection in insightSections"
+                  :key="insightSection.id"
+                  :aria-labelledby="insightSection.id"
                 >
-                  <span class="flex size-8 shrink-0 items-center justify-center rounded-full bg-primary-50 text-primary-500">
-                    <component :is="item.icon" :size="17" aria-hidden="true" />
-                  </span>
-                  <span>
-                    <span class="block text-base font-medium text-black">{{ item.label }}</span>
-                    <span class="mt-1 block text-xs leading-5 text-text-tertiary">{{ item.description }}</span>
-                  </span>
-                </NuxtLink>
+                  <p
+                    :id="insightSection.id"
+                    class="mb-4 text-xs font-medium text-text-tertiary"
+                  >
+                    {{ insightSection.title }}
+                  </p>
+
+                  <div class="space-y-5">
+                    <NuxtLink
+                      v-for="item in insightSection.items"
+                      :key="item.to"
+                      :to="item.to"
+                      class="group flex items-start gap-3 rounded-lg focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500"
+                      @click="emit('close')"
+                    >
+                      <span class="flex size-10 shrink-0 items-center justify-center rounded-full bg-primary-50 text-primary-500">
+                        <component :is="item.icon" :size="19" aria-hidden="true" />
+                      </span>
+                      <span class="min-w-0 pt-1">
+                        <span class="flex items-center gap-2 text-base font-medium text-black">
+                          {{ item.label }}
+                          <ArrowUpRight
+                            v-if="'showArrow' in item && item.showArrow"
+                            :size="18"
+                            class="text-primary-500"
+                            aria-hidden="true"
+                          />
+                        </span>
+                        <span class="mt-2 block text-xs leading-5 text-text-tertiary">{{ item.description }}</span>
+                      </span>
+                    </NuxtLink>
+                  </div>
+                </section>
               </div>
             </div>
           </div>
@@ -540,8 +574,8 @@ async function submitTracking() {
       </div>
     </nav>
 
-    <div class="bg-primary-50 px-6 py-9 text-center">
-      <p class="mx-auto max-w-72 text-xs leading-5 text-text-tertiary">
+    <div class="px-6 py-9 text-center">
+      <p class="mx-auto max-w-72 text-sm font-medium leading-5 text-text-tertiary">
         Solusi logistik dan impor terintegrasi untuk kebutuhan bisnis Anda.
       </p>
       <NuxtLink

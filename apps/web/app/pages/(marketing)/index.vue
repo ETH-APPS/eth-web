@@ -28,5 +28,6 @@ useSeoMeta({
   <MarketingSectionsShippingFlow />
   <MarketingSectionsProductSourcing />
   <MarketingSectionsTestimonials />
-  <MarketingSectionsFaq v-bind="homeFaqContent" />
+  <MarketingSectionsFaq :content="homeFaqContent" />
+  <MarketingSectionsQuoteActionBanner :content="homeFaqContent" />
 </template>

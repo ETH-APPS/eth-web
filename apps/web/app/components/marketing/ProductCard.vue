@@ -6,6 +6,7 @@ defineProps<{
   price: string
   image: string
   imageAlt: string
+  mobilePlaceholderTitle?: string
 }>()
 </script>
 
@@ -21,7 +22,8 @@ defineProps<{
     >
 
     <p class="mt-3 px-2 text-[14px] leading-[1.4] text-text-tertiary">
-      {{ title }}
+      <span v-if="mobilePlaceholderTitle" class="line-clamp-2 text-black lg:hidden">{{ mobilePlaceholderTitle }}</span>
+      <span :class="mobilePlaceholderTitle ? 'hidden lg:inline' : ''">{{ title }}</span>
     </p>
 
     <div class="mt-3 flex items-center justify-between gap-3 px-2 text-primary-500">

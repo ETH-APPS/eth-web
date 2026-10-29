@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { ArrowUpRight } from 'lucide-vue-next'
 import chinaFlagUrl from '~/assets/images/flag/china.png'
 import taiwanFlagUrl from '~/assets/images/flag/taiwan.png'
 import singaporeFlagUrl from '~/assets/images/flag/singapore.png'
@@ -36,32 +35,32 @@ const countries = [
       <div class="text-center">
         <h2
           id="multinational-routes-title"
-          class="text-[32px] font-semibold leading-tight text-primary-500"
+          class="text-[24px] font-bold leading-tight text-primary-500 lg:text-[32px] lg:font-semibold"
         >
           Layanan Kargo Multinasional
         </h2>
 
-        <p class="mx-auto mt-10 max-w-[880px] text-[19px] leading-[1.45] text-text-tertiary">
+        <p class="mx-auto mt-5 max-w-[880px] text-[14px] font-medium leading-[1.45] text-text-tertiary lg:mt-10 lg:text-[19px] lg:font-normal">
           Selain spesialisasi rute China–Indonesia, ETH Cargo juga melayani pengiriman kargo
           internasional dari berbagai negara pusat manufaktur dan perdagangan dunia langsung ke
           lokasi bisnis Anda.
         </p>
       </div>
 
-      <ul class="mx-auto mt-10 grid max-w-[980px] grid-cols-2 items-start gap-x-5 gap-y-8 sm:grid-cols-4 lg:grid-cols-7">
+      <ul class="mx-auto mt-8 grid max-w-[500px] grid-cols-2 items-start gap-x-5 gap-y-8 lg:mt-10 lg:max-w-[980px] lg:grid-cols-7">
         <li
           v-for="country in countries"
           :key="country.name"
-          class="flex justify-center"
+          class="flex justify-center last:col-span-2 lg:last:col-span-1"
         >
           <NuxtLink
             to="/multinational-cargo#quote"
             :aria-label="`Lihat layanan kargo ${country.name}`"
-            class="group flex min-w-[92px] flex-col items-center rounded-xl focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary-500"
+            class="group flex min-w-[92px] flex-col items-center rounded-xl focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary-500 lg:pb-9"
           >
             <span
               aria-hidden="true"
-              class="block size-[66px] rounded-full bg-bg-0 p-[3px] shadow-[2px_5px_6px_rgb(52_64_81/0.3)]"
+              class="block size-[64px] rounded-full bg-bg-0 p-[3px] shadow-[2px_5px_6px_rgb(52_64_81/0.3)] lg:size-[66px]"
             >
               <img
                 :src="country.flag"
@@ -75,19 +74,9 @@ const countries = [
             </span>
 
             <span
-              class="mt-4 text-center text-[14px] font-semibold leading-none text-text-secondary transition-colors duration-200 group-hover:text-primary-500 group-focus-visible:text-primary-500"
+              class="mt-4 text-center text-[16px] font-semibold leading-none text-text-secondary transition-colors duration-200 group-hover:text-primary-500 group-focus-visible:text-primary-500 lg:text-[14px]"
             >
               {{ country.label }}
-            </span>
-
-            <span
-              class="mt-2 flex size-7 translate-y-1 items-center justify-center rounded-lg bg-primary-500 text-bg-0 opacity-0 transition-[background-color,opacity,translate] duration-300 ease-out group-hover:translate-y-0 group-hover:bg-primary-600 group-hover:opacity-100 group-focus-visible:translate-y-0 group-focus-visible:bg-primary-600 group-focus-visible:opacity-100"
-            >
-              <ArrowUpRight
-                :size="15"
-                :stroke-width="2"
-                aria-hidden="true"
-              />
             </span>
           </NuxtLink>
         </li>

@@ -115,5 +115,6 @@ const shippingTypes = [
     description="Pilih fitur dan jalur pengiriman yang paling sesuai dengan kebutuhan operasional bisnis Anda."
     :services="shippingTypes"
   />
-  <MarketingSectionsFaq v-bind="homeFaqContent" />
+  <MarketingSectionsFaq :content="homeFaqContent" />
+  <MarketingSectionsQuoteActionBanner :content="homeFaqContent" />
 </template>

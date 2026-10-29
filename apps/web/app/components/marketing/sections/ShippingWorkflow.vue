@@ -152,7 +152,7 @@ onBeforeUnmount(() => {
             <span
               v-if="index < steps.length - 1"
               aria-hidden="true"
-              class="absolute left-1/2 top-[41px] h-[calc(100%-1rem)] w-0.5 -translate-x-1/2 overflow-hidden bg-primary-100"
+              class="absolute left-1/2 top-[35px] h-[calc(100%-10px)] w-[2px] -translate-x-1/2 overflow-hidden bg-primary-100"
             >
               <span
                 class="block size-full origin-top bg-primary-500 transition-transform duration-[250ms] ease-linear"

@@ -83,24 +83,24 @@ onBeforeUnmount(() => {
   <section
     id="alur-pengiriman"
     aria-labelledby="shipping-flow-title"
-    class="border-y border-border-200 bg-white py-16 mt-8"
+    class=" bg-white py-16 mt-8"
   >
     <UiContainer>
       <div class="text-center">
         <h2
           id="shipping-flow-title"
-          class="text-[32px] font-semibold leading-tight text-primary-500"
+          class="text-[24px] font-semibold leading-tight text-primary-500 lg:text-[32px]"
         >
           Alur Pengiriman Import B2B
         </h2>
-        <p class="mx-auto mt-6 max-w-[920px] text-[20px] leading-[1.45] text-text-secondary">
+        <p class="mx-auto mt-6 hidden max-w-[920px] text-[16px] leading-[1.45] text-text-secondary md:block lg:text-[20px]">
           Hanya dalam 5 langkah mudah, kelola seluruh proses import barang bisnis Anda dari China
           hingga tiba di depan pintu gudang.
         </p>
       </div>
 
-      <div class="mx-auto mt-14 grid max-w-[1000px] grid-cols-[380px_64px_minmax(0,1fr)] items-start gap-6">
-        <div>
+      <div class="mx-auto mt-8 grid max-w-[1000px] grid-cols-[24px_minmax(0,1fr)] gap-x-2 gap-y-6 md:mt-14 lg:grid-cols-[380px_64px_minmax(0,1fr)] lg:items-start lg:gap-6">
+        <div class="hidden md:col-span-2 md:block md:max-w-[380px] lg:col-span-1 lg:max-w-none">
           <div class="rounded-[22px] border border-border-200 bg-white p-4 shadow-[0_5px_12px_rgba(15,23,42,0.10)]">
             <h3 class="text-[20px] font-medium leading-tight text-text-secondary">
               Estimasi Ketibaan Cargo
@@ -162,7 +162,7 @@ onBeforeUnmount(() => {
         </div>
 
         <div
-          class="flex h-[232px] flex-col items-center justify-between py-6"
+          class="flex flex-col items-center justify-center gap-4 lg:h-[232px] lg:justify-between lg:gap-0 lg:py-6"
           role="group"
           aria-label="Navigasi langkah pengiriman"
           @keydown="handleNavigationKeydown"
@@ -170,7 +170,7 @@ onBeforeUnmount(() => {
           <button
             type="button"
             aria-label="Langkah sebelumnya"
-            class="rounded-full p-1 text-primary-500 transition-colors hover:bg-primary-50"
+            class="hidden rounded-full p-1 text-primary-500 transition-colors hover:bg-primary-50 lg:block"
             @click="selectStep(activeStep - 1)"
           >
             <ChevronUp
@@ -180,14 +180,14 @@ onBeforeUnmount(() => {
             />
           </button>
 
-          <div class="flex flex-col items-center gap-2.5">
+          <div class="flex flex-col items-center gap-4 lg:gap-2.5">
             <button
               v-for="(_, index) in steps"
               :key="index"
               type="button"
               :aria-label="`Tampilkan langkah ${index + 1}`"
               :aria-current="activeStep === index ? 'step' : undefined"
-              class="size-2.5 rounded-full transition-[background-color,transform] duration-200 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500"
+              class="relative size-2 rounded-full transition-[background-color,transform] duration-200 after:absolute after:-inset-2 after:content-[''] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500 lg:size-2.5 lg:after:content-none"
               :class="activeStep === index ? 'scale-110 bg-primary-500' : 'bg-border-200 hover:bg-primary-200'"
               @click="selectStep(index)"
             />
@@ -196,7 +196,7 @@ onBeforeUnmount(() => {
           <button
             type="button"
             aria-label="Langkah berikutnya"
-            class="rounded-full p-1 text-primary-500 transition-colors hover:bg-primary-50"
+            class="hidden rounded-full p-1 text-primary-500 transition-colors hover:bg-primary-50 lg:block"
             @click="selectStep(activeStep + 1)"
           >
             <ChevronDown
@@ -208,7 +208,7 @@ onBeforeUnmount(() => {
         </div>
 
         <div
-          class="h-[296px] overflow-hidden [mask-image:linear-gradient(to_bottom,black_65%,transparent_100%)]"
+          class="h-[260px] min-w-0 overflow-hidden [mask-image:linear-gradient(to_bottom,black_65%,transparent_100%)] lg:h-[296px]"
           tabindex="0"
           role="region"
           aria-label="Daftar langkah pengiriman. Gunakan scroll atau tombol panah untuk berpindah langkah."
@@ -223,22 +223,22 @@ onBeforeUnmount(() => {
               v-for="(step, index) in steps"
               :key="step.title"
               :ref="(el) => setCardRef(el, index)"
-              class="rounded-[22px] border bg-white p-5 transition-[border-color,box-shadow] duration-300"
+              class="rounded-[22px] border bg-white p-[18px] transition-[border-color,box-shadow] duration-300 lg:p-5"
               :class="activeStep === index
                 ? 'border-primary-500 shadow-[0_5px_12px_rgba(15,23,42,0.10)]'
                 : 'border-border-200'"
             >
-              <div class="flex items-center gap-3 text-[14px] text-primary-500">
+              <div class="flex items-center gap-3 text-[14px] font-normal text-primary-500">
                 <span>Langkah</span>
                 <span class="flex size-9 items-center justify-center rounded-[16px] bg-primary-50 text-[20px] font-semibold">
                   {{ index + 1 }}
                 </span>
               </div>
 
-              <h3 class="mt-4 text-[21px] font-medium leading-tight text-text-secondary">
+              <h3 class="mt-4 text-[16px] font-medium leading-tight text-text-secondary lg:text-[21px]">
                 {{ step.title }}
               </h3>
-              <p class="mt-3 text-[13.5px] leading-[1.45] text-text-tertiary">
+              <p class="mt-3 text-[12px] leading-[1.5] text-text-tertiary lg:text-[13.5px] lg:leading-[1.45]">
                 {{ step.description }}
               </p>
             </article>

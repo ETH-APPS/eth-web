@@ -55,22 +55,22 @@ const bottomTestimonials = [
   >
     <UiContainer>
       <div class="text-center">
-        <p class="text-[20px] font-normal uppercase text-primary-700">
+        <p class="text-[12px] font-normal uppercase text-primary-700 lg:text-[20px]">
           Testimoni Klien
         </p>
         <h2
           id="testimonials-title"
-          class="mt-2 text-[34px] font-semibold leading-tight text-primary-500"
+          class="mt-2 text-[24px] font-semibold leading-tight text-primary-500 lg:text-[34px]"
         >
           Kepercayaan dari Para Pemilik Bisnis
         </h2>
-        <p class="mx-auto mt-6 max-w-[950px] text-[20px] leading-[1.45] text-text-secondary">
+        <p class="mx-auto mt-6 max-w-[950px] text-[14px] leading-[1.45] text-text-secondary lg:text-[20px]">
           Dengar langsung pengalaman para pelaku usaha, pemilik brand, dan distributor yang telah
           mempercayakan pengiriman kargo China–Indonesia mereka kepada ETH Cargo.
         </p>
       </div>
 
-      <div class="mx-auto mt-7 max-w-[1440px] space-y-5">
+      <div class="mx-[calc(50%_-_50vw)] mt-7 max-w-[1440px] space-y-5 lg:mx-auto">
         <div class="marquee relative overflow-hidden">
           <div class="marquee-track marquee-track-left">
             <div class="marquee-group">
@@ -91,8 +91,8 @@ const bottomTestimonials = [
               />
             </div>
           </div>
-          <div class="pointer-events-none absolute inset-y-0 left-0 z-10 w-40 bg-gradient-to-r from-bg-100 via-bg-100/70 to-transparent" />
-          <div class="pointer-events-none absolute inset-y-0 right-0 z-10 w-40 bg-gradient-to-l from-bg-100 via-bg-100/70 to-transparent" />
+          <div class="pointer-events-none absolute inset-y-0 left-0 z-10 hidden w-40 bg-gradient-to-r from-bg-100 via-bg-100/70 to-transparent lg:block" />
+          <div class="pointer-events-none absolute inset-y-0 right-0 z-10 hidden w-40 bg-gradient-to-l from-bg-100 via-bg-100/70 to-transparent lg:block" />
         </div>
 
         <div class="marquee relative overflow-hidden">
@@ -115,12 +115,12 @@ const bottomTestimonials = [
               />
             </div>
           </div>
-          <div class="pointer-events-none absolute inset-y-0 left-0 z-10 w-40 bg-gradient-to-r from-bg-100 via-bg-100/70 to-transparent" />
-          <div class="pointer-events-none absolute inset-y-0 right-0 z-10 w-40 bg-gradient-to-l from-bg-100 via-bg-100/70 to-transparent" />
+          <div class="pointer-events-none absolute inset-y-0 left-0 z-10 hidden w-40 bg-gradient-to-r from-bg-100 via-bg-100/70 to-transparent lg:block" />
+          <div class="pointer-events-none absolute inset-y-0 right-0 z-10 hidden w-40 bg-gradient-to-l from-bg-100 via-bg-100/70 to-transparent lg:block" />
         </div>
       </div>
 
-      <div class="mt-14 text-center">
+      <div class="mt-14 hidden text-center lg:block">
         <p class="text-[16px] text-text-tertiary">
           Siap mengoptimalkan rantai pasok dan efisiensi pengiriman bisnis Anda?
         </p>
@@ -151,7 +151,13 @@ const bottomTestimonials = [
   display: flex;
   gap: 1.25rem;
   padding-right: 1.25rem;
-  zoom: 1.15;
+}
+
+/* zoom 1.15 hanya untuk desktop (lg = 64rem), supaya ukuran card di mobile tidak ikut membesar */
+@media (min-width: 64rem) {
+  .marquee-group {
+    zoom: 1.15;
+  }
 }
 
 .marquee-track-left {

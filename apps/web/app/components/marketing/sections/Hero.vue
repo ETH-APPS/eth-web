@@ -1,26 +1,30 @@
 <script setup lang="ts">
-import { ArrowUpRight } from 'lucide-vue-next'
+import { ArrowUpRight, ChevronLeft, ChevronRight } from 'lucide-vue-next'
 import heroUrl from '~/assets/images/marketing/hero.png'
 
 const services = [
   {
     id: 'sea',
     label: 'Kargo Laut',
+    to: '/sea-freight',
     description: 'Solusi impor skala besar maupun eceran. Hemat, stabil, dan jadwal keberangkatan rutin.'
   },
   {
     id: 'air',
     label: 'Kargo Udara',
+    to: '/air-freight',
     description: 'Pengiriman sampel dan barang urgensi tinggi dengan perlindungan asuransi penuh.'
   },
   {
     id: 'sourcing',
     label: 'Jasa Sourcing',
+    to: '/sourcing',
     description: 'Dari pencarian produk, QC di China, pengurusan dokumen, hingga pengiriman.'
   },
   {
     id: 'transfer-rmb',
     label: 'Jasa Transfer RMB',
+    to: '/transfer-rmb',
     description: 'Bayar supplier China mudah dan aman tanpa batas limit. Kurs kompetitif dengan bukti legal.'
   }
 ] as const
@@ -35,6 +39,8 @@ const activeIndex = computed(() => {
   return index === -1 ? 0 : index
 })
 
+const activeService = computed(() => services[activeIndex.value] ?? services[0])
+
 async function selectService(id: ServiceId, moveFocus = false) {
   activeId.value = id
 
@@ -46,12 +52,12 @@ async function selectService(id: ServiceId, moveFocus = false) {
   document.getElementById(`service-tab-${id}`)?.focus()
 }
 
-function selectByIndex(index: number) {
+function selectByIndex(index: number, moveFocus = true) {
   const normalizedIndex = (index + services.length) % services.length
   const service = services[normalizedIndex]
 
   if (service) {
-    void selectService(service.id, true)
+    void selectService(service.id, moveFocus)
   }
 }
 
@@ -82,7 +88,7 @@ function handleTabKeydown(event: KeyboardEvent) {
   <section
     id="home"
     aria-labelledby="hero-title"
-    class="relative isolate h-[100svh] min-h-[720px] overflow-hidden bg-[#075474]"
+    class="relative isolate h-[346px] overflow-hidden bg-[#075474] md:h-[420px] lg:h-[100svh] lg:min-h-[720px]"
   >
     <img
       :src="heroUrl"
@@ -95,31 +101,65 @@ function handleTabKeydown(event: KeyboardEvent) {
       aria-hidden="true"
       class="absolute inset-0 size-full object-cover object-center"
     >
-    <div class="absolute inset-0 bg-[rgba(0,45,69,0.28)]" />
+    <img
+      :src="heroUrl"
+      alt=""
+      width="1440"
+      height="810"
+      aria-hidden="true"
+      class="absolute left-1/2 top-4 h-auto w-[128%] max-w-none -translate-x-1/2 [mask-image:linear-gradient(to_bottom,transparent_0%,black_12%,black_88%,transparent_100%)] [-webkit-mask-image:linear-gradient(to_bottom,transparent_0%,black_12%,black_88%,transparent_100%)] md:hidden"
+    >
+    <div class="absolute inset-0 bg-[rgba(0,45,69,0.08)] lg:bg-[rgba(0,45,69,0.28)]" />
     <div
       aria-hidden="true"
-      class="absolute inset-0 bg-[radial-gradient(ellipse_at_50%_45%,transparent_0%,transparent_38%,rgba(0,0,0,0.72)_100%)] opacity-[0.86]"
+      class="absolute inset-0 bg-[linear-gradient(to_bottom,transparent_52%,rgba(0,24,43,0.38)_100%)] lg:bg-[radial-gradient(ellipse_at_50%_45%,transparent_0%,transparent_38%,rgba(0,0,0,0.72)_100%)] lg:opacity-[0.86]"
     />
 
-    <UiContainer class="relative z-10 flex h-full flex-col pb-6 pt-[120px]">
-      <h1
-        id="hero-title"
-        class="text-center text-[64px] font-bold leading-normal tracking-[0.01em] text-white drop-shadow-sm"
-      >
-        Forwarder China Indonesia #1
-      </h1>
+    <UiContainer class="absolute inset-x-0 bottom-0 z-10 pb-4 lg:relative lg:inset-auto lg:flex lg:h-full lg:flex-col lg:pb-6 lg:pt-[120px]">
+      <div class="rounded-[24px] bg-[rgba(17,17,17,0.14)] px-5 py-3 text-white backdrop-blur-[4px] lg:contents">
+        <div class="flex items-start justify-between gap-4 lg:contents">
+          <h1
+            id="hero-title"
+            class="text-[24px] font-medium uppercase leading-normal tracking-[0.01em] text-white lg:text-center lg:text-[64px] lg:font-bold lg:normal-case lg:drop-shadow-sm"
+          >
+            <span class="lg:hidden">{{ activeService.label }}</span>
+            <span class="hidden lg:inline">Forwarder China Indonesia #1</span>
+          </h1>
 
-      <p class="mx-auto mt-3 max-w-[900px] text-center text-[20px] font-semibold leading-normal tracking-[0.01em] text-white/95 drop-shadow-sm">
+          <NuxtLink
+            :to="activeService.to"
+            :aria-label="`Buka layanan ${activeService.label}`"
+            class="flex size-11 shrink-0 items-center justify-center rounded-[12px] bg-primary-500 text-white transition-colors hover:bg-primary-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white lg:hidden"
+          >
+            <ArrowUpRight :size="22" :stroke-width="2" aria-hidden="true" />
+          </NuxtLink>
+        </div>
+
+        <div class="mt-2 flex justify-center gap-2 lg:hidden">
+          <button
+            type="button"
+            aria-label="Layanan sebelumnya"
+            class="flex size-11 items-center justify-center rounded-[12px] bg-primary-500 text-white transition-colors hover:bg-primary-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+            @click="selectByIndex(activeIndex - 1, false)"
+          >
+            <ChevronLeft :size="23" :stroke-width="2" aria-hidden="true" />
+          </button>
+          <button
+            type="button"
+            aria-label="Layanan berikutnya"
+            class="flex size-11 items-center justify-center rounded-[12px] bg-primary-500 text-white transition-colors hover:bg-primary-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+            @click="selectByIndex(activeIndex + 1, false)"
+          >
+            <ChevronRight :size="23" :stroke-width="2" aria-hidden="true" />
+          </button>
+        </div>
+      </div>
+
+      <p class="mx-auto mt-3 hidden max-w-[900px] text-center text-[20px] font-semibold leading-normal tracking-[0.01em] text-white/95 drop-shadow-sm lg:block">
         Layanan Kargo Laut &amp; Udara Door-to-Door khusus B2B. Bebas repot urus pajak &amp; bea cukai, biaya transparan, dengan kepastian estimasi pengiriman.
       </p>
 
-      <div class="relative mt-auto">
-        <!--
-          Drop shadow Figma (X0 Y10 Blur15 Spread-3, #141C25 8%) dengan
-          "Show behind transparent areas" aktif. box-shadow CSS tidak pernah
-          digambar di dalam box elemen, jadi ditiru dengan layer blur di
-          belakang kartu. Hapus layer ini kalau efeknya tidak diperlukan.
-        -->
+      <div class="relative mt-auto hidden lg:block">
         <div
           aria-hidden="true"
           class="absolute inset-[3px] translate-y-[10px] rounded-[21px] bg-[rgba(20,28,37,0.08)] blur-[7.5px]"

@@ -66,8 +66,7 @@ const faqContent = faqContentByPath['/transfer-rmb'] ?? homeFaqContent
     :show-cta="false"
   />
   <MarketingSectionsFaq
-    v-bind="faqContent"
-    :show-quote="false"
+    :content="faqContent"
   />
   <MarketingSectionsQuoteBanner
     section-id="transfer-rmb-quote"

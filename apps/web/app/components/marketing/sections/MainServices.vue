@@ -40,28 +40,28 @@ const services = [
     <UiContainer>
       <h2
         id="main-services-title"
-        class="text-center text-[32px] font-semibold leading-tight text-primary-500"
+        class="text-center text-[24px] font-semibold leading-tight text-primary-500 lg:text-[32px]"
       >
         Solusi Logistik Import Terpadu
       </h2>
 
-      <div class="mx-auto mt-11 max-w-[724px] rounded-[34px] border border-border-200  px-6 pb-4 pt-5 shadow-md">
-        <div class="flex items-center justify-center gap-4 text-primary-500">
+      <div class="mx-auto mt-11 max-w-[724px] rounded-[34px] border border-border-200 px-5 pb-5 pt-6 shadow-md md:px-6 lg:pb-4 lg:pt-5">
+        <div class="flex items-center justify-center gap-3 text-primary-500 lg:gap-4">
           <PackageSearch
             aria-hidden="true"
             :size="40"
             :stroke-width="2.5"
             absolute-stroke-width
-            class="shrink-0"
+            class="size-8 shrink-0 lg:size-10"
           />
 
-          <h3 class="text-[32px] font-semibold leading-tight">
+          <h3 class="min-w-0 text-[20px] font-semibold leading-tight lg:text-[32px]">
             Lacak Pengiriman Kargo Anda
           </h3>
         </div>
 
         <form
-          class="mt-6 grid grid-cols-[240px_360px_48px] items-center gap-2"
+          class="mt-6 grid grid-cols-1 items-center gap-3 md:grid-cols-2 lg:grid-cols-[240px_360px_48px] lg:gap-2"
           @submit.prevent
         >
           <UiInput
@@ -96,18 +96,20 @@ const services = [
           <button
             type="submit"
             aria-label="Lacak pengiriman"
-            class="grid size-12 place-items-center rounded-full text-primary-500 transition-colors hover:bg-primary-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500"
+            class="flex h-14 w-full items-center justify-center gap-2 rounded-2xl bg-primary-500 text-[16px] font-medium text-white transition-colors hover:bg-primary-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500 md:col-span-2 lg:col-span-1 lg:size-12 lg:rounded-full lg:bg-transparent lg:text-primary-500 lg:hover:bg-primary-50"
           >
+            <span class="lg:sr-only">Lacak!</span>
             <Search
               aria-hidden="true"
               :size="28"
               :stroke-width="2"
               absolute-stroke-width
+              class="size-6 shrink-0 lg:size-7"
             />
           </button>
         </form>
 
-        <p class="mt-6 text-center text-md text-[#68748c]">
+        <p class="mt-6 hidden text-center text-[#68748c] lg:block lg:text-md">
           Butuh bantuan terkait posisi kargo Anda?
           <NuxtLink
             to="#quote"
@@ -125,7 +127,7 @@ const services = [
         </p>
       </div>
 
-      <div class="mt-11 grid grid-cols-3 gap-9">
+      <div class="mt-11 grid grid-cols-1 gap-6 md:mx-auto md:max-w-[560px] lg:mx-0 lg:max-w-none lg:grid-cols-3 lg:gap-9">
         <MarketingServiceCard
           v-for="service in services"
           :key="service.title"

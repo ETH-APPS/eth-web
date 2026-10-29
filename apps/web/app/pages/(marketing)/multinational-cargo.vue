@@ -72,5 +72,6 @@ const faqContent = faqContentByPath['/multinational-cargo'] ?? homeFaqContent
     title="Hitung Estimasi Tarif Multinasional"
     description="Dapatkan kalkulasi perkiraan biaya pengiriman internasional secara instan untuk membantu perencanaan logistik dan anggaran bisnis Anda."
   />
-  <MarketingSectionsFaq v-bind="faqContent" />
+  <MarketingSectionsFaq :content="faqContent" />
+  <MarketingSectionsQuoteActionBanner :content="faqContent" />
 </template>

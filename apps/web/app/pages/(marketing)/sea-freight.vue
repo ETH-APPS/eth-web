@@ -164,5 +164,6 @@ const faqContent = faqContentByPath['/sea-freight'] ?? homeFaqContent
     fixed-cargo-service="LCL CARGO"
     guide-prompt="Pelajari panduan pengkategorian produk"
   />
-  <MarketingSectionsFaq v-bind="faqContent" />
+  <MarketingSectionsFaq :content="faqContent" />
+  <MarketingSectionsQuoteActionBanner :content="faqContent" />
 </template>

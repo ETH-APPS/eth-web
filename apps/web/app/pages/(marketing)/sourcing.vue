@@ -71,10 +71,9 @@ const faqContent = faqContentByPath['/sourcing'] ?? homeFaqContent
   <MarketingSectionsMultinationalRoutes :show-top-border="false" />
   <MarketingSectionsSourcingOtherServices />
   <MarketingSectionsFaq
-    v-bind="faqContent"
+    :content="faqContent"
     section-id="sourcing-faq"
     :default-open-index="0"
-    :show-quote="false"
   />
   <MarketingSectionsQuoteBanner
     section-id="sourcing-quote"

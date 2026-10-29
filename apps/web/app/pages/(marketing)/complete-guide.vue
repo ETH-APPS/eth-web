@@ -36,9 +36,8 @@ const guideShippingServices = [
 <template>
   <MarketingSectionsCompleteGuideContent />
   <MarketingSectionsFaq
-    v-bind="faqContent"
+    :content="faqContent"
     section-id="complete-guide-faq"
     :default-open-index="1"
-    :show-quote="false"
   />
 </template>
