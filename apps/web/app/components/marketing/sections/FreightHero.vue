@@ -23,22 +23,22 @@ const props = defineProps<{
         loading="eager"
         decoding="async"
         fetchpriority="high"
-        class="aspect-[1080/444] w-full rounded-none object-cover object-center"
+        class="aspect-[1080/444] w-full rounded-[20px] object-cover object-center lg:rounded-none"
       >
 
       <div class="mx-auto mt-12 max-w-[900px] text-center sm:mt-14">
-        <p class="text-[20px] leading-relaxed text-primary-700">
+        <p class="text-[16px] leading-relaxed text-primary-700 lg:text-[20px]">
           {{ eyebrow }}
         </p>
 
         <h1
           :id="props.titleId"
-          class="mt-2 text-[48px] font-semibold leading-[1.2] text-primary-500"
+          class="mt-2 text-[32px] font-semibold leading-[1.2] text-primary-500 lg:text-[48px]"
         >
           {{ title }}
         </h1>
 
-        <p class="mx-auto mt-6 max-w-[900px] text-[20px] leading-[1.55] text-text-secondary sm:text-[20px]">
+        <p class="mx-auto mt-6 max-w-[900px] text-justify text-[16px] leading-[1.55] text-text-secondary lg:text-center lg:text-[20px]">
           {{ description }}
         </p>
       </div>

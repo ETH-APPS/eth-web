@@ -55,31 +55,31 @@ const titleId = computed(() => `${props.sectionId}-title`)
   >
     <UiContainer>
       <div
-        class="grid gap-6 rounded-[22px] border border-border-200 bg-bg-0 p-12 shadow-md md:grid-cols-[360px_minmax(0,1fr)]"
+        class="grid gap-6 rounded-[22px] border border-border-200 bg-bg-0 p-5 shadow-md md:p-8 lg:grid-cols-[360px_minmax(0,1fr)] lg:p-12"
       >
-        <div>
-          <p class="truncate text-[32px] font-semibold leading-tight text-text-secondary">
+        <div class="min-w-0">
+          <p class="text-[20px] font-medium leading-tight text-text-secondary lg:truncate lg:text-[32px] lg:font-semibold">
             {{ eyebrow }}
           </p>
 
           <h2
             :id="titleId"
-            class="mt-3 text-[60px] font-bold leading-none text-primary-500"
+            class="mt-3 text-[32px] font-bold leading-none text-primary-500 lg:text-[60px]"
           >
             {{ title }}
           </h2>
 
-          <p class="mt-6 text-[14px] font-medium text-text-secondary">
+          <p class="mt-6 text-[16px] font-medium text-text-secondary lg:text-[14px]">
             {{ subtitle }}
           </p>
         </div>
 
-        <div class="">
-          <p class=" text-text-secondary">
+        <div class="min-w-0">
+          <p class="text-[16px] text-text-secondary">
             {{ description }}
           </p>
 
-          <p class="mt-4 flex items-center gap-2 text-[16px] text-primary-500">
+          <p class="mt-4 flex flex-wrap items-center gap-2 text-[20px] font-medium text-primary-500 lg:flex-nowrap lg:text-[16px] lg:font-normal">
             <ClockCheck
               :size="20"
               :stroke-width="1.8"
@@ -95,7 +95,7 @@ const titleId = computed(() => `${props.sectionId}-title`)
         </div>
       </div>
 
-      <ul class="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      <ul class="mt-5 grid gap-4 sm:mt-8 sm:grid-cols-2 lg:mt-10 lg:grid-cols-4">
         <li
           v-for="feature in features"
           :key="feature.title"
@@ -112,7 +112,7 @@ const titleId = computed(() => `${props.sectionId}-title`)
             />
           </span>
 
-          <h3 class="mt-3 text-[20px] font-medium leading-tight text-text-tertiary">
+          <h3 class="mt-3 text-[20px] font-medium leading-tight text-text-secondary lg:text-text-tertiary">
             {{ feature.title }}
           </h3>
 

@@ -44,7 +44,7 @@ const labelClass = computed(() => (
     :class="sectionClass"
   >
     <UiContainer>
-      <dl class="flex flex-col items-center justify-between gap-8 text-center lg:flex-row lg:items-start lg:gap-4">
+      <dl class="flex flex-col items-center justify-between gap-12 text-center lg:flex-row lg:items-start lg:gap-4">
         <div
           v-for="stat in stats"
           :key="stat.label"
@@ -58,7 +58,7 @@ const labelClass = computed(() => (
           </dt>
 
           <dd
-            class="mt-3 whitespace-pre-line text-[24px] font-semibold"
+            class="mt-3 whitespace-pre-line text-[20px] font-semibold lg:text-[24px]"
             :class="[
               labelClass,
               stat.uppercase ? 'uppercase' : '',
