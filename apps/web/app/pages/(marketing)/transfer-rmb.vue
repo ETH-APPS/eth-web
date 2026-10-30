@@ -51,6 +51,7 @@ const faqContent = faqContentByPath['/transfer-rmb'] ?? homeFaqContent
   <MarketingSectionsStats
     :stats="transferStats"
     tone="primary"
+    mobile-marquee
     aria-label="Statistik layanan transfer RMB"
   />
   <MarketingSectionsRmbPaymentCoverage />

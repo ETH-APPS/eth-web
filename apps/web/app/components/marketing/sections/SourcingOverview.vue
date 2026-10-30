@@ -47,16 +47,16 @@ const shippingMethods = [
   <section
     id="sourcing-details"
     aria-labelledby="sourcing-overview-title"
-    class="bg-bg-0 py-16"
+    class="bg-bg-0 py-12 lg:py-16"
   >
     <UiContainer>
-      <div class="grid grid-cols-2 items-center gap-2 rounded-[18px] border border-border-200 bg-bg-0 px-14 py-10 shadow-md">
+      <div class="grid grid-cols-1 items-center gap-5 rounded-[18px] border border-border-200 bg-bg-0 px-5 py-8 shadow-md lg:grid-cols-2 lg:gap-2 lg:px-14 lg:py-10">
         <h2
           id="sourcing-overview-title"
-          class="text-[32px] font-semibold leading-[1.25] text-text-secondary"
+          class="text-[20px] font-medium leading-[1.25] text-text-secondary lg:text-[32px] lg:font-semibold"
         >
-          Mengenal Layanan..<br>
-          <span class="whitespace-nowrap text-[60px] font-bold leading-[1.15] text-primary-500">Jasa Sourcing</span>
+          Mengenal Layanan..<br class="hidden lg:block">
+          <span class="block text-[32px] font-semibold leading-[1.25] text-primary-500 lg:inline lg:whitespace-nowrap lg:text-[60px] lg:font-bold lg:leading-[1.15]">Jasa Sourcing</span>
         </h2>
 
         <p class="text-[16px] font-normal leading-[1.6] text-text-secondary">
@@ -64,16 +64,42 @@ const shippingMethods = [
         </p>
       </div>
 
-      <div class="mt-12 text-center">
-        <h3 class="text-[32px] font-semibold leading-tight text-primary-500">
+      <div class="mt-10 text-center lg:mt-12">
+        <h3 class="mx-auto max-w-[320px] text-[24px] font-semibold leading-tight text-primary-500 lg:max-w-none lg:text-[32px]">
           Integrasi Platform E-Commerce China
         </h3>
-        <p class="mx-auto mt-3 max-w-[760px] text-[16px] font-normal leading-[1.5] text-text-secondary">
-          Cari dan beli produk dari marketplace grosir terbesar di China dengan<br>
+        <p class="mx-auto mt-3 max-w-[760px] text-[14px] font-normal leading-[1.5] text-text-secondary lg:text-[16px]">
+          Cari dan beli produk dari marketplace grosir terbesar di China dengan<br class="hidden lg:block">
           mudah tanpa kendala bahasa atau metode pembayaran lokal.
         </p>
 
-        <div class="mt-6 flex flex-col items-center gap-y-3">
+        <div class="marketplace-marquee -mx-4 mt-6 overflow-hidden lg:hidden">
+          <div class="marketplace-track">
+            <ul
+              v-for="copy in 2"
+              :key="copy"
+              class="marketplace-group"
+              :aria-hidden="copy === 2 ? 'true' : undefined"
+              :aria-label="copy === 1 ? 'Platform e-commerce China' : undefined"
+            >
+              <li
+                v-for="marketplace in marketplaces"
+                :key="marketplace.name"
+                class="flex h-14 w-36 shrink-0 items-center justify-center"
+              >
+                <img
+                  :src="marketplace.src"
+                  :alt="copy === 1 ? marketplace.name : ''"
+                  loading="lazy"
+                  decoding="async"
+                  class="max-h-8 max-w-[124px] object-contain"
+                >
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="mt-6 hidden flex-col items-center gap-y-3 lg:flex">
           <ul
             v-for="(row, rowIndex) in marketplaceRows"
             :key="rowIndex"
@@ -96,16 +122,16 @@ const shippingMethods = [
         </div>
       </div>
 
-      <div class="mt-11 text-center">
-        <h3 class="text-[32px] font-semibold leading-tight text-primary-500">
+      <div class="mt-10 text-center lg:mt-11">
+        <h3 class="mx-auto max-w-[320px] text-[24px] font-semibold leading-tight text-primary-500 lg:max-w-none lg:text-[32px]">
           Metode Pengiriman Hasil Sourcing
         </h3>
         <p class="mx-auto mt-4 max-w-[720px] text-[16px] font-normal leading-[1.5] text-text-secondary">
-          Setelah barang selesai diproduksi atau dibeli, kargo hasil sourcing Anda<br>
+          Setelah barang selesai diproduksi atau dibeli, kargo hasil sourcing Anda<br class="hidden lg:block">
           dapat langsung dikirimkan menggunakan jaringan logistik ETH Cargo
         </p>
 
-        <ul class="mt-6 grid grid-cols-3 gap-4 text-left">
+        <ul class="mt-6 grid grid-cols-1 gap-4 text-left lg:grid-cols-3">
           <li
             v-for="method in shippingMethods"
             :key="method.title"
@@ -144,3 +170,42 @@ const shippingMethods = [
     </UiContainer>
   </section>
 </template>
+
+<style scoped>
+.marketplace-track {
+  display: flex;
+  width: max-content;
+  animation: marketplace-scroll 28s linear infinite;
+}
+
+.marketplace-group {
+  display: flex;
+  flex: none;
+  gap: 1.5rem;
+  padding-right: 1.5rem;
+}
+
+.marketplace-marquee:hover .marketplace-track {
+  animation-play-state: paused;
+}
+
+@keyframes marketplace-scroll {
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .marketplace-marquee {
+    overflow-x: auto;
+  }
+
+  .marketplace-track {
+    animation: none;
+  }
+
+  .marketplace-group[aria-hidden="true"] {
+    display: none;
+  }
+}
+</style>

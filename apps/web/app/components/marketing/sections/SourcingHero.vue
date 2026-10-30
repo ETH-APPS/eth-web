@@ -25,18 +25,18 @@ const popularCategories = [
 <template>
   <section
     aria-labelledby="sourcing-title"
-    class="bg-bg-0 py-16 sm:py-20"
+    class="bg-bg-0 py-14 sm:py-16 lg:py-20"
   >
     <UiContainer>
-      <div class="grid grid-cols-[minmax(0,1fr)_520px] items-center gap-20">
+      <div class="grid grid-cols-1 items-center lg:grid-cols-[minmax(0,1fr)_520px] lg:gap-20">
         <div>
-          <p class="text-[20px] font-normal uppercase text-primary-700">
+          <p class="text-[16px] font-normal uppercase text-primary-700 lg:text-[20px]">
             Layanan Pencarian Supplier
           </p>
 
           <h1
             id="sourcing-title"
-            class="mt-2 max-w-[500px] text-[48px] font-semibold leading-[1.16] text-primary-500"
+            class="mt-2 text-[32px] font-semibold leading-[1.25] text-primary-500 lg:max-w-[500px] lg:text-[48px] lg:leading-[1.16]"
           >
             Jasa Sourcing<br>
             Barang China
@@ -46,17 +46,17 @@ const popularCategories = [
             Solusi praktis menemukan supplier tangan pertama dan pabrik terpercaya di China tanpa kendala bahasa. Kami bantu proses pencarian produk, negosiasi harga terbaik, pemesanan sampel, hingga kontrol kualitas barang sebelum dikirim.
           </p>
 
-          <p class="mt-4 text-[16px] font-medium text-text-tertiary">
+          <p class="mt-4 hidden text-[16px] font-medium text-text-tertiary lg:block">
             Kategori Populer:
           </p>
 
-          <ul class="mt-4 grid max-w-[540px] grid-cols-3 gap-5">
+          <ul class="mt-8 grid grid-cols-1 gap-8 lg:mt-4 lg:max-w-[540px] lg:grid-cols-3 lg:gap-5">
             <li
               v-for="category in popularCategories"
               :key="category.label"
               class="flex items-center justify-center gap-2 text-center text-[14px] font-medium leading-[1.35] text-primary-500"
             >
-              <span class="whitespace-pre-line">{{ category.label }}</span>
+              <span class="whitespace-normal lg:whitespace-pre-line">{{ category.label }}</span>
               <component
                 :is="category.icon"
                 :size="16"
@@ -67,8 +67,8 @@ const popularCategories = [
             </li>
           </ul>
 
-          <div class="mt-5 flex flex-col items-center">
-            <div class="flex w-full max-w-[540px] justify-end">
+          <div class="mt-12 flex flex-col items-center lg:mt-5">
+            <div class="flex w-full max-w-[540px] justify-center lg:justify-end">
               <NuxtLink
                 to="/#quote"
                 class="inline-flex h-12 items-center gap-2 rounded-xl bg-green-500 px-6 text-[16px] font-medium text-bg-0 transition-[background-color,transform] hover:-translate-y-0.5 hover:bg-[#16a34a] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-500"
@@ -80,14 +80,14 @@ const popularCategories = [
                   aria-hidden="true"
                   width="20"
                   height="20"
-                  class="size-5 object-contain"
+                  class="size-6 object-contain lg:size-5"
                 >
               </NuxtLink>
             </div>
 
             <a
               href="#sourcing-details"
-              class="mt-3 inline-flex items-center gap-2 text-[12px] font-normal text-text-tertiary transition-colors hover:text-primary-500 focus-visible:rounded focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500"
+              class="mt-3 hidden items-center gap-2 text-[12px] font-normal text-text-tertiary transition-colors hover:text-primary-500 focus-visible:rounded focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500 lg:inline-flex"
             >
               <span>Learn more</span>
               <ChevronsDown :size="15" :stroke-width="1.8" aria-hidden="true" />
@@ -96,7 +96,7 @@ const popularCategories = [
         </div>
 
         <div
-          class="flex aspect-[4/3] w-full items-center justify-center bg-[#b7b7b7] text-center text-slate-950"
+          class="hidden aspect-[4/3] w-full items-center justify-center bg-[#b7b7b7] text-center text-slate-950 lg:flex"
           role="img"
           aria-label="Placeholder gambar layanan jasa sourcing barang China"
         >

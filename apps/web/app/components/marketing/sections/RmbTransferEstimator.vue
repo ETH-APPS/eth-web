@@ -64,17 +64,17 @@ function resetEstimate() {
 </script>
 
 <template>
-  <section class="bg-bg-0 py-16 sm:py-20">
+  <section class="bg-bg-0 py-8 sm:py-12 lg:py-20">
     <UiContainer>
-      <div class="grid grid-cols-[minmax(0,1.15fr)_minmax(390px,0.85fr)] items-start gap-10">
-        <div class="pt-4">
-          <p class="text-[20px] font-normal text-primary-700">
+      <div class="grid grid-cols-1 items-start gap-7 lg:grid-cols-[minmax(0,1.15fr)_minmax(390px,0.85fr)] lg:gap-10">
+        <div class="min-w-0 lg:pt-4">
+          <p class="text-[16px] font-normal text-primary-700 lg:text-[20px]">
             Layanan Pendukung
           </p>
-          <h1 class="mt-2 text-[40px] font-semibold leading-tight text-primary-500">
+          <h1 class="mt-1 text-[32px] font-semibold leading-tight text-primary-500 lg:mt-2 lg:text-[40px]">
             Jasa Transfer RMB
           </h1>
-          <p class="mt-7 text-[16px] font-normal leading-[1.5] text-text-secondary">
+          <p class="mt-4 text-[16px] font-normal leading-[1.5] text-text-secondary lg:mt-7">
             Solusi pembayaran kilat dan aman untuk transaksi bisnis Anda ke China.
             Pembayaran langsung diteruskan ke rekening supplier (Bank of China),
             Alipay, WeChat Pay, hingga transaksi platform 1688, Taobao, dan Alibaba
@@ -93,7 +93,28 @@ function resetEstimate() {
             </p>
           </div>
 
-          <div class="mx-auto mt-14 grid max-w-[560px] grid-cols-3 gap-x-8 gap-y-6">
+          <div class="brand-marquee -mx-4 mb-5 mt-12 overflow-hidden lg:hidden">
+            <div class="brand-track">
+              <ul
+                v-for="copy in 2"
+                :key="copy"
+                class="brand-group"
+                :aria-hidden="copy === 2 ? 'true' : undefined"
+                :aria-label="copy === 1 ? 'Metode pembayaran transfer RMB' : undefined"
+              >
+                <li v-for="logo in brandLogos" :key="logo.name" class="flex h-14 shrink-0 items-center justify-center">
+                  <img
+                    :src="logo.src"
+                    :alt="copy === 1 ? logo.name : ''"
+                    class="h-auto max-h-8 max-w-[110px] object-contain"
+                    :class="logo.widthClass"
+                  >
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="mx-auto mt-14 hidden max-w-[560px] grid-cols-3 gap-x-8 gap-y-6 lg:grid">
             <div
               v-for="logo in brandLogos"
               :key="logo.name"
@@ -110,7 +131,7 @@ function resetEstimate() {
 
           <a
             href="#rmb-calculator"
-            class="mx-auto mt-12 flex w-fit items-center gap-2 text-[16px] font-medium text-text-disable transition-colors hover:text-primary-500 focus-visible:rounded focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500"
+            class="mx-auto mt-12 hidden w-fit items-center gap-2 text-[16px] font-medium text-text-disable transition-colors hover:text-primary-500 focus-visible:rounded focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500 lg:flex"
           >
             <span>Pelajari Prosedur Transfer RMB</span>
             <ChevronsDown :size="20" :stroke-width="1.8" aria-hidden="true" />
@@ -122,11 +143,11 @@ function resetEstimate() {
           class="overflow-hidden rounded-[20px] border border-border-200 bg-bg-0 shadow-md"
           @submit.prevent="calculateEstimate"
         >
-          <h2 class="bg-primary-500 px-6 py-4 text-[20px] font-semibold text-bg-0">
+          <h2 class="bg-primary-500 px-4 py-4 text-center text-[16px] font-semibold text-bg-0 lg:px-6 lg:text-start lg:text-[20px]">
             Hitung Estimasi Transfer RMB
           </h2>
 
-          <div class="p-6">
+          <div class="p-4 lg:p-6">
             <label for="rmb-amount" class="block text-[16px] font-normal text-text-secondary">
               Nominal RMB (¥)
             </label>
@@ -139,7 +160,7 @@ function resetEstimate() {
               required
               inputmode="decimal"
               placeholder="Masukkan jumlah nominal"
-              class="mt-2 h-12 w-full rounded-lg border border-border-200 bg-bg-0 px-4 text-[16px] font-normal text-text-secondary outline-none transition-[border-color,box-shadow] placeholder:italic placeholder:text-text-tertiary focus:border-primary-500 focus:ring-2 focus:ring-primary-100"
+              class="mt-2 h-11 w-full rounded-lg border border-border-200 bg-bg-0 px-4 text-[16px] font-normal text-text-secondary outline-none transition-[border-color,box-shadow] placeholder:italic placeholder:text-text-tertiary focus:border-primary-500 focus:ring-2 focus:ring-primary-100 lg:h-12"
             >
 
             <label for="rmb-account" class="mt-5 block text-[16px] font-normal text-text-secondary">
@@ -149,7 +170,7 @@ function resetEstimate() {
               <select
                 id="rmb-account"
                 v-model="selectedAccount"
-                class="h-12 w-full appearance-none rounded-lg border border-border-200 bg-bg-0 px-4 pr-11 text-[16px] font-normal text-text-tertiary outline-none transition-[border-color,box-shadow] focus:border-primary-500 focus:ring-2 focus:ring-primary-100"
+                class="h-11 w-full appearance-none rounded-lg border border-border-200 bg-bg-0 px-4 pr-11 text-[16px] font-normal text-text-tertiary outline-none transition-[border-color,box-shadow] focus:border-primary-500 focus:ring-2 focus:ring-primary-100 lg:h-12"
               >
                 <option v-for="option in accountOptions" :key="option.label" :value="option.label">
                   {{ option.label }}
@@ -181,33 +202,83 @@ function resetEstimate() {
               </div>
             </dl>
 
-            <div class="flex items-center justify-between py-5">
+            <div class="flex flex-col items-center gap-1 py-5 text-center lg:flex-row lg:justify-between lg:gap-0 lg:text-start">
               <p class="text-[16px] font-normal text-text-secondary">
                 Total Pembayaran
               </p>
-              <output class="text-[22px] font-semibold text-primary-500">
+              <output class="text-[24px] font-semibold text-primary-500 lg:text-[22px]">
                 {{ formatRupiah(totalPayment) }}
               </output>
             </div>
 
-            <div class="mt-7 flex items-center justify-end gap-7">
+            <div class="mt-7 flex items-center justify-between gap-4 lg:justify-end lg:gap-7">
               <button
                 type="button"
                 class="text-[16px] font-medium text-primary-500 transition-colors hover:text-primary-700 focus-visible:rounded focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500"
                 @click="resetEstimate"
               >
-                Atur Ulang
+                <span class="lg:hidden">Reset</span>
+                <span class="hidden lg:inline">Atur Ulang</span>
               </button>
               <button
                 type="submit"
-                class="h-11 rounded-lg bg-primary-500 px-5 text-[16px] font-medium text-bg-0 transition-[background-color,transform] hover:-translate-y-0.5 hover:bg-primary-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500"
+                class="h-11 min-w-[136px] rounded-lg bg-primary-500 px-5 text-[16px] font-medium text-bg-0 transition-[background-color,transform] hover:-translate-y-0.5 hover:bg-primary-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500 lg:min-w-0"
               >
-                Hitung Estimasi
+                <span class="lg:hidden">Hitung</span>
+                <span class="hidden lg:inline">Hitung Estimasi</span>
               </button>
             </div>
           </div>
         </form>
+
+        <a
+          href="#rmb-calculator"
+          class="mx-auto flex w-fit items-center gap-2 text-center text-[16px] font-medium italic text-text-disable transition-colors hover:text-primary-500 focus-visible:rounded focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500 lg:hidden"
+        >
+          <span>Pelajari Prosedur Transfer RMB</span>
+          <ChevronsDown :size="20" :stroke-width="1.8" aria-hidden="true" />
+        </a>
       </div>
     </UiContainer>
   </section>
 </template>
+
+<style scoped>
+.brand-track {
+  display: flex;
+  width: max-content;
+  animation: brand-scroll 28s linear infinite;
+}
+
+.brand-group {
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: 1.75rem;
+  padding-right: 1.75rem;
+}
+
+.brand-marquee:hover .brand-track {
+  animation-play-state: paused;
+}
+
+@keyframes brand-scroll {
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .brand-marquee {
+    overflow-x: auto;
+  }
+
+  .brand-track {
+    animation: none;
+  }
+
+  .brand-group[aria-hidden="true"] {
+    display: none;
+  }
+}
+</style>

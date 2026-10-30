@@ -56,6 +56,7 @@ const faqContent = faqContentByPath['/sourcing'] ?? homeFaqContent
     :stats="sourcingStats"
     tone="primary"
     aria-label="Statistik layanan sourcing ETH Cargo"
+    :mobile-marquee="true"
   />
   <MarketingSectionsSourcingOverview />
   <MarketingSectionsShippingWorkflow

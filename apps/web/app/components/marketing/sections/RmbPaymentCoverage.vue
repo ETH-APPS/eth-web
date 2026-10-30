@@ -75,13 +75,13 @@ const paymentChannels = [
         >
           Jangkauan Layanan Pembayaran
         </h2>
-        <p class="mx-auto mt-6 max-w-[1100px] text-[20px] font-normal leading-[1.5] text-text-secondary">
+        <p class="mx-auto mt-6 max-w-[1100px] text-[16px] font-normal leading-[1.5] text-text-secondary lg:text-[20px]">
           ETH Cargo mendukung berbagai kanal pembayaran populer di China. Pilih jalur transfer yang<br class="hidden lg:block">
           paling sesuai dengan metode pembayaran yang diminta oleh supplier atau vendor Anda.
         </p>
       </div>
 
-      <div class="mx-auto mt-10 grid max-w-[1200px] gap-6 xl:grid-cols-4">
+      <div class="mx-auto mt-10 grid max-w-[1200px] gap-6 lg:grid-cols-4">
         <article
           v-for="channel in paymentChannels"
           :key="channel.id"
