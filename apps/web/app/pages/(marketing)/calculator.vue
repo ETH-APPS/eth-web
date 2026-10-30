@@ -49,6 +49,7 @@ const faqContent = faqContentByPath['/calculator'] ?? homeFaqContent
 <template>
   <MarketingSectionsRateEstimator
     section-id="calculator-estimator"
+    variant="page-hero"
     title="Kalkulator Impor All-In"
     description="Hitung perkiraan biaya pengiriman kargo Anda dari China ke Indonesia secara cepat dan transparan. Masukkan rincian jenis barang, dimensi, serta jumlah koli untuk mendapatkan estimasi tarif pengiriman All-In."
     guide-prompt="Hasil perhitungan merupakan estimasi awal berbasis volume (CBM) dan berat kargo. Biaya final All-In akan dikonfirmasi ulang oleh tim profesional ETH Cargo saat barang ditimbang di gudang China."

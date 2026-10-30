@@ -81,9 +81,9 @@ const restrictedGroups = [
           Ketentuan Barang Dilarang & Pembatasan (Lartas)
         </h2>
         <p class="mx-auto mt-6 max-w-[850px] text-[20px] leading-[1.45] text-text-tertiary">
-          Demi menjamin keamanan, kepatuhan hukum, dan kelancaran proses customs<br>
-          clearance di pelabuhan/bandara, ETH Cargo memberlakukan regulasi ketat terkait jenis<br>
-          komoditas yang dapat dikirimkan. Pastikan barang Anda tidak termasuk dalam kategori<br>
+          Demi menjamin keamanan, kepatuhan hukum, dan kelancaran proses customs<br class="hidden lg:inline">
+          clearance di pelabuhan/bandara, ETH Cargo memberlakukan regulasi ketat terkait jenis<br class="hidden lg:inline">
+          komoditas yang dapat dikirimkan. Pastikan barang Anda tidak termasuk dalam kategori<br class="hidden lg:inline">
           di bawah ini sebelum menghitung estimasi biaya.
         </p>
       </header>
@@ -119,7 +119,7 @@ const restrictedGroups = [
         <article class="overflow-hidden rounded-2xl border border-warning-400 bg-bg-0">
           <header class="flex h-12 items-center gap-2 bg-warning-400 px-4 text-text-secondary">
             <TriangleAlert :size="21" :stroke-width="2" aria-hidden="true" />
-            <h3 class="text-[16px] font-semibold">
+            <h3 class="text-[20px] font-semibold lg:text-[16px]">
               Barang yang Dibatasi
             </h3>
           </header>

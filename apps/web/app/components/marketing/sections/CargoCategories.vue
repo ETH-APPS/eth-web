@@ -70,11 +70,11 @@ function categoryIcon(icon?: string) {
       <div class="text-center">
         <h2
           :id="titleId"
-          class="text-[24px] font-semibold leading-tight text-primary-500"
+          class="text-[20px] font-semibold leading-tight text-primary-500 lg:text-[24px]"
         >
           {{ title }}
         </h2>
-        <p class="mx-auto mt-6 max-w-[900px] text-[20px] leading-[1.5] text-text-tertiary">
+        <p class="mx-auto mt-6 max-w-[900px] text-[14px] font-normal leading-[1.5] text-text-tertiary lg:text-[20px]">
           {{ description }}
         </p>
       </div>
@@ -101,7 +101,7 @@ function categoryIcon(icon?: string) {
             </header>
 
             <div class="px-4 pb-6 pt-3">
-              <ul class="space-y-2.5 text-[14px] leading-[1.35] text-text-secondary">
+              <ul class="space-y-2.5 text-[14px] font-normal leading-[1.35] text-text-secondary">
                 <li
                   v-for="(item, itemIndex) in category.items"
                   :key="`${item}-${itemIndex}`"
@@ -112,7 +112,7 @@ function categoryIcon(icon?: string) {
 
               <p
                 v-if="category.note"
-                class="mt-6 text-center text-[12px] leading-[1.45] text-text-tertiary"
+                class="mt-6 text-center text-[12px] font-normal leading-[1.45] text-text-tertiary"
               >
                 {{ category.note }}
               </p>
@@ -121,7 +121,7 @@ function categoryIcon(icon?: string) {
         </div>
       </div>
 
-      <div class="mt-14 text-center">
+      <div class="mt-14 hidden text-center lg:block">
         <p class="text-[16px] text-text-tertiary">
           {{ ctaPrompt }}
         </p>

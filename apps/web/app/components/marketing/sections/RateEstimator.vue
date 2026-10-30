@@ -14,6 +14,7 @@ const props = withDefaults(
     showGuideAction?: boolean
     contactTo?: string
     sectionId?: string
+    variant?: 'default' | 'page-hero'
   }>(),
   {
     title: 'Hitung Estimasi Tarif',
@@ -39,6 +40,7 @@ const props = withDefaults(
     showGuideAction: true,
     contactTo: '#quote',
     sectionId: 'rate-estimator',
+    variant: 'default',
   },
 )
 
@@ -53,14 +55,19 @@ const titleId = computed(() => `${props.sectionId}-title`)
   >
     <UiContainer>
       <div class="text-center">
-        <h2
+        <component
+          :is="variant === 'page-hero' ? 'h1' : 'h2'"
           :id="titleId"
-          class="text-[24px] font-bold leading-tight text-primary-500 lg:text-[32px]"
+          class="leading-tight text-primary-500 lg:text-[32px]"
+          :class="variant === 'page-hero' ? 'text-[28px] font-semibold lg:font-bold' : 'text-[24px] font-bold'"
         >
           {{ title }}
-        </h2>
+        </component>
 
-        <p class="mx-auto mt-6 max-w-[900px] text-[14px] leading-[1.5] text-text-tertiary lg:text-[20px]">
+        <p
+          class="mx-auto mt-6 max-w-[900px] font-normal leading-[1.5] text-text-tertiary lg:text-[20px]"
+          :class="variant === 'page-hero' ? 'text-[16px]' : 'text-[14px]'"
+        >
           {{ description }}
         </p>
       </div>
@@ -262,7 +269,10 @@ const titleId = computed(() => `${props.sectionId}-title`)
       </form>
 
       <div class="mt-14 flex flex-col items-center justify-center gap-3 text-center sm:flex-row sm:gap-5">
-        <p class="text-[14px] font-medium text-text-tertiary lg:text-[16px] lg:font-normal">
+        <p
+          class="text-text-tertiary lg:font-normal"
+          :class="variant === 'page-hero' ? 'text-[16px] font-normal lg:text-[20px]' : 'text-[14px] font-medium lg:text-[16px]'"
+        >
           {{ guidePrompt }}
         </p>
 

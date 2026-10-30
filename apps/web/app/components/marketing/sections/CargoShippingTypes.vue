@@ -51,11 +51,11 @@ function serviceIcon(mode: CargoShippingType['mode']) {
       <div class="text-center">
         <h2
           :id="titleId"
-          class="text-[24px] font-semibold leading-tight text-primary-500"
+          class="text-[22px] font-semibold leading-tight text-primary-500 lg:text-[24px]"
         >
           {{ title }}
         </h2>
-        <p class="mx-auto mt-6 max-w-[850px] text-[20px] leading-[1.5] text-text-tertiary">
+        <p class="mx-auto mt-6 max-w-[850px] text-[14px] leading-[1.5] text-text-tertiary lg:text-[20px]">
           {{ description }}
         </p>
       </div>
@@ -88,10 +88,10 @@ function serviceIcon(mode: CargoShippingType['mode']) {
               />
             </span>
             <h3
-              class="font-semibold leading-tight"
+              class="text-[14px] font-semibold leading-tight lg:text-[24px]"
               :class="variant === 'compact'
-                ? ['text-[24px]', 'text-primary-500']
-                : 'text-[24px] uppercase text-text-secondary'"
+                ? 'text-primary-500'
+                : 'uppercase text-text-secondary'"
             >
               {{ service.title }}
             </h3>
