@@ -1,7 +1,10 @@
 <script setup lang="ts">
+import { Blocks, Clock3, Headset, PackageCheck, ShieldCheck } from 'lucide-vue-next'
+import CargoLandingHero from '~/components/marketing/CargoLandingHero.vue'
 import airFreightUrl from '~/assets/images/marketing/air-freight.png'
 import fclCargoUrl from '~/assets/images/marketing/fcl-cargo.png'
 import lclCargoUrl from '~/assets/images/marketing/lcl-cargo.png'
+import cargoHeroUrl from '~/assets/images/marketing/multinational-cargo-hero.png'
 import { faqContentByPath, homeFaqContent } from '~/constants/faq'
 
 definePageMeta({
@@ -17,6 +20,16 @@ useSeoMeta({
     'Layanan cargo laut dan udara B2B dari China ke Indonesia dengan biaya All-In Door-to-Door yang transparan.',
   ogType: 'website',
 })
+
+const heroTitle = ['Jasa Cargo China', 'ke Indonesia #1'].join('\n')
+const heroServices = ['FCL Cargo', 'LCL Cargo', 'Air Cargo']
+const heroHighlights = [
+  { label: 'Jaminan\nKeamanan 100%', icon: ShieldCheck },
+  { label: 'Tracking Real-\nTime 24/7', icon: Clock3 },
+  { label: 'Layanan All-In\nResmi', icon: Blocks },
+  { label: 'Pengiriman Door-\nto-Door', icon: PackageCheck },
+  { label: 'Bantuan Tim\nProfesional 24/7', icon: Headset },
+]
 
 const seaFreightServices = [
   {
@@ -58,7 +71,20 @@ const faqContent = faqContentByPath['/china-cargo'] ?? homeFaqContent
 </script>
 
 <template>
-  <MarketingChinaCargoHero />
+  <CargoLandingHero
+    title-id="china-cargo-title"
+    eyebrow="Spesialis Impor China"
+    :title="heroTitle"
+    description="Solusi pengiriman cargo laut dan udara B2B yang aman, transparan, dan tepat waktu. Bebas urus bea cukai dengan skema All-In Door-to-Door langsung sampai ke gudang Anda."
+    service-label="Pilihan Layanan:"
+    :services="heroServices"
+    tracking-label="Lacak Pengiriman"
+    quote-label="Konsultasi Tarif"
+    :image="cargoHeroUrl"
+    image-alt="Kapal cargo untuk pengiriman barang dari China ke Indonesia"
+    :highlights="heroHighlights"
+    highlights-aria-label="Keunggulan layanan ETH Cargo"
+  />
   <MarketingSectionsFreightService
     eyebrow="Layanan Kami"
     title="Kargo Laut (Sea Freight)"

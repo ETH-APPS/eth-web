@@ -55,12 +55,12 @@ const titleId = computed(() => `${props.sectionId}-title`)
       <div class="text-center">
         <h2
           :id="titleId"
-          class="text-[32px] font-bold leading-tight text-primary-500"
+          class="text-[24px] font-bold leading-tight text-primary-500 lg:text-[32px]"
         >
           {{ title }}
         </h2>
 
-        <p class="mx-auto mt-6 max-w-[900px] text-[20px] leading-[1.5]  text-text-tertiary">
+        <p class="mx-auto mt-6 max-w-[900px] text-[14px] leading-[1.5] text-text-tertiary lg:text-[20px]">
           {{ description }}
         </p>
       </div>
@@ -176,9 +176,9 @@ const titleId = computed(() => `${props.sectionId}-title`)
             Dimensi barang
           </legend>
 
-          <div class="grid grid-cols-1 gap-3 min-[420px]:grid-cols-3">
-            <label class="block text-[16px] font-normal text-text-secondary">
-              Panjang <span class="text-text-tertiary">(cm)</span>
+          <div class="grid grid-cols-3 gap-3">
+            <label class="flex flex-col justify-between text-[16px] font-normal text-text-secondary">
+              <span>Panjang <span class="sr-only text-text-tertiary sm:not-sr-only">(cm)</span></span>
               <input
                 name="length"
                 type="number"
@@ -191,8 +191,8 @@ const titleId = computed(() => `${props.sectionId}-title`)
               >
             </label>
 
-            <label class="block text-[16px] font-normal text-text-secondary">
-              Lebar <span class="text-text-tertiary">(cm)</span>
+            <label class="flex flex-col justify-between text-[16px] font-normal text-text-secondary">
+              <span>Lebar <span class="sr-only text-text-tertiary sm:not-sr-only">(cm)</span></span>
               <input
                 name="width"
                 type="number"
@@ -205,8 +205,8 @@ const titleId = computed(() => `${props.sectionId}-title`)
               >
             </label>
 
-            <label class="block text-[16px] font-normal text-text-secondary">
-              Tinggi <span class="text-text-tertiary">(cm)</span>
+            <label class="flex flex-col justify-between text-[16px] font-normal text-text-secondary">
+              <span>Tinggi <span class="sr-only text-text-tertiary sm:not-sr-only">(cm)</span></span>
               <input
                 name="height"
                 type="number"
@@ -221,9 +221,9 @@ const titleId = computed(() => `${props.sectionId}-title`)
           </div>
         </fieldset>
 
-        <div class="mt-4 grid gap-4 sm:grid-cols-2">
-          <label class="block text-[16px] font-normal text-text-secondary">
-            Berat Box <span class="text-text-tertiary">(kg)</span>
+        <div class="mt-4 grid grid-cols-2 gap-4">
+          <label class="flex flex-col justify-between text-[16px] font-normal text-text-secondary">
+            <span>Berat Box <span class="text-text-tertiary">(kg)</span></span>
             <input
               name="weight"
               type="number"
@@ -236,8 +236,8 @@ const titleId = computed(() => `${props.sectionId}-title`)
             >
           </label>
 
-          <label class="block text-[16px] font-normal text-text-secondary">
-            Jumlah Box <span class="text-text-tertiary">(koli)</span>
+          <label class="flex flex-col justify-between text-[16px] font-normal text-text-secondary">
+            <span>Jumlah Box <span class="text-text-tertiary">(koli)</span></span>
             <input
               name="box-count"
               type="number"
@@ -254,7 +254,7 @@ const titleId = computed(() => `${props.sectionId}-title`)
         <div class="mt-8 flex justify-end">
           <button
             type="submit"
-            class="inline-flex h-14 w-full items-center justify-center rounded-xl bg-primary-500 px-6 text-[15px] font-semibold text-bg-0 transition-[background-color,transform] duration-200 hover:-translate-y-0.5 hover:bg-primary-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500 sm:w-auto"
+            class="inline-flex h-14 w-full items-center justify-center rounded-xl bg-primary-500 px-6 text-[16px] font-semibold text-bg-0 transition-[background-color,transform] duration-200 hover:-translate-y-0.5 hover:bg-primary-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500 sm:w-auto lg:text-[15px]"
           >
             {{ submitLabel }}
           </button>
@@ -262,7 +262,7 @@ const titleId = computed(() => `${props.sectionId}-title`)
       </form>
 
       <div class="mt-14 flex flex-col items-center justify-center gap-3 text-center sm:flex-row sm:gap-5">
-        <p class="text-[16px] font-normal text-text-tertiary">
+        <p class="text-[14px] font-medium text-text-tertiary lg:text-[16px] lg:font-normal">
           {{ guidePrompt }}
         </p>
 

@@ -44,10 +44,11 @@ const labelClass = computed(() => (
     :class="sectionClass"
   >
     <UiContainer>
-      <dl class="flex items-start justify-between gap-4 text-center">
+      <dl class="flex flex-col items-center justify-between gap-8 text-center lg:flex-row lg:items-start lg:gap-4">
         <div
           v-for="stat in stats"
           :key="stat.label"
+          class="w-full lg:w-auto"
         >
           <dt
             class="text-[46px] font-bold leading-none"

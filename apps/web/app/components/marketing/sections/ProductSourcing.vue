@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ChevronDown, ChevronsDown, Layers3, Search } from 'lucide-vue-next'
+import { ChevronDown, ChevronsDown, Search } from 'lucide-vue-next'
 import shoesUrl from '~/assets/images/marketing/shoes.png'
 import logo1688 from '~/assets/images/brand/1688.png'
 import logoTaobao from '~/assets/images/brand/taobao.png'
@@ -162,11 +162,9 @@ onBeforeUnmount(() => {
               :key="category"
               class="flex w-[92px] shrink-0 snap-start flex-col items-center gap-2 text-center text-[13px] leading-tight text-text-secondary lg:block lg:w-auto lg:text-start"
             >
-              <Layers3
-                :size="36"
-                :stroke-width="1.6"
+              <span
                 aria-hidden="true"
-                class="lg:hidden"
+                class="category-icon block size-8 shrink-0 bg-current lg:hidden"
                 :class="categoryIconColors[index % categoryIconColors.length]"
               />
               <span>{{ category }}</span>
@@ -434,6 +432,11 @@ onBeforeUnmount(() => {
 </template>
 
 <style scoped>
+.category-icon {
+  -webkit-mask: url('../../../assets/images/marketing/hand-package.svg') center / contain no-repeat;
+  mask: url('../../../assets/images/marketing/hand-package.svg') center / contain no-repeat;
+}
+
 .marketplace-track {
   display: flex;
   width: max-content;

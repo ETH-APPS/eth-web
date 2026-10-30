@@ -76,7 +76,7 @@ const faqContent = faqContentByPath['/transfer-rmb'] ?? homeFaqContent
     email="testing-mail@gmail.co.id"
     cta-label="Transfer Sekarang!"
     cta-to="#rmb-calculator"
-    :image="transferImage"
+    :image="transferImage"fix(web): use favicon-eth as browser tab icon
     image-alt="Layanan transfer RMB ETH Cargo"
   />
 </template>

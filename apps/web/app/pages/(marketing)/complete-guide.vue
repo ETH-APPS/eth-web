@@ -15,22 +15,6 @@ useSeoMeta({
 
 const faqContent = faqContentByPath['/complete-guide'] ?? homeFaqContent
 
-const guideShippingServices = [
-  {
-    mode: 'sea' as const,
-    title: 'Sea Freight',
-    description:
-      'Lorem ipsum dolor sit amet consectetur adipiscing elit. Quisque faucibus ex sapien vitae pellentesque sem placerat.',
-    to: '/sea-freight',
-  },
-  {
-    mode: 'air' as const,
-    title: 'Air Freight',
-    description:
-      'Lorem ipsum dolor sit amet consectetur adipiscing elit. Quisque faucibus ex sapien vitae pellentesque sem placerat.',
-    to: '/air-freight',
-  },
-] as const
 </script>
 
 <template>

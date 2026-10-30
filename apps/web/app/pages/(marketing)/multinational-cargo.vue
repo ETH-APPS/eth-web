@@ -1,6 +1,9 @@
 <script setup lang="ts">
+import { Blocks, Clock3, Headset, PackageCheck, ShieldCheck } from 'lucide-vue-next'
+import CargoLandingHero from '~/components/marketing/CargoLandingHero.vue'
 import cargoAirUrl from '~/assets/images/marketing/cargo-air-landscape.png'
 import cargoSeaUrl from '~/assets/images/marketing/cargo-sea-landscape.png'
+import multinationalCargoHeroUrl from '~/assets/images/marketing/multinational-cargo-hero.png'
 import { faqContentByPath, homeFaqContent } from '~/constants/faq'
 
 definePageMeta({
@@ -16,6 +19,15 @@ useSeoMeta({
     'Layanan pengiriman kargo laut dan udara untuk kebutuhan logistik internasional dari dan menuju Amerika bersama ETH Cargo.',
   ogType: 'website',
 })
+
+const heroServices = ['Sea Cargo', 'Air Cargo']
+const heroHighlights = [
+  { label: 'Guaranteed\nSafety', icon: ShieldCheck },
+  { label: '24/7\nLive Tracking', icon: Clock3 },
+  { label: 'All-in Service', icon: Blocks },
+  { label: 'Door-to-door', icon: PackageCheck },
+  { label: 'Dedicated\nSupport', icon: Headset },
+]
 
 const serviceStats = [
   { value: '+10.000', label: 'Shipment\nCompleted', uppercase: true },
@@ -34,7 +46,20 @@ const faqContent = faqContentByPath['/multinational-cargo'] ?? homeFaqContent
 </script>
 
 <template>
-  <MarketingMultinationalCargoHero />
+  <CargoLandingHero
+    title-id="multinational-cargo-title"
+    eyebrow="Multinational Cargo"
+    title="America"
+    description="Solusi pengiriman kargo laut dan udara dari dan menuju Amerika yang aman, transparan, dan terintegrasi untuk mendukung kebutuhan logistik internasional bisnis Anda."
+    service-label="In this page"
+    :services="heroServices"
+    tracking-label="Track Shipment"
+    quote-label="Get a Quote"
+    :image="multinationalCargoHeroUrl"
+    image-alt="Pelabuhan dan bandara kargo untuk layanan pengiriman multinational ETH Cargo"
+    :highlights="heroHighlights"
+    highlights-aria-label="Multinational cargo service benefits"
+  />
   <MarketingSectionsFreightService
     eyebrow="Our Service"
     title="Sea Freight"

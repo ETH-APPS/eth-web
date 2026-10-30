@@ -52,25 +52,25 @@ const hasCta = computed(() => props.ctaPrompt && props.ctaLabel && props.ctaTo)
         height="600"
         loading="lazy"
         decoding="async"
-        class="h-[430px] w-full rounded-[20px] object-cover object-center"
+        class="aspect-[12/5] h-auto w-full rounded-[20px] object-cover object-center lg:aspect-auto lg:h-[430px]"
       >
 
       <div
         class="text-center"
         :class="image ? 'mt-10' : ''"
       >
-        <p class="text-[20px] font-medium uppercase text-primary-700">
+        <p class="text-[16px] font-normal uppercase text-primary-700 lg:text-[20px] lg:font-medium">
           {{ eyebrow }}
         </p>
 
         <h2
           :id="titleId"
-          class="mt-2 text-[48px] font-semibold uppercase leading-tight tracking-[0.01em] text-primary-500"
+          class="mt-2 text-[32px] font-semibold uppercase leading-tight tracking-[0.01em] text-primary-500 lg:text-[48px]"
         >
           {{ title }}
         </h2>
 
-        <p class="mx-auto mt-5 max-w-[900px] text-[20px] leading-[1.5] text-text-secondary">
+        <p class="mx-auto mt-5 max-w-[900px] text-justify text-[16px] leading-[1.5] text-text-secondary lg:text-center lg:text-[20px]">
           {{ description }}
         </p>
       </div>
@@ -82,14 +82,14 @@ const hasCta = computed(() => props.ctaPrompt && props.ctaLabel && props.ctaTo)
         <article
           v-for="service in services"
           :key="service.title"
-          class="grid min-h-[360px] grid-cols-[1fr_420px] items-center gap-8 rounded-[20px] border border-border-200 bg-bg-0 px-12 py-10 shadow-md"
+          class="grid min-h-[360px] grid-cols-1 items-center gap-8 rounded-[20px] border border-border-200 bg-bg-0 px-5 py-10 shadow-md md:grid-cols-2 lg:grid-cols-[1fr_420px] lg:px-12"
         >
           <div>
             <p class="text-[20px] font-medium text-text-secondary">
               Mengenal Layanan...
             </p>
 
-            <h3 class="mt-2 text-[42px] font-bold leading-tight text-primary-500">
+            <h3 class="mt-2 text-[32px] font-bold leading-tight text-primary-500 lg:text-[42px]">
               {{ service.title }}
             </h3>
 
@@ -128,13 +128,13 @@ const hasCta = computed(() => props.ctaPrompt && props.ctaLabel && props.ctaTo)
         v-if="hasCta"
         class="mt-10 text-center"
       >
-        <p class="text-[11px] text-text-tertiary">
+        <p class="text-[16px] text-text-tertiary lg:text-[11px]">
           {{ ctaPrompt }}
         </p>
 
         <NuxtLink
           :to="ctaTo"
-          class="mt-3 inline-flex h-9 items-center gap-2 rounded-xl bg-primary-500 px-4 text-[11px] font-semibold text-white transition-[background-color,transform] duration-200 hover:-translate-y-0.5 hover:bg-primary-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500"
+          class="mt-3 inline-flex h-11 items-center gap-2 rounded-xl bg-primary-500 px-4 text-[14px] font-semibold text-white transition-[background-color,transform] duration-200 hover:-translate-y-0.5 hover:bg-primary-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500 lg:h-9 lg:text-[11px]"
         >
           <span>{{ ctaLabel }}</span>
           <ArrowUpRight
