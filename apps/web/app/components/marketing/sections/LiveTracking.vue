@@ -70,6 +70,12 @@ const checkpointIcons = {
   destination: House,
 }
 
+const trackingHighlights = [
+  { label: 'Update 24/7', icon: CalendarClock },
+  { label: 'Akurat & Real-Time', icon: Crosshair },
+  { label: 'Koneksi Terjamin & Aman', icon: ShieldCheck },
+] as const
+
 function checkpointIcon(kind: CheckpointKind) {
   return checkpointIcons[kind]
 }
@@ -90,11 +96,11 @@ function submitSearch() {
       <div class="text-center">
         <h1
           :id="titleId"
-          class="text-[32px] font-semibold leading-tight text-primary-500"
+          class="text-[28px] font-semibold leading-tight text-primary-500 lg:text-[32px]"
         >
           {{ title }}
         </h1>
-        <p class="mx-auto mt-8 max-w-[900px] text-[22px] leading-[1.45] text-text-secondary">
+        <p class="mx-auto mt-8 max-w-[900px] text-[14px] font-normal leading-[1.45] text-text-secondary lg:text-[22px]">
           {{ description }}
         </p>
       </div>
@@ -103,7 +109,7 @@ function submitSearch() {
         class="mx-auto mt-10 max-w-[920px] rounded-[36px] border border-border-200 bg-bg-0 p-5 shadow-[0_10px_20px_rgba(15,23,42,0.12)] sm:p-7"
         @submit.prevent="submitSearch"
       >
-        <div class="mx-auto grid max-w-[760px] gap-3 sm:grid-cols-[1fr_1fr_60px]">
+        <div class="mx-auto grid max-w-[760px] gap-3 lg:grid-cols-[1fr_1fr_60px]">
           <label class="relative block">
             <span class="sr-only">Marking ID</span>
             <Bookmark
@@ -119,7 +125,7 @@ function submitSearch() {
               required
               autocomplete="off"
               placeholder="Marking ID"
-              class="h-[60px] w-full rounded-full border border-border-200 bg-bg-0 pl-12 pr-4 text-[16px] text-text-secondary outline-none transition-colors placeholder:text-text-disable focus:border-primary-500"
+              class="h-[60px] w-full rounded-full border border-border-200 bg-bg-0 pl-12 pr-4 text-[16px] font-normal text-text-secondary outline-none transition-colors placeholder:text-text-disable focus:border-primary-500"
             >
           </label>
 
@@ -138,38 +144,61 @@ function submitSearch() {
               required
               autocomplete="off"
               placeholder="PIN"
-              class="h-[60px] w-full rounded-full border border-border-200 bg-bg-0 pl-12 pr-4 text-[16px] text-text-secondary outline-none transition-colors placeholder:text-text-disable focus:border-primary-500"
+              class="h-[60px] w-full rounded-full border border-border-200 bg-bg-0 pl-12 pr-4 text-[16px] font-normal text-text-secondary outline-none transition-colors placeholder:text-text-disable focus:border-primary-500"
             >
           </label>
 
           <button
             type="submit"
             aria-label="Cari status pengiriman"
-            class="flex size-[60px] items-center justify-center justify-self-center rounded-full bg-primary-500 text-bg-0 transition-[background-color,transform] duration-200 hover:scale-105 hover:bg-primary-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500"
+            class="flex h-[60px] items-center justify-center justify-self-end gap-3 rounded-full bg-primary-500 px-6 text-[16px] font-medium text-bg-0 transition-[background-color,transform] duration-200 hover:scale-105 hover:bg-primary-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500 lg:size-[60px] lg:justify-self-center lg:px-0"
           >
+            <span class="lg:hidden">Track!</span>
             <Search :size="27" aria-hidden="true" />
           </button>
         </div>
 
-        <div class="mt-8 flex flex-wrap items-center justify-center gap-x-4 gap-y-3 text-[20px] font-medium text-text-secondary sm:justify-between">
-          <span class="flex items-center gap-2">
-            <CalendarClock :size="26" class="text-primary-500" aria-hidden="true" />
-            Update 24/7
-          </span>
-          <span aria-hidden="true" class="hidden h-6 w-px bg-border-200 sm:block" />
-          <span class="flex items-center gap-2">
-            <Crosshair :size="26" class="text-primary-500" aria-hidden="true" />
-            Akurat &amp; Real-Time
-          </span>
-          <span aria-hidden="true" class="hidden h-6 w-px bg-border-200 sm:block" />
-          <span class="flex items-center gap-2">
-            <ShieldCheck :size="26" class="text-primary-500" aria-hidden="true" />
-            Koneksi Terjamin &amp; Aman
-          </span>
+        <div class="tracking-highlights-marquee -mx-5 mt-8 overflow-hidden sm:-mx-7 lg:hidden">
+          <div class="tracking-highlights-track flex w-max">
+            <div
+              v-for="copy in 2"
+              :key="copy"
+              class="tracking-highlights-group flex shrink-0 items-center gap-8 pr-8 text-[20px] font-medium text-text-secondary"
+              :aria-hidden="copy === 2 ? 'true' : undefined"
+            >
+              <span v-for="highlight in trackingHighlights" :key="highlight.label" class="flex shrink-0 items-center gap-2 whitespace-nowrap">
+                <component :is="highlight.icon" :size="26" class="text-primary-500" aria-hidden="true" />
+                {{ highlight.label }}
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-8 hidden flex-wrap items-center justify-between gap-x-4 gap-y-3 text-[20px] font-medium text-text-secondary lg:flex">
+          <template v-for="(highlight, index) in trackingHighlights" :key="highlight.label">
+            <span class="flex items-center gap-2">
+              <component :is="highlight.icon" :size="26" class="text-primary-500" aria-hidden="true" />
+              {{ highlight.label }}
+            </span>
+            <span v-if="index < trackingHighlights.length - 1" aria-hidden="true" class="h-6 w-px bg-border-200" />
+          </template>
         </div>
       </form>
 
-      <div aria-hidden="true" class="mt-12 h-px bg-border-200" />
+      <div class="mt-12 text-center lg:hidden">
+        <p class="text-[14px] font-normal text-text-tertiary">
+          {{ ctaPrompt }}
+        </p>
+        <NuxtLink
+          :to="ctaTo"
+          class="mt-3 inline-flex h-11 items-center gap-2 rounded-xl bg-primary-500 px-6 text-[14px] font-medium text-bg-0 transition-[background-color,transform] duration-200 hover:-translate-y-0.5 hover:bg-primary-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500"
+        >
+          <span>{{ ctaLabel }}</span>
+          <ArrowUpRight :size="17" aria-hidden="true" />
+        </NuxtLink>
+      </div>
+
+      <div aria-hidden="true" class="mt-12 hidden h-px bg-border-200 lg:block" />
 
       <Transition
         enter-active-class="transition duration-300 ease-out"
@@ -181,14 +210,14 @@ function submitSearch() {
           class="mt-8"
         >
           <article class="rounded-[18px] border border-border-200 bg-bg-0 p-7">
-            <p class="text-[16px] text-text-tertiary">
+            <p class="text-[16px] font-normal text-text-tertiary">
               Case
             </p>
             <p class="mt-1 text-[28px] font-semibold text-primary-500">
               {{ searchedCaseNumber }}
             </p>
 
-            <dl class="mt-8 grid gap-3 text-[16px] sm:grid-cols-[150px_1fr]">
+            <dl class="mt-8 grid gap-3 text-[16px] font-normal sm:grid-cols-[150px_1fr]">
               <dt class="text-text-tertiary">Jenis Layanan:</dt>
               <dd class="font-semibold text-primary-500">{{ result.cargoType }}</dd>
               <dt class="text-text-tertiary">Status Terakhir:</dt>
@@ -304,7 +333,7 @@ function submitSearch() {
             </div>
           </article>
 
-          <div class="mt-12 text-center">
+          <div class="mt-12 hidden text-center lg:block">
             <p class="text-[16px] font-normal text-text-tertiary">
               {{ ctaPrompt }}
             </p>
@@ -318,6 +347,37 @@ function submitSearch() {
           </div>
         </div>
       </Transition>
+
     </UiContainer>
   </section>
 </template>
+
+<style scoped>
+.tracking-highlights-track {
+  animation: tracking-highlights-scroll 28s linear infinite;
+}
+
+.tracking-highlights-marquee:hover .tracking-highlights-track {
+  animation-play-state: paused;
+}
+
+@keyframes tracking-highlights-scroll {
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tracking-highlights-marquee {
+    overflow-x: auto;
+  }
+
+  .tracking-highlights-track {
+    animation: none;
+  }
+
+  .tracking-highlights-group[aria-hidden="true"] {
+    display: none;
+  }
+}
+</style>
