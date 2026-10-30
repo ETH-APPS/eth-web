@@ -23,7 +23,7 @@ const policyGroups = [
   {
     title: 'Cargo',
     items: [
-      { label: 'FCL Cargo', icon: 'package', featured: true },
+      { label: 'FCL Cargo', icon: 'package' },
       { label: 'LCL Cargo', icon: 'package' },
       { label: 'Air Cargo', icon: 'package' },
     ],

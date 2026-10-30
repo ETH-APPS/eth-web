@@ -33,7 +33,7 @@ const emit = defineEmits<{
 
 type MobileSection = 'Layanan' | 'Fitur' | 'Informasi' | 'Insights'
 
-const activeSection = ref<MobileSection | null>('Layanan')
+const activeSection = ref<MobileSection | null>(null)
 const trackingCode = ref('')
 const trackingPin = ref('')
 
