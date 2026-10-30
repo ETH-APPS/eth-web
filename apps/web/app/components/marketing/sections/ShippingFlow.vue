@@ -31,6 +31,7 @@ const steps = [
 
 const activeStep = ref(0)
 const cardRefs = ref<(HTMLElement | null)[]>([])
+const stepViewportRef = ref<HTMLElement | null>(null)
 let wheelLocked = false
 let wheelTimer: ReturnType<typeof setTimeout> | undefined
 
@@ -42,15 +43,49 @@ const trackStyle = computed(() => {
   const offset = cardRefs.value[activeStep.value]?.offsetTop ?? 0
 
   return {
-    transform: `translateY(-${offset}px)`,
+    '--step-offset': `-${offset}px`,
   }
 })
 
 function selectStep(index: number) {
   activeStep.value = (index + steps.length) % steps.length
+
+  if (window.matchMedia('(max-width: 1023px)').matches) {
+    stepViewportRef.value?.scrollTo({
+      top: cardRefs.value[activeStep.value]?.offsetTop ?? 0,
+      behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth',
+    })
+  }
+}
+
+function handleStepScroll(event: Event) {
+  if (window.matchMedia('(min-width: 1024px)').matches)
+    return
+
+  const scrollTop = (event.currentTarget as HTMLElement).scrollTop
+  let nearestStep = 0
+  let nearestDistance = Infinity
+
+  cardRefs.value.forEach((card, index) => {
+    if (!card)
+      return
+
+    const distance = Math.abs(card.offsetTop - scrollTop)
+    if (distance < nearestDistance) {
+      nearestDistance = distance
+      nearestStep = index
+    }
+  })
+
+  activeStep.value = nearestStep
 }
 
 function handleWheel(event: WheelEvent) {
+  if (window.matchMedia('(max-width: 1023px)').matches)
+    return
+
+  event.preventDefault()
+
   if (wheelLocked || Math.abs(event.deltaY) < 10) {
     return
   }
@@ -208,22 +243,24 @@ onBeforeUnmount(() => {
         </div>
 
         <div
-          class="h-[260px] min-w-0 overflow-hidden [mask-image:linear-gradient(to_bottom,black_65%,transparent_100%)] lg:h-[296px]"
+          ref="stepViewportRef"
+          class="h-[260px] min-w-0 snap-y snap-proximity overflow-x-hidden overflow-y-auto touch-pan-y [mask-image:linear-gradient(to_bottom,black_65%,transparent_100%)] lg:h-[296px] lg:snap-none lg:overflow-hidden lg:touch-auto"
           tabindex="0"
           role="region"
           aria-label="Daftar langkah pengiriman. Gunakan scroll atau tombol panah untuk berpindah langkah."
-          @wheel.prevent="handleWheel"
+          @scroll.passive="handleStepScroll"
+          @wheel="handleWheel"
           @keydown="handleNavigationKeydown"
         >
           <div
-            class="relative space-y-4 transition-transform duration-500 ease-out"
+            class="shipping-flow-track relative space-y-4 transition-transform duration-500 ease-out"
             :style="trackStyle"
           >
             <article
               v-for="(step, index) in steps"
               :key="step.title"
               :ref="(el) => setCardRef(el, index)"
-              class="rounded-[22px] border bg-white p-[18px] transition-[border-color,box-shadow] duration-300 lg:p-5"
+              class="snap-start rounded-[22px] border bg-white p-[18px] transition-[border-color,box-shadow] duration-300 lg:p-5"
               :class="activeStep === index
                 ? 'border-primary-500 shadow-[0_5px_12px_rgba(15,23,42,0.10)]'
                 : 'border-border-200'"
@@ -248,3 +285,11 @@ onBeforeUnmount(() => {
     </UiContainer>
   </section>
 </template>
+
+<style scoped>
+@media (min-width: 64rem) {
+  .shipping-flow-track {
+    transform: translateY(var(--step-offset));
+  }
+}
+</style>
