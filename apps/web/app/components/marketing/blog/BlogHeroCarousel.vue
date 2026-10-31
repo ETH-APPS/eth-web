@@ -81,82 +81,95 @@ onBeforeUnmount(clearAutoplay)
   <section
     id="featured-blog"
     aria-label="Artikel blog pilihan"
-    class="overflow-hidden bg-bg-0 py-14 sm:py-16 lg:py-20"
+    class="overflow-hidden bg-bg-0 py-4 sm:py-8 lg:py-20"
   >
     <UiContainer>
       <div
         v-if="currentPost"
-        class="relative px-9 sm:px-11 xl:px-0"
+        class="relative flex flex-col lg:block lg:px-11 xl:px-0"
         @mouseenter="clearAutoplay"
         @mouseleave="startAutoplay"
         @focusin="clearAutoplay"
         @focusout="startAutoplay"
       >
-        <button
-          type="button"
-          aria-label="Tampilkan artikel sebelumnya"
-          class="absolute left-0 top-1/2 z-10 flex size-8 -translate-y-1/2 items-center justify-center rounded-full text-text-secondary transition-[background-color,color,transform] hover:scale-105 hover:bg-primary-50 hover:text-primary-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500 xl:-left-12"
-          @click="showPrevious"
-        >
-          <ChevronLeft :size="25" :stroke-width="1.8" aria-hidden="true" />
-        </button>
+        <div class="order-2 mt-5 flex justify-center gap-1 lg:contents">
+          <button
+            type="button"
+            aria-label="Tampilkan artikel sebelumnya"
+            class="z-10 flex size-11 items-center justify-center rounded-full text-text-secondary transition-[background-color,color,transform] hover:scale-105 hover:bg-primary-50 hover:text-primary-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500 lg:absolute lg:left-0 lg:top-1/2 lg:size-8 lg:-translate-y-1/2 xl:-left-12"
+            @click="showPrevious"
+          >
+            <ChevronLeft :size="25" :stroke-width="1.8" aria-hidden="true" />
+          </button>
+
+          <button
+            type="button"
+            aria-label="Tampilkan artikel berikutnya"
+            class="z-10 flex size-11 items-center justify-center rounded-full text-text-secondary transition-[background-color,color,transform] hover:scale-105 hover:bg-primary-50 hover:text-primary-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500 lg:absolute lg:right-0 lg:top-1/2 lg:size-8 lg:-translate-y-1/2 xl:-right-12"
+            @click="showNext"
+          >
+            <ChevronRight :size="25" :stroke-width="1.8" aria-hidden="true" />
+          </button>
+        </div>
 
         <Transition :name="transitionName" mode="out-in">
           <article
             :key="currentPost.id"
-            class="grid items-stretch gap-8 md:grid-cols-[minmax(0,1.45fr)_minmax(300px,0.95fr)] lg:gap-10"
+            class="grid items-stretch gap-3 lg:grid-cols-[minmax(0,1.45fr)_minmax(300px,0.95fr)] lg:gap-10"
             aria-live="polite"
           >
-            <div class="relative aspect-[16/9] overflow-hidden rounded-[18px] bg-bg-100 md:aspect-auto">
+            <div class="relative w-full overflow-hidden rounded-xl bg-bg-100 lg:rounded-[18px]">
               <img
                 :src="currentPost.image"
                 :alt="currentPost.imageAlt"
-                class="absolute inset-0 size-full object-cover"
+                class="block aspect-[16/9] w-full object-cover lg:absolute lg:inset-0 lg:size-full lg:aspect-auto"
               >
             </div>
 
             <div class="min-w-0">
               <h1
                 :title="currentPost.title"
-                class="truncate text-[32px] font-semibold leading-tight text-text-secondary"
+                class="text-[32px] font-semibold leading-tight text-text-secondary lg:truncate"
               >
                 {{ currentPost.title }}
               </h1>
 
-              <p class="mt-4 line-clamp-4 text-justify text-[16px] font-normal leading-[1.55] text-text-secondary md:min-h-[6.2em]">
+              <p class="mt-4 text-justify text-[16px] font-normal leading-[1.55] text-text-secondary lg:line-clamp-4 lg:min-h-[6.2em]">
                 {{ currentPost.description }}
               </p>
 
-              <dl class="mt-5 space-y-2 text-[14px] text-text-secondary">
-                <div class="flex items-center gap-3">
-                  <dt>Author</dt>
-                  <span class="h-px w-5 bg-border-300" aria-hidden="true" />
-                  <dd>{{ currentPost.author }}</dd>
-                </div>
-                <div class="flex items-center gap-3">
-                  <dt>Release</dt>
-                  <span class="h-px w-5 bg-border-300" aria-hidden="true" />
-                  <dd>{{ currentPost.releaseDate }}</dd>
-                </div>
-              </dl>
+              <div class="flex flex-col lg:block">
+                <dl class="order-2 mt-4 space-y-2 text-[14px] text-text-secondary lg:mt-5">
+                  <div class="flex items-center gap-3">
+                    <dt>Author</dt>
+                    <span class="h-px w-5 bg-border-300" aria-hidden="true" />
+                    <dd>{{ currentPost.author }}</dd>
+                  </div>
+                  <div class="flex items-center gap-3">
+                    <dt>Release</dt>
+                    <span class="h-px w-5 bg-border-300" aria-hidden="true" />
+                    <dd>{{ currentPost.releaseDate }}</dd>
+                  </div>
+                </dl>
 
-              <div class="mt-5">
-                <p class="text-[14px] text-text-secondary">
-                  Tags
-                </p>
-                <ul class="mt-2 flex flex-wrap gap-2" aria-label="Tag artikel">
-                  <li
-                    v-for="tag in currentPost.tags"
-                    :key="tag"
-                  >
-                    <NuxtLink
-                      :to="{ path: '/blog/tags', query: { tag } }"
-                      class="block rounded-md bg-bg-100 px-2.5 py-1.5 text-[14px] text-primary-500 transition-colors hover:bg-primary-50 focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-primary-500"
+                <div class="order-1 mt-5">
+                  <p class="text-[14px] text-text-secondary">
+                    Tags
+                  </p>
+                  <ul class="mt-2 flex flex-wrap gap-2" aria-label="Tag artikel">
+                    <li
+                      v-for="tag in currentPost.tags"
+                      :key="tag"
                     >
-                      {{ tag }}
-                    </NuxtLink>
-                  </li>
-                </ul>
+                      <NuxtLink
+                        :to="{ path: '/blog/tags', query: { tag } }"
+                        class="block rounded-md bg-bg-100 px-1.5 py-0.5 text-[14px] text-primary-500 transition-colors hover:bg-primary-50 focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-primary-500 lg:px-2.5 lg:py-1.5"
+                      >
+                        {{ tag }}
+                      </NuxtLink>
+                    </li>
+                  </ul>
+                </div>
               </div>
 
               <div class="mt-8 flex justify-end">
@@ -172,14 +185,6 @@ onBeforeUnmount(clearAutoplay)
           </article>
         </Transition>
 
-        <button
-          type="button"
-          aria-label="Tampilkan artikel berikutnya"
-          class="absolute right-0 top-1/2 z-10 flex size-8 -translate-y-1/2 items-center justify-center rounded-full text-text-secondary transition-[background-color,color,transform] hover:scale-105 hover:bg-primary-50 hover:text-primary-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500 xl:-right-12"
-          @click="showNext"
-        >
-          <ChevronRight :size="25" :stroke-width="1.8" aria-hidden="true" />
-        </button>
       </div>
     </UiContainer>
   </section>

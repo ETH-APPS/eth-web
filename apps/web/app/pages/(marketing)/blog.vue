@@ -228,6 +228,7 @@ const importPosts = [
       :posts="importPosts"
       view-all-to="#import-articles"
       :autoplay-delay="5500"
+      class="hidden lg:block"
     />
 
     <MarketingBlogAllArticles

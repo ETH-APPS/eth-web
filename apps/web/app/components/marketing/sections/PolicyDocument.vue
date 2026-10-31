@@ -116,75 +116,97 @@ function selectPolicy(policyId: string, shouldScroll = true) {
         </label>
       </div>
 
-      <div class="-mx-4 border-b-2 lg:hidden" :class="isMobileTocOpen ? 'border-transparent' : 'border-primary-500'">
-        <button
-          type="button"
-          class="flex min-h-12 w-full items-center justify-between gap-4 px-4 text-left text-[14px] font-semibold text-text-secondary focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-primary-500"
-          aria-controls="mobile-policy-toc"
-          :aria-expanded="isMobileTocOpen"
-          @click="isMobileTocOpen = !isMobileTocOpen"
-        >
-          <span>Table of Content</span>
-          <ChevronDown :size="20" class="shrink-0 transition-transform duration-200" :class="isMobileTocOpen ? 'rotate-180' : ''" aria-hidden="true" />
-        </button>
-      </div>
-
       <Transition
-        enter-active-class="transition duration-200 ease-out"
-        enter-from-class="-translate-y-2 opacity-0"
-        enter-to-class="translate-y-0 opacity-100"
-        leave-active-class="transition duration-150 ease-in"
-        leave-from-class="translate-y-0 opacity-100"
-        leave-to-class="-translate-y-2 opacity-0"
+        enter-active-class="transition-opacity duration-200 ease-out"
+        enter-from-class="opacity-0"
+        enter-to-class="opacity-100"
+        leave-active-class="transition-opacity duration-150 ease-in"
+        leave-from-class="opacity-100"
+        leave-to-class="opacity-0"
       >
-        <nav
-          v-show="isMobileTocOpen"
-          id="mobile-policy-toc"
-          aria-label="Table of Content"
-          class="pb-4 pt-3 lg:hidden"
-        >
-          <label class="relative block">
-            <span class="sr-only">Cari kebijakan</span>
-            <Search :size="18" aria-hidden="true" class="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-text-disable" />
-            <input
-              v-model="searchQuery"
-              type="search"
-              placeholder="Cari artikel"
-              class="h-11 w-full rounded-full border border-border-200 bg-bg-0 pl-10 pr-4 text-[14px] text-text-secondary outline-none placeholder:italic placeholder:text-text-disable focus:border-primary-500"
-            >
-          </label>
-
-          <div class="mt-3 h-px w-24 bg-border-200" aria-hidden="true" />
-
-          <div v-if="filteredNavigation.length" class="mt-2">
-            <div v-for="group in filteredNavigation" :key="group.label">
-              <ul class="space-y-1">
-                <li v-for="item in group.items" :key="item.id">
-                  <button
-                    type="button"
-                    class="flex min-h-11 w-full items-center gap-3 rounded-lg px-1 text-left text-[12px] transition-colors focus-visible:outline-2 focus-visible:outline-primary-500"
-                    :class="item.id === activePolicyId ? 'font-medium text-primary-500' : 'text-text-secondary hover:text-primary-500'"
-                    :aria-current="item.id === activePolicyId ? 'page' : undefined"
-                    @click="selectPolicy(item.id)"
-                  >
-                    <span class="flex size-4 shrink-0 items-center justify-center">
-                      <ArrowUpRight v-if="item.id !== activePolicyId" :size="16" aria-hidden="true" />
-                    </span>
-                    <span>{{ item.label }}</span>
-                  </button>
-                </li>
-              </ul>
-              <div class="my-4 h-px w-24 bg-border-200" aria-hidden="true" />
-            </div>
-          </div>
-          <p v-else class="mt-5 text-[14px] text-text-tertiary">Kebijakan tidak ditemukan.</p>
-
-          <NuxtLink to="/legalities" class="mt-2 flex min-h-11 items-center gap-3 px-1 text-[14px] text-text-tertiary focus-visible:outline-2 focus-visible:outline-primary-500">
-            <ArrowLeft :size="16" aria-hidden="true" />
-            Back to Legalities
-          </NuxtLink>
-        </nav>
+        <button
+          v-if="isMobileTocOpen"
+          type="button"
+          aria-label="Tutup Table of Content"
+          class="fixed inset-x-0 bottom-0 top-16 z-10 bg-white/30 backdrop-blur-[6px] lg:hidden"
+          @click="isMobileTocOpen = false"
+        />
       </Transition>
+
+      <div class="sticky top-16 z-20 -mx-4 bg-bg-0 lg:hidden">
+        <div
+          class="border-b-2 transition-colors duration-200"
+          :class="isMobileTocOpen ? 'border-border-200' : 'border-primary-500'"
+        >
+          <button
+            type="button"
+            class="flex min-h-12 w-full items-center justify-between gap-4 px-4 text-left text-[14px] font-semibold text-text-secondary focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-primary-500"
+            aria-controls="mobile-policy-toc"
+            :aria-expanded="isMobileTocOpen"
+            @click="isMobileTocOpen = !isMobileTocOpen"
+          >
+            <span>Table of Content</span>
+            <ChevronDown :size="20" class="shrink-0 transition-transform duration-200" :class="isMobileTocOpen ? 'rotate-180' : ''" aria-hidden="true" />
+          </button>
+        </div>
+
+        <Transition
+          enter-active-class="transition duration-200 ease-out"
+          enter-from-class="-translate-y-2 opacity-0"
+          enter-to-class="translate-y-0 opacity-100"
+          leave-active-class="transition duration-150 ease-in"
+          leave-from-class="translate-y-0 opacity-100"
+          leave-to-class="-translate-y-2 opacity-0"
+        >
+          <nav
+            v-show="isMobileTocOpen"
+            id="mobile-policy-toc"
+            aria-label="Table of Content"
+            class="absolute inset-x-0 top-full max-h-[calc(100dvh-7rem)] overflow-y-auto bg-bg-0 px-4 pb-4 pt-3 shadow-[0_14px_28px_rgba(15,23,42,0.14)]"
+          >
+            <label class="relative block">
+              <span class="sr-only">Cari kebijakan</span>
+              <Search :size="18" aria-hidden="true" class="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-text-disable" />
+              <input
+                v-model="searchQuery"
+                type="search"
+                placeholder="Cari artikel"
+                class="h-11 w-full rounded-full border border-border-200 bg-bg-0 pl-10 pr-4 text-[14px] text-text-secondary outline-none placeholder:italic placeholder:text-text-disable focus:border-primary-500"
+              >
+            </label>
+
+            <div class="mt-3 h-px w-24 bg-border-200" aria-hidden="true" />
+
+            <div v-if="filteredNavigation.length" class="mt-2">
+              <div v-for="group in filteredNavigation" :key="group.label">
+                <ul class="space-y-1">
+                  <li v-for="item in group.items" :key="item.id">
+                    <button
+                      type="button"
+                      class="flex min-h-11 w-full items-center gap-3 rounded-lg px-1 text-left text-[12px] transition-colors focus-visible:outline-2 focus-visible:outline-primary-500"
+                      :class="item.id === activePolicyId ? 'font-medium text-primary-500' : 'text-text-secondary hover:text-primary-500'"
+                      :aria-current="item.id === activePolicyId ? 'page' : undefined"
+                      @click="selectPolicy(item.id)"
+                    >
+                      <span class="flex size-4 shrink-0 items-center justify-center">
+                        <ArrowUpRight v-if="item.id !== activePolicyId" :size="16" aria-hidden="true" />
+                      </span>
+                      <span>{{ item.label }}</span>
+                    </button>
+                  </li>
+                </ul>
+                <div class="my-4 h-px w-24 bg-border-200" aria-hidden="true" />
+              </div>
+            </div>
+            <p v-else class="mt-5 text-[14px] text-text-tertiary">Kebijakan tidak ditemukan.</p>
+
+            <NuxtLink to="/legalities" class="mt-2 flex min-h-11 items-center gap-3 px-1 text-[14px] text-text-tertiary focus-visible:outline-2 focus-visible:outline-primary-500">
+              <ArrowLeft :size="16" aria-hidden="true" />
+              Back to Legalities
+            </NuxtLink>
+          </nav>
+        </Transition>
+      </div>
 
       <div class="mt-6 grid items-start gap-6 lg:mt-8 lg:grid-cols-[280px_minmax(0,1fr)] lg:gap-8">
         <aside class="hidden rounded-2xl border border-border-200 bg-bg-0 p-4 shadow-[0_6px_14px_rgba(15,23,42,0.09)] lg:sticky lg:top-28 lg:block">

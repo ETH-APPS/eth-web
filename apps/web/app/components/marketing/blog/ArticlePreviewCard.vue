@@ -8,6 +8,7 @@ const props = defineProps<{
   image: string
   imageAlt: string
   to?: string
+  mobileTitleSize?: 15 | 16
 }>()
 </script>
 
@@ -25,7 +26,10 @@ const props = defineProps<{
     </div>
 
     <div class="flex min-h-[106px] flex-1 flex-col px-2.5 pb-3 pt-2.5">
-      <h3 class="line-clamp-2 text-[16px] font-normal leading-6 text-text-secondary transition-colors group-hover:text-primary-500 group-focus-visible:text-primary-500">
+      <h3
+        class="line-clamp-2 font-normal leading-6 text-text-secondary transition-colors group-hover:text-primary-500 group-focus-visible:text-primary-500"
+        :class="props.mobileTitleSize === 16 ? 'text-[16px]' : 'text-[15px] lg:text-[16px]'"
+      >
         {{ props.title }}
       </h3>
 

@@ -36,6 +36,7 @@ const sortOptions: { value: SortOption, label: string }[] = [
 const router = useRouter()
 const searchTerm = ref(props.initialSearch)
 const selectedTags = ref<string[]>([])
+const pendingTags = ref<string[]>([])
 const currentPage = ref(1)
 const filterOpen = ref(false)
 const tagOpen = ref(false)
@@ -44,8 +45,8 @@ const pendingSort = ref<SortOption>('newest')
 const appliedTag = ref(props.initialTag)
 const pendingTag = ref(props.initialTag)
 const allArticlesSection = ref<HTMLElement>()
-const filterMenu = ref<HTMLElement>()
-const tagMenu = ref<HTMLElement>()
+const dialogRef = ref<HTMLElement>()
+let previousBodyOverflow = ''
 const isSearchResults = computed(() => props.variant === 'search-results')
 const isTagResults = computed(() => props.variant === 'tag-results')
 
@@ -134,14 +135,15 @@ function setPage(page: number) {
   })
 }
 
-function toggleTag(tag: string) {
-  selectedTags.value = selectedTags.value.includes(tag)
-    ? selectedTags.value.filter(selectedTag => selectedTag !== tag)
-    : [...selectedTags.value, tag]
+function resetDirectoryFilter() {
+  pendingTags.value = []
+  selectedTags.value = []
+  filterOpen.value = false
 }
 
-function clearFilters() {
-  selectedTags.value = []
+function applyDirectoryFilter() {
+  selectedTags.value = [...pendingTags.value]
+  filterOpen.value = false
 }
 
 function submitSearch() {
@@ -158,6 +160,7 @@ function submitSearch() {
 
 function openFilter() {
   pendingSort.value = appliedSort.value
+  pendingTags.value = [...selectedTags.value]
   filterOpen.value = !filterOpen.value
   tagOpen.value = false
 }
@@ -207,18 +210,30 @@ function goToTag(tag: string) {
   })
 }
 
-function handleOutsideFilterClick(event: PointerEvent) {
-  if (!filterOpen.value && !tagOpen.value)
-    return
-
-  const target = event.target as Node | null
-
-  if (target && (filterMenu.value?.contains(target) || tagMenu.value?.contains(target)))
-    return
-
+function closeDialogs() {
   filterOpen.value = false
   tagOpen.value = false
 }
+
+function handleDialogKeydown(event: KeyboardEvent) {
+  if (event.key === 'Escape' && (filterOpen.value || tagOpen.value))
+    closeDialogs()
+}
+
+watch([filterOpen, tagOpen], async ([filter, tag]) => {
+  if (!import.meta.client)
+    return
+
+  if (filter || tag) {
+    previousBodyOverflow = document.body.style.overflow
+    document.body.style.overflow = 'hidden'
+    await nextTick()
+    dialogRef.value?.focus()
+  }
+  else {
+    document.body.style.overflow = previousBodyOverflow
+  }
+})
 
 watch([searchTerm, () => selectedTags.value.join('|'), appliedSort, appliedTag], () => {
   currentPage.value = 1
@@ -239,11 +254,12 @@ watch(totalPages, (total) => {
 })
 
 onMounted(() => {
-  document.addEventListener('pointerdown', handleOutsideFilterClick)
+  document.addEventListener('keydown', handleDialogKeydown)
 })
 
 onBeforeUnmount(() => {
-  document.removeEventListener('pointerdown', handleOutsideFilterClick)
+  document.removeEventListener('keydown', handleDialogKeydown)
+  document.body.style.overflow = previousBodyOverflow
 })
 </script>
 
@@ -254,6 +270,12 @@ onBeforeUnmount(() => {
     aria-labelledby="all-articles-title"
     class="scroll-mt-20 bg-bg-0 py-14 sm:py-16 lg:py-20"
   >
+    <div
+      v-if="filterOpen || tagOpen"
+      class="fixed inset-0 z-[100] bg-black/50 backdrop-blur-[2px]"
+      aria-hidden="true"
+      @click="closeDialogs"
+    />
     <UiContainer>
       <div class="mx-auto max-w-[1080px]">
         <h2
@@ -263,8 +285,8 @@ onBeforeUnmount(() => {
           {{ isTagResults ? 'Tags' : isSearchResults ? 'Search Result' : 'All Article' }}
         </h2>
 
-        <div class="mt-5 flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
-          <form class="w-full sm:max-w-[360px]" role="search" @submit.prevent="submitSearch">
+        <div class="mt-5 flex items-center justify-between gap-4 sm:items-start">
+          <form class="min-w-0 flex-1 sm:max-w-[360px]" role="search" @submit.prevent="submitSearch">
             <label class="relative block w-full">
               <span class="sr-only">Cari artikel</span>
               <Search
@@ -282,18 +304,19 @@ onBeforeUnmount(() => {
             </label>
           </form>
 
-          <div ref="filterMenu" class="relative self-end sm:self-start">
+          <div class="relative shrink-0 sm:self-start">
             <button
               type="button"
+              aria-label="Filter Article"
               :aria-expanded="filterOpen"
               :aria-controls="isSearchResults || isTagResults ? 'article-sort-panel' : 'article-filter-panel'"
-              class="inline-flex h-11 items-center gap-2 rounded-lg px-3 text-[16px] font-medium text-primary-500 transition-colors hover:bg-primary-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500"
+              class="inline-flex size-11 items-center justify-center rounded-full bg-primary-500 text-white transition-colors hover:bg-primary-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500 lg:h-11 lg:w-auto lg:gap-2 lg:rounded-lg lg:bg-transparent lg:px-3 lg:text-[16px] lg:font-medium lg:text-primary-500 lg:hover:bg-primary-50"
               @click="isSearchResults || isTagResults ? openFilter() : filterOpen = !filterOpen"
             >
-              <span>Filter Article</span>
+              <span class="hidden lg:inline">Filter Article</span>
               <span
                 v-if="!isSearchResults && !isTagResults && selectedTags.length"
-                class="flex size-5 items-center justify-center rounded-full bg-primary-500 text-[10px] text-white"
+                class="absolute -right-1 -top-1 flex size-5 items-center justify-center rounded-full border border-primary-500 bg-white text-[10px] text-primary-500 lg:static lg:border-0 lg:bg-primary-500 lg:text-white"
               >
                 {{ selectedTags.length }}
               </span>
@@ -303,53 +326,71 @@ onBeforeUnmount(() => {
             <div
               v-if="!isSearchResults && !isTagResults && filterOpen"
               id="article-filter-panel"
-              class="absolute right-0 z-20 mt-2 w-[260px] rounded-xl border border-border-200 bg-white p-4 shadow-[0_12px_34px_rgba(15,23,42,0.14)]"
+              ref="dialogRef"
+              role="dialog"
+              aria-modal="true"
+              aria-labelledby="article-tag-filter-title"
+              tabindex="-1"
+              class="fixed left-1/2 top-1/2 z-[101] max-h-[calc(100dvh-2rem)] w-[min(380px,calc(100vw-2rem))] -translate-x-1/2 -translate-y-1/2 overflow-y-auto rounded-[18px] border border-border-200 bg-white p-5 shadow-xl outline-none sm:p-6"
             >
-              <div class="flex items-center justify-between gap-4">
-                <p class="text-[13px] font-semibold text-text-secondary">
-                  Filter berdasarkan tag
-                </p>
-                <button
-                  v-if="selectedTags.length"
-                  type="button"
-                  class="text-[11px] text-primary-500 hover:underline"
-                  @click="clearFilters"
-                >
-                  Reset
-                </button>
-              </div>
+              <h2 id="article-tag-filter-title" class="text-[24px] font-semibold text-text-secondary lg:text-[13px]">
+                Filter berdasarkan tag
+              </h2>
+              <div class="mt-4 h-px bg-border-200" />
 
-              <div class="mt-3 grid grid-cols-2 gap-2">
+              <div class="mt-4 max-h-[min(50dvh,320px)] space-y-1 overflow-y-auto">
                 <label
                   v-for="tag in availableTags"
                   :key="tag"
-                  class="flex cursor-pointer items-center gap-2 rounded-md px-2 py-1.5 text-[11px] text-text-secondary hover:bg-bg-100"
+                  class="flex min-h-11 cursor-pointer items-center justify-between gap-3 rounded-xl px-3 py-2 text-[14px] font-medium transition-colors focus-within:outline-2 focus-within:outline-primary-500 lg:text-[11px] lg:font-normal"
+                  :class="pendingTags.includes(tag) ? 'bg-primary-50 text-primary-500' : 'text-text-tertiary hover:bg-primary-50'"
                 >
                   <input
+                    v-model="pendingTags"
                     type="checkbox"
-                    :checked="selectedTags.includes(tag)"
-                    class="size-3.5 accent-primary-500"
-                    @change="toggleTag(tag)"
+                    :value="tag"
+                    class="sr-only"
                   >
                   <span>{{ tag }}</span>
+                  <Check v-if="pendingTags.includes(tag)" :size="18" aria-hidden="true" />
                 </label>
+              </div>
+
+              <div class="mt-5 grid grid-cols-2 gap-4">
+                <button
+                  type="button"
+                  class="h-11 rounded-xl text-[14px] font-medium text-primary-500 transition-colors hover:bg-primary-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500 lg:text-[11px]"
+                  @click="resetDirectoryFilter"
+                >
+                  Reset
+                </button>
+                <button
+                  type="button"
+                  class="h-11 rounded-xl bg-primary-500 text-[14px] font-medium text-white transition-colors hover:bg-primary-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500 lg:text-[11px]"
+                  @click="applyDirectoryFilter"
+                >
+                  Apply
+                </button>
               </div>
             </div>
 
             <Transition
               enter-active-class="transition duration-150 ease-out"
-              enter-from-class="-translate-y-1 opacity-0"
-              enter-to-class="translate-y-0 opacity-100"
+              enter-from-class="opacity-0"
+              enter-to-class="opacity-100"
               leave-active-class="transition duration-100 ease-in"
-              leave-from-class="translate-y-0 opacity-100"
-              leave-to-class="-translate-y-1 opacity-0"
+              leave-from-class="opacity-100"
+              leave-to-class="opacity-0"
             >
               <div
                 v-if="(isSearchResults || isTagResults) && filterOpen"
                 id="article-sort-panel"
+                ref="dialogRef"
                 role="dialog"
+                aria-modal="true"
                 aria-labelledby="article-filter-title"
-                class="absolute right-0 z-30 mt-2 w-[min(380px,calc(100vw-2rem))] rounded-[20px] border border-border-200 bg-white p-5 shadow-xl sm:p-6"
+                tabindex="-1"
+                class="fixed left-1/2 top-1/2 z-[101] max-h-[calc(100dvh-2rem)] w-[min(380px,calc(100vw-2rem))] -translate-x-1/2 -translate-y-1/2 overflow-y-auto rounded-[18px] border border-border-200 bg-white p-5 shadow-xl outline-none sm:p-6"
                 @keydown.esc="filterOpen = false"
               >
                 <h2 id="article-filter-title" class="text-[24px] font-semibold text-text-secondary">
@@ -364,30 +405,32 @@ onBeforeUnmount(() => {
                   <label
                     v-for="option in sortOptions"
                     :key="option.value"
-                    class="flex cursor-pointer items-center gap-3 rounded-xl px-3 py-2.5 text-[15px] text-text-secondary transition-colors hover:bg-primary-50"
+                    class="flex min-h-11 cursor-pointer items-center justify-between gap-3 rounded-xl px-3 py-2.5 text-[14px] font-medium transition-colors focus-within:outline-2 focus-within:outline-primary-500 lg:text-[15px] lg:font-normal"
+                    :class="pendingSort === option.value ? 'text-primary-500' : 'text-text-tertiary hover:bg-primary-50'"
                   >
                     <input
                       v-model="pendingSort"
                       type="radio"
                       name="article-sort"
                       :value="option.value"
-                      class="size-5 shrink-0 accent-primary-500"
+                      class="sr-only"
                     >
                     <span>{{ option.label }}</span>
+                    <Check v-if="pendingSort === option.value" :size="18" aria-hidden="true" />
                   </label>
                 </fieldset>
 
                 <div class="mt-5 grid grid-cols-2 gap-4">
                   <button
                     type="button"
-                    class="h-11 rounded-xl text-[16px] font-medium text-primary-500 transition-colors hover:bg-primary-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500"
+                    class="h-11 rounded-xl text-[14px] font-medium text-primary-500 transition-colors hover:bg-primary-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500 lg:text-[16px]"
                     @click="resetSort"
                   >
                     Reset
                   </button>
                   <button
                     type="button"
-                    class="h-11 rounded-xl bg-primary-500 text-[16px] font-medium text-white transition-colors hover:bg-primary-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500"
+                    class="h-11 rounded-xl bg-primary-500 text-[14px] font-medium text-white transition-colors hover:bg-primary-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500 lg:text-[16px]"
                     @click="applySort"
                   >
                     Apply
@@ -399,9 +442,12 @@ onBeforeUnmount(() => {
           </div>
         </div>
 
-        <div class="mt-5 flex flex-wrap items-center gap-3 text-[14px] text-text-tertiary">
+        <div
+          class="mt-5 flex flex-wrap items-center gap-3 text-[14px] font-normal text-text-tertiary"
+          :class="!isTagResults && !isSearchResults ? 'justify-between lg:justify-start' : ''"
+        >
           <template v-if="isTagResults">
-            <div ref="tagMenu" class="relative">
+            <div class="relative">
               <button
                 type="button"
                 :aria-expanded="tagOpen"
@@ -415,18 +461,21 @@ onBeforeUnmount(() => {
 
               <Transition
                 enter-active-class="transition duration-150 ease-out"
-                enter-from-class="-translate-y-1 opacity-0"
-                enter-to-class="translate-y-0 opacity-100"
+                enter-from-class="opacity-0"
+                enter-to-class="opacity-100"
                 leave-active-class="transition duration-100 ease-in"
-                leave-from-class="translate-y-0 opacity-100"
-                leave-to-class="-translate-y-1 opacity-0"
+                leave-from-class="opacity-100"
+                leave-to-class="opacity-0"
               >
                 <div
                   v-if="tagOpen"
                   id="tag-filter-panel"
+                  ref="dialogRef"
                   role="dialog"
+                  aria-modal="true"
                   aria-labelledby="tag-filter-title"
-                  class="absolute left-0 z-30 mt-2 w-[min(380px,calc(100vw-2rem))] rounded-[20px] border border-border-200 bg-white p-5 shadow-xl sm:p-6"
+                  tabindex="-1"
+                  class="fixed left-1/2 top-1/2 z-[101] max-h-[calc(100dvh-2rem)] w-[min(380px,calc(100vw-2rem))] -translate-x-1/2 -translate-y-1/2 overflow-y-auto rounded-[18px] border border-border-200 bg-white p-5 shadow-xl outline-none sm:p-6"
                   @keydown.esc="tagOpen = false"
                 >
                   <h2 id="tag-filter-title" class="text-[24px] font-semibold text-text-secondary">
@@ -439,9 +488,9 @@ onBeforeUnmount(() => {
                       v-for="tag in availableTags"
                       :key="tag"
                       type="button"
-                      class="flex w-full items-center justify-between gap-4 rounded-xl px-3 py-2.5 text-left text-[15px] transition-colors"
+                      class="flex min-h-11 w-full items-center justify-between gap-4 rounded-xl px-3 py-2.5 text-left text-[14px] font-medium transition-colors lg:text-[15px] lg:font-normal"
                       :class="pendingTag === tag
-                        ? 'font-medium text-primary-500'
+                        ? 'bg-primary-50 text-primary-500 lg:font-medium'
                         : 'text-text-tertiary hover:bg-primary-50 hover:text-primary-500'"
                       @click="pendingTag = tag"
                     >
@@ -459,14 +508,14 @@ onBeforeUnmount(() => {
                   <div class="mt-5 grid grid-cols-2 gap-4">
                     <button
                       type="button"
-                      class="h-11 rounded-xl text-[16px] font-medium text-primary-500 transition-colors hover:bg-primary-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500"
+                      class="h-11 rounded-xl text-[14px] font-medium text-primary-500 transition-colors hover:bg-primary-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500 lg:text-[16px]"
                       @click="resetTag"
                     >
                       Reset
                     </button>
                     <button
                       type="button"
-                      class="h-11 rounded-xl bg-primary-500 text-[16px] font-medium text-white transition-colors hover:bg-primary-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500"
+                      class="h-11 rounded-xl bg-primary-500 text-[14px] font-medium text-white transition-colors hover:bg-primary-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500 lg:text-[16px]"
                       @click="applyTag"
                     >
                       Apply
@@ -485,7 +534,7 @@ onBeforeUnmount(() => {
           </template>
           <template v-else>
             <span>Total of {{ sortedArticles.length }} Articles</span>
-            <span class="h-px w-5 bg-border-200" aria-hidden="true" />
+            <span class="hidden h-px w-5 bg-border-200 lg:block" aria-hidden="true" />
             <span>{{ sortLabel }}</span>
           </template>
         </div>
@@ -509,7 +558,7 @@ onBeforeUnmount(() => {
             </div>
 
             <div class="flex min-h-[144px] flex-1 flex-col px-2.5 pb-3 pt-2.5">
-              <h3 class="line-clamp-2 text-[16px] font-normal leading-6 text-text-secondary transition-colors group-hover:text-primary-500 group-focus-visible:text-primary-500">
+              <h3 class="line-clamp-2 text-[15px] font-normal leading-6 text-text-secondary transition-colors group-hover:text-primary-500 group-focus-visible:text-primary-500 lg:text-[16px]">
                 {{ article.title }}
               </h3>
 

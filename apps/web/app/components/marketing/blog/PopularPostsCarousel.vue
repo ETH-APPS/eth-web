@@ -23,6 +23,7 @@ const props = withDefaults(defineProps<{
 
 const carouselViewport = ref<HTMLElement>()
 const isReady = ref(false)
+const popularProgress = ref(0)
 let autoplayTimer: ReturnType<typeof setInterval> | undefined
 let normalizeTimer: ReturnType<typeof setTimeout> | undefined
 
@@ -69,6 +70,26 @@ function centerCarousel() {
     return
 
   viewport.scrollTo({ left: setWidth, behavior: 'instant' })
+  popularProgress.value = 0
+}
+
+function updatePopularProgress() {
+  const viewport = carouselViewport.value
+
+  if (!viewport)
+    return
+
+  const setWidth = getSetWidth()
+  const maxScroll = isLooping.value
+    ? (props.posts.length - 1) * getScrollAmount()
+    : viewport.scrollWidth - viewport.clientWidth
+  const scrollLeft = isLooping.value && setWidth
+    ? ((viewport.scrollLeft % setWidth) + setWidth) % setWidth
+    : viewport.scrollLeft
+
+  popularProgress.value = maxScroll > 0
+    ? Math.min(Math.max(scrollLeft / maxScroll, 0), 1)
+    : 0
 }
 
 function normalizePosition() {
@@ -85,6 +106,8 @@ function normalizePosition() {
 }
 
 function scheduleNormalize() {
+  updatePopularProgress()
+
   if (!isLooping.value)
     return
 
@@ -161,11 +184,11 @@ onBeforeUnmount(() => {
           {{ title }}
         </h2>
 
-        <div class="relative mt-5 flow-root px-8 sm:px-10 lg:px-[58px]">
+        <div class="relative mt-5 flow-root lg:px-[58px]">
           <button
             type="button"
             aria-label="Tampilkan artikel populer sebelumnya"
-            class="absolute left-0 top-1/2 z-10 flex size-7 -translate-y-1/2 items-center justify-center rounded-full text-primary-500 transition-[background-color,transform] hover:scale-105 hover:bg-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500 lg:left-2.5"
+            class="absolute left-2.5 top-1/2 z-10 hidden size-7 -translate-y-1/2 items-center justify-center rounded-full text-primary-500 transition-[background-color,transform] hover:scale-105 hover:bg-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500 lg:flex"
             @click="showPrevious"
           >
             <ChevronLeft :size="26" :stroke-width="1.8" aria-hidden="true" />
@@ -196,11 +219,20 @@ onBeforeUnmount(() => {
           <button
             type="button"
             aria-label="Tampilkan artikel populer berikutnya"
-            class="absolute right-0 top-1/2 z-10 flex size-7 -translate-y-1/2 items-center justify-center rounded-full text-primary-500 transition-[background-color,transform] hover:scale-105 hover:bg-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500 lg:right-2.5"
+            class="absolute right-2.5 top-1/2 z-10 hidden size-7 -translate-y-1/2 items-center justify-center rounded-full text-primary-500 transition-[background-color,transform] hover:scale-105 hover:bg-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500 lg:flex"
             @click="showNext"
           >
             <ChevronRight :size="26" :stroke-width="1.8" aria-hidden="true" />
           </button>
+        </div>
+
+        <div v-if="posts.length > 1" class="mt-4 flex justify-center lg:hidden" aria-hidden="true">
+          <div class="h-1.5 w-14 overflow-hidden rounded-full bg-primary-50">
+            <div
+              class="h-full w-1/2 rounded-full bg-primary-500"
+              :style="{ transform: `translateX(${popularProgress * 100}%)` }"
+            />
+          </div>
         </div>
       </div>
     </UiContainer>
@@ -217,7 +249,7 @@ onBeforeUnmount(() => {
 }
 
 .popular-post-card {
-  flex-basis: 100%;
+  flex-basis: min(85%, 320px);
 }
 
 @media (min-width: 640px) {

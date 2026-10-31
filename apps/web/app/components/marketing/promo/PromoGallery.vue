@@ -31,6 +31,38 @@ withDefaults(defineProps<{
 const emit = defineEmits<{
   select: [promo: PromoItem]
 }>()
+
+const inactivePromoListRef = ref<HTMLElement | null>(null)
+const inactivePromoProgress = ref(0)
+let inactivePromoFrame: number | undefined
+
+function updateInactivePromoProgress() {
+  const list = inactivePromoListRef.value
+
+  if (!list)
+    return
+
+  const maxScroll = list.scrollWidth - list.clientWidth
+  inactivePromoProgress.value = maxScroll > 0
+    ? Math.min(Math.max(list.scrollLeft / maxScroll, 0), 1)
+    : 0
+}
+
+function handleInactivePromoScroll() {
+  if (inactivePromoFrame !== undefined)
+    cancelAnimationFrame(inactivePromoFrame)
+
+  inactivePromoFrame = requestAnimationFrame(updateInactivePromoProgress)
+}
+
+onMounted(() => {
+  updateInactivePromoProgress()
+})
+
+onBeforeUnmount(() => {
+  if (inactivePromoFrame !== undefined)
+    cancelAnimationFrame(inactivePromoFrame)
+})
 </script>
 
 <template>
@@ -97,8 +129,10 @@ const emit = defineEmits<{
         </div>
 
         <div
+          ref="inactivePromoListRef"
           class="-mx-4 mt-5 flex gap-4 overflow-x-auto overscroll-x-contain px-4 pb-3 snap-x snap-mandatory [scrollbar-width:none] lg:mx-0 lg:grid lg:grid-cols-3 lg:gap-x-5 lg:gap-y-7 lg:overflow-visible lg:px-16 lg:pb-0 lg:snap-none [&::-webkit-scrollbar]:hidden"
           aria-label="Promo tidak aktif, geser untuk melihat promo lainnya"
+          @scroll.passive="handleInactivePromoScroll"
         >
           <article
             v-for="promo in inactivePromos"
@@ -132,6 +166,15 @@ const emit = defineEmits<{
               </div>
             </button>
           </article>
+        </div>
+
+        <div class="mt-1 flex justify-center lg:hidden" aria-hidden="true">
+          <div class="h-1.5 w-14 overflow-hidden rounded-full bg-primary-50">
+            <div
+              class="h-full w-1/2 rounded-full bg-primary-500"
+              :style="{ transform: `translateX(${inactivePromoProgress * 100}%)` }"
+            />
+          </div>
         </div>
       </template>
     </UiContainer>

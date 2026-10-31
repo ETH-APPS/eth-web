@@ -125,6 +125,8 @@ useSeoMeta({
 
 <template>
   <div>
+    <MarketingBlogMobileArticleToc />
+
     <MarketingBlogArticleHero
       :title="articleTitle"
       author="ETH Cargo Team"
@@ -137,7 +139,6 @@ useSeoMeta({
     <MarketingBlogArticleContent
       :title="articleTitle"
       :tags="articleTags"
-      :sidebar-image="articleImage"
       :related-articles="relatedArticles"
     />
   </div>

@@ -13,6 +13,7 @@ import threadsDark from '~/assets/images/marketing/Threads-dark.png'
 import tiktokDark from '~/assets/images/marketing/Tiktok-dark.png'
 import xDark from '~/assets/images/marketing/X-dark.png'
 import youtubeDark from '~/assets/images/marketing/youtube.png'
+import { blogArticleToc as tableOfContents } from '~/constants/blogArticleToc'
 
 interface RelatedArticle {
   id: string
@@ -26,35 +27,8 @@ interface RelatedArticle {
 const props = defineProps<{
   title: string
   tags: readonly string[]
-  sidebarImage: string
   relatedArticles: readonly RelatedArticle[]
 }>()
-
-const tableOfContents = [
-  {
-    id: 'memahami-kebutuhan',
-    number: '1',
-    title: 'Memahami kebutuhan pengiriman',
-    children: [
-      { id: 'mengenali-karakter-barang', number: '1.1', title: 'Mengenali karakter dan kebutuhan barang' },
-      { id: 'menentukan-target-pengiriman', number: '1.2', title: 'Menentukan target waktu pengiriman' },
-    ],
-  },
-  {
-    id: 'memilih-layanan',
-    number: '2',
-    title: 'Memilih layanan yang tepat',
-    children: [
-      { id: 'membandingkan-opsi', number: '2.1', title: 'Membandingkan opsi pengiriman' },
-    ],
-  },
-  {
-    id: 'kesimpulan',
-    number: '3',
-    title: 'Kesimpulan',
-    children: [],
-  },
-] as const
 
 const expandedSections = ref<string[]>(['memahami-kebutuhan', 'memilih-layanan'])
 const activeSection = ref('memahami-kebutuhan')
@@ -136,10 +110,10 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <section class="bg-bg-0 py-16">
+  <section class="bg-bg-0 pb-10 pt-6 lg:py-16">
     <UiContainer>
       <nav aria-label="Breadcrumb" class="mx-auto max-w-[1080px]">
-        <ol class="flex flex-wrap items-center gap-2 text-[10px] font-normal text-text-tertiary">
+        <ol class="flex flex-wrap items-center gap-2 text-[10px] font-medium text-text-tertiary lg:font-normal">
           <li>
             <NuxtLink to="/" class="transition-colors hover:text-primary-500">
               Home
@@ -162,8 +136,8 @@ onBeforeUnmount(() => {
         </ol>
       </nav>
 
-      <div class="mx-auto mt-8 grid max-w-[1080px] grid-cols-[300px_minmax(0,1fr)] items-start gap-6">
-        <aside class="sticky top-[90px]">
+      <div class="mx-auto mt-8 grid max-w-[1080px] grid-cols-1 items-start gap-6 lg:grid-cols-[300px_minmax(0,1fr)]">
+        <aside class="hidden lg:sticky lg:top-[90px] lg:block">
           <div class="rounded-2xl border border-border-200 bg-white p-4 shadow-md">
             <h2 class="text-[20px] font-medium text-primary-500">
               Daftar isi
@@ -219,12 +193,8 @@ onBeforeUnmount(() => {
             </ol>
           </div>
 
-          <div class="mt-4 aspect-[4/5] overflow-hidden rounded-2xl bg-bg-200">
-            <img
-              :src="props.sidebarImage"
-              alt="Layanan pengiriman ETH Cargo"
-              class="size-full object-cover"
-            >
+          <div class="mt-4">
+            <MarketingBlogArticleCtaBanner />
           </div>
         </aside>
 
@@ -321,12 +291,12 @@ onBeforeUnmount(() => {
             </p>
           </section>
 
-          <div class="mt-10 border-t border-border-200 pt-6">
+          <div class="mt-10 hidden border-t border-border-200 pt-6 lg:block">
             <section
               aria-labelledby="article-author-title"
               class="rounded-2xl border border-border-200 bg-bg-0 p-5 shadow-md"
             >
-              <div class="flex items-start gap-4">
+              <div class="flex flex-wrap items-start gap-4 lg:flex-nowrap">
                 <div
                   class="size-16 shrink-0 rounded-full bg-border-200"
                   role="img"
@@ -344,20 +314,20 @@ onBeforeUnmount(() => {
 
                 <NuxtLink
                   to="/about-us"
-                  class="mt-2 inline-flex shrink-0 items-center gap-2 text-[14px] font-medium text-primary-500 transition-colors hover:text-primary-600 focus-visible:rounded focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500"
+                  class="ml-auto inline-flex w-full shrink-0 items-center justify-end gap-2 text-[14px] font-medium text-primary-500 transition-colors hover:text-primary-600 focus-visible:rounded focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500 lg:ml-0 lg:mt-2 lg:w-auto lg:justify-start"
                 >
                   <span>Lihat Profil</span>
                   <ArrowUpRight :size="16" :stroke-width="2" aria-hidden="true" />
                 </NuxtLink>
               </div>
 
-              <div class="mt-5 flex flex-wrap items-center justify-between gap-x-8 gap-y-4 pl-20">
+              <div class="mt-5 flex flex-wrap items-center justify-between gap-x-8 gap-y-4 lg:pl-20">
                 <div class="inline-flex h-10 items-center gap-2 rounded-full bg-primary-50 px-4 text-[14px] font-normal tracking-wide text-primary-500">
                   <PhFileText :size="18" weight="fill" aria-hidden="true" />
                   <span>32 Articles</span>
                 </div>
 
-                <div class="flex items-center gap-6">
+                <div class="flex flex-wrap items-center gap-4 lg:flex-nowrap lg:gap-6">
                   <span class="text-[14px] text-text-tertiary">Social</span>
                   <a
                     href="https://www.facebook.com/"
@@ -401,74 +371,74 @@ onBeforeUnmount(() => {
           </div>
 
           <div class="mt-10 border-y border-border-200 py-4">
-            <div class="flex flex-wrap items-center gap-2.5">
-              <span class="mr-1 text-[14px] text-text-tertiary">Tag</span>
+            <div class="flex flex-wrap items-center justify-center gap-2.5 lg:justify-start">
+              <span class="mr-1 text-[14px] font-normal text-text-tertiary">Tag</span>
               <span class="h-px w-5 bg-border-200" aria-hidden="true" />
               <NuxtLink
                 v-for="tag in props.tags"
                 :key="tag"
                 :to="{ path: '/blog/tags', query: { tag } }"
-                class="rounded-md bg-primary-500 px-2.5 py-1 text-[14px] text-white"
+                class="rounded-md bg-primary-500 px-2.5 py-1 text-[14px] font-normal text-white"
               >
                 {{ tag }}
               </NuxtLink>
             </div>
 
-            <div class="mt-4 flex flex-wrap items-center gap-3">
-              <span class="mr-1 text-[14px] text-text-tertiary">Share</span>
-              <span class="h-px w-5 bg-border-200" aria-hidden="true" />
+            <div class="mt-2 flex flex-wrap items-center justify-center lg:mt-4 lg:justify-start lg:gap-3">
+              <span class="mr-1 hidden text-[14px] text-text-tertiary lg:inline">Share</span>
+              <span class="hidden h-px w-5 bg-border-200 lg:inline" aria-hidden="true" />
               <a
                 :href="`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`"
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="Bagikan ke Facebook"
-                class="transition-opacity hover:opacity-70"
+                class="inline-flex size-11 items-center justify-center transition-opacity hover:opacity-70 lg:inline lg:size-auto"
               >
-                <img :src="facebookDark" alt="" aria-hidden="true" class="size-5 object-contain">
+                <img :src="facebookDark" alt="" aria-hidden="true" class="size-7 object-contain lg:size-5">
               </a>
               <a
                 href="https://www.instagram.com/"
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="Buka Instagram"
-                class="transition-opacity hover:opacity-70"
+                class="inline-flex size-11 items-center justify-center transition-opacity hover:opacity-70 lg:inline lg:size-auto"
               >
-                <img :src="instagramDark" alt="" aria-hidden="true" class="size-5 object-contain">
+                <img :src="instagramDark" alt="" aria-hidden="true" class="size-7 object-contain lg:size-5">
               </a>
               <a
                 href="https://www.threads.net/"
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="Buka Threads"
-                class="transition-opacity hover:opacity-70"
+                class="inline-flex size-11 items-center justify-center transition-opacity hover:opacity-70 lg:inline lg:size-auto"
               >
-                <img :src="threadsDark" alt="" aria-hidden="true" class="size-5 object-contain">
+                <img :src="threadsDark" alt="" aria-hidden="true" class="size-7 object-contain lg:size-5">
               </a>
               <a
                 href="https://www.tiktok.com/"
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="Buka TikTok"
-                class="transition-opacity hover:opacity-70"
+                class="inline-flex size-11 items-center justify-center transition-opacity hover:opacity-70 lg:inline lg:size-auto"
               >
-                <img :src="tiktokDark" alt="" aria-hidden="true" class="size-5 object-contain">
+                <img :src="tiktokDark" alt="" aria-hidden="true" class="size-7 object-contain lg:size-5">
               </a>
               <a
                 :href="`https://twitter.com/intent/tweet?url=${encodeURIComponent(shareUrl)}&text=${encodeURIComponent(props.title)}`"
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="Bagikan ke X"
-                class="transition-opacity hover:opacity-70"
+                class="inline-flex size-11 items-center justify-center transition-opacity hover:opacity-70 lg:inline lg:size-auto"
               >
-                <img :src="xDark" alt="" aria-hidden="true" class="size-5 object-contain">
+                <img :src="xDark" alt="" aria-hidden="true" class="size-7 object-contain lg:size-5">
               </a>
               <button
                 type="button"
                 :aria-label="copied ? 'Tautan tersalin' : 'Salin tautan artikel'"
-                class="relative transition-opacity hover:opacity-70"
+                class="relative inline-flex size-11 items-center justify-center transition-opacity hover:opacity-70 lg:inline lg:size-auto"
                 @click="copyArticleLink"
               >
-                <img :src="linkDark" alt="" aria-hidden="true" class="size-5 object-contain">
+                <img :src="linkDark" alt="" aria-hidden="true" class="size-7 object-contain lg:size-5">
                 <span
                   v-if="copied"
                   class="absolute bottom-full left-1/2 mb-2 -translate-x-1/2 whitespace-nowrap rounded bg-slate-800 px-2 py-1 text-[10px] text-white"
@@ -479,8 +449,12 @@ onBeforeUnmount(() => {
             </div>
           </div>
 
+          <div class="mt-16 lg:hidden">
+            <MarketingBlogArticleCtaBanner />
+          </div>
+
           <section class="mt-6" aria-labelledby="related-articles-title">
-            <h2 id="related-articles-title" class="text-[15px] font-medium text-primary-500">
+            <h2 id="related-articles-title" class="text-[16px] font-medium text-primary-500 lg:text-[15px]">
               Related Article
             </h2>
 
@@ -494,6 +468,7 @@ onBeforeUnmount(() => {
                 :image="relatedArticle.image"
                 :image-alt="relatedArticle.imageAlt"
                 :to="relatedArticle.to"
+                :mobile-title-size="16"
               />
             </div>
           </section>

@@ -56,7 +56,6 @@ const insightSections = [
         label: 'Our Promo',
         description: 'Lihat promo dan penawaran terbaru dari ETH Cargo.',
         icon: Gift,
-        showArrow: true,
       },
       {
         to: '/blog',
@@ -200,16 +199,16 @@ async function submitTracking() {
                 <div class="space-y-4">
                   <NuxtLink
                     to="/china-cargo"
-                    class="group flex items-start gap-3 rounded-lg focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500"
+                    class="group/item flex items-start gap-3 rounded-lg focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500"
                     @click="emit('close')"
                   >
                     <span class="block size-10 shrink-0 rounded-full bg-bg-0 p-0.5 shadow-md">
                       <img :src="chinaFlagUrl" alt="" class="size-full rounded-full object-cover">
                     </span>
                     <span class="min-w-0">
-                      <span class="flex items-center gap-2 text-base font-medium text-black">
+                      <span class="flex items-center gap-2 text-base font-medium text-black transition-colors group-hover/item:text-primary-500 group-focus-visible/item:text-primary-500 group-active/item:text-primary-500">
                         Cargo China
-                        <ArrowUpRight :size="18" class="text-primary-500" aria-hidden="true" />
+                        <ArrowUpRight :size="18" class="-translate-x-1 translate-y-1 text-primary-500 opacity-0 transition duration-200 motion-reduce:transition-none motion-reduce:transform-none group-hover/item:translate-x-0 group-hover/item:translate-y-0 group-hover/item:opacity-100 group-focus-visible/item:translate-x-0 group-focus-visible/item:translate-y-0 group-focus-visible/item:opacity-100 group-active/item:translate-x-0 group-active/item:translate-y-0 group-active/item:opacity-100" aria-hidden="true" />
                       </span>
                       <span class="mt-1 block text-xs leading-5 text-text-tertiary">
                         Pengiriman cargo China–Indonesia yang aman dan terintegrasi.
@@ -219,14 +218,17 @@ async function submitTracking() {
 
                   <NuxtLink
                     to="/sea-freight"
-                    class="flex items-center gap-3 rounded-lg focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500"
+                    class="group/item flex items-center gap-3 rounded-lg focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500"
                     @click="emit('close')"
                   >
-                    <span class="flex size-8 shrink-0 items-center justify-center rounded-full bg-primary-50 text-primary-500">
+                    <span class="flex size-8 shrink-0 items-center justify-center rounded-full bg-primary-50 text-primary-500 transition duration-200 ease-out motion-reduce:transition-none group-hover/item:bg-primary-500 group-hover/item:text-white group-hover/item:shadow-md group-focus-visible/item:bg-primary-500 group-focus-visible/item:text-white group-focus-visible/item:shadow-md group-active/item:bg-primary-500 group-active/item:text-white group-active/item:shadow-md">
                       <Ship :size="17" aria-hidden="true" />
                     </span>
                     <span>
-                      <span class="block text-base font-medium text-black">Kargo Laut</span>
+                      <span class="flex items-center gap-2 text-base font-medium text-black transition-colors group-hover/item:text-primary-500 group-focus-visible/item:text-primary-500 group-active/item:text-primary-500">
+                        Kargo Laut
+                        <ArrowUpRight :size="18" class="-translate-x-1 translate-y-1 text-primary-500 opacity-0 transition duration-200 motion-reduce:transition-none motion-reduce:transform-none group-hover/item:translate-x-0 group-hover/item:translate-y-0 group-hover/item:opacity-100 group-focus-visible/item:translate-x-0 group-focus-visible/item:translate-y-0 group-focus-visible/item:opacity-100 group-active/item:translate-x-0 group-active/item:translate-y-0 group-active/item:opacity-100" aria-hidden="true" />
+                      </span>
                       <span class="mt-1 flex gap-2 text-xs font-medium text-primary-500">
                         <span class="rounded bg-bg-100 px-2 py-0.5">FCL</span>
                         <span class="rounded bg-bg-100 px-2 py-0.5">LCL</span>
@@ -236,13 +238,16 @@ async function submitTracking() {
 
                   <NuxtLink
                     to="/air-freight"
-                    class="flex items-center gap-3 rounded-lg focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500"
+                    class="group/item flex items-center gap-3 rounded-lg focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500"
                     @click="emit('close')"
                   >
-                    <span class="flex size-8 shrink-0 items-center justify-center rounded-full bg-primary-50 text-primary-500">
+                    <span class="flex size-8 shrink-0 items-center justify-center rounded-full bg-primary-50 text-primary-500 transition duration-200 ease-out motion-reduce:transition-none group-hover/item:bg-primary-500 group-hover/item:text-white group-hover/item:shadow-md group-focus-visible/item:bg-primary-500 group-focus-visible/item:text-white group-focus-visible/item:shadow-md group-active/item:bg-primary-500 group-active/item:text-white group-active/item:shadow-md">
                       <Plane :size="17" aria-hidden="true" />
                     </span>
-                    <span class="text-base font-medium text-black">Kargo Udara</span>
+                    <span class="flex items-center gap-2 text-base font-medium text-black transition-colors group-hover/item:text-primary-500 group-focus-visible/item:text-primary-500 group-active/item:text-primary-500">
+                      Kargo Udara
+                      <ArrowUpRight :size="18" class="-translate-x-1 translate-y-1 text-primary-500 opacity-0 transition duration-200 motion-reduce:transition-none motion-reduce:transform-none group-hover/item:translate-x-0 group-hover/item:translate-y-0 group-hover/item:opacity-100 group-focus-visible/item:translate-x-0 group-focus-visible/item:translate-y-0 group-focus-visible/item:opacity-100 group-active/item:translate-x-0 group-active/item:translate-y-0 group-active/item:opacity-100" aria-hidden="true" />
+                    </span>
                   </NuxtLink>
                 </div>
 
@@ -253,14 +258,17 @@ async function submitTracking() {
                 <div class="space-y-5">
                   <NuxtLink
                     to="/transfer-rmb"
-                    class="flex items-start gap-3 rounded-lg focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500"
+                    class="group/item flex items-start gap-3 rounded-lg focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500"
                     @click="emit('close')"
                   >
-                    <span class="flex size-8 shrink-0 items-center justify-center rounded-full bg-primary-50 text-primary-500">
+                    <span class="flex size-8 shrink-0 items-center justify-center rounded-full bg-primary-50 text-primary-500 transition duration-200 ease-out motion-reduce:transition-none group-hover/item:bg-primary-500 group-hover/item:text-white group-hover/item:shadow-md group-focus-visible/item:bg-primary-500 group-focus-visible/item:text-white group-focus-visible/item:shadow-md group-active/item:bg-primary-500 group-active/item:text-white group-active/item:shadow-md">
                       <Banknote :size="17" aria-hidden="true" />
                     </span>
                     <span class="min-w-0">
-                      <span class="block text-base font-medium text-black">Jasa Transfer RMB</span>
+                      <span class="flex items-center gap-2 text-base font-medium text-black transition-colors group-hover/item:text-primary-500 group-focus-visible/item:text-primary-500 group-active/item:text-primary-500">
+                        Jasa Transfer RMB
+                        <ArrowUpRight :size="18" class="-translate-x-1 translate-y-1 text-primary-500 opacity-0 transition duration-200 motion-reduce:transition-none motion-reduce:transform-none group-hover/item:translate-x-0 group-hover/item:translate-y-0 group-hover/item:opacity-100 group-focus-visible/item:translate-x-0 group-focus-visible/item:translate-y-0 group-focus-visible/item:opacity-100 group-active/item:translate-x-0 group-active/item:translate-y-0 group-active/item:opacity-100" aria-hidden="true" />
+                      </span>
                       <span class="mt-1 block text-xs leading-5 text-text-tertiary">
                         Pembayaran supplier China cepat dengan kurs kompetitif.
                       </span>
@@ -272,14 +280,17 @@ async function submitTracking() {
 
                   <NuxtLink
                     to="/sourcing"
-                    class="flex items-start gap-3 rounded-lg focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500"
+                    class="group/item flex items-start gap-3 rounded-lg focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500"
                     @click="emit('close')"
                   >
-                    <span class="flex size-8 shrink-0 items-center justify-center rounded-full bg-primary-50 text-primary-500">
+                    <span class="flex size-8 shrink-0 items-center justify-center rounded-full bg-primary-50 text-primary-500 transition duration-200 ease-out motion-reduce:transition-none group-hover/item:bg-primary-500 group-hover/item:text-white group-hover/item:shadow-md group-focus-visible/item:bg-primary-500 group-focus-visible/item:text-white group-focus-visible/item:shadow-md group-active/item:bg-primary-500 group-active/item:text-white group-active/item:shadow-md">
                       <ShoppingBag :size="17" aria-hidden="true" />
                     </span>
                     <span>
-                      <span class="block text-base font-medium text-black">Jasa Sourcing</span>
+                      <span class="flex items-center gap-2 text-base font-medium text-black transition-colors group-hover/item:text-primary-500 group-focus-visible/item:text-primary-500 group-active/item:text-primary-500">
+                        Jasa Sourcing
+                        <ArrowUpRight :size="18" class="-translate-x-1 translate-y-1 text-primary-500 opacity-0 transition duration-200 motion-reduce:transition-none motion-reduce:transform-none group-hover/item:translate-x-0 group-hover/item:translate-y-0 group-hover/item:opacity-100 group-focus-visible/item:translate-x-0 group-focus-visible/item:translate-y-0 group-focus-visible/item:opacity-100 group-active/item:translate-x-0 group-active/item:translate-y-0 group-active/item:opacity-100" aria-hidden="true" />
+                      </span>
                       <span class="mt-1 block text-xs leading-5 text-text-tertiary">
                         Bantu sourcing dan pembelian produk langsung dari China.
                       </span>
@@ -347,13 +358,16 @@ async function submitTracking() {
 
                   <NuxtLink
                     to="/calculator"
-                    class="group flex w-fit items-center gap-3 rounded-lg focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500"
+                    class="group/item flex w-fit items-center gap-3 rounded-lg focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500"
                     @click="emit('close')"
                   >
-                    <span class="flex size-9 shrink-0 items-center justify-center rounded-full bg-primary-50 text-primary-500 transition-colors group-hover:bg-primary-500 group-hover:text-white">
+                    <span class="flex size-9 shrink-0 items-center justify-center rounded-full bg-primary-50 text-primary-500 transition-colors duration-200 motion-reduce:transition-none group-hover/item:bg-primary-500 group-hover/item:text-white group-focus-visible/item:bg-primary-500 group-focus-visible/item:text-white group-active/item:bg-primary-500 group-active/item:text-white">
                       <Calculator :size="18" aria-hidden="true" />
                     </span>
-                    <span class="text-base font-medium text-black">Kalkulator</span>
+                    <span class="flex items-center gap-2 text-base font-medium text-black transition-colors group-hover/item:text-primary-500 group-focus-visible/item:text-primary-500 group-active/item:text-primary-500">
+                      Kalkulator
+                      <ArrowUpRight :size="18" class="-translate-x-1 translate-y-1 text-primary-500 opacity-0 transition duration-200 motion-reduce:transition-none motion-reduce:transform-none group-hover/item:translate-x-0 group-hover/item:translate-y-0 group-hover/item:opacity-100 group-focus-visible/item:translate-x-0 group-focus-visible/item:translate-y-0 group-focus-visible/item:opacity-100 group-active/item:translate-x-0 group-active/item:translate-y-0 group-active/item:opacity-100" aria-hidden="true" />
+                    </span>
                   </NuxtLink>
 
                   <p class="mt-3 text-xs leading-5 text-text-tertiary">
@@ -388,13 +402,16 @@ async function submitTracking() {
 
                   <NuxtLink
                     to="/live-tracking"
-                    class="group flex w-fit items-center gap-3 rounded-lg focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500"
+                    class="group/item flex w-fit items-center gap-3 rounded-lg focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500"
                     @click="emit('close')"
                   >
-                    <span class="flex size-9 shrink-0 items-center justify-center rounded-full bg-primary-50 text-primary-500 transition-colors group-hover:bg-primary-500 group-hover:text-white">
+                    <span class="flex size-9 shrink-0 items-center justify-center rounded-full bg-primary-50 text-primary-500 transition-colors duration-200 motion-reduce:transition-none group-hover/item:bg-primary-500 group-hover/item:text-white group-focus-visible/item:bg-primary-500 group-focus-visible/item:text-white group-active/item:bg-primary-500 group-active/item:text-white">
                       <PackageSearch :size="18" aria-hidden="true" />
                     </span>
-                    <span class="text-base font-medium text-black">Live Tracking Order</span>
+                    <span class="flex items-center gap-2 text-base font-medium text-black transition-colors group-hover/item:text-primary-500 group-focus-visible/item:text-primary-500 group-active/item:text-primary-500">
+                      Live Tracking Order
+                      <ArrowUpRight :size="18" class="-translate-x-1 translate-y-1 text-primary-500 opacity-0 transition duration-200 motion-reduce:transition-none motion-reduce:transform-none group-hover/item:translate-x-0 group-hover/item:translate-y-0 group-hover/item:opacity-100 group-focus-visible/item:translate-x-0 group-focus-visible/item:translate-y-0 group-focus-visible/item:opacity-100 group-active/item:translate-x-0 group-active/item:translate-y-0 group-active/item:opacity-100" aria-hidden="true" />
+                    </span>
                   </NuxtLink>
 
                   <p class="mt-3 text-xs leading-5 text-text-tertiary">
@@ -483,15 +500,16 @@ async function submitTracking() {
                       v-for="item in informationSection.items"
                       :key="item.to"
                       :to="item.to"
-                      class="group flex items-start gap-4 rounded-lg focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500"
+                      class="group/item flex items-start gap-4 rounded-lg focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500"
                       @click="emit('close')"
                     >
-                      <span class="flex size-10 shrink-0 items-center justify-center rounded-full bg-primary-50 text-primary-500 transition-colors group-hover:bg-primary-500 group-hover:text-white">
+                      <span class="flex size-10 shrink-0 items-center justify-center rounded-full bg-primary-50 text-primary-500 transition-colors duration-200 motion-reduce:transition-none group-hover/item:bg-primary-500 group-hover/item:text-white group-focus-visible/item:bg-primary-500 group-focus-visible/item:text-white group-active/item:bg-primary-500 group-active/item:text-white">
                         <component :is="item.icon" :size="20" aria-hidden="true" />
                       </span>
                       <span class="min-w-0 pt-1">
-                        <span class="block text-base font-medium text-black">
+                        <span class="flex items-center gap-2 text-base font-medium text-black transition-colors group-hover/item:text-primary-500 group-focus-visible/item:text-primary-500 group-active/item:text-primary-500">
                           {{ item.label }}
+                          <ArrowUpRight :size="18" class="-translate-x-1 translate-y-1 text-primary-500 opacity-0 transition duration-200 motion-reduce:transition-none motion-reduce:transform-none group-hover/item:translate-x-0 group-hover/item:translate-y-0 group-hover/item:opacity-100 group-focus-visible/item:translate-x-0 group-focus-visible/item:translate-y-0 group-focus-visible/item:opacity-100 group-active/item:translate-x-0 group-active/item:translate-y-0 group-active/item:opacity-100" aria-hidden="true" />
                         </span>
                         <span class="mt-3 block text-xs leading-6 text-text-tertiary">
                           {{ item.description }}
@@ -546,19 +564,18 @@ async function submitTracking() {
                       v-for="item in insightSection.items"
                       :key="item.to"
                       :to="item.to"
-                      class="group flex items-start gap-3 rounded-lg focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500"
+                      class="group/item flex items-start gap-3 rounded-lg focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500"
                       @click="emit('close')"
                     >
-                      <span class="flex size-10 shrink-0 items-center justify-center rounded-full bg-primary-50 text-primary-500">
+                      <span class="flex size-10 shrink-0 items-center justify-center rounded-full bg-primary-50 text-primary-500 transition-colors duration-200 motion-reduce:transition-none group-hover/item:bg-primary-500 group-hover/item:text-white group-focus-visible/item:bg-primary-500 group-focus-visible/item:text-white group-active/item:bg-primary-500 group-active/item:text-white">
                         <component :is="item.icon" :size="19" aria-hidden="true" />
                       </span>
                       <span class="min-w-0 pt-1">
-                        <span class="flex items-center gap-2 text-base font-medium text-black">
+                        <span class="flex items-center gap-2 text-base font-medium text-black transition-colors duration-200 motion-reduce:transition-none group-hover/item:text-primary-500 group-focus-visible/item:text-primary-500 group-active/item:text-primary-500">
                           {{ item.label }}
                           <ArrowUpRight
-                            v-if="'showArrow' in item && item.showArrow"
                             :size="18"
-                            class="text-primary-500"
+                            class="text-primary-500 opacity-0 transition-opacity duration-200 motion-reduce:transition-none group-hover/item:opacity-100 group-focus-visible/item:opacity-100 group-active/item:opacity-100"
                             aria-hidden="true"
                           />
                         </span>

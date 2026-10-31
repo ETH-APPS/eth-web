@@ -27,16 +27,16 @@ withDefaults(defineProps<{
 <template>
   <section class="bg-bg-0 py-6 sm:py-8 lg:py-20">
     <UiContainer>
-      <header class="sr-only mx-auto max-w-[800px] text-center lg:not-sr-only">
-        <p class="text-xl text-primary-700">
+      <header class="mx-auto hidden max-w-[800px] text-center lg:block">
+        <p class="text-[20px] font-normal text-primary-700">
           {{ eyebrow }}
         </p>
-        <h1 class="mt-2 text-[48px] font-semibold leading-tight text-primary-500 sm:text-[40px]">
+        <h1 class="mt-2 text-[48px] font-semibold leading-tight text-primary-500">
           {{ title }} 
         </h1>
         <p
           v-if="description"
-          class="mt-5 text-xl leading-relaxed text-text-secondary sm:text-lg"
+          class="mt-5 text-[20px] font-normal leading-[1.4] text-text-secondary"
         >
           {{ description }}
         </p>

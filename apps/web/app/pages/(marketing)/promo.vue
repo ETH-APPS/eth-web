@@ -37,12 +37,12 @@ const selectedPromo = ref<PromoDetail | null>(null)
 const promos = [
   {
     id: 'promo-placeholder',
-    title: 'Lorem Ipsum',
-    status: 'Active',
-    description: promoDescription,
+    title: 'Diskon Spesial Anniversary 12 Tahun Pengiriman Impor',
+    status: 'Sedang Berlangsung',
+    description: 'Dapatkan potongan harga spesial untuk pengiriman kargo laut (LCL/FCL) dan udara dari China ke Indonesia...',
     image: promoImage,
     imageAlt: 'Promo pengiriman ETH Cargo',
-    termsLabel: 'Terms & Conditions',
+    termsLabel: 'Syarat & Ketentuan',
     termsTo: '/terms-and-conditions',
   },
 ] as const
@@ -87,9 +87,9 @@ const promoGroups = [
 
 <template>
   <MarketingPromoHero
-    eyebrow="PROMO"
-    title="OUR PROMO"
-    description="Lorem ipsum dolor sit amet consectetur adipiscing elit. Quisque faucibus ex sapien vitae pellentesque sem placerat."
+    eyebrow="Penawaran Spesial"
+    title="Promo & Diskon Pengiriman Kargo"
+    description="Nikmati berbagai penawaran menarik, diskon ongkos kirim kargo laut/udara, serta voucher khusus untuk mendukung efisiensi biaya impor bisnis Anda."
     :promos="promos"
   />
 
