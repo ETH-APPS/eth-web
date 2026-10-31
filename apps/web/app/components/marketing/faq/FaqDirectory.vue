@@ -110,13 +110,13 @@ function goToQuestion(groupId: string, itemIndex: number) {
   <section class="bg-bg-0 py-16 sm:py-20">
     <UiContainer>
       <header class="text-center">
-        <p class="text-[24px] font-medium text-text-disable">
+        <p class="text-[16px] font-medium text-text-disable lg:text-[24px]">
           {{ eyebrow }}
         </p>
-        <h1 class="mt-2 text-[120px] font-bold leading-none text-primary-500">
+        <h1 class="mt-2 text-[56px] font-bold leading-none text-primary-500 lg:text-[120px]">
           {{ title }}
         </h1>
-        <p class="mx-auto mt-7 max-w-[900px] text-[20px] leading-[1.55] text-text-tertiary">
+        <p class="mx-auto mt-7 max-w-[900px] text-[14px] font-normal leading-[1.55] text-text-tertiary lg:text-[20px]">
           {{ description }}
         </p>
 
@@ -132,7 +132,7 @@ function goToQuestion(groupId: string, itemIndex: number) {
             v-model="searchQuery"
             type="search"
             :placeholder="searchPlaceholder"
-            class="h-12 w-full rounded-full border border-border-300 bg-bg-0 pl-11 pr-4 text-[16px] text-text-secondary outline-none transition-colors placeholder:text-text-disable focus:border-primary-500"
+            class="h-12 w-full rounded-full border border-border-300 bg-bg-0 pl-11 pr-4 text-[16px] font-normal text-text-secondary outline-none transition-colors placeholder:text-text-disable focus:border-primary-500"
           >
         </label>
 
@@ -142,7 +142,7 @@ function goToQuestion(groupId: string, itemIndex: number) {
           </p>
           <NuxtLink
             :to="contactTo"
-            class="inline-flex h-10 items-center gap-2 rounded-full bg-green-500 px-5 text-[16px] font-medium text-bg-0 transition-[background-color,transform] hover:-translate-y-0.5 hover:bg-[#059669] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-500"
+            class="inline-flex h-11 items-center gap-2 rounded-full bg-green-500 px-5 text-[14px] font-medium text-bg-0 transition-[background-color,transform] hover:-translate-y-0.5 hover:bg-[#059669] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-500 lg:h-10 lg:text-[16px]"
           >
             <span>{{ contactLabel }}</span>
             <img
@@ -158,7 +158,7 @@ function goToQuestion(groupId: string, itemIndex: number) {
       </header>
 
       <div class="mt-14 grid items-start gap-8 lg:grid-cols-[270px_minmax(0,1fr)]">
-        <aside class="rounded-2xl border border-border-200 bg-bg-0 p-4 shadow-md lg:sticky lg:top-28">
+        <aside class="hidden rounded-2xl border border-border-200 bg-bg-0 p-4 shadow-md lg:sticky lg:top-28 lg:block">
           <h2 class="text-[20px] font-medium text-primary-500">
             Table of Content
           </h2>
@@ -228,10 +228,10 @@ function goToQuestion(groupId: string, itemIndex: number) {
             :key="group.id"
             :class="groupIndex > 0 ? 'mt-10' : ''"
           >
-            <h2 class="text-[22px] font-semibold text-text-secondary">
+            <h2 class="text-[16px] font-semibold text-text-secondary lg:text-[22px]">
               {{ group.title }}
             </h2>
-            <p class="mt-1 text-[20px] text-text-tertiary">
+            <p class="mt-1 text-[16px] text-text-tertiary lg:text-[20px]">
               {{ group.description }}
             </p>
 

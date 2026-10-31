@@ -25,9 +25,9 @@ withDefaults(defineProps<{
 </script>
 
 <template>
-  <section class="bg-bg-0 py-14 sm:py-16 lg:py-20">
+  <section class="bg-bg-0 py-6 sm:py-8 lg:py-20">
     <UiContainer>
-      <header class="mx-auto max-w-[800px] text-center">
+      <header class="sr-only mx-auto max-w-[800px] text-center lg:not-sr-only">
         <p class="text-xl text-primary-700">
           {{ eyebrow }}
         </p>
@@ -42,13 +42,13 @@ withDefaults(defineProps<{
         </p>
       </header>
 
-      <div class="mt-10 space-y-6 sm:mt-12">
+      <div class="space-y-6 lg:mt-12">
         <article
           v-for="promo in promos"
           :key="promo.id"
-          class="grid overflow-hidden rounded-[20px] border border-border-200 bg-bg-0 shadow-[0_10px_24px_rgba(16,24,40,0.10)] md:grid-cols-[320px_minmax(0,1fr)]"
+          class="grid overflow-hidden rounded-[20px] border border-border-200 bg-bg-0 shadow-[0_10px_24px_rgba(16,24,40,0.10)] lg:grid-cols-[320px_minmax(0,1fr)]"
         >
-          <div class="h-full overflow-hidden rounded-3xl bg-bg-100">
+          <div class="mx-2 aspect-[1.06/1] overflow-hidden rounded-3xl bg-bg-100 lg:mx-0 lg:aspect-auto lg:h-full">
             <img
               :src="promo.image"
               :alt="promo.imageAlt"
@@ -56,24 +56,24 @@ withDefaults(defineProps<{
             >
           </div>
 
-          <div class="flex min-h-[300px] flex-col p-6 sm:p-8">
-            <h2 class="text-2xl font-semibold text-text-secondary sm:text-2xl">
+          <div class="flex min-h-0 flex-col p-6 sm:p-8 lg:min-h-[300px]">
+            <h2 class="text-[20px] font-semibold text-text-secondary lg:text-2xl">
               {{ promo.title }}
             </h2>
 
-            <div class="mt-2 flex items-center gap-3 text-xl">
+            <div class="mt-2 flex items-center gap-3 text-[16px] font-medium lg:text-xl lg:font-normal">
               <span class="text-text-tertiary">Status</span>
               <span class="h-px w-6 bg-border-300" aria-hidden="true" />
               <span class="font-medium text-emerald-500">{{ promo.status }}</span>
             </div>
 
-            <p class="mt-7 text-[22px] text-text-tertiary">
+            <p class="mt-4 text-[14px] font-normal text-text-tertiary lg:mt-7 lg:text-[22px]">
               {{ promo.description }}
             </p>
 
             <NuxtLink
               :to="promo.termsTo || '/terms-and-conditions'"
-              class="mt-10 inline-flex self-start items-center gap-2 rounded-md text-sm font-medium text-primary-500 transition-colors hover:text-primary-600 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary-500 md:self-end"
+              class="mt-6 inline-flex min-h-11 self-end items-center gap-2 rounded-md text-sm font-medium text-primary-500 transition-colors hover:text-primary-600 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary-500 lg:mt-10 lg:min-h-0"
             >
               {{ promo.termsLabel || 'Terms & Conditions' }}
               <FileText :size="17" :stroke-width="1.8" aria-hidden="true" />

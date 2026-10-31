@@ -36,18 +36,18 @@ const emit = defineEmits<{
 <template>
   <section class="bg-bg-0 py-12">
     <UiContainer>
-      <div class="flex items-center justify-between gap-6">
-        <h2 class="text-[32px] font-semibold text-primary-500">
+      <div class="flex flex-col items-center gap-1 text-center lg:flex-row lg:justify-between lg:gap-6 lg:text-left">
+        <h2 class="text-[22px] font-bold text-primary-500 lg:text-[32px] lg:font-semibold">
           {{ year }} PROMOS
         </h2>
-        <p class="text-[20px] text-text-tertiary">
+        <p class="text-[16px] font-normal text-text-tertiary lg:text-[20px]">
           Total {{ activeTotal ?? activePromos.length }} Promos
         </p>
       </div>
 
       <div
         v-if="activePromos.length"
-        class="mt-5 grid grid-cols-1 gap-x-5 gap-y-7 sm:grid-cols-2 lg:grid-cols-3 lg:px-16"
+        class="mt-5 grid grid-cols-1 gap-x-5 gap-y-7 lg:grid-cols-3 lg:px-16"
       >
         <article
           v-for="promo in activePromos"
@@ -60,7 +60,7 @@ const emit = defineEmits<{
             :aria-label="`Lihat detail ${promo.title}`"
             @click="emit('select', promo)"
           >
-            <div class="aspect-[1.06/1] overflow-hidden rounded-[14px] bg-bg-100">
+            <div class="mx-2 aspect-[1.06/1] overflow-hidden rounded-[14px] bg-bg-100 lg:mx-0">
               <img
                 :src="promo.image"
                 :alt="promo.imageAlt"
@@ -69,7 +69,7 @@ const emit = defineEmits<{
               >
             </div>
 
-            <div class="mt-3 flex items-center justify-between gap-4">
+            <div class="mt-3 flex items-center justify-between gap-4 px-2 lg:px-0">
               <div class="flex min-w-0 items-center gap-2 text-[20px] font-medium text-text-tertiary">
                 <CalendarDays :size="16" :stroke-width="1.8" aria-hidden="true" />
                 <span aria-hidden="true">—</span>
@@ -85,22 +85,25 @@ const emit = defineEmits<{
 
       <template v-if="inactivePromos.length">
         <div
-          class="flex items-center justify-between gap-6 lg:px-16"
+          class="flex flex-wrap items-center justify-center gap-x-3 gap-y-1 lg:flex-nowrap lg:justify-between lg:gap-6 lg:px-16"
           :class="activePromos.length ? 'mt-10 sm:mt-12' : 'mt-5'"
         >
-          <h3 class="text-base font-medium text-text-tertiary sm:text-lg">
+          <h3 class="text-[20px] font-medium text-text-tertiary lg:text-lg">
             Inactive
           </h3>
-          <p class="text-sm text-text-tertiary sm:text-base">
+          <p class="text-[16px] text-text-tertiary">
             Total {{ inactiveTotal ?? inactivePromos.length }} Inactive Promos
           </p>
         </div>
 
-        <div class="mt-5 grid grid-cols-1 gap-x-5 gap-y-7 sm:grid-cols-2 lg:grid-cols-3 lg:px-16">
+        <div
+          class="-mx-4 mt-5 flex gap-4 overflow-x-auto overscroll-x-contain px-4 pb-3 snap-x snap-mandatory [scrollbar-width:none] lg:mx-0 lg:grid lg:grid-cols-3 lg:gap-x-5 lg:gap-y-7 lg:overflow-visible lg:px-16 lg:pb-0 lg:snap-none [&::-webkit-scrollbar]:hidden"
+          aria-label="Promo tidak aktif, geser untuk melihat promo lainnya"
+        >
           <article
             v-for="promo in inactivePromos"
             :key="promo.id"
-            class="min-w-0"
+            class="min-w-0 w-[90%] max-w-[320px] shrink-0 snap-start lg:w-auto lg:max-w-none lg:snap-none"
           >
             <button
               type="button"
@@ -108,7 +111,7 @@ const emit = defineEmits<{
               :aria-label="`Lihat detail ${promo.title}`"
               @click="emit('select', promo)"
             >
-              <div class="aspect-[1.06/1] overflow-hidden rounded-[14px] bg-bg-100">
+              <div class="mx-2 aspect-[1.06/1] overflow-hidden rounded-[14px] bg-bg-100 lg:mx-0">
                 <img
                   :src="promo.image"
                   :alt="promo.imageAlt"
@@ -117,7 +120,7 @@ const emit = defineEmits<{
                 >
               </div>
 
-              <div class="mt-3 flex items-center justify-between gap-4">
+              <div class="mt-3 flex items-center justify-between gap-4 px-2 lg:px-0">
                 <div class="flex min-w-0 items-center gap-2 text-[20px] font-medium text-primary-500">
                   <CalendarDays :size="16" :stroke-width="1.8" aria-hidden="true" />
                   <span aria-hidden="true">—</span>
