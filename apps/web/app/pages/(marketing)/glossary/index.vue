@@ -84,18 +84,18 @@ watch(normalizedQuery, () => {
 </script>
 
 <template>
-  <section class="bg-bg-0 pb-20 pt-16">
+  <section class="bg-bg-0 pb-20 pt-10 lg:pt-16">
     <UiContainer>
       <header class="text-center">
         <h1 class="text-[28px] font-semibold leading-tight text-primary-500">
           Glossary
         </h1>
-        <p class="mx-auto mt-5 max-w-[800px] text-[16px] leading-5 text-text-tertiary">
-          Lorem ipsum dolor sit amet consectetur adipiscing elit. Quisque faucibus ex sapien vitae<br>
+        <p class="mx-auto mt-6 max-w-[800px] text-justify text-[16px] font-normal leading-[1.45] text-text-tertiary lg:mt-5 lg:text-center lg:leading-5">
+          Lorem ipsum dolor sit amet consectetur adipiscing elit. Quisque faucibus ex sapien vitae<br class="hidden lg:inline">
           pellentesque sem placerat. In id cursus mi pretium tellus duis convallis.
         </p>
 
-        <label class="relative mx-auto mt-5 block w-full max-w-[460px]">
+        <label class="relative mx-auto mt-6 block w-full max-w-[460px] lg:mt-5">
           <span class="sr-only">Cari pembahasan glossary</span>
           <Search
             :size="18"
@@ -107,14 +107,14 @@ watch(normalizedQuery, () => {
             v-model="searchQuery"
             type="search"
             placeholder="Cari pembahasan"
-            class="h-10 w-full rounded-full border border-primary-300 bg-bg-0 pl-11 pr-5 text-[16px] text-text-secondary outline-none focus:outline-none focus:ring-0 placeholder:text-text-disable"
+            class="h-12 w-full rounded-full border border-primary-300 bg-bg-0 pl-11 pr-5 text-[16px] font-normal text-text-secondary outline-none focus:outline-none focus:ring-0 placeholder:text-text-disable lg:h-10"
           >
         </label>
       </header>
 
       <nav
         aria-label="Navigasi huruf glossary"
-        class="mx-auto mt-7 flex max-w-[1000px] items-center justify-between"
+        class="mx-auto mt-6 grid max-w-[1000px] grid-cols-9 gap-y-1 text-center lg:mt-7 lg:flex lg:items-center lg:justify-between"
       >
         <template
           v-for="letter in letters"
@@ -124,7 +124,7 @@ watch(normalizedQuery, () => {
             v-if="normalizedQuery"
             type="button"
             :disabled="!availableLetters.has(letter)"
-            class="text-[22px] font-semibold transition-colors focus-visible:rounded focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500 disabled:cursor-not-allowed disabled:text-text-disable"
+            class="flex min-h-10 items-center justify-center text-[24px] font-semibold transition-colors focus-visible:rounded focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500 disabled:cursor-not-allowed disabled:text-text-disable lg:block lg:min-h-0 lg:text-[22px]"
             :class="availableLetters.has(letter) ? 'text-text-secondary hover:text-primary-500' : 'text-text-disable'"
             @click="scrollToLetter(letter)"
           >
@@ -133,16 +133,16 @@ watch(normalizedQuery, () => {
           <NuxtLink
             v-else
             :to="letterPath(letter)"
-            class="text-[22px] font-semibold text-text-secondary transition-colors hover:text-primary-500 focus-visible:rounded focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500"
+            class="flex min-h-10 items-center justify-center text-[24px] font-semibold text-text-secondary transition-colors hover:text-primary-500 focus-visible:rounded focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500 lg:block lg:min-h-0 lg:text-[22px]"
           >
             {{ letter }}
           </NuxtLink>
         </template>
       </nav>
 
-      <div class="mt-8 flex items-center gap-4 text-[14px] text-text-tertiary">
+      <div class="mt-8 flex flex-col items-center gap-1 text-center text-[14px] font-normal text-text-tertiary lg:flex-row lg:gap-4 lg:text-left">
         <span>{{ normalizedQuery ? 'Hasil pencarian' : 'Total Bahasan' }}</span>
-        <span aria-hidden="true" class="h-px w-5 bg-border-300" />
+        <span aria-hidden="true" class="hidden h-px w-5 bg-border-300 lg:block" />
         <template v-if="normalizedQuery">
           <span class="font-semibold text-primary-500">{{ searchQuery.trim() }}</span>
           <span>(+{{ filteredTermCount }})</span>
@@ -152,7 +152,7 @@ watch(normalizedQuery, () => {
 
       <div
         v-if="filteredGroups.length"
-        class="mt-10 grid grid-cols-3 items-start gap-x-12 gap-y-10"
+        class="mt-10 grid grid-cols-1 items-start gap-y-10 lg:grid-cols-3 lg:gap-x-12"
       >
         <section
           v-for="group in filteredGroups"
@@ -165,7 +165,7 @@ watch(normalizedQuery, () => {
           <h2
             :id="`glossary-title-${group.letter === '#' ? 'other' : group.letter.toLowerCase()}`"
             class="border-b border-border-300 pb-3 text-[42px] font-semibold leading-none transition-colors"
-            :class="hoveredGroupLetter === group.letter ? 'text-primary-500' : 'text-text-disable'"
+            :class="hoveredGroupLetter === group.letter ? 'text-primary-500' : 'text-text-secondary lg:text-text-disable'"
           >
             {{ group.letter }}
           </h2>
@@ -195,7 +195,7 @@ watch(normalizedQuery, () => {
                     :size="16"
                     :stroke-width="2"
                     aria-hidden="true"
-                    class="mt-[3px] shrink-0 translate-y-1 opacity-0 transition-[opacity,transform] group-hover:translate-y-0 group-hover:opacity-100"
+                    class="mt-[3px] hidden shrink-0 translate-y-1 opacity-0 transition-[opacity,transform] group-hover:translate-y-0 group-hover:opacity-100 lg:block"
                   />
                 </span>
               </NuxtLink>
@@ -235,7 +235,7 @@ watch(normalizedQuery, () => {
                       :size="16"
                       :stroke-width="2"
                       aria-hidden="true"
-                      class="mt-[3px] shrink-0 translate-y-1 opacity-0 transition-[opacity,transform] group-hover:translate-y-0 group-hover:opacity-100"
+                      class="mt-[3px] hidden shrink-0 translate-y-1 opacity-0 transition-[opacity,transform] group-hover:translate-y-0 group-hover:opacity-100 lg:block"
                     />
                   </span>
                 </NuxtLink>
@@ -246,7 +246,7 @@ watch(normalizedQuery, () => {
           <button
             v-if="group.terms.length > 5"
             type="button"
-            class="mx-auto mt-5 flex items-center gap-2 text-[16px] text-text-disable transition-colors hover:text-primary-500 focus-visible:rounded focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500"
+            class="mx-auto mt-5 flex min-h-11 items-center gap-2 text-[16px] font-normal text-text-disable transition-colors hover:text-primary-500 focus-visible:rounded focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500 lg:min-h-0"
             :aria-expanded="expandedLetters.has(group.letter)"
             @click="toggleGroup(group.letter)"
           >
@@ -275,9 +275,8 @@ watch(normalizedQuery, () => {
       </div>
 
       <footer class="mt-16 text-center">
-        <!-- Tulisan: 14px regular -->
-        <p class="mx-auto max-w-[800px] text-[14px] font-normal leading-[1.6] text-text-tertiary">
-          Lorem ipsum dolor sit amet consectetur adipiscing elit. Quisque faucibus ex sapien vitae pellentesque<br>
+        <p class="mx-auto max-w-[800px] text-[14px] font-medium leading-[1.6] text-text-tertiary lg:font-normal">
+          Lorem ipsum dolor sit amet consectetur adipiscing elit. Quisque faucibus ex sapien vitae pellentesque<br class="hidden lg:inline">
           sem placerat. In id cursus mi pretium tellus duis convallis.
         </p>
         <!-- Get a Quote: 14px medium -->
