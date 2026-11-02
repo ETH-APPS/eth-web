@@ -10,8 +10,10 @@ import facebookDark from '~/assets/images/marketing/facebook-dark.png'
 import heroImage from '~/assets/images/marketing/hero.png'
 import instagramDark from '~/assets/images/marketing/Instagram-dark.png'
 import linkDark from '~/assets/images/marketing/Link-dark.png'
+import importHeroImage from '~/assets/images/marketing/multinational-cargo-hero.png'
 import threadsDark from '~/assets/images/marketing/Threads-dark.png'
 import tiktokDark from '~/assets/images/marketing/Tiktok-dark.png'
+import whatsappImage from '~/assets/images/marketing/whatsapp.png'
 import xDark from '~/assets/images/marketing/X-dark.png'
 
 const tableOfContents = [
@@ -54,6 +56,7 @@ const tableOfContents = [
 
 const expandedSections = ref<string[]>(['persiapan-impor', 'metode-pengiriman'])
 const activeSection = ref('persiapan-impor')
+const isMobileTocOpen = ref(false)
 const shareUrl = ref('')
 const copied = ref(false)
 const ACTIVE_OFFSET = 130
@@ -103,6 +106,11 @@ function scrollToSection(id: string) {
     behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth',
     block: 'start',
   })
+}
+
+function selectMobileSection(id: string) {
+  isMobileTocOpen.value = false
+  scrollToSection(id)
 }
 
 function updateActiveSection() {
@@ -155,9 +163,40 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <section class="bg-bg-0 pb-20 pt-14">
+  <section class="bg-bg-0 pb-20 pt-5 lg:pt-14">
     <UiContainer>
-      <header class="text-center">
+      <header class="lg:hidden">
+        <p class="text-[16px] font-normal text-primary-700">
+          Insight
+        </p>
+        <h1 class="mt-1 text-[32px] font-semibold leading-tight text-primary-500">
+          Proses Impor
+        </h1>
+        <p class="mt-5 text-[16px] font-normal leading-[1.55] text-text-secondary">
+          Solusi pengiriman kargo laut dan udara B2B yang aman, transparan, dan tepat waktu. Bebas urus bea cukai dengan skema All-In Door-to-Door langsung sampai ke gudang Anda.
+        </p>
+        <p class="mt-6 text-center text-[16px] font-normal leading-[1.5] text-text-secondary">
+          In id cursus mi pretium tellus duis convallis.
+        </p>
+        <div class="mt-4 flex justify-center">
+          <NuxtLink
+            to="/#quote"
+            class="inline-flex min-h-11 items-center gap-2 rounded-xl bg-green-500 px-5 text-[14px] font-medium text-bg-0 transition-colors hover:bg-[#16a34a] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-500"
+          >
+            <span>Konsultasi</span>
+            <img :src="whatsappImage" alt="" aria-hidden="true" width="20" height="20" class="size-5 object-contain">
+          </NuxtLink>
+        </div>
+        <img
+          :src="importHeroImage"
+          alt="Pelabuhan, kontainer, truk, dan pesawat dalam proses impor ETH Cargo"
+          width="520"
+          height="390"
+          class="mt-6 aspect-[7/5] w-full rounded-xl object-cover"
+        >
+      </header>
+
+      <header class="hidden text-center lg:block">
         <p class="text-[20px] font-normal uppercase text-primary-700">
           Documentation
         </p>
@@ -166,8 +205,8 @@ onBeforeUnmount(() => {
         </h1>
       </header>
 
-      <div class="mt-14 grid grid-cols-[300px_minmax(0,1fr)] items-start gap-6">
-        <aside class="sticky top-[90px]">
+      <div class="mt-8 grid grid-cols-1 items-start gap-6 lg:mt-14 lg:grid-cols-[300px_minmax(0,1fr)]">
+        <aside class="hidden lg:sticky lg:top-[90px] lg:block">
           <nav
             aria-label="Table of Content"
             class="rounded-2xl border border-border-200 bg-bg-0 p-4 shadow-md"
@@ -235,7 +274,88 @@ onBeforeUnmount(() => {
         </aside>
 
         <article class="min-w-0 text-[14px] font-normal leading-[1.65] text-text-secondary">
-          <section class="overflow-hidden rounded-xl border border-border-200">
+          <Transition
+            enter-active-class="transition-opacity duration-200 ease-out"
+            enter-from-class="opacity-0"
+            enter-to-class="opacity-100"
+            leave-active-class="transition-opacity duration-150 ease-in"
+            leave-from-class="opacity-100"
+            leave-to-class="opacity-0"
+          >
+            <button
+              v-if="isMobileTocOpen"
+              type="button"
+              aria-label="Tutup Table of Content"
+              class="fixed inset-x-0 bottom-0 top-16 z-10 bg-white/30 backdrop-blur-[6px] lg:hidden"
+              @click="isMobileTocOpen = false"
+            />
+          </Transition>
+
+          <div class="sticky top-16 z-20 -mx-4 bg-bg-0 lg:hidden" @keydown.esc="isMobileTocOpen = false">
+            <div
+              class="border-b-2 transition-colors duration-200"
+              :class="isMobileTocOpen ? 'border-border-200' : 'border-primary-500'"
+            >
+              <button
+                type="button"
+                class="flex min-h-12 w-full items-center justify-between gap-4 px-4 text-left text-[14px] font-semibold text-text-secondary focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-primary-500"
+                aria-controls="mobile-import-toc"
+                :aria-expanded="isMobileTocOpen"
+                @click="isMobileTocOpen = !isMobileTocOpen"
+              >
+                <span>Table of Content</span>
+                <ChevronDown :size="20" class="shrink-0 transition-transform duration-200" :class="isMobileTocOpen ? 'rotate-180' : ''" aria-hidden="true" />
+              </button>
+            </div>
+
+            <Transition
+              enter-active-class="transition duration-200 ease-out motion-reduce:transition-none"
+              enter-from-class="-translate-y-2 opacity-0"
+              enter-to-class="translate-y-0 opacity-100"
+              leave-active-class="transition duration-150 ease-in motion-reduce:transition-none"
+              leave-from-class="translate-y-0 opacity-100"
+              leave-to-class="-translate-y-2 opacity-0"
+            >
+              <nav
+                v-show="isMobileTocOpen"
+                id="mobile-import-toc"
+                aria-label="Table of Content"
+                class="absolute inset-x-0 top-full max-h-[calc(100dvh-7rem)] overflow-y-auto bg-bg-0 px-4 pb-4 pt-3 shadow-[0_14px_28px_rgba(15,23,42,0.14)]"
+              >
+                <ol class="space-y-1">
+                  <li v-for="section in tableOfContents" :key="section.id">
+                    <button
+                      type="button"
+                      class="flex min-h-11 w-full items-center gap-3 rounded-lg px-1 text-left text-[12px] transition-colors focus-visible:outline-2 focus-visible:outline-primary-500"
+                      :class="activeSection === section.id ? 'font-medium text-primary-500' : 'text-text-secondary hover:text-primary-500'"
+                      :aria-current="activeSection === section.id ? 'location' : undefined"
+                      @click="selectMobileSection(section.id)"
+                    >
+                      <span class="w-7 shrink-0">{{ section.number }}</span>
+                      <span>{{ section.title }}</span>
+                    </button>
+                    <ol class="pl-6">
+                      <li v-for="child in section.children" :key="child.id">
+                        <button
+                          type="button"
+                          class="flex min-h-11 w-full items-center gap-3 rounded-lg px-1 text-left text-[12px] transition-colors focus-visible:outline-2 focus-visible:outline-primary-500"
+                          :class="activeSection === child.id ? 'font-medium text-primary-500' : 'text-text-tertiary hover:text-primary-500'"
+                          :aria-current="activeSection === child.id ? 'location' : undefined"
+                          @click="selectMobileSection(child.id)"
+                        >
+                          <span class="w-7 shrink-0">{{ child.number }}</span>
+                          <span>{{ child.title }}</span>
+                        </button>
+                      </li>
+                    </ol>
+                    <div class="my-2 h-px w-24 bg-border-200" aria-hidden="true" />
+                  </li>
+                </ol>
+              </nav>
+            </Transition>
+          </div>
+
+          <section class="hidden overflow-hidden rounded-xl border border-border-200 lg:block">
             <h2 class="bg-border-200 px-4 py-3 text-[14px] font-semibold text-primary-500">
               Key Points
             </h2>
