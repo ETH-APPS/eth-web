@@ -88,7 +88,7 @@ const serviceIcons: Record<AboutServiceIcon, Component> = {
             class="h-auto w-full object-contain lg:w-[460px]"
           >
         </div>
-
+ 
         <p class="mx-auto mt-10 text-justify text-[15px] font-normal leading-[1.5] text-text-secondary lg:text-center lg:text-2xl lg:leading-[1.4]">
           {{ description }}
         </p>

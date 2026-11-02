@@ -163,8 +163,89 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <section class="bg-bg-0 pb-20 pt-5 lg:pt-14">
-    <UiContainer>
+  <section class="bg-bg-0 pb-20 pt-0 lg:pt-14">
+    <Transition
+      enter-active-class="transition-opacity duration-200 ease-out"
+      enter-from-class="opacity-0"
+      enter-to-class="opacity-100"
+      leave-active-class="transition-opacity duration-150 ease-in"
+      leave-from-class="opacity-100"
+      leave-to-class="opacity-0"
+    >
+      <button
+        v-if="isMobileTocOpen"
+        type="button"
+        aria-label="Tutup Table of Content"
+        class="fixed inset-x-0 bottom-0 top-16 z-10 bg-white/30 backdrop-blur-[6px] lg:hidden"
+        @click="isMobileTocOpen = false"
+      />
+    </Transition>
+
+    <div class="sticky top-16 z-20 bg-bg-0 lg:hidden" @keydown.esc="isMobileTocOpen = false">
+      <div
+        class="border-b-2 transition-colors duration-200"
+        :class="isMobileTocOpen ? 'border-border-200' : 'border-primary-500'"
+      >
+        <button
+          type="button"
+          class="flex min-h-12 w-full items-center justify-between gap-4 px-4 text-left text-[14px] font-semibold text-text-secondary focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-primary-500"
+          aria-controls="mobile-import-toc"
+          :aria-expanded="isMobileTocOpen"
+          @click="isMobileTocOpen = !isMobileTocOpen"
+        >
+          <span>Table of Content</span>
+          <ChevronDown :size="20" class="shrink-0 transition-transform duration-200" :class="isMobileTocOpen ? 'rotate-180' : ''" aria-hidden="true" />
+        </button>
+      </div>
+
+      <Transition
+        enter-active-class="transition duration-200 ease-out motion-reduce:transition-none"
+        enter-from-class="-translate-y-2 opacity-0"
+        enter-to-class="translate-y-0 opacity-100"
+        leave-active-class="transition duration-150 ease-in motion-reduce:transition-none"
+        leave-from-class="translate-y-0 opacity-100"
+        leave-to-class="-translate-y-2 opacity-0"
+      >
+        <nav
+          v-show="isMobileTocOpen"
+          id="mobile-import-toc"
+          aria-label="Table of Content"
+          class="absolute inset-x-0 top-full max-h-[calc(100dvh-7rem)] overflow-y-auto bg-bg-0 px-4 pb-4 pt-3 shadow-[0_14px_28px_rgba(15,23,42,0.14)]"
+        >
+          <ol class="space-y-1">
+            <li v-for="section in tableOfContents" :key="section.id">
+              <button
+                type="button"
+                class="flex min-h-11 w-full items-center gap-3 rounded-lg px-1 text-left text-[12px] transition-colors focus-visible:outline-2 focus-visible:outline-primary-500"
+                :class="activeSection === section.id ? 'font-medium text-primary-500' : 'text-text-secondary hover:text-primary-500'"
+                :aria-current="activeSection === section.id ? 'location' : undefined"
+                @click="selectMobileSection(section.id)"
+              >
+                <span class="w-7 shrink-0">{{ section.number }}</span>
+                <span>{{ section.title }}</span>
+              </button>
+              <ol class="pl-6">
+                <li v-for="child in section.children" :key="child.id">
+                  <button
+                    type="button"
+                    class="flex min-h-11 w-full items-center gap-3 rounded-lg px-1 text-left text-[12px] transition-colors focus-visible:outline-2 focus-visible:outline-primary-500"
+                    :class="activeSection === child.id ? 'font-medium text-primary-500' : 'text-text-tertiary hover:text-primary-500'"
+                    :aria-current="activeSection === child.id ? 'location' : undefined"
+                    @click="selectMobileSection(child.id)"
+                  >
+                    <span class="w-7 shrink-0">{{ child.number }}</span>
+                    <span>{{ child.title }}</span>
+                  </button>
+                </li>
+              </ol>
+              <div class="my-2 h-px w-24 bg-border-200" aria-hidden="true" />
+            </li>
+          </ol>
+        </nav>
+      </Transition>
+    </div>
+
+    <UiContainer class="pt-5 lg:pt-0">
       <header class="lg:hidden">
         <p class="text-[16px] font-normal text-primary-700">
           Insight
@@ -274,87 +355,6 @@ onBeforeUnmount(() => {
         </aside>
 
         <article class="min-w-0 text-[14px] font-normal leading-[1.65] text-text-secondary">
-          <Transition
-            enter-active-class="transition-opacity duration-200 ease-out"
-            enter-from-class="opacity-0"
-            enter-to-class="opacity-100"
-            leave-active-class="transition-opacity duration-150 ease-in"
-            leave-from-class="opacity-100"
-            leave-to-class="opacity-0"
-          >
-            <button
-              v-if="isMobileTocOpen"
-              type="button"
-              aria-label="Tutup Table of Content"
-              class="fixed inset-x-0 bottom-0 top-16 z-10 bg-white/30 backdrop-blur-[6px] lg:hidden"
-              @click="isMobileTocOpen = false"
-            />
-          </Transition>
-
-          <div class="sticky top-16 z-20 -mx-4 bg-bg-0 lg:hidden" @keydown.esc="isMobileTocOpen = false">
-            <div
-              class="border-b-2 transition-colors duration-200"
-              :class="isMobileTocOpen ? 'border-border-200' : 'border-primary-500'"
-            >
-              <button
-                type="button"
-                class="flex min-h-12 w-full items-center justify-between gap-4 px-4 text-left text-[14px] font-semibold text-text-secondary focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-primary-500"
-                aria-controls="mobile-import-toc"
-                :aria-expanded="isMobileTocOpen"
-                @click="isMobileTocOpen = !isMobileTocOpen"
-              >
-                <span>Table of Content</span>
-                <ChevronDown :size="20" class="shrink-0 transition-transform duration-200" :class="isMobileTocOpen ? 'rotate-180' : ''" aria-hidden="true" />
-              </button>
-            </div>
-
-            <Transition
-              enter-active-class="transition duration-200 ease-out motion-reduce:transition-none"
-              enter-from-class="-translate-y-2 opacity-0"
-              enter-to-class="translate-y-0 opacity-100"
-              leave-active-class="transition duration-150 ease-in motion-reduce:transition-none"
-              leave-from-class="translate-y-0 opacity-100"
-              leave-to-class="-translate-y-2 opacity-0"
-            >
-              <nav
-                v-show="isMobileTocOpen"
-                id="mobile-import-toc"
-                aria-label="Table of Content"
-                class="absolute inset-x-0 top-full max-h-[calc(100dvh-7rem)] overflow-y-auto bg-bg-0 px-4 pb-4 pt-3 shadow-[0_14px_28px_rgba(15,23,42,0.14)]"
-              >
-                <ol class="space-y-1">
-                  <li v-for="section in tableOfContents" :key="section.id">
-                    <button
-                      type="button"
-                      class="flex min-h-11 w-full items-center gap-3 rounded-lg px-1 text-left text-[12px] transition-colors focus-visible:outline-2 focus-visible:outline-primary-500"
-                      :class="activeSection === section.id ? 'font-medium text-primary-500' : 'text-text-secondary hover:text-primary-500'"
-                      :aria-current="activeSection === section.id ? 'location' : undefined"
-                      @click="selectMobileSection(section.id)"
-                    >
-                      <span class="w-7 shrink-0">{{ section.number }}</span>
-                      <span>{{ section.title }}</span>
-                    </button>
-                    <ol class="pl-6">
-                      <li v-for="child in section.children" :key="child.id">
-                        <button
-                          type="button"
-                          class="flex min-h-11 w-full items-center gap-3 rounded-lg px-1 text-left text-[12px] transition-colors focus-visible:outline-2 focus-visible:outline-primary-500"
-                          :class="activeSection === child.id ? 'font-medium text-primary-500' : 'text-text-tertiary hover:text-primary-500'"
-                          :aria-current="activeSection === child.id ? 'location' : undefined"
-                          @click="selectMobileSection(child.id)"
-                        >
-                          <span class="w-7 shrink-0">{{ child.number }}</span>
-                          <span>{{ child.title }}</span>
-                        </button>
-                      </li>
-                    </ol>
-                    <div class="my-2 h-px w-24 bg-border-200" aria-hidden="true" />
-                  </li>
-                </ol>
-              </nav>
-            </Transition>
-          </div>
-
           <section class="hidden overflow-hidden rounded-xl border border-border-200 lg:block">
             <h2 class="bg-border-200 px-4 py-3 text-[14px] font-semibold text-primary-500">
               Key Points
@@ -375,7 +375,7 @@ onBeforeUnmount(() => {
             </ul>
           </section>
 
-          <section id="persiapan-impor" class="mt-6 scroll-mt-28">
+          <section id="persiapan-impor" class="mt-0 scroll-mt-28 lg:mt-6">
             <h2 class="text-[20px] font-medium text-primary-500">
               1. Persiapan proses impor
             </h2>
