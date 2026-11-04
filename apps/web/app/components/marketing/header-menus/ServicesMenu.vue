@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import {
   ArrowUpRight,
-  Banknote,
+  Handbag,
   Plane,
   Ship,
-  ShoppingBag,
 } from 'lucide-vue-next'
+import MoneyRangeIcon from '../MoneyRangeIcon.vue'
 import chinaFlagUrl from '~/assets/images/flag/china.png'
 import taiwanFlagUrl from '~/assets/images/flag/taiwan.png'
 import koreaFlagUrl from '~/assets/images/flag/korea.png'
@@ -123,7 +123,7 @@ const multinationalCountries = [
           <span
             class="flex size-10 shrink-0 items-center justify-center rounded-full bg-primary-50 text-primary-500 transition duration-200 ease-out motion-reduce:transition-none group-hover/item:bg-primary-500 group-hover/item:text-white group-hover/item:shadow-md group-focus-visible/item:bg-primary-500 group-focus-visible/item:text-white group-focus-visible/item:shadow-md"
           >
-            <Banknote :size="20" aria-hidden="true" />
+            <MoneyRangeIcon class="size-6" />
           </span>
           <span>
             <span class="flex items-center gap-2 text-base font-medium text-text-secondary transition-colors group-hover/item:text-primary-500 group-focus-visible/item:text-primary-500">
@@ -146,7 +146,7 @@ const multinationalCountries = [
           <span
             class="flex size-10 shrink-0 items-center justify-center rounded-full bg-primary-50 text-primary-500 transition duration-200 ease-out motion-reduce:transition-none group-hover/item:bg-primary-500 group-hover/item:text-white group-hover/item:shadow-md group-focus-visible/item:bg-primary-500 group-focus-visible/item:text-white group-focus-visible/item:shadow-md"
           >
-            <ShoppingBag :size="20" aria-hidden="true" />
+            <Handbag :size="20" aria-hidden="true" />
           </span>
           <span>
             <span class="flex items-center gap-2 text-base font-medium text-text-secondary transition-colors group-hover/item:text-primary-500 group-focus-visible/item:text-primary-500">

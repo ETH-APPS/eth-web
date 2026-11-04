@@ -1,10 +1,11 @@
 <script setup lang="ts">
 import {
   ArrowUpRight,
-  Calculator,
   PackageSearch,
   Search,
 } from 'lucide-vue-next'
+import MoneyRangeIcon from '../MoneyRangeIcon.vue'
+import ShippingContainerIcon from '../ShippingContainerIcon.vue'
 
 const trackingCode = ref('')
 const trackingPin = ref('')
@@ -23,7 +24,7 @@ async function submitTracking() {
 </script>
 
 <template>
-  <UiContainer class="grid grid-cols-2 gap-16 py-10 text-text-secondary">
+  <UiContainer class="grid !max-w-[720px] grid-cols-2 gap-16 py-10 text-text-secondary">
     <section aria-labelledby="quotation-service-title">
       <p
         id="quotation-service-title"
@@ -38,7 +39,7 @@ async function submitTracking() {
           class="group/item flex items-start gap-4 rounded-lg focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary-500"
         >
           <span class="flex size-10 shrink-0 items-center justify-center rounded-full bg-primary-50 text-primary-500 transition-colors duration-200 motion-reduce:transition-none group-hover/item:bg-primary-500 group-hover/item:text-white group-focus-visible/item:bg-primary-500 group-focus-visible/item:text-white">
-            <Calculator :size="20" aria-hidden="true" />
+            <ShippingContainerIcon class="size-6" />
           </span>
 
           <span class="min-w-0 flex-1">
@@ -62,15 +63,30 @@ async function submitTracking() {
             <span class="rounded bg-bg-100 px-2 py-1 font-medium text-primary-500">Sea</span>
             <span class="rounded bg-bg-100 px-2 py-1 font-medium text-primary-500">Air</span>
           </div>
-
-          <NuxtLink
-            to="/calculator"
-            class="inline-flex h-10 shrink-0 items-center gap-2 rounded-xl bg-primary-500 px-4 text-sm font-medium text-white transition-colors hover:bg-primary-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500"
-          >
-            <span>Calculate</span>
-            <ArrowUpRight :size="18" aria-hidden="true" />
-          </NuxtLink>
         </div>
+
+        <NuxtLink
+          to="/transfer-rmb"
+          class="group/item mt-5 flex items-start gap-4 rounded-lg focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary-500"
+        >
+          <span class="flex size-10 shrink-0 items-center justify-center rounded-full bg-primary-50 text-primary-500 transition-colors duration-200 motion-reduce:transition-none group-hover/item:bg-primary-500 group-hover/item:text-white group-focus-visible/item:bg-primary-500 group-focus-visible/item:text-white">
+            <MoneyRangeIcon class="size-6" />
+          </span>
+
+          <span class="min-w-0 flex-1">
+            <span class="flex items-center gap-2 text-base font-medium text-text-secondary transition-colors group-hover/item:text-primary-500 group-focus-visible/item:text-primary-500">
+              Kalkulator Transfer RMB
+              <ArrowUpRight
+                :size="18"
+                aria-hidden="true"
+                class="-translate-x-1 translate-y-1 text-primary-500 opacity-0 transition duration-200 motion-reduce:transition-none motion-reduce:transform-none group-hover/item:translate-x-0 group-hover/item:translate-y-0 group-hover/item:opacity-100 group-focus-visible/item:translate-x-0 group-focus-visible/item:translate-y-0 group-focus-visible/item:opacity-100"
+              />
+            </span>
+            <span class="mt-2 block text-xs leading-6 text-text-tertiary">
+              Simulasi hitung konversi Rupiah ke Yuan (RMB) secara real-time dengan kurs kompetitif dan transparan.
+            </span>
+          </span>
+        </NuxtLink>
       </div>
     </section>
 

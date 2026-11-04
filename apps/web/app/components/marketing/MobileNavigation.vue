@@ -1,22 +1,22 @@
 <script setup lang="ts">
 import {
   ArrowUpRight,
-  BadgeInfo,
-  Banknote,
-  BookOpenText,
-  Calculator,
+  BadgePercent,
   ChevronDown,
-  Gift,
-  Newspaper,
+  Handbag,
+  Notebook,
   PackageSearch,
   Plane,
   Route,
   Search,
-  ScrollText,
   Ship,
-  ShoppingBag,
   X,
 } from 'lucide-vue-next'
+import ContractIcon from './ContractIcon.vue'
+import MoneyRangeIcon from './MoneyRangeIcon.vue'
+import NewsIcon from './NewsIcon.vue'
+import QuestionMarkIcon from './QuestionMarkIcon.vue'
+import ShippingContainerIcon from './ShippingContainerIcon.vue'
 import logoUrl from '~/assets/images/brand/logo-white.png'
 import chinaFlagUrl from '~/assets/images/flag/china.png'
 import taiwanFlagUrl from '~/assets/images/flag/taiwan.png'
@@ -49,36 +49,36 @@ const multinationalCountries = [
 const insightSections = [
   {
     id: 'mobile-articles-news-title',
-    title: 'Articles & News',
+    title: 'Berita & Penawaran',
     items: [
       {
         to: '/promo',
-        label: 'Our Promo',
-        description: 'Lihat promo dan penawaran terbaru dari ETH Cargo.',
-        icon: Gift,
+        label: 'Promo & Penawaran Spesial',
+        description: 'Dapatkan promo cashback, diskon ongkir kargo laut/udara, dan voucher potongan biaya transfer RMB terbaru.',
+        icon: BadgePercent,
       },
       {
         to: '/blog',
-        label: 'Our Blog',
-        description: 'Artikel dan kabar terbaru seputar logistik dan impor.',
-        icon: Newspaper,
+        label: 'Blog & Berita Impor',
+        description: 'Artikel edukasi seputar tips impor barang dari China, tren komoditas, hingga analisis peluang bisnis.',
+        icon: NewsIcon,
       },
     ],
   },
   {
     id: 'mobile-guides-title',
-    title: 'Guides',
+    title: 'Panduan',
     items: [
       {
         to: '/glossary',
-        label: 'Glossary',
-        description: 'Pelajari istilah penting dalam pengiriman dan logistik.',
-        icon: BookOpenText,
+        label: 'Kamus Istilah Impor',
+        description: 'Pahami istilah-istilah kepabeanan dan logistik seperti CBM, FCL, LCL, HS Code, Bill of Lading (BL), dan Lartas.',
+        icon: Notebook,
       },
       {
         to: '/complete-guide',
-        label: 'Cara Impor',
-        description: 'Pahami tahapan pengiriman dan proses impor barang bersama ETH Cargo.',
+        label: 'Cara Import Barang dari China',
+        description: 'Panduan langkah demi langkah proses pengiriman kargo All-In Door-to-Door dari supplier China hingga tiba di alamat Anda.',
         icon: Route,
       },
     ],
@@ -88,31 +88,31 @@ const insightSections = [
 const informationSections = [
   {
     id: 'mobile-about-eth-cargo-title',
-    title: 'About ETH Cargo',
+    title: 'Profil Perusahaan & Bantuan',
     items: [
       {
         to: '/about-us',
-        label: 'About Us',
-        description: 'Kenali ETH Cargo dan komitmen kami dalam mendukung kebutuhan logistik bisnis Anda.',
-        icon: BadgeInfo,
+        label: 'Tentang ETH Cargo',
+        description: 'Mengenal lebih dekat visi, misi, gudang transit di China, dan komitmen pelayanan logistik profesional kami.',
+        icon: BadgePercent,
       },
       {
         to: '/faq',
-        label: 'FAQ',
-        description: 'Temukan jawaban atas pertanyaan umum seputar layanan dan proses pengiriman.',
-        icon: BookOpenText,
+        label: 'FAQ (Pusat Tanya Jawab)',
+        description: 'Jawaban lengkap seputar alur pengiriman, estimasi tarif, pembayaran, dan ketentuan layanan.',
+        icon: QuestionMarkIcon,
       },
     ],
   },
   {
     id: 'mobile-legalities-title',
-    title: 'Legalities',
+    title: 'Legalitas & Kebijakan',
     items: [
       {
         to: '/terms-and-conditions',
-        label: 'Syarat & Ketentuan',
-        description: 'Pelajari ketentuan penggunaan layanan dan informasi legal ETH Cargo.',
-        icon: ScrollText,
+        label: 'Syarat & Ketentuan Layanan',
+        description: 'Ketentuan hukum, kebijakan klaim asuransi kargo, tanggung jawab pengiriman, dan regulasi kepabeanan.',
+        icon: ContractIcon,
       },
     ],
   },
@@ -262,7 +262,7 @@ async function submitTracking() {
                     @click="emit('close')"
                   >
                     <span class="flex size-8 shrink-0 items-center justify-center rounded-full bg-primary-50 text-primary-500 transition duration-200 ease-out motion-reduce:transition-none group-hover/item:bg-primary-500 group-hover/item:text-white group-hover/item:shadow-md group-focus-visible/item:bg-primary-500 group-focus-visible/item:text-white group-focus-visible/item:shadow-md group-active/item:bg-primary-500 group-active/item:text-white group-active/item:shadow-md">
-                      <Banknote :size="17" aria-hidden="true" />
+                      <MoneyRangeIcon class="size-5" />
                     </span>
                     <span class="min-w-0">
                       <span class="flex items-center gap-2 text-base font-medium text-black transition-colors group-hover/item:text-primary-500 group-focus-visible/item:text-primary-500 group-active/item:text-primary-500">
@@ -284,7 +284,7 @@ async function submitTracking() {
                     @click="emit('close')"
                   >
                     <span class="flex size-8 shrink-0 items-center justify-center rounded-full bg-primary-50 text-primary-500 transition duration-200 ease-out motion-reduce:transition-none group-hover/item:bg-primary-500 group-hover/item:text-white group-hover/item:shadow-md group-focus-visible/item:bg-primary-500 group-focus-visible/item:text-white group-focus-visible/item:shadow-md group-active/item:bg-primary-500 group-active/item:text-white group-active/item:shadow-md">
-                      <ShoppingBag :size="17" aria-hidden="true" />
+                      <Handbag :size="17" aria-hidden="true" />
                     </span>
                     <span>
                       <span class="flex items-center gap-2 text-base font-medium text-black transition-colors group-hover/item:text-primary-500 group-focus-visible/item:text-primary-500 group-active/item:text-primary-500">
@@ -362,7 +362,7 @@ async function submitTracking() {
                     @click="emit('close')"
                   >
                     <span class="flex size-9 shrink-0 items-center justify-center rounded-full bg-primary-50 text-primary-500 transition-colors duration-200 motion-reduce:transition-none group-hover/item:bg-primary-500 group-hover/item:text-white group-focus-visible/item:bg-primary-500 group-focus-visible/item:text-white group-active/item:bg-primary-500 group-active/item:text-white">
-                      <Calculator :size="18" aria-hidden="true" />
+                      <ShippingContainerIcon class="size-5" />
                     </span>
                     <span class="flex items-center gap-2 text-base font-medium text-black transition-colors group-hover/item:text-primary-500 group-focus-visible/item:text-primary-500 group-active/item:text-primary-500">
                       Kalkulator
@@ -380,16 +380,26 @@ async function submitTracking() {
                       <span class="rounded bg-bg-100 px-2 py-1 font-medium text-primary-500">Sea</span>
                       <span class="rounded bg-bg-100 px-2 py-1 font-medium text-primary-500">Air</span>
                     </div>
-
-                    <NuxtLink
-                      to="/calculator"
-                      class="ml-auto inline-flex h-12 shrink-0 items-center gap-2 rounded-2xl bg-primary-500 px-4 text-sm font-medium text-white transition-colors hover:bg-primary-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500"
-                      @click="emit('close')"
-                    >
-                      <span>Calculate</span>
-                      <ArrowUpRight :size="18" aria-hidden="true" />
-                    </NuxtLink>
                   </div>
+
+                  <NuxtLink
+                    to="/transfer-rmb"
+                    class="group/item mt-5 flex items-start gap-3 rounded-lg focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500"
+                    @click="emit('close')"
+                  >
+                    <span class="flex size-9 shrink-0 items-center justify-center rounded-full bg-primary-50 text-primary-500 transition-colors duration-200 motion-reduce:transition-none group-hover/item:bg-primary-500 group-hover/item:text-white group-focus-visible/item:bg-primary-500 group-focus-visible/item:text-white group-active/item:bg-primary-500 group-active/item:text-white">
+                      <MoneyRangeIcon class="size-5" />
+                    </span>
+                    <span class="min-w-0">
+                      <span class="flex items-center gap-2 text-base font-medium text-black transition-colors group-hover/item:text-primary-500 group-focus-visible/item:text-primary-500 group-active/item:text-primary-500">
+                        Kalkulator Transfer RMB
+                        <ArrowUpRight :size="18" class="-translate-x-1 translate-y-1 text-primary-500 opacity-0 transition duration-200 motion-reduce:transition-none motion-reduce:transform-none group-hover/item:translate-x-0 group-hover/item:translate-y-0 group-hover/item:opacity-100 group-focus-visible/item:translate-x-0 group-focus-visible/item:translate-y-0 group-focus-visible/item:opacity-100 group-active/item:translate-x-0 group-active/item:translate-y-0 group-active/item:opacity-100" aria-hidden="true" />
+                      </span>
+                      <span class="mt-3 block text-xs leading-5 text-text-tertiary">
+                        Simulasi hitung konversi Rupiah ke Yuan (RMB) secara real-time dengan kurs kompetitif dan transparan.
+                      </span>
+                    </span>
+                  </NuxtLink>
                 </section>
 
                 <section class="mt-7" aria-labelledby="mobile-tracking-service-title">

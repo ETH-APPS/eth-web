@@ -1,39 +1,39 @@
 <script setup lang="ts">
 import {
   ArrowUpRight,
-  BadgeInfo,
-  BookOpenText,
-  ScrollText,
+  BadgePercent,
 } from 'lucide-vue-next'
+import ContractIcon from '../ContractIcon.vue'
+import QuestionMarkIcon from '../QuestionMarkIcon.vue'
 
 const sections = [
   {
     id: 'about-eth-cargo-title',
-    title: 'About ETH Cargo',
+    title: 'Profil Perusahaan & Bantuan',
     items: [
       {
         to: '/about-us',
-        label: 'About Us',
-        icon: BadgeInfo,
-        description: 'Kenali ETH Cargo dan komitmen kami dalam mendukung kebutuhan logistik bisnis Anda.',
+        label: 'Tentang ETH Cargo',
+        icon: BadgePercent,
+        description: 'Mengenal lebih dekat visi, misi, gudang transit di China, dan komitmen pelayanan logistik profesional kami.',
       },
       {
         to: '/faq',
-        label: 'FAQ',
-        icon: BookOpenText,
-        description: 'Temukan jawaban atas pertanyaan umum seputar layanan dan proses pengiriman.',
+        label: 'FAQ (Pusat Tanya Jawab)',
+        icon: QuestionMarkIcon,
+        description: 'Jawaban lengkap seputar alur pengiriman, estimasi tarif, pembayaran, dan ketentuan layanan.',
       },
     ],
   },
   {
     id: 'legalities-title',
-    title: 'Legalities',
+    title: 'Legalitas & Kebijakan',
     items: [
       {
         to: '/terms-and-conditions',
-        label: 'Syarat & Ketentuan',
-        icon: ScrollText,
-        description: 'Pelajari ketentuan penggunaan layanan dan informasi legal ETH Cargo.',
+        label: 'Syarat & Ketentuan Layanan',
+        icon: ContractIcon,
+        description: 'Ketentuan hukum, kebijakan klaim asuransi kargo, tanggung jawab pengiriman, dan regulasi kepabeanan.',
       },
     ],
   },
@@ -41,7 +41,7 @@ const sections = [
 </script>
 
 <template>
-  <UiContainer class="grid grid-cols-2 gap-16 py-10 text-text-secondary">
+  <UiContainer class="grid !max-w-[720px] grid-cols-2 gap-16 py-10 text-text-secondary">
     <section
       v-for="section in sections"
       :key="section.id"
