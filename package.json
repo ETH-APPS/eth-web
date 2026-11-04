@@ -4,7 +4,9 @@
   "private": true,
   "scripts": {
     "build": "turbo run build",
-    "dev": "turbo run dev"
+    "dev": "turbo run dev --ui=stream --log-order=stream --log-prefix=task",
+    "dev:api": "pnpm --filter api dev",
+    "dev:web": "pnpm --filter web dev"
   },
   "packageManager": "pnpm@12.14.0",
   "devDependencies": {

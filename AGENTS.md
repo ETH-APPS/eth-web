@@ -4,6 +4,20 @@ Instruksi ini berlaku untuk seluruh repository. Instruksi yang lebih spesifik di
 direktori turunan boleh menambahkan aturan, tetapi tidak boleh mengabaikan aturan
 di bawah ini.
 
+## Required backend context
+
+Before changing any file in `apps/api`:
+
+1. Read [docs/backend-guidelines.md](docs/backend-guidelines.md) in full and
+   follow its NestJS conventions, integration/API testing policy, and verification
+   requirements.
+2. Read the relevant implementation and inspect both staged and unstaged changes.
+   Preserve unrelated work.
+3. For changes involving logging, also read [docs/logging.md](docs/logging.md).
+
+These backend requirements apply to `apps/api`; the frontend rules below remain
+in effect for frontend work.
+
 ## Konteks wajib untuk frontend
 
 Sebelum mengubah file apa pun di `apps/web`:

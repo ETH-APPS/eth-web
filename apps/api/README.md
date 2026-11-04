@@ -1,3 +1,8 @@
+# Logging project
+
+Cara menjalankan FE/BE, konfigurasi Pino, contoh request, dan panduan menambahkan
+log ada di [docs/logging.md](../../docs/logging.md).
+
 <p align="center">
   <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
 </p>
