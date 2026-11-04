@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { ArrowUpRight, Container, Package, Plane } from 'lucide-vue-next'
-import cargoAirUrl from '~/assets/images/marketing/cargo-air-landscape.png'
-import cargoSeaUrl from '~/assets/images/marketing/cargo-sea-landscape.png'
+import aboutUsImageUrl from '~/assets/images/marketing/about-us.png'
 
 const shippingMethods = [
   {
@@ -46,18 +45,15 @@ const mobileShippingMethods = [
     class="bg-bg-0 py-6 lg:py-20"
   >
     <UiContainer>
-      <picture>
-        <source media="(max-width: 1023px)" :srcset="cargoAirUrl">
-        <img
-          :src="cargoSeaUrl"
-          alt="Pengiriman kargo internasional ETH Cargo"
-          width="1080"
-          height="444"
-          loading="lazy"
-          decoding="async"
-          class="h-auto w-full object-cover object-center lg:h-[444px]"
-        >
-      </picture>
+      <img
+        :src="aboutUsImageUrl"
+        alt="Layanan pengiriman kargo internasional ETH Cargo"
+        width="1080"
+        height="444"
+        loading="lazy"
+        decoding="async"
+        class="h-auto w-full object-cover object-center lg:h-[444px]"
+      >
 
       <div class="mt-6 text-center lg:mt-10">
         <p class="text-[16px] font-normal text-primary-700 lg:text-[20px]">

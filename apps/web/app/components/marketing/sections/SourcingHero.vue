@@ -4,6 +4,7 @@ import {
   Shirt,
   Wrench,
 } from 'lucide-vue-next'
+import sourcingHeroUrl from '~/assets/images/marketing/sourcing-hero.png'
 import whatsappUrl from '~/assets/images/marketing/whatsapp.png'
 
 const popularCategories = [
@@ -95,17 +96,16 @@ const popularCategories = [
           </div>
         </div>
 
-        <div
-          class="hidden aspect-[4/3] w-full items-center justify-center bg-[#b7b7b7] text-center text-slate-950 lg:flex"
-          role="img"
-          aria-label="Placeholder gambar layanan jasa sourcing barang China"
+        <img
+          :src="sourcingHeroUrl"
+          width="520"
+          height="390"
+          alt="Layanan sourcing supplier dan produk dari China"
+          loading="eager"
+          decoding="async"
+          fetchpriority="high"
+          class="hidden aspect-[4/3] h-auto w-full rounded-[20px] object-cover object-center shadow-md lg:block"
         >
-          <p class="text-[18px] leading-[1.75]">
-            Image<br>
-            W: 520&nbsp;&nbsp;&nbsp; x &nbsp;&nbsp;&nbsp;H: 390<br>
-            Rasio&nbsp;&nbsp;&nbsp; x &nbsp;&nbsp;&nbsp;4:3
-          </p>
-        </div>
       </div>
     </UiContainer>
   </section>

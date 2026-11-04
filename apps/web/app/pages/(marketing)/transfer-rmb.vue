@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import transferImage from '~/assets/images/marketing/transfer.png'
+import successTransferVector from '~/assets/images/marketing/vector-success-transfer.png'
 import { faqContentByPath, homeFaqContent } from '~/constants/faq'
+import { illustratedCtaBanners } from '~/constants/illustratedCtaBanners'
 
 definePageMeta({
   layout: 'marketing',
@@ -44,6 +45,16 @@ const transferWorkflowSteps = [
 ] as const
 
 const faqContent = faqContentByPath['/transfer-rmb'] ?? homeFaqContent
+
+const transferBanner = {
+  ...illustratedCtaBanners.transfer,
+  image: successTransferVector,
+  imageWidth: 2004,
+  imageHeight: 1444,
+  imageTopOffset: 48,
+  imageBottomOffset: 28,
+  imageAlign: 'center',
+} as const
 </script>
 
 <template>
@@ -69,15 +80,21 @@ const faqContent = faqContentByPath['/transfer-rmb'] ?? homeFaqContent
   <MarketingSectionsFaq
     :content="faqContent"
   />
-  <MarketingSectionsQuoteBanner
-    section-id="transfer-rmb-quote"
-    title="Siap untuk Transfer RMB?"
-    description="Proses pembayaran ke supplier China kini lebih praktis, aman, dan tanpa kendala. Konsultasikan nominal serta tujuan transfer bisnis Anda langsung bersama tim specialist kami."
-    email-label="Atau hubungi kami via email:"
-    email="testing-mail@gmail.co.id"
-    cta-label="Transfer Sekarang!"
-    cta-to="#rmb-calculator"
-    :image="transferImage"fix(web): use favicon-eth as browser tab icon
-    image-alt="Layanan transfer RMB ETH Cargo"
-  />
+  <div id="transfer-rmb-quote">
+    <MarketingIllustratedCtaBanner
+      v-bind="transferBanner"
+      full-width
+    />
+    <MarketingSectionsQuoteBanner
+      class="lg:hidden"
+      section-id="transfer-rmb-mobile-quote"
+      :title="transferBanner.title"
+      :description="transferBanner.description"
+      email-label="Atau hubungi kami via email:"
+      :email="transferBanner.email"
+      cta-label="Transfer Sekarang!"
+      cta-to="#rmb-calculator"
+      :show-image="false"
+    />
+  </div>
 </template>

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { faqContentByPath, homeFaqContent } from '~/constants/faq'
+import { illustratedCtaBanners } from '~/constants/illustratedCtaBanners'
 
 definePageMeta({
   layout: 'marketing',
@@ -48,6 +49,7 @@ const sourcingWorkflow = [
 ] as const
 
 const faqContent = faqContentByPath['/sourcing'] ?? homeFaqContent
+const sourcingBanner = illustratedCtaBanners.sourcing
 </script>
 
 <template>
@@ -76,14 +78,22 @@ const faqContent = faqContentByPath['/sourcing'] ?? homeFaqContent
     section-id="sourcing-faq"
     :default-open-index="0"
   />
-  <MarketingSectionsQuoteBanner
-    section-id="sourcing-quote"
-    title="Siap Temukan Supplier Tangan Pertama di China?"
-    description="Dapatkan penawaran harga modal grosir terbaik, jaminan kualitas produk, serta pengiriman kargo terintegrasi tanpa kendala bahasa. Konsultasikan kebutuhan barang bisnis Anda sekarang!"
-    email-label="Atau hubungi kami via email:"
-    email="testing-mail@gmail.co.id"
-    cta-label="Konsultasi Sekarang"
-    cta-to="/#quote"
-    image-alt="Gambar layanan sourcing supplier China ETH Cargo"
-  />
+  <div id="sourcing-quote">
+    <MarketingIllustratedCtaBanner
+      v-bind="sourcingBanner"
+      full-width
+      image-alt="Ilustrasi tangan memegang paket produk sourcing China"
+    />
+    <MarketingSectionsQuoteBanner
+      class="lg:hidden"
+      section-id="sourcing-mobile-quote"
+      :title="sourcingBanner.title"
+      :description="sourcingBanner.description"
+      email-label="Atau hubungi kami via email:"
+      :email="sourcingBanner.email"
+      :cta-label="sourcingBanner.ctaLabel"
+      :cta-to="sourcingBanner.ctaTo"
+      :show-image="false"
+    />
+  </div>
 </template>

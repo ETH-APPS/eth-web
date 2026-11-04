@@ -248,16 +248,13 @@ onBeforeUnmount(() => {
     <UiContainer class="pt-5 lg:pt-0">
       <header class="lg:hidden">
         <p class="text-[16px] font-normal text-primary-700">
-          Insight
+          Dokumentasi Impor
         </p>
         <h1 class="mt-1 text-[32px] font-semibold leading-tight text-primary-500">
-          Proses Impor
+          Panduan Lengkap Cara Import Barang dari China
         </h1>
         <p class="mt-5 text-[16px] font-normal leading-[1.55] text-text-secondary">
-          Solusi pengiriman kargo laut dan udara B2B yang aman, transparan, dan tepat waktu. Bebas urus bea cukai dengan skema All-In Door-to-Door langsung sampai ke gudang Anda.
-        </p>
-        <p class="mt-6 text-center text-[16px] font-normal leading-[1.5] text-text-secondary">
-          In id cursus mi pretium tellus duis convallis.
+          Pelajari tahapan mudah dan transparan proses pengiriman cargo All-In Door-to-Door bersama ETH Cargo. Mulai dari pemilihan supplier, pengiriman gudang transit China, pengurusan bea cukai, hingga barang tiba di alamat Anda di Indonesia.
         </p>
         <div class="mt-4 flex justify-center">
           <NuxtLink
@@ -279,11 +276,14 @@ onBeforeUnmount(() => {
 
       <header class="hidden text-center lg:block">
         <p class="text-[20px] font-normal uppercase text-primary-700">
-          Documentation
+          Dokumentasi Impor
         </p>
-        <h1 class="mt-2 text-[48px] font-semibold leading-tight text-primary-500">
-          OUR COMPLETE GUIDE
+        <h1 class="mx-auto mt-2 max-w-[800px] text-[48px] font-semibold leading-tight text-primary-500">
+          Panduan Lengkap Cara Import Barang dari China
         </h1>
+        <p class="mx-auto mt-4 max-w-[760px] text-[20px] font-normal leading-[1.4] text-text-secondary">
+          Pelajari tahapan mudah dan transparan proses pengiriman cargo All-In Door-to-Door bersama ETH Cargo. Mulai dari pemilihan supplier, pengiriman gudang transit China, pengurusan bea cukai, hingga barang tiba di alamat Anda di Indonesia.
+        </p>
       </header>
 
       <div class="mt-8 grid grid-cols-1 items-start gap-6 lg:mt-14 lg:grid-cols-[300px_minmax(0,1fr)]">

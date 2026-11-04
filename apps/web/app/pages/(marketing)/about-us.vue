@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import supplyChainImage from '~/assets/images/marketing/cargo-air-landscape.png'
+import { illustratedCtaBanners } from '~/constants/illustratedCtaBanners'
 
 definePageMeta({
   layout: 'marketing',
@@ -41,6 +41,8 @@ const companyStats = [
   { value: '98%', label: 'Tingkat Keberhasilan' },
   { value: '+10', label: 'Tahun Pengalaman' },
 ] as const
+
+const aboutBanner = illustratedCtaBanners.about
 </script>
 
 <template>
@@ -57,15 +59,22 @@ const companyStats = [
   <MarketingSectionsAboutDigitalFeatures />
   <MarketingSectionsAboutImportSupport />
   <MarketingSectionsMultinationalRoutes :show-top-border="false" />
-  <MarketingSectionsQuoteBanner
-    section-id="about-quote"
-    title="Siap Mengoptimalkan Rantai Pasok Impor Anda?"
-    description="Percayakan kebutuhan logistik, pengadaan produk, dan pembayaran supplier China Anda kepada ETH Cargo. Tim profesional kami siap memberikan solusi All-In Door-to-Door yang efisien dan terpercaya."
-    email-label="Atau hubungi kami via email:"
-    email="testing-mail@gmail.co.id"
-    cta-label="Konsultasi Gratis"
-    cta-to="/#quote"
-    :image="supplyChainImage"
-    image-alt="Solusi rantai pasok impor ETH Cargo"
-  />
+  <div id="about-quote">
+    <MarketingIllustratedCtaBanner
+      v-bind="aboutBanner"
+      full-width
+      image-alt="Ilustrasi tim ETH Cargo mengelola rantai pasok impor"
+    />
+    <MarketingSectionsQuoteBanner
+      class="lg:hidden"
+      section-id="about-mobile-quote"
+      :title="aboutBanner.title"
+      :description="aboutBanner.description"
+      email-label="Atau hubungi kami via email:"
+      :email="aboutBanner.email"
+      :cta-label="aboutBanner.ctaLabel"
+      :cta-to="aboutBanner.ctaTo"
+      :show-image="false"
+    />
+  </div>
 </template>

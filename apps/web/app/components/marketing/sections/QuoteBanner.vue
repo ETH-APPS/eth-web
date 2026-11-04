@@ -13,6 +13,7 @@ const props = withDefaults(defineProps<{
   image?: string
   imageAlt?: string
   imagePlaceholder?: string
+  showImage?: boolean
 }>(), {
   sectionId: 'quote',
   emailLabel: 'via Email',
@@ -21,6 +22,7 @@ const props = withDefaults(defineProps<{
   image: '',
   imageAlt: '',
   imagePlaceholder: 'Image\nW: 532   x   H: 230',
+  showImage: true,
 })
 
 const titleId = computed(() => `${props.sectionId}-title`)
@@ -33,7 +35,10 @@ const emailHref = computed(() => `mailto:${props.email}`)
     :aria-labelledby="titleId"
     class="bg-primary-600 py-10 text-bg-0 sm:py-12"
   >
-    <div class="mx-auto grid w-[calc(100%-2rem)] max-w-[1250px] items-center gap-12 lg:grid-cols-[minmax(0,1fr)_minmax(420px,532px)]">
+    <div
+      class="mx-auto grid w-[calc(100%-2rem)] max-w-[1250px] items-center gap-12"
+      :class="showImage ? 'lg:grid-cols-[minmax(0,1fr)_minmax(420px,532px)]' : ''"
+    >
       <div>
         <h2
           :id="titleId"
@@ -76,7 +81,7 @@ const emailHref = computed(() => `mailto:${props.email}`)
         </div>
       </div>
 
-      <div class="aspect-[532/230] overflow-hidden bg-bg-100">
+      <div v-if="showImage" class="aspect-[532/230] overflow-hidden bg-bg-100">
         <img
           v-if="image"
           :src="image"

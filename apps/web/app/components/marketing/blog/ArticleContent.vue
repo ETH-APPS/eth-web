@@ -14,6 +14,7 @@ import tiktokDark from '~/assets/images/marketing/Tiktok-dark.png'
 import xDark from '~/assets/images/marketing/X-dark.png'
 import youtubeDark from '~/assets/images/marketing/youtube.png'
 import { blogArticleToc as tableOfContents } from '~/constants/blogArticleToc'
+import { illustratedCtaBanners } from '~/constants/illustratedCtaBanners'
 
 interface RelatedArticle {
   id: string
@@ -29,6 +30,8 @@ const props = defineProps<{
   tags: readonly string[]
   relatedArticles: readonly RelatedArticle[]
 }>()
+
+const articleBanner = illustratedCtaBanners.transfer
 
 const expandedSections = ref<string[]>(['memahami-kebutuhan', 'memilih-layanan'])
 const activeSection = ref('memahami-kebutuhan')
@@ -291,6 +294,12 @@ onBeforeUnmount(() => {
             </p>
           </section>
 
+          <MarketingIllustratedCtaBanner
+            v-bind="articleBanner"
+            class="mt-10"
+            variant="compact"
+          />
+
           <div class="mt-10 hidden border-t border-border-200 pt-6 lg:block">
             <section
               aria-labelledby="article-author-title"
@@ -447,10 +456,6 @@ onBeforeUnmount(() => {
                 </span>
               </button>
             </div>
-          </div>
-
-          <div class="mt-16 lg:hidden">
-            <MarketingBlogArticleCtaBanner />
           </div>
 
           <section class="mt-6" aria-labelledby="related-articles-title">

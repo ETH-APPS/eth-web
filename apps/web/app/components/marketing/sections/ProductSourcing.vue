@@ -6,7 +6,7 @@ import logoTaobao from '~/assets/images/brand/taobao.png'
 import logoAlibaba from '~/assets/images/brand/alibaba.png'
 import logoTmall from '~/assets/images/brand/tmall.png'
 import logoAliexpress from '~/assets/images/brand/aliexpress.png'
-import whatsappUrl from '~/assets/images/marketing/whatsapp.png'
+import { illustratedCtaBanners } from '~/constants/illustratedCtaBanners'
 
 const searchQuery = ref('')
 const selectedMarketplace = ref('Taobao')
@@ -81,6 +81,7 @@ const initialProducts = products.slice(0, 3)
 const additionalProducts = products.slice(3)
 const mobileAdditionalProducts = products.slice(2, 3)
 const mobileProductPlaceholder = 'Lorem ipsum dolor sit amet consectetur adipiscing elit.'
+const productSourcingBanner = illustratedCtaBanners.productSourcing
 
 const marketplaces = [
   { name: '1688', logo: logo1688, mobileWidthClass: 'w-[95px]' },
@@ -298,53 +299,12 @@ onBeforeUnmount(() => {
                 />
               </div>
 
-              <div class="mt-10 overflow-hidden rounded-2xl bg-[linear-gradient(105deg,#bd302d_0%,#8d3433_48%,#272727_100%)] px-5 py-6 text-white sm:px-7 sm:py-7">
-                <div class="flex flex-col gap-7 sm:flex-row sm:items-end sm:justify-between">
-                  <div class="min-w-0">
-                    <p class="text-[26px] font-semibold leading-tight text-[#ffc400] sm:text-[30px]">
-                      Belanja Produk China Jadi Lebih Mudah
-                    </p>
-                    <p class="mt-2 text-[16px] font-semibold text-[#ffc400] sm:text-[18px]">
-                      JASA TITIP BELI
-                    </p>
-
-                    <dl class="mt-5 grid grid-cols-3 gap-3 text-center sm:max-w-[360px] sm:text-left">
-                      <div>
-                        <dt class="text-[18px] font-semibold leading-none sm:text-[20px]">+10.000</dt>
-                        <dd class="mt-1 text-[11px] leading-snug text-white/80">Pengiriman<br class="hidden sm:block"> selesai</dd>
-                      </div>
-                      <div>
-                        <dt class="text-[18px] font-semibold leading-none sm:text-[20px]">98%</dt>
-                        <dd class="mt-1 text-[11px] leading-snug text-white/80">Tingkat<br class="hidden sm:block"> ketepatan</dd>
-                      </div>
-                      <div>
-                        <dt class="text-[18px] font-semibold leading-none sm:text-[20px]">+10</dt>
-                        <dd class="mt-1 text-[11px] leading-snug text-white/80">Tahun<br class="hidden sm:block"> pengalaman</dd>
-                      </div>
-                    </dl>
-                  </div>
-
-                  <div class="shrink-0 sm:text-right">
-                    <p class="mb-4 text-[11px] font-medium leading-snug text-white/70">
-                      Promo Sourcing
-                    </p>
-                    <NuxtLink
-                      to="#quote"
-                      class="inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-xl bg-[#22c55e] px-5 text-[15px] font-medium text-white transition-[background-color,transform] hover:-translate-y-0.5 hover:bg-[#16a34a] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white sm:w-auto"
-                    >
-                      <span>Konsultasi via WhatsApp</span>
-                      <img
-                        :src="whatsappUrl"
-                        alt=""
-                        aria-hidden="true"
-                        width="22"
-                        height="22"
-                        class="size-[22px] shrink-0 object-contain"
-                      >
-                    </NuxtLink>
-                  </div>
-                </div>
-              </div>
+              <MarketingIllustratedCtaBanner
+                v-bind="productSourcingBanner"
+                class="mt-10"
+                variant="compact"
+                image-alt="Ilustrasi layanan impor dan sourcing produk dari China"
+              />
             </div>
           </div>
 
