@@ -70,8 +70,8 @@ export const illustratedCtaBanners = {
     imageAlign: 'center',
     imageWidth: 1144,
     imageHeight: 1008,
-    imageMaxWidth: 420,
-    imageTopOffset: 40,
+    imageMaxWidth: 360,
+    imageTopOffset: 28,
     imageRightOffset: 0,
   },
 } as const

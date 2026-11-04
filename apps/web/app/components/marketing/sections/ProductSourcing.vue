@@ -302,7 +302,7 @@ onBeforeUnmount(() => {
               <MarketingIllustratedCtaBanner
                 v-bind="productSourcingBanner"
                 class="mt-10"
-                variant="compact"
+                variant="dense"
                 image-alt="Ilustrasi layanan impor dan sourcing produk dari China"
               />
             </div>

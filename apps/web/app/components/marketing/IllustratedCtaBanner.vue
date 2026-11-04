@@ -2,7 +2,7 @@
 import { Mail } from 'lucide-vue-next'
 
 const props = withDefaults(defineProps<{
-  variant?: 'default' | 'compact'
+  variant?: 'default' | 'compact' | 'dense'
   fullWidth?: boolean
   title: string
   description: string
@@ -47,42 +47,47 @@ const titleId = `illustrated-cta-${useId()}`
       :class="[fullWidth
         ? 'mx-auto w-full max-w-[1250px] px-6'
         : 'rounded-[32px] bg-linear-to-r from-[#a52832] via-[#ad2630] to-[#8d2930] pl-6 xl:pl-8',
-      variant === 'compact'
+      variant === 'dense'
+        ? 'grid-cols-[minmax(0,1.15fr)_minmax(0,0.85fr)] gap-3'
+        : variant === 'compact'
         ? 'grid-cols-[minmax(0,1fr)_minmax(0,1fr)] gap-4'
         : 'grid-cols-[minmax(0,3fr)_minmax(0,2fr)] gap-6']"
     >
-      <div class="flex min-w-0 flex-col" :class="variant === 'compact' ? 'py-7' : 'py-10'">
+      <div
+        class="flex min-w-0 flex-col"
+        :class="variant === 'dense' ? 'py-5' : variant === 'compact' ? 'py-7' : 'py-10'"
+      >
         <h2
           :id="titleId"
           class="font-bold leading-[1.2]"
-          :class="variant === 'compact' ? 'text-[20px]' : 'text-[32px]'"
+          :class="variant === 'dense' ? 'text-[18px]' : variant === 'compact' ? 'text-[20px]' : 'text-[32px]'"
         >
           {{ title }}
         </h2>
         <p
           class="font-medium leading-[1.4]"
-          :class="variant === 'compact' ? 'mt-3 text-[14px]' : 'mt-5 text-[20px]'"
+          :class="variant === 'dense' ? 'mt-2 text-[12px]' : variant === 'compact' ? 'mt-3 text-[14px]' : 'mt-5 text-[20px]'"
         >
           {{ description }}
         </p>
 
         <div
           class="mt-auto flex flex-wrap items-end justify-between"
-          :class="variant === 'compact' ? 'gap-3 pt-4' : 'gap-5 pt-6'"
+          :class="variant === 'dense' ? 'gap-2 pt-3' : variant === 'compact' ? 'gap-3 pt-4' : 'gap-5 pt-6'"
         >
           <div class="min-w-0">
             <p
               class="font-medium leading-[1.5]"
-              :class="variant === 'compact' ? 'text-[12px]' : 'text-[16px]'"
+              :class="variant === 'dense' ? 'text-[10px]' : variant === 'compact' ? 'text-[12px]' : 'text-[16px]'"
             >
               {{ emailLabel }}
             </p>
             <a
               :href="`mailto:${email}`"
               class="mt-1 inline-flex max-w-full items-center gap-2 font-normal leading-[1.5] transition-opacity hover:opacity-80 focus-visible:rounded focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white"
-              :class="variant === 'compact' ? 'text-[11px]' : 'text-[14px]'"
+              :class="variant === 'dense' ? 'text-[10px]' : variant === 'compact' ? 'text-[11px]' : 'text-[14px]'"
             >
-              <Mail :size="variant === 'compact' ? 14 : 16" class="shrink-0" aria-hidden="true" />
+              <Mail :size="variant === 'dense' ? 12 : variant === 'compact' ? 14 : 16" class="shrink-0" aria-hidden="true" />
               <span class="min-w-0 break-words">{{ email }}</span>
             </a>
           </div>
@@ -90,8 +95,10 @@ const titleId = `illustrated-cta-${useId()}`
           <NuxtLink
             :to="ctaTo"
             class="inline-flex max-w-full items-center justify-center bg-green-500 text-center font-medium leading-[1.4] transition-colors hover:bg-green-600 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white"
-            :class="variant === 'compact'
-              ? 'min-h-9 rounded-lg px-3 py-2 text-[12px]'
+            :class="variant === 'dense'
+              ? 'min-h-8 rounded-lg px-3 py-1.5 text-[11px]'
+              : variant === 'compact'
+                ? 'min-h-9 rounded-lg px-3 py-2 text-[12px]'
               : 'min-h-11 rounded-xl px-5 py-2.5 text-[14px]'"
           >
             {{ ctaLabel }}
