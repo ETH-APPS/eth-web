@@ -19,12 +19,14 @@ const props = withDefaults(defineProps<{
   variant?: 'default' | 'compact'
   surface?: 'auto' | 'plain' | 'muted'
   prominentHeader?: boolean
+  plainHeader?: boolean
 }>(), {
   title: 'Tipe Pengiriman Kargo',
   sectionId: 'cargo-shipping-types',
   variant: 'default',
   surface: 'auto',
   prominentHeader: false,
+  plainHeader: false,
 })
 
 const titleId = computed(() => `${props.sectionId}-title`)
@@ -71,10 +73,10 @@ function serviceIcon(mode: CargoShippingType['mode']) {
           :class="variant === 'compact' ? 'overflow-hidden rounded-[16px]' : 'rounded-[18px] p-5'"
         >
           <div
-            class="flex items-center gap-2 bg-border-200"
+            class="flex items-center gap-2"
             :class="variant === 'compact'
               ? prominentHeader ? 'gap-4 bg-border-200 px-6 py-3' : 'bg-bg-200 px-4 py-3'
-              : ''"
+              : plainHeader ? 'bg-bg-0' : 'bg-border-200'"
           >
             <span
               class="flex shrink-0 items-center justify-center bg-primary-500 text-bg-0"

@@ -383,7 +383,7 @@ async function submitTracking() {
                   </div>
 
                   <NuxtLink
-                    to="/transfer-rmb"
+                    to="/calculator-transfer-rmb"
                     class="group/item mt-5 flex items-start gap-3 rounded-lg focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500"
                     @click="emit('close')"
                   >

@@ -24,7 +24,7 @@ const services = [
     description:
       'Fasilitas bayar supplier, invoice pabrik, atau tagihan 1688/Taobao dengan kurs transparan real-time dan jaminan bukti transfer resmi.',
     links: [
-      { label: 'Kalkulator Transfer RMB', to: '/transfer-rmb' },
+      { label: 'Kalkulator Transfer RMB', to: '/calculator-transfer-rmb' },
     ],
   },
 ] as const
