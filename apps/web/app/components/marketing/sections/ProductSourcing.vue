@@ -187,10 +187,15 @@ onBeforeUnmount(() => {
             class="grid grid-cols-[auto_minmax(0,1fr)] items-center gap-3 md:grid-cols-[120px_minmax(0,1fr)_48px]"
             @submit.prevent
           >
-            <label class="flex h-12 items-center justify-start gap-1.5 px-1 text-primary-500 md:justify-center md:px-0">
+            <label
+              for="product-marketplace"
+              class="flex h-12 items-center justify-start gap-1.5 px-1 text-primary-500 md:justify-center md:px-0"
+            >
               <span class="sr-only">Pilih marketplace</span>
               <select
+                id="product-marketplace"
                 v-model="selectedMarketplace"
+                name="marketplace"
                 class="field-sizing-content cursor-pointer appearance-none bg-transparent text-[16px] font-medium outline-none"
               >
                 <option>Taobao</option>
@@ -207,8 +212,8 @@ onBeforeUnmount(() => {
               />
             </label>
 
-            <label class="flex h-12 min-w-0 items-center gap-2 rounded-2xl border border-border-200 bg-white px-4 focus-within:border-primary-300 focus-within:ring-2 focus-within:ring-primary-50 md:gap-0">
-              <span class="sr-only">Cari atau tempel link produk</span>
+            <div class="flex h-12 min-w-0 items-center gap-2 rounded-2xl border border-border-200 bg-white px-4 focus-within:border-primary-300 focus-within:ring-2 focus-within:ring-primary-50 md:gap-0">
+              <label for="product-search-mobile" class="sr-only">Cari atau tempel link produk</label>
               <Search
                 :size="20"
                 :stroke-width="1.8"
@@ -216,18 +221,23 @@ onBeforeUnmount(() => {
                 class="shrink-0 text-text-tertiary md:hidden"
               />
               <input
+                id="product-search-mobile"
                 v-model="searchQuery"
+                name="product-search-mobile"
                 type="search"
                 placeholder="Cari barang"
                 class="min-w-0 flex-1 bg-transparent text-[16px] text-text-secondary outline-none placeholder:text-text-tertiary lg:hidden"
               >
+              <label for="product-search-desktop" class="sr-only">Cari atau tempel link produk</label>
               <input
+                id="product-search-desktop"
                 v-model="searchQuery"
+                name="product-search-desktop"
                 type="search"
                 placeholder="Tempel link produk atau ketik nama barang..."
                 class="hidden min-w-0 flex-1 bg-transparent text-[16px] text-text-secondary outline-none placeholder:italic placeholder:text-text-disable placeholder:font-extralight lg:block"
               >
-            </label>
+            </div>
 
             <button
               type="submit"

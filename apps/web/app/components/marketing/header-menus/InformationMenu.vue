@@ -42,9 +42,10 @@ const sections = [
 
 <template>
   <UiContainer class="grid !max-w-[720px] grid-cols-2 gap-16 py-10 text-text-secondary">
-    <section
+    <div
       v-for="section in sections"
       :key="section.id"
+      role="group"
       :aria-labelledby="section.id"
     >
       <p :id="section.id" class="mb-5 text-xs font-medium text-text-tertiary">
@@ -81,6 +82,6 @@ const sections = [
           </span>
         </NuxtLink>
       </div>
-    </section>
+    </div>
   </UiContainer>
 </template>

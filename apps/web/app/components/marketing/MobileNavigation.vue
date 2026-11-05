@@ -167,7 +167,7 @@ async function submitTracking() {
 
     <nav aria-label="Navigasi mobile" class="flex-1 px-4 pb-12 pt-3">
       <div class="space-y-1">
-        <section>
+        <div role="group" aria-label="Layanan">
           <button
             type="button"
             class="flex w-full items-center justify-between py-2 text-left text-2xl font-semibold transition-colors hover:text-primary-500 focus-visible:outline-2 focus-visible:outline-primary-500"
@@ -321,9 +321,9 @@ async function submitTracking() {
               </div>
             </div>
           </div>
-        </section>
+        </div>
 
-        <section>
+        <div role="group" aria-label="Fitur">
           <button
             type="button"
             class="flex w-full items-center justify-between py-3 text-left text-2xl font-semibold transition-colors hover:text-primary-500 focus-visible:outline-2 focus-visible:outline-primary-500"
@@ -348,7 +348,7 @@ async function submitTracking() {
           >
             <div class="min-h-0 overflow-hidden">
               <div class="border-l-[3px] border-primary-500 pb-4 pl-10 pr-0.5 pt-1">
-                <section aria-labelledby="mobile-quotation-service-title">
+                <div role="group" aria-labelledby="mobile-quotation-service-title">
                   <p
                     id="mobile-quotation-service-title"
                     class="mb-3 text-xs font-medium text-text-tertiary"
@@ -400,9 +400,9 @@ async function submitTracking() {
                       </span>
                     </span>
                   </NuxtLink>
-                </section>
+                </div>
 
-                <section class="mt-7" aria-labelledby="mobile-tracking-service-title">
+                <div class="mt-7" role="group" aria-labelledby="mobile-tracking-service-title">
                   <p
                     id="mobile-tracking-service-title"
                     class="mb-3 text-xs font-medium text-text-tertiary"
@@ -462,13 +462,13 @@ async function submitTracking() {
                       <Search :size="19" aria-hidden="true" />
                     </button>
                   </form>
-                </section>
+                </div>
               </div>
             </div>
           </div>
-        </section>
+        </div>
 
-        <section>
+        <div role="group" aria-label="Informasi">
           <button
             type="button"
             class="flex w-full items-center justify-between py-3 text-left text-2xl font-semibold transition-colors hover:text-primary-500 focus-visible:outline-2 focus-visible:outline-primary-500"
@@ -493,9 +493,10 @@ async function submitTracking() {
           >
             <div class="min-h-0 overflow-hidden">
               <div class="space-y-8 border-l-[3px] border-primary-500 pb-8 pl-6 pt-1">
-                <section
+                <div
                   v-for="informationSection in informationSections"
                   :key="informationSection.id"
+                  role="group"
                   :aria-labelledby="informationSection.id"
                 >
                   <p
@@ -527,13 +528,13 @@ async function submitTracking() {
                       </span>
                     </NuxtLink>
                   </div>
-                </section>
+                </div>
               </div>
             </div>
           </div>
-        </section>
+        </div>
 
-        <section>
+        <div role="group" aria-label="Insights">
           <button
             type="button"
             class="flex w-full items-center justify-between py-3 text-left text-[25px] font-semibold text-text-secondary transition-colors hover:text-primary-500 focus-visible:outline-2 focus-visible:outline-primary-500"
@@ -557,9 +558,10 @@ async function submitTracking() {
           >
             <div class="min-h-0 overflow-hidden">
               <div class="space-y-8 border-l-[3px] border-primary-500 pb-4 pl-4 pt-1">
-                <section
+                <div
                   v-for="insightSection in insightSections"
                   :key="insightSection.id"
+                  role="group"
                   :aria-labelledby="insightSection.id"
                 >
                   <p
@@ -593,11 +595,11 @@ async function submitTracking() {
                       </span>
                     </NuxtLink>
                   </div>
-                </section>
+                </div>
               </div>
             </div>
           </div>
-        </section>
+        </div>
       </div>
     </nav>
 

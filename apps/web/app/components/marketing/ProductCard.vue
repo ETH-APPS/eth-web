@@ -21,6 +21,10 @@ defineProps<{
       class="h-[145px] w-full rounded-2xl object-cover object-center"
     >
 
+    <h3 class="sr-only">
+      {{ title }}
+    </h3>
+
     <p class="mt-3 px-2 text-[14px] leading-[1.4] text-text-tertiary">
       <span v-if="mobilePlaceholderTitle" class="line-clamp-2 text-black lg:hidden">{{ mobilePlaceholderTitle }}</span>
       <span :class="mobilePlaceholderTitle ? 'hidden lg:inline' : ''">{{ title }}</span>

@@ -26,8 +26,8 @@ const multinationalCountries = [
 
 <template>
   <UiContainer class="grid grid-cols-[0.8fr_1.7fr] gap-16 py-10 text-text-secondary">
-    <div>
-      <p class="mb-5 text-xs font-medium text-text-tertiary">
+    <div role="group" aria-labelledby="main-service-title">
+      <p id="main-service-title" class="mb-5 text-xs font-medium text-text-tertiary">
         Main Service
       </p>
 
@@ -110,8 +110,8 @@ const multinationalCountries = [
       </div>
     </div>
 
-    <div>
-      <p class="mb-5 text-xs font-medium text-text-tertiary">
+    <div role="group" aria-labelledby="additional-services-title">
+      <p id="additional-services-title" class="mb-5 text-xs font-medium text-text-tertiary">
         Additional Services
       </p>
 
@@ -162,8 +162,8 @@ const multinationalCountries = [
         </NuxtLink>
       </div>
 
-      <div class="mt-8">
-        <p class="mb-4 text-xs font-medium text-text-tertiary">
+      <div class="mt-8" role="group" aria-labelledby="multinational-shipping-title">
+        <p id="multinational-shipping-title" class="mb-4 text-xs font-medium text-text-tertiary">
           Multinational Shipping
         </p>
         <NuxtLink

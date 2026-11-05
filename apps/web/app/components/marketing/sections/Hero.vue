@@ -120,11 +120,14 @@ function handleTabKeydown(event: KeyboardEvent) {
         <div class="flex items-start justify-between gap-4 lg:contents">
           <h1
             id="hero-title"
-            class="text-[24px] font-medium uppercase leading-normal tracking-[0.01em] text-white lg:text-center lg:text-[64px] lg:font-bold lg:normal-case lg:drop-shadow-sm"
+            class="sr-only lg:not-sr-only lg:text-center lg:text-[64px] lg:font-bold lg:normal-case lg:leading-normal lg:tracking-[0.01em] lg:text-white lg:drop-shadow-sm"
           >
-            <span class="lg:hidden">{{ activeService.label }}</span>
-            <span class="hidden lg:inline">Forwarder China Indonesia #1</span>
+            Forwarder China Indonesia #1
           </h1>
+
+          <p class="text-[24px] font-medium uppercase leading-normal tracking-[0.01em] text-white lg:hidden">
+            {{ activeService.label }}
+          </p>
 
           <NuxtLink
             :to="activeService.to"
@@ -165,16 +168,14 @@ function handleTabKeydown(event: KeyboardEvent) {
           class="absolute inset-[3px] translate-y-[10px] rounded-[21px] bg-[rgba(20,28,37,0.08)] blur-[7.5px]"
         />
 
-        <section
+        <div
           id="layanan"
-          aria-label="Layanan ETH Cargo"
           class="relative rounded-[24px] bg-[rgba(17,17,17,0.14)] px-6 pb-4 pt-5 text-white backdrop-blur-[4px]"
         >
           <div class="relative h-[130px] overflow-hidden">
             <div
-              role="tablist"
+              role="group"
               aria-label="Pilih layanan"
-              aria-orientation="horizontal"
               class="grid h-full grid-cols-4"
               @keydown="handleTabKeydown"
             >
@@ -187,9 +188,8 @@ function handleTabKeydown(event: KeyboardEvent) {
                 <button
                   :id="`service-tab-${service.id}`"
                   type="button"
-                  role="tab"
                   :aria-controls="`service-panel-${service.id}`"
-                  :aria-selected="service.id === activeId"
+                  :aria-pressed="service.id === activeId"
                   :tabindex="service.id === activeId ? 0 : -1"
                   class="whitespace-nowrap rounded-md px-2 text-[22px] font-medium uppercase leading-tight tracking-[0.01em] text-white transition-colors hover:text-primary-200 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white"
                   @click="selectService(service.id)"
@@ -200,7 +200,7 @@ function handleTabKeydown(event: KeyboardEvent) {
                 <div
                   v-show="service.id === activeId"
                   :id="`service-panel-${service.id}`"
-                  role="tabpanel"
+                  role="region"
                   :aria-labelledby="`service-tab-${service.id}`"
                   class="px-3 pt-2"
                 >
@@ -208,8 +208,8 @@ function handleTabKeydown(event: KeyboardEvent) {
                     {{ service.description }}
                   </p>
 
-                  <a
-                    href="#layanan"
+                  <NuxtLink
+                    :to="service.to"
                     class="mt-2 inline-flex h-9 items-center gap-1 whitespace-nowrap rounded-[10px] bg-primary-500 px-3 text-[14px] font-medium text-white transition-colors hover:bg-primary-600 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white"
                   >
                     <span>Pelajari {{ service.label }}</span>
@@ -220,7 +220,7 @@ function handleTabKeydown(event: KeyboardEvent) {
                       :stroke-width="1.5"
                       absolute-stroke-width
                     />
-                  </a>
+                  </NuxtLink>
                 </div>
               </div>
             </div>
@@ -236,7 +236,7 @@ function handleTabKeydown(event: KeyboardEvent) {
               :style="{ left: `${(activeIndex + 0.5) * 25}%` }"
             />
           </div>
-        </section>
+        </div>
       </div>
     </UiContainer>
   </section>

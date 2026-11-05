@@ -10,7 +10,7 @@ import NewsIcon from '../NewsIcon.vue'
 
 <template>
   <UiContainer class="grid !max-w-[720px] grid-cols-2 gap-16 py-10 text-text-secondary">
-    <section aria-labelledby="articles-news-title">
+    <div role="group" aria-labelledby="articles-news-title">
       <p
         id="articles-news-title"
         class="mb-5 text-xs font-medium text-text-tertiary"
@@ -63,9 +63,9 @@ import NewsIcon from '../NewsIcon.vue'
           </span>
         </NuxtLink>
       </div>
-    </section>
+    </div>
 
-    <section aria-labelledby="guides-title">
+    <div role="group" aria-labelledby="guides-title">
       <p
         id="guides-title"
         class="mb-5 text-xs font-medium text-text-tertiary"
@@ -118,6 +118,6 @@ import NewsIcon from '../NewsIcon.vue'
           </span>
         </NuxtLink>
       </div>
-    </section>
+    </div>
   </UiContainer>
 </template>

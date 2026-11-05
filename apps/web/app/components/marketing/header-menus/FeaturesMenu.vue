@@ -25,7 +25,7 @@ async function submitTracking() {
 
 <template>
   <UiContainer class="grid !max-w-[720px] grid-cols-2 gap-16 py-10 text-text-secondary">
-    <section aria-labelledby="quotation-service-title">
+    <div role="group" aria-labelledby="quotation-service-title">
       <p
         id="quotation-service-title"
         class="mb-5 text-xs font-medium text-text-tertiary"
@@ -88,9 +88,9 @@ async function submitTracking() {
           </span>
         </NuxtLink>
       </div>
-    </section>
+    </div>
 
-    <section aria-labelledby="tracking-service-title">
+    <div role="group" aria-labelledby="tracking-service-title">
       <p
         id="tracking-service-title"
         class="mb-5 text-xs font-medium text-text-tertiary"
@@ -161,6 +161,6 @@ async function submitTracking() {
           </button>
         </form>
       </div>
-    </section>
+    </div>
   </UiContainer>
 </template>
