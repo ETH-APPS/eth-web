@@ -3,6 +3,7 @@ import { Mail } from 'lucide-vue-next'
 import whatsappUrl from '~/assets/images/marketing/whatsapp.png'
 
 const props = withDefaults(defineProps<{
+  compact?: boolean
   sectionId?: string
   title: string
   description: string
@@ -15,6 +16,7 @@ const props = withDefaults(defineProps<{
   imagePlaceholder?: string
   showImage?: boolean
 }>(), {
+  compact: false,
   sectionId: 'quote',
   emailLabel: 'via Email',
   ctaLabel: 'Get A Quote',
@@ -33,7 +35,8 @@ const emailHref = computed(() => `mailto:${props.email}`)
   <section
     :id="sectionId"
     :aria-labelledby="titleId"
-    class="bg-primary-600 py-10 text-bg-0 sm:py-12"
+    class="bg-primary-600 text-bg-0"
+    :class="compact ? 'py-7 sm:py-8' : 'py-10 sm:py-12'"
   >
     <div
       class="mx-auto grid w-[calc(100%-2rem)] max-w-[1250px] items-center gap-12"
@@ -42,31 +45,34 @@ const emailHref = computed(() => `mailto:${props.email}`)
       <div>
         <h2
           :id="titleId"
-          class="text-[32px] font-bold leading-tight"
+          class="font-bold leading-tight"
+          :class="compact ? 'text-[24px]' : 'text-[32px]'"
         >
           {{ title }}
         </h2>
-        <p class="mt-3 text-[20px] font-medium leading-relaxed text-bg-0/95">
+        <p class="mt-3 font-medium leading-relaxed text-bg-0/95" :class="compact ? 'text-[16px]' : 'text-[20px]'">
           {{ description }}
         </p>
 
-        <div class="mt-8 flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
+        <div class="flex flex-col sm:flex-row sm:items-end sm:justify-between" :class="compact ? 'mt-6 gap-4' : 'mt-8 gap-5'">
           <div>
-            <p class="text-[16px] font-medium text-bg-0/90">
+            <p class="font-medium text-bg-0/90" :class="compact ? 'text-[13px]' : 'text-[16px]'">
               {{ emailLabel }}
             </p>
             <a
               :href="emailHref"
-              class="mt-1.5 inline-flex items-center gap-2 text-[14px] text-bg-0 transition-opacity hover:opacity-80 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-bg-0"
+              :class="compact ? 'text-[12px]' : 'text-[14px]'"
+              class="mt-1.5 inline-flex items-center gap-2 text-bg-0 transition-opacity hover:opacity-80 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-bg-0"
             >
-              <Mail :size="18" :stroke-width="1.8" aria-hidden="true" />
+              <Mail :size="compact ? 16 : 18" :stroke-width="1.8" aria-hidden="true" />
               <span>{{ email }}</span>
             </a>
           </div>
 
           <NuxtLink
             :to="ctaTo"
-            class="inline-flex h-12 shrink-0 items-center justify-center gap-2 self-start rounded-xl bg-[#22c55e] px-6 text-[16px] font-medium text-bg-0 transition-[background-color,transform] hover:-translate-y-0.5 hover:bg-[#16a34a] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-bg-0 sm:self-auto"
+            :class="compact ? 'h-11 px-5 text-[14px]' : 'h-12 px-6 text-[16px]'"
+            class="inline-flex shrink-0 items-center justify-center gap-2 self-start rounded-xl bg-[#22c55e] font-medium text-bg-0 transition-[background-color,transform] hover:-translate-y-0.5 hover:bg-[#16a34a] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-bg-0 sm:self-auto"
           >
             <span>{{ ctaLabel }}</span>
             <img

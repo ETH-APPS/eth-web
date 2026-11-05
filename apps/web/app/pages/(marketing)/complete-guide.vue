@@ -25,15 +25,20 @@ const completeGuideBanner = illustratedCtaBanners.completeGuide
     section-id="complete-guide-faq"
     :default-open-index="1"
   />
-  <div id="complete-guide-quote">
-    <MarketingIllustratedCtaBanner
-      v-bind="completeGuideBanner"
-      full-width
-      image-alt="Ilustrasi panduan strategi impor B2B dari China"
-    />
+  <div id="complete-guide-quote" class="pb-6 lg:pb-10">
+    <UiContainer>
+      <MarketingIllustratedCtaBanner
+        v-bind="completeGuideBanner"
+        variant="contained"
+        :image-max-width="504"
+        :image-top-offset="36"
+        image-alt="Ilustrasi panduan strategi impor B2B dari China"
+      />
+    </UiContainer>
     <MarketingSectionsQuoteBanner
       class="lg:hidden"
       section-id="complete-guide-mobile-quote"
+      compact
       :title="completeGuideBanner.title"
       :description="completeGuideBanner.description"
       email-label="Atau hubungi kami via email:"

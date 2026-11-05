@@ -80,14 +80,20 @@ const transferBanner = {
   <MarketingSectionsFaq
     :content="faqContent"
   />
-  <div id="transfer-rmb-quote">
-    <MarketingIllustratedCtaBanner
-      v-bind="transferBanner"
-      full-width
-    />
+  <div id="transfer-rmb-quote" class="pb-6 lg:pb-10">
+    <UiContainer>
+      <MarketingIllustratedCtaBanner
+        v-bind="transferBanner"
+        variant="contained"
+        :image-max-width="432"
+        :image-top-offset="42"
+        :image-bottom-offset="24"
+      />
+    </UiContainer>
     <MarketingSectionsQuoteBanner
       class="lg:hidden"
       section-id="transfer-rmb-mobile-quote"
+      compact
       :title="transferBanner.title"
       :description="transferBanner.description"
       email-label="Atau hubungi kami via email:"

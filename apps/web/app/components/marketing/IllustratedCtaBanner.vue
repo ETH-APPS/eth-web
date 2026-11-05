@@ -2,7 +2,7 @@
 import { Mail } from 'lucide-vue-next'
 
 const props = withDefaults(defineProps<{
-  variant?: 'default' | 'compact' | 'dense'
+  variant?: 'default' | 'contained' | 'compact' | 'dense'
   fullWidth?: boolean
   title: string
   description: string
@@ -55,39 +55,39 @@ const titleId = `illustrated-cta-${useId()}`
     >
       <div
         class="flex min-w-0 flex-col"
-        :class="variant === 'dense' ? 'py-5' : variant === 'compact' ? 'py-7' : 'py-10'"
+        :class="variant === 'dense' ? 'py-5' : variant === 'compact' ? 'py-7' : variant === 'contained' ? 'py-9' : 'py-10'"
       >
         <h2
           :id="titleId"
           class="font-bold leading-[1.2]"
-          :class="variant === 'dense' ? 'text-[18px]' : variant === 'compact' ? 'text-[20px]' : 'text-[32px]'"
+          :class="variant === 'dense' ? 'text-[18px]' : variant === 'compact' ? 'text-[20px]' : variant === 'contained' ? 'text-[28px]' : 'text-[32px]'"
         >
           {{ title }}
         </h2>
         <p
           class="font-medium leading-[1.4]"
-          :class="variant === 'dense' ? 'mt-2 text-[12px]' : variant === 'compact' ? 'mt-3 text-[14px]' : 'mt-5 text-[20px]'"
+          :class="variant === 'dense' ? 'mt-2 text-[12px]' : variant === 'compact' ? 'mt-3 text-[14px]' : variant === 'contained' ? 'mt-4 text-[18px]' : 'mt-5 text-[20px]'"
         >
           {{ description }}
         </p>
 
         <div
           class="mt-auto flex flex-wrap items-end justify-between"
-          :class="variant === 'dense' ? 'gap-2 pt-3' : variant === 'compact' ? 'gap-3 pt-4' : 'gap-5 pt-6'"
+          :class="variant === 'dense' ? 'gap-2 pt-3' : variant === 'compact' ? 'gap-3 pt-4' : variant === 'contained' ? 'gap-4 pt-5' : 'gap-5 pt-6'"
         >
           <div class="min-w-0">
             <p
               class="font-medium leading-[1.5]"
-              :class="variant === 'dense' ? 'text-[10px]' : variant === 'compact' ? 'text-[12px]' : 'text-[16px]'"
+              :class="variant === 'dense' ? 'text-[10px]' : variant === 'compact' ? 'text-[12px]' : variant === 'contained' ? 'text-[14px]' : 'text-[16px]'"
             >
               {{ emailLabel }}
             </p>
             <a
               :href="`mailto:${email}`"
               class="mt-1 inline-flex max-w-full items-center gap-2 font-normal leading-[1.5] transition-opacity hover:opacity-80 focus-visible:rounded focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white"
-              :class="variant === 'dense' ? 'text-[10px]' : variant === 'compact' ? 'text-[11px]' : 'text-[14px]'"
+              :class="variant === 'dense' ? 'text-[10px]' : variant === 'compact' ? 'text-[11px]' : variant === 'contained' ? 'text-[12px]' : 'text-[14px]'"
             >
-              <Mail :size="variant === 'dense' ? 12 : variant === 'compact' ? 14 : 16" class="shrink-0" aria-hidden="true" />
+              <Mail :size="variant === 'dense' ? 12 : variant === 'compact' || variant === 'contained' ? 14 : 16" class="shrink-0" aria-hidden="true" />
               <span class="min-w-0 break-words">{{ email }}</span>
             </a>
           </div>
@@ -99,6 +99,8 @@ const titleId = `illustrated-cta-${useId()}`
               ? 'min-h-8 rounded-lg px-3 py-1.5 text-[11px]'
               : variant === 'compact'
                 ? 'min-h-9 rounded-lg px-3 py-2 text-[12px]'
+              : variant === 'contained'
+                ? 'min-h-11 rounded-xl px-4 py-2 text-[12px]'
               : 'min-h-11 rounded-xl px-5 py-2.5 text-[14px]'"
           >
             {{ ctaLabel }}

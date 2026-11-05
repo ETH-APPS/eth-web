@@ -78,15 +78,20 @@ const sourcingBanner = illustratedCtaBanners.sourcing
     section-id="sourcing-faq"
     :default-open-index="0"
   />
-  <div id="sourcing-quote">
-    <MarketingIllustratedCtaBanner
-      v-bind="sourcingBanner"
-      full-width
-      image-alt="Ilustrasi tangan memegang paket produk sourcing China"
-    />
+  <div id="sourcing-quote" class="pb-6 lg:pb-10">
+    <UiContainer>
+      <MarketingIllustratedCtaBanner
+        v-bind="sourcingBanner"
+        variant="contained"
+        :image-max-width="396"
+        :image-top-offset="36"
+        image-alt="Ilustrasi tangan memegang paket produk sourcing China"
+      />
+    </UiContainer>
     <MarketingSectionsQuoteBanner
       class="lg:hidden"
       section-id="sourcing-mobile-quote"
+      compact
       :title="sourcingBanner.title"
       :description="sourcingBanner.description"
       email-label="Atau hubungi kami via email:"

@@ -26,7 +26,7 @@ const showMultinationalRoutes = computed(() => (
 
     <MarketingSectionsMultinationalRoutes
       v-if="showMultinationalRoutes"
-      :show-top-border="true"
+      :show-top-border="!['/china-cargo', '/sea-freight', '/air-freight', '/multinational-cargo', '/live-tracking'].includes(route.path)"
     />
     <MarketingFooter />
   </div>

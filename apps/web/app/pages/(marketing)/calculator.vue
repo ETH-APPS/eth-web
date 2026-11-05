@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import cargoCategories from '~/data/cargo-categories.json'
+import importVector from '~/assets/images/marketing/vector-impor.png'
 import { faqContentByPath, homeFaqContent } from '~/constants/faq'
 
 definePageMeta({
@@ -44,6 +45,13 @@ const calculatorShippingTypes = [
 ] as const
 
 const faqContent = faqContentByPath['/calculator'] ?? homeFaqContent
+const calculatorBanner = {
+  title: faqContent.quoteTitle,
+  description: faqContent.quoteDescription,
+  email: 'email@ethcargo.co.id',
+  ctaLabel: 'Konsultasi Gratis',
+  ctaTo: '#quote',
+}
 </script>
 
 <template>
@@ -75,5 +83,27 @@ const faqContent = faqContentByPath['/calculator'] ?? homeFaqContent
       :services="calculatorShippingTypes"
     />
   </MarketingSectionsFaq>
-  <MarketingSectionsQuoteActionBanner :content="faqContent" />
+  <div id="quote" class="bg-bg-100 pb-6 lg:pb-10">
+    <UiContainer>
+      <MarketingIllustratedCtaBanner
+        v-bind="calculatorBanner"
+        variant="contained"
+        :image="importVector"
+        :image-width="1144"
+        :image-height="1008"
+        :image-max-width="360"
+        :image-top-offset="28"
+        image-align="center"
+        image-alt="Ilustrasi layanan impor barang ETH Cargo"
+      />
+    </UiContainer>
+    <MarketingSectionsQuoteBanner
+      v-bind="calculatorBanner"
+      class="lg:hidden"
+      section-id="calculator-mobile-quote"
+      compact
+      email-label="Atau hubungi kami via email:"
+      :show-image="false"
+    />
+  </div>
 </template>

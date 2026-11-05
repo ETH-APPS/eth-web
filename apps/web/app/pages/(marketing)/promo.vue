@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import promoImage from '~/assets/images/marketing/promo.png'
-import quoteImage from '~/assets/images/marketing/promo.png'
 
 definePageMeta({
   layout: 'marketing',
@@ -102,18 +101,6 @@ const promoGroups = [
     :active-total="group.activeTotal"
     :inactive-total="group.inactiveTotal"
     @select="selectedPromo = $event"
-  />
-
-  <MarketingSectionsQuoteBanner
-    section-id="promo-quote"
-    title="Book your LCL Cargo"
-    description="Get your quote and book a shipping with LCL Cargo"
-    email-label="via Email"
-    email="testing-mail@gmail.co.id"
-    cta-label="Get A Quote"
-    cta-to="/calculator"
-    :image="quoteImage"
-    image-alt="Layanan pengiriman LCL Cargo ETH Cargo"
   />
 
   <MarketingPromoDetailModal

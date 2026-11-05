@@ -1,5 +1,14 @@
 <script setup lang="ts">
 import { homeFaqContent } from '~/constants/faq'
+import importVector from '~/assets/images/marketing/vector-impor.png'
+
+const trackingBanner = {
+  title: homeFaqContent.quoteTitle,
+  description: homeFaqContent.quoteDescription,
+  email: 'email@ethcargo.co.id',
+  ctaLabel: 'Konsultasi Gratis',
+  ctaTo: '#quote',
+}
 
 definePageMeta({
   layout: 'marketing',
@@ -116,5 +125,27 @@ const shippingTypes = [
     :services="shippingTypes"
   />
   <MarketingSectionsFaq :content="homeFaqContent" />
-  <MarketingSectionsQuoteActionBanner :content="homeFaqContent" />
+  <div id="quote" class="pb-6 lg:pb-10">
+    <UiContainer>
+      <MarketingIllustratedCtaBanner
+        v-bind="trackingBanner"
+        variant="contained"
+        :image="importVector"
+        :image-width="1144"
+        :image-height="1008"
+        :image-max-width="360"
+        :image-top-offset="28"
+        image-align="center"
+        image-alt="Ilustrasi layanan impor barang ETH Cargo"
+      />
+    </UiContainer>
+    <MarketingSectionsQuoteBanner
+      v-bind="trackingBanner"
+      class="lg:hidden"
+      section-id="live-tracking-mobile-quote"
+      compact
+      email-label="Atau hubungi kami via email:"
+      :show-image="false"
+    />
+  </div>
 </template>

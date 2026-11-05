@@ -384,7 +384,7 @@ async function submitTracking() {
 
                   <NuxtLink
                     to="/calculator-transfer-rmb"
-                    class="group/item mt-5 flex items-start gap-3 rounded-lg focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500"
+                    class="group/item mt-5 flex items-center gap-3 rounded-lg focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500"
                     @click="emit('close')"
                   >
                     <span class="flex size-9 shrink-0 items-center justify-center rounded-full bg-primary-50 text-primary-500 transition-colors duration-200 motion-reduce:transition-none group-hover/item:bg-primary-500 group-hover/item:text-white group-focus-visible/item:bg-primary-500 group-focus-visible/item:text-white group-active/item:bg-primary-500 group-active/item:text-white">
@@ -395,11 +395,11 @@ async function submitTracking() {
                         Kalkulator Transfer RMB
                         <ArrowUpRight :size="18" class="-translate-x-1 translate-y-1 text-primary-500 opacity-0 transition duration-200 motion-reduce:transition-none motion-reduce:transform-none group-hover/item:translate-x-0 group-hover/item:translate-y-0 group-hover/item:opacity-100 group-focus-visible/item:translate-x-0 group-focus-visible/item:translate-y-0 group-focus-visible/item:opacity-100 group-active/item:translate-x-0 group-active/item:translate-y-0 group-active/item:opacity-100" aria-hidden="true" />
                       </span>
-                      <span class="mt-3 block text-xs leading-5 text-text-tertiary">
-                        Simulasi hitung konversi Rupiah ke Yuan (RMB) secara real-time dengan kurs kompetitif dan transparan.
-                      </span>
                     </span>
                   </NuxtLink>
+                  <p class="mt-3 text-xs leading-5 text-text-tertiary">
+                    Simulasi hitung konversi Rupiah ke Yuan (RMB) secara real-time dengan kurs kompetitif dan transparan.
+                  </p>
                 </div>
 
                 <div class="mt-7" role="group" aria-labelledby="mobile-tracking-service-title">

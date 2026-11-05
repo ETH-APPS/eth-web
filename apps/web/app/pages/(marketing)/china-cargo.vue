@@ -5,6 +5,7 @@ import airFreightUrl from '~/assets/images/marketing/air-freight.png'
 import fclCargoUrl from '~/assets/images/marketing/fcl-cargo.png'
 import lclCargoUrl from '~/assets/images/marketing/lcl-cargo.png'
 import cargoHeroUrl from '~/assets/images/marketing/multinational-cargo-hero.png'
+import importVector from '~/assets/images/marketing/vector-impor.png'
 import { faqContentByPath, homeFaqContent } from '~/constants/faq'
 
 definePageMeta({
@@ -68,6 +69,13 @@ const serviceStats = [
 ]
 
 const faqContent = faqContentByPath['/china-cargo'] ?? homeFaqContent
+const cargoBanner = {
+  title: faqContent.quoteTitle,
+  description: faqContent.quoteDescription,
+  email: 'email@ethcargo.co.id',
+  ctaLabel: 'Konsultasi Gratis',
+  ctaTo: '#quote',
+}
 </script>
 
 <template>
@@ -105,5 +113,27 @@ const faqContent = faqContentByPath['/china-cargo'] ?? homeFaqContent
     description="Dapatkan kalkulasi perkiraan biaya pengiriman All-In dari China ke Indonesia secara instan untuk perencanaan modal bisnis Anda."
   />
   <MarketingSectionsFaq :content="faqContent" />
-  <MarketingSectionsQuoteActionBanner :content="faqContent" />
+  <div id="quote" class="pb-6 lg:pb-10">
+    <UiContainer>
+      <MarketingIllustratedCtaBanner
+        v-bind="cargoBanner"
+        variant="contained"
+        :image="importVector"
+        :image-width="1144"
+        :image-height="1008"
+        :image-max-width="360"
+        :image-top-offset="28"
+        image-align="center"
+        image-alt="Ilustrasi layanan impor barang ETH Cargo"
+      />
+    </UiContainer>
+    <MarketingSectionsQuoteBanner
+      v-bind="cargoBanner"
+      class="lg:hidden"
+      section-id="china-cargo-mobile-quote"
+      compact
+      email-label="Atau hubungi kami via email:"
+      :show-image="false"
+    />
+  </div>
 </template>

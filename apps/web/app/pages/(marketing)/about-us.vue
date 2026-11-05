@@ -60,14 +60,19 @@ const aboutBanner = illustratedCtaBanners.about
   <MarketingSectionsAboutImportSupport />
   <MarketingSectionsMultinationalRoutes :show-top-border="false" />
   <div id="about-quote">
-    <MarketingIllustratedCtaBanner
-      v-bind="aboutBanner"
-      full-width
-      image-alt="Ilustrasi tim ETH Cargo mengelola rantai pasok impor"
-    />
+    <UiContainer>
+      <MarketingIllustratedCtaBanner
+        v-bind="aboutBanner"
+        variant="contained"
+        :image-max-width="540"
+        :image-top-offset="42"
+        image-alt="Ilustrasi tim ETH Cargo mengelola rantai pasok impor"
+      />
+    </UiContainer>
     <MarketingSectionsQuoteBanner
       class="lg:hidden"
       section-id="about-mobile-quote"
+      compact
       :title="aboutBanner.title"
       :description="aboutBanner.description"
       email-label="Atau hubungi kami via email:"
