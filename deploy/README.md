@@ -1,214 +1,388 @@
-# Deployment VM
+# Deployment VM: arsitektur, CI/CD, dan operasional
 
-Dokumen ini adalah handoff deployment manual monorepo `eth-web` ke VM milik sendiri.
-Fokus deployment saat ini hanya frontend Nuxt. Backend NestJS belum dijalankan.
+Panduan alur dari kode di laptop sampai website bisa dibuka pengunjung.
+Terakhir diperbarui: **6 November 2026**.
 
-## Status terakhir
+Implementasi dijelaskan berdasarkan file repository. Status VM berdasarkan output
+pengguna, bukan inspeksi langsung agent ke VM. Bagian **NEXT** adalah rencana,
+**belum diterapkan**.
 
-Deployment berikut sudah berhasil dan dapat diakses publik pada 23 Oktober 2026:
+## 1. Kondisi sekarang
 
-- VM: Ubuntu 24.04.2 LTS, amd64
-- Hostname: `eth-apps`
-- User deployment: `ethapps`
-- Private IP: `192.168.10.95`
-- Direktori aplikasi: `/opt/eth-web`
-- Repository: `git@github.com:ETH-APPS/eth-web.git` (private)
-- Branch: `main`
-- Commit yang sedang di-deploy: `dfd11d9`
-- Image frontend: `eth-web-web:dfd11d9`
-- Docker Engine, Compose plugin, dan Buildx sudah tersedia
-- Container dijalankan dengan `sudo docker ...`; user `ethapps` sengaja tidak
-  dimasukkan ke grup `docker`
+| Hal | Kondisi |
+| --- | --- |
+| Aplikasi aktif | Frontend Nuxt (`apps/web`), runtime Nitro |
+| Backend NestJS | Ada di monorepo, belum termasuk deployment ini |
+| VM | Ubuntu 24.04.2 LTS amd64, hostname `eth-apps` |
+| Operator | User `ethapps` |
+| IP lokal | `192.168.10.95`; akses IP publik belum dikonfirmasi |
+| Repository | Private, `ETH-APPS/eth-web`, branch `main` |
+| Checkout awal | `/opt/eth-web` |
+| Auto-deploy | GitHub Actions, self-hosted runner di VM |
+| Runner | `eth-apps-production`, label `eth-web-production` |
+| User runner | `github-runner`, home `/opt/actions-runner` |
+| Akses publik | Cloudflare Quick Tunnel, URL sementara |
+| Gateway | Caddy, container `eth-web-gateway-1` |
+| Port host aplikasi | Hanya `127.0.0.1:8080` menuju Caddy |
 
-Quick Tunnel yang dibuat saat deployment:
+Snapshot terakhir dari output pengguna:
 
-```text
-https://dream-terrace-resolve-art.trycloudflare.com
+- Image web `eth-web-web:f2a3ee2af50f`; web dan gateway healthy.
+- URL terbaru: <https://runtime-keith-plaza-naval.trycloudflare.com>.
+- URL itu merespons `HTTP/2 200` pada 6 November 2026 pukul 09.01 WIB.
+- URL sebelumnya `https://dream-terrace-resolve-art.trycloudflare.com` sudah
+  berganti. Log mengumumkan URL baru pada 4 November pukul 18.40 WIB.
+- Ketiga container dilaporkan memiliki uptime sekitar 38 jam. Ini mengarah pada
+  kemungkinan mereka sempat mulai ulang; penyebab pastinya belum diketahui.
+- Status deployment push terbaru belum dipastikan. Image di atas adalah snapshot,
+  bukan jaminan sama dengan commit terbaru di `main`.
+- Investigasi berikutnya menemukan tiga run gagal saat fetch: koneksi
+  `github.com:22` timeout. Koneksi dan autentikasi deploy key melalui
+  `ssh.github.com:443` berhasil diuji pengguna. Helper di repository sekarang
+  memakai jalur 443; pemasangan ulang helper di VM dan deployment sukses
+  setelah perbaikan **belum dikonfirmasi**.
+
+## 2. Flow pengunjung: browser sampai aplikasi
+
+```mermaid
+flowchart TD
+    visitor[Browser pengunjung] -->|HTTPS: URL trycloudflare.com| edge[Cloudflare]
+    edge -->|Koneksi tunnel| tunnel[cloudflared di VM]
+    tunnel -->|HTTP: gateway:80| gateway[Caddy / gateway]
+    gateway -->|HTTP: web:3000| web[Nuxt / Nitro]
+    operator[Operator di VM] -->|HTTP: 127.0.0.1:8080| gateway
 ```
 
-URL tersebut bersifat sementara dan dapat berubah saat container `cloudflared`
-dibuat ulang atau tunnel melakukan registrasi ulang. Jangan menganggapnya sebagai
-alamat production permanen.
+Browser meminta halaman melalui Cloudflare. Request diteruskan lewat tunnel ke
+Caddy, lalu Caddy meminta halaman dari Nuxt. Respons kembali melalui jalur itu.
 
-## Yang sudah terbukti
+| Komponen | Tugas dalam project ini |
+| --- | --- |
+| Nuxt / Nitro (`web`) | Menjalankan website hasil build dan melayani halaman/aset pada port 3000 internal Docker. |
+| Caddy (`gateway`) | Reverse proxy: menerima request dan meneruskannya ke `web:3000`. Juga mengompresi respons dengan gzip/zstd. |
+| `cloudflared` | Membuat koneksi keluar dari VM ke Cloudflare agar website bisa diakses tanpa membuka port masuk publik pada router. |
+| Cloudflare | Menyediakan URL publik dan HTTPS bagi pengunjung. |
+| Docker image | Paket aplikasi hasil build, diberi tag commit agar release bisa diidentifikasi. |
+| Docker container | Proses yang menjalankan image di VM. |
+| Docker Compose | Mendefinisikan service, jaringan, healthcheck, dan aturan restart. |
 
-- Deploy key GitHub khusus VM berhasil digunakan dan disetel read-only di repo.
-- Repo berhasil di-clone ke `/opt/eth-web`.
-- Commit di VM terverifikasi sebagai `dfd11d9`.
-- `docker compose config --quiet` berhasil.
-- Image Nuxt berhasil dibangun di VM amd64.
-- Container `web` dan `gateway` berstatus healthy.
-- Container `cloudflared` berhasil tersambung memakai QUIC.
-- `curl -I http://127.0.0.1:8080/` menghasilkan `HTTP/1.1 200 OK` melalui Caddy.
-- URL Quick Tunnel menghasilkan `HTTP/2 200` melalui Cloudflare, Caddy, dan Nuxt.
-- Host hanya listen pada `127.0.0.1:8080` untuk aplikasi ini.
-- Port `3000` dan `3001` tidak dipublikasikan ke host.
+Saat ini Caddy menggunakan HTTP internal. HTTPS publik ditangani Cloudflare;
+`auto_https off` di Caddyfile sesuai dengan arsitektur ini. Admin API Caddy
+juga dimatikan. Kita belum menggunakan Nginx atau `sites-enabled`.
 
-Output `docker compose ps` yang diharapkan:
+Nama `gateway` dan `web` dikenali melalui jaringan Docker `eth-web_default`.
+Port 3000 tidak dipublikasikan ke host. Mapping `127.0.0.1:8080:80` membuat Caddy
+bisa diperiksa dari VM, tetapi tidak langsung dari internet.
 
-- `web`: healthy, hanya `3000/tcp` internal Docker.
-- `gateway`: healthy, hanya `127.0.0.1:8080->80/tcp` yang dipublikasikan.
-- `cloudflared`: berjalan tanpa host port.
+### Kenapa URL berubah walaupun hanya push?
 
-## Arsitektur saat ini
+Quick Tunnel menyediakan hostname acak sementara. Saat proses tunnel dijalankan
+ulang dan membuat tunnel baru, alamat bisa berubah tanpa pengguna mengedit URL.
+Contohnya setelah VM atau proses container mulai ulang.
 
-```text
-Internet
-  -> Cloudflare Quick Tunnel (HTTPS, URL sementara)
-  -> cloudflared: http://gateway:80
-  -> Caddy gateway: reverse_proxy web:3000
-  -> Nuxt/Nitro: 0.0.0.0:3000 di jaringan Docker
+Auto-deploy kita hanya mengganti `web`, sehingga secara normal tidak membuat
+tunnel baru. Namun proses tunnel tetap dapat restart karena sebab lain.
+Pemeriksaan ID container di script juga tidak membuktikan proses di dalam
+container tidak pernah restart.
+
+Jangan restart `cloudflared`, menjalankan `docker compose down`, atau recreate
+seluruh stack untuk update frontend rutin. URL lama tidak dapat dipilih kembali
+melalui konfigurasi Quick Tunnel kita. Domain tetap dibahas di bagian NEXT.
+
+## 3. Flow kode: laptop, CI, dan CD
+
+```mermaid
+flowchart TD
+    local[Edit dan periksa kode di laptop] --> push[Commit lalu push ke main]
+    push --> actions[GitHub Actions: Deploy web to VM]
+    manual[Run workflow pada main] --> actions
+    actions --> runner[Runner di VM: github-runner]
+    runner --> helper[sudo: deploy-eth-web]
+    helper --> preflight[Periksa layanan lama dan konfigurasi]
+    preflight --> fetch[Fetch origin/main dan siapkan worktree release]
+    fetch --> same{Commit sudah aktif?}
+    same -->|Ya| skip[Sukses: already deployed]
+    same -->|Tidak| build[Build image Nuxt dengan tag commit]
+    build --> swap[Ganti hanya container web]
+    swap --> check{Health dan gateway OK, ID gateway/tunnel tetap?}
+    check -->|Ya| success[Deployment sukses]
+    check -->|Tidak| rollback[Coba kembalikan image web sebelumnya]
+    rollback --> failed[Workflow tetap gagal: periksa log]
 ```
 
-`web` tidak memiliki `ports` di Compose. Caddy hanya di-bind ke loopback VM,
-sehingga UFW bukan satu-satunya perlindungan terhadap port aplikasi yang
-dipublikasikan Docker.
+### CI: pemeriksaan kode
 
-## File deployment
+CI (Continuous Integration) biasanya menjalankan lint, typecheck, test, dan build
+untuk memeriksa perubahan sebelum dirilis.
 
-- `apps/web/Dockerfile`: multi-stage build Nuxt; runtime memakai user non-root
-  `node` dan menjalankan `.output/server/index.mjs`.
-- `compose.yaml`: service `web`, `gateway`, dan `cloudflared`.
-- `deploy/Caddyfile`: HTTP gateway pada port 80 dan reverse proxy ke `web:3000`.
-- `.dockerignore`: mengecualikan dependency, build output, cache, log, dan `.env*`.
+**Saat ini belum ada job CI terpisah untuk lint, typecheck, test, atau pemeriksaan
+pull request.** Repository memiliki satu workflow deployment. Instalasi dependency
+dengan lockfile dan build Nuxt dilakukan di dalam proses deployment itu. Build
+sukses dan healthcheck `/` bukan bukti bahwa semua fitur aplikasi benar.
 
-Frontend belum memakai `runtimeConfig` atau secret runtime. Tidak ada `.env` yang
-dibutuhkan untuk deployment commit ini.
+### CD: memasang release ke VM
 
-## Deploy pertama yang telah dijalankan
+CD (Continuous Deployment) memasang perubahan ke server secara otomatis. Workflow
+[`deploy-web.yml`](../.github/workflows/deploy-web.yml) saat ini:
 
-Deploy key berada di VM pada:
+1. Terpicu oleh push ke `main`, atau `workflow_dispatch` pada `main`.
+2. Memilih runner berlabel `self-hosted`, `Linux`, `X64`, `eth-web-production`.
+3. Menjalankan `sudo -n /usr/local/sbin/deploy-eth-web`.
+4. Membatasi waktu job menjadi 30 menit. Concurrency group `production-web`
+   mencegah job deployment bersamaan; push baru tidak membatalkan job berjalan.
 
-```text
-/home/ethapps/.ssh/eth-web-deploy
-```
+Workflow tidak memakai checkout action. Helper mengambil **main terbaru ketika
+fetch berjalan**. Jika ada beberapa push berdekatan, SHA yang ter-deploy bisa
+lebih baru daripada SHA pemicu job. Lihat SHA pada log untuk mengetahui release
+sebenarnya.
 
-Private key tersebut tidak boleh ditampilkan, disalin ke repo, atau dibagikan.
-Public key sudah terdaftar sebagai read-only deploy key pada GitHub.
+### Apa yang dilakukan helper?
 
-Repo di-clone dengan key khusus:
+Implementasi: [`deploy-web.sh`](deploy-web.sh).
+
+1. Memastikan repo, deploy key, known hosts, spec Compose, dan jaringan tersedia.
+   Mengambil lock agar helper tidak berjalan bersamaan.
+2. Memastikan tepat satu container berjalan untuk masing-masing service `web`,
+   `gateway`, dan `cloudflared`. Web lama harus healthy dan gateway harus merespons.
+3. Mencatat image lama untuk rollback serta ID gateway/tunnel untuk pemeriksaan.
+4. Fetch `origin/main` sebagai user `ethapps` dengan deploy key read-only.
+5. Membuat worktree bersih di `/var/lib/eth-web-deploy/releases/<FULL_SHA>`.
+6. Jika tag image aktif dan label revisi sudah sesuai, selesai: `already deployed`.
+7. Build image `eth-web-web:<SHORT_SHA>` dari worktree tersebut. Web lama tetap
+   berjalan selama build.
+8. Menggunakan spec web-only untuk `up --detach --no-build --no-deps web`.
+9. Menunggu web healthy, menguji gateway, dan memastikan ID gateway/tunnel tetap.
+10. Jika gagal setelah penggantian dimulai, mencoba mengembalikan image lama.
+    Workflow tetap gagal meskipun rollback berhasil agar masalah terlihat.
+
+**Batasan:** pergantian satu container web dapat menyebabkan jeda singkat. Ini
+belum deployment tanpa downtime. Rollback otomatis ada di script, tetapi simulasi
+kegagalan/rollback belum terverifikasi. Jika web lama unhealthy, preflight berhenti
+sebelum build; helper bukan alat pemulihan universal.
+
+Checkout `/opt/eth-web` tidak otomatis berpindah HEAD pada deployment. Helper
+fetch lalu membangun worktree terpisah. `git log -1` pada checkout awal tidak
+cukup untuk mengetahui versi aplikasi yang sedang berjalan.
+
+## 4. File, akun, dan environment
+
+| File sumber | Kegunaan / lokasi operasional |
+| --- | --- |
+| [`apps/web/Dockerfile`](../apps/web/Dockerfile) | Build Node 24 + pnpm; runtime hanya membawa `.output` dan berjalan sebagai user `node`. |
+| [`compose.yaml`](../compose.yaml) | Stack lengkap untuk bootstrap: web, gateway, cloudflared. Bukan jalur update frontend rutin. |
+| [`deploy/Caddyfile`](Caddyfile) | Dipasang dari `/opt/eth-web/deploy/Caddyfile` ke `/etc/caddy/Caddyfile` di container. |
+| [`deploy/web.compose.yaml`](web.compose.yaml) | Spec web-only, disalin root-owned ke `/etc/eth-web/web.compose.yaml`. |
+| [`deploy/deploy-web.sh`](deploy-web.sh) | Helper, disalin root-owned ke `/usr/local/sbin/deploy-eth-web`. |
+| [`deploy/github-runner.sudoers`](github-runner.sudoers) | Disalin ke `/etc/sudoers.d/github-runner-deploy-eth-web`. |
+| [Workflow Actions](../.github/workflows/deploy-web.yml) | Trigger dan job deployment. |
+| [`.dockerignore`](../.dockerignore) | Mengecualikan dependency lokal, cache, output build, dan `.env` aktual dari build context. |
+
+Runner berjalan sebagai `github-runner` dan tidak diberi grup Docker. Sudoers hanya
+mengizinkan helper root-owned tanpa argumen. Helper menjalankan Docker sebagai
+root; jangan memberi runner sudo umum untuk mengatasi error.
+
+Git dijalankan sebagai `ethapps` memakai `/home/ethapps/.ssh/eth-web-deploy`.
+Helper menggunakan SSH ke `ssh.github.com:443`, dengan `HostKeyAlias=github.com`
+agar tetap memverifikasi host key GitHub yang sudah dipercaya di `known_hosts`.
+`StrictHostKeyChecking=yes` tetap aktif dan timeout koneksi ditetapkan 15 detik.
+Public key terdaftar sebagai deploy key read-only. Jangan membagikan private key,
+token runner, atau secret. Akses push ke `main` harus dibatasi pada pihak tepercaya
+karena kode yang di-push akan dibangun dan dijalankan di VM.
+
+Perubahan script/spec/sudoers di repository **tidak otomatis memperbarui salinan
+root-owned di VM**. Perlu pemasangan terpisah oleh operator setelah memeriksa diff
+serta memvalidasi sudoers. Push frontend biasa tidak memerlukan langkah itu.
+
+### Apakah `.env` lokal otomatis ikut?
+
+Tidak. Dockerfile menetapkan `NODE_ENV`, `NITRO_HOST`, dan `NITRO_PORT`, tetapi
+spec web-only belum memasang `env_file` atau environment aplikasi tambahan.
+Helper memakai environment bersih dan `--env-file /dev/null`, sehingga tidak
+mengandalkan `.env` implisit Compose. `.env` lokal aktual dikecualikan dari build.
+
+Jika fitur baru membutuhkan konfigurasi, tentukan apakah digunakan saat build
+atau runtime, serta apakah boleh terlihat browser atau harus server-side. Tambah
+mekanisme deployment yang sesuai; jangan menganggap menambah `.env` lokal lalu
+push sudah memasang nilainya di VM. Pergantian URL pada insiden November belum
+membuktikan adanya error `.env`.
+
+## 5. Penggunaan sehari-hari
+
+Untuk perubahan frontend biasa:
+
+1. Periksa perubahan di laptop, commit file yang ingin dirilis, push ke `main`.
+2. Buka GitHub → repository → **Actions → Deploy web to VM**.
+3. Pastikan run selesai sukses dan lihat SHA/image pada log.
+4. Buka website dan periksa halaman/fitur yang diubah.
+
+Tidak perlu SSH, pull manual, atau restart pada setiap push. `already deployed`
+adalah hasil sukses jika release yang sama sudah aktif. Status job yang masih
+antre atau berputar belum selesai hanya karena ada satu baris log sukses.
+
+Untuk mengulang deployment, gunakan **Run workflow** pada `main`. Ini tetap
+mengambil main terbaru, bukan cara memilih release lama untuk rollback.
+
+## 6. Pemeriksaan operasional di terminal VM
+
+Perintah berikut hanya membaca status/log; tidak me-restart container. Jalankan
+sebagai `ethapps` di VM, bukan terminal laptop yang belum terhubung SSH.
+
+Status semua service tanpa perlu menebak tag image:
 
 ```bash
-GIT_SSH_COMMAND='ssh -i /home/ethapps/.ssh/eth-web-deploy -o IdentitiesOnly=yes' git clone --branch main --single-branch git@github.com:ETH-APPS/eth-web.git /opt/eth-web
-```
-
-Konfigurasi divalidasi dan image dibangun dengan commit SHA sebagai tag:
-
-```bash
-sudo env IMAGE_TAG=dfd11d9 docker compose -f /opt/eth-web/compose.yaml config --quiet
-sudo env IMAGE_TAG=dfd11d9 docker compose -f /opt/eth-web/compose.yaml build web
-```
-
-Frontend dan gateway dinyalakan lebih dahulu, kemudian tunnel:
-
-```bash
-sudo env IMAGE_TAG=dfd11d9 docker compose -f /opt/eth-web/compose.yaml up -d web gateway
-sudo env IMAGE_TAG=dfd11d9 docker compose -f /opt/eth-web/compose.yaml up -d cloudflared
-```
-
-## Pemeriksaan operasional
-
-Selalu gunakan nilai `IMAGE_TAG` yang sama pada `build`, `up`, `ps`, dan command
-Compose lain agar Compose mengacu ke release yang benar.
-
-Status container:
-
-```bash
-sudo env IMAGE_TAG=dfd11d9 docker compose -f /opt/eth-web/compose.yaml ps
+sudo docker ps --all --filter label=com.docker.compose.project=eth-web --format 'table {{.Names}}\t{{.Image}}\t{{.Status}}\t{{.Ports}}'
 ```
 
 Uji gateway lokal:
 
 ```bash
-curl -I http://127.0.0.1:8080/
+curl -I --max-time 20 http://127.0.0.1:8080/
 ```
 
-Periksa port host:
+Cari pengumuman URL tunnel; pola ini menghindari URL pada log request error:
 
 ```bash
-sudo ss -lntp '( sport = :3000 or sport = :3001 or sport = :8080 )'
+sudo docker logs eth-web-cloudflared-1 2>&1 | grep -E 'INF.*https://[a-z0-9-]+\.trycloudflare\.com' | tail -n 5
 ```
 
-Hanya `127.0.0.1:8080` yang seharusnya muncul.
-
-Lihat log tunnel dan URL Quick Tunnel terbaru:
+Uji URL terbaru yang ditemukan. Contoh sesuai snapshot 6 November:
 
 ```bash
-sudo env IMAGE_TAG=dfd11d9 docker compose -f /opt/eth-web/compose.yaml logs --no-color --tail=200 cloudflared
+curl -I --max-time 20 https://runtime-keith-plaza-naval.trycloudflare.com/
 ```
 
-Peringatan `failed to sufficiently increase receive buffer size` pernah muncul,
-tetapi tidak fatal pada deployment ini: koneksi QUIC berhasil diregistrasikan dan
-seluruh connectivity pre-check berstatus `PASS`.
+Image aktif, waktu mulai, dan jumlah restart container:
 
-## Prosedur update manual berikutnya
+```bash
+sudo docker inspect --format '{{.Name}} image={{.Config.Image}} started={{.State.StartedAt}} restarts={{.RestartCount}}' eth-web-web-1 eth-web-gateway-1 eth-web-cloudflared-1
+```
 
-Jalankan hanya setelah perubahan yang ingin di-deploy sudah di-commit dan di-push
-ke `main`. Jangan mengandalkan perubahan lokal yang belum masuk GitHub.
+Data restart adalah petunjuk, bukan bukti lengkap penyebabnya. Recreate container
+juga bisa menghilangkan riwayat container sebelumnya.
 
-1. Ambil commit terbaru menggunakan deploy key khusus VM.
+Periksa runner bila job antre:
 
-   ```bash
-   GIT_SSH_COMMAND='ssh -i /home/ethapps/.ssh/eth-web-deploy -o IdentitiesOnly=yes' git -C /opt/eth-web pull --ff-only origin main
-   ```
+```bash
+sudo systemctl status actions.runner.ETH-APPS-eth-web.eth-apps-production.service --no-pager -l
+```
 
-2. Catat short SHA yang akan dipakai sebagai tag.
+Ambil log terbatas sesuai service yang bermasalah:
 
-   ```bash
-   git -C /opt/eth-web rev-parse --short HEAD
-   ```
+```bash
+sudo docker logs --tail 100 eth-web-web-1
+sudo docker logs --tail 100 eth-web-gateway-1
+sudo docker logs --tail 100 eth-web-cloudflared-1
+```
 
-3. Ganti `<SHA>` pada command berikut dengan output langkah sebelumnya, lalu
-   validasi, build, dan jalankan release tersebut.
+Periksa dan redaksi secret sebelum membagikan log. Jangan kirim isi `.env`.
 
-   ```bash
-   sudo env IMAGE_TAG=<SHA> docker compose -f /opt/eth-web/compose.yaml config --quiet
-   sudo env IMAGE_TAG=<SHA> docker compose -f /opt/eth-web/compose.yaml build web
-   sudo env IMAGE_TAG=<SHA> docker compose -f /opt/eth-web/compose.yaml up -d
-   ```
+| Gejala | Pemeriksaan berikutnya |
+| --- | --- |
+| URL lama gagal, gateway lokal berhasil | Cari dan uji URL tunnel terbaru. |
+| URL terbaru gagal, gateway lokal berhasil | Periksa log dan koneksi cloudflared. |
+| Gateway lokal gagal | Periksa health/status web dan log web/gateway. |
+| Push belum terlihat | Periksa run Actions dan image aktif. |
+| Actions antre | Periksa runner di GitHub dan service runner di VM. |
+| Actions gagal | Baca error yang relevan, jangan langsung restart stack. |
+| Build gagal karena disk penuh | Periksa `df -h` dan `sudo docker system df`; tentukan release rollback sebelum menghapus data. |
 
-4. Ulangi pemeriksaan status, log, gateway lokal, port host, dan URL publik.
+Respons `200` hanya membuktikan endpoint yang diuji merespons. Tetap periksa fitur
+di browser, terutama setelah perubahan konfigurasi atau integrasi API.
 
-Jangan menjalankan `git reset --hard` atau menghapus image lama tanpa memastikan
-rollback tidak lagi diperlukan.
+## 7. NEXT — domain sendiri (belum diterapkan)
 
-## Pekerjaan yang belum selesai
+**Ini rencana. Pembaruan dokumentasi tidak mengubah DNS, port, Caddy, atau tunnel.**
 
-- Uji reboot VM dan pastikan ketiga container kembali berjalan karena memakai
-  `restart: unless-stopped`.
-- Pin versi atau digest image yang saat ini masih floating:
-  `node:24-slim`, `caddy:2`, dan terutama `cloudflare/cloudflared:latest`.
-- Tulis dan uji prosedur rollback ke commit/image sebelumnya.
-- Pindah dari Quick Tunnel ke named tunnel dan domain sendiri untuk alamat stabil.
-- Tambahkan observability/monitoring dan kebijakan backup bila aplikasi sudah
-  memiliki data persisten.
-- Deploy backend NestJS setelah Dockerfile, health endpoint, routing `/api`, dan
-  kebutuhan database/migrasi sudah ditentukan.
+Domain adalah alamat pengunjung. Tunnel adalah salah satu jalur menuju VM.
+Domain sendiri dapat dipakai dengan ataupun tanpa tunnel.
 
-## Backend yang sengaja ditunda
+### Pilihan A: domain langsung ke Caddy, tanpa tunnel
 
-`apps/api` belum menjadi bagian deployment ini. Kondisinya saat ini:
+```text
+Browser → HTTPS domain sendiri → IP publik/router → Caddy → Nuxt
+```
 
-- belum ada Dockerfile/service Compose untuk API;
-- belum ada health endpoint;
-- belum ada prefix `/api`;
-- belum ada routing Caddy ke API;
-- belum ada konfigurasi database, migrasi, volume, atau backup;
-- port default NestJS adalah `3001`, tetapi port tersebut tidak sedang listen di VM.
+Sesuai jika jaringan dapat menerima koneksi masuk dari internet dan operator
+memiliki kendali atas konfigurasi jaringan. Rencana langkahnya:
 
-Ketika API ditambahkan, pertahankan prinsip yang sama: jangan publish port 3001
-ke host. Route request melalui Caddy pada jaringan Docker.
+1. Konfirmasi IP publik, NAT/CGNAT, kendali router, serta akses port 80/443.
+2. Arahkan DNS ke IP publik. Jika VM di belakang router, atur port forwarding
+   dan firewall menuju VM.
+3. Sesuaikan port Compose gateway serta Caddyfile untuk domain dan automatic HTTPS.
+   Konfigurasi sekarang (`127.0.0.1:8080`, `:80`, `auto_https off`) belum siap.
+4. Tambahkan penyimpanan persisten Caddy, umumnya `/data` dan `/config`, agar
+   data sertifikat/konfigurasi tetap ada saat container dibuat ulang.
+5. **Sesuaikan helper deployment sebelum menghapus tunnel.** Saat ini helper
+   mewajibkan cloudflared berjalan dan memeriksa gateway melalui
+   `http://127.0.0.1:8080/`. Tentukan pemeriksaan baru yang sesuai arsitektur domain.
+6. Uji HTTPS, renewal sertifikat, akses publik, dan auto-deploy. Hentikan tunnel
+   lama setelah jalur domain terverifikasi.
 
-## Catatan untuk agent berikutnya
+Caddy dapat mengurus penerbitan dan perpanjangan sertifikat otomatis. Tidak perlu
+beralih ke Nginx hanya untuk domain. `sites-available`/`sites-enabled` adalah pola
+konfigurasi Nginx pada Ubuntu, bukan syarat menggunakan domain.
 
-- Bedakan fakta dari output VM dengan asumsi atau rencana.
-- Berikan satu command atau satu langkah per giliran kepada pengguna, jelaskan
-  tujuan dan risikonya, lalu tunggu output.
-- Jangan meminta atau menampilkan password, PAT, private key, token tunnel, atau
-  secret lain.
-- Jangan melakukan full system upgrade di VM.
-- Jangan mengubah file tanpa persetujuan eksplisit pengguna.
-- Nuxt menggunakan Vite.
-- Fokus saat ini tetap frontend dan stabilisasi deployment manual.
-- Commit yang di-deploy hanya `dfd11d9`. Perubahan working tree lokal setelah
-  commit tersebut belum ikut ke VM sampai di-commit, di-push, dan di-deploy ulang.
+### Pilihan B: domain sendiri melalui Named Cloudflare Tunnel
+
+```text
+Browser → HTTPS domain sendiri → Cloudflare → Named Tunnel → Caddy → Nuxt
+```
+
+Sesuai jika VM berada di jaringan lokal tanpa akses masuk publik. Rencananya:
+
+1. Siapkan domain pada Cloudflare dan buat named tunnel yang dikelola tetap.
+2. Simpan kredensial/token tunnel di VM melalui mekanisme secret yang sesuai,
+   bukan Git atau dokumentasi.
+3. Hubungkan hostname domain ke service `http://gateway:80`.
+4. Ganti Quick Tunnel dengan named tunnel dalam perubahan terencana.
+5. Pertahankan kontrak service `cloudflared` atau sesuaikan helper bila nama/topologi
+   berubah. Uji domain, restart terencana, dan auto-deploy setelah migrasi.
+
+Hostname domain tetap dikonfigurasi meskipun proses tunnel restart. Akses masih
+bisa terputus selama restart; alamat tetap bukan jaminan server selalu online.
+Caddy dapat tetap menggunakan HTTP internal pada pilihan ini.
+
+**Belum diputuskan:** domain, pengelola DNS, serta apakah VM punya akses IP publik
+atau port forwarding. IP lokal `192.168.10.95` tidak bisa langsung dijadikan
+alamat tujuan website publik dari internet.
+
+Referensi resmi:
+
+- [Caddy: HTTPS quick-start](https://caddyserver.com/docs/quick-starts/https)
+- [Cloudflare: setup tunnel](https://developers.cloudflare.com/tunnel/get-started/)
+- [Ubuntu: konfigurasi Nginx](https://ubuntu.com/server/docs/how-to/web-services/configure-nginx/)
+
+## 8. NEXT — CI/CD dan operasional (belum diterapkan)
+
+- Tambahkan CI relevan (lint/typecheck/test/build) untuk pull request dan jadikan
+  hasilnya syarat merge/deploy. Jalankan pemeriksaan kode PR di lingkungan terpisah
+  dari runner produksi.
+- Uji kegagalan deploy dan rollback secara terencana. Pertimbangkan dua instance
+  dan pengalihan traffic bila perlu mengurangi jeda release.
+- Tentukan retensi image/worktree; helper belum membersihkannya otomatis.
+- Pin versi/digest dan jadwalkan pembaruan image. Saat ini masih memakai tag
+  `node:24-slim`, `caddy:2`, dan `cloudflare/cloudflared:latest`.
+- Tambahkan monitoring dan uji pemulihan/reboot setelah alamat stabil tersedia.
+  `restart: unless-stopped` membantu restart, tetapi bukan jaminan uptime.
+- Rancang deployment API, healthcheck, konfigurasi, database/migrasi, dan backup
+  saat backend siap. Backend belum termasuk flow request maupun deployment ini.
+
+## 9. Handoff untuk agent/operator berikutnya
+
+- Baca workflow, helper, dan spec sebelum memberi command; cocokkan salinan
+  root-owned di VM jika perilaku tidak sesuai repository.
+- Bedakan output VM, konfigurasi repository, dan rencana NEXT.
+- Berikan satu langkah VM per giliran saat pengguna menjalankan command manual;
+  jelaskan apakah membaca status atau mengubah layanan.
+- Jangan gunakan prosedur lama full-stack `compose up -d` untuk update frontend
+  rutin. Jangan hentikan tunnel untuk diagnosis yang penyebabnya belum jelas.
+- Push tidak otomatis memperbarui `.env`, salinan root-owned, atau HEAD checkout awal.
+- URL merespons 200 tidak membuktikan commit terbaru sudah ter-deploy.
+- Jangan membagikan secret atau melakukan full system upgrade sebagai langkah
+  troubleshooting otomatis.
+- Pada snapshot ini, penyebab tunnel mulai ulang dan status push terbaru masih
+  perlu dibuktikan melalui log/status Actions dan VM.
+- Perbaikan SSH 443 perlu di-commit/push, lalu diambil di VM melalui SSH 443
+  sebelum memasang ulang `/usr/local/sbin/deploy-eth-web`. Push saja tidak
+  memperbarui helper root-owned. Setelah terpasang, ulangi workflow dan periksa
+  image serta website. Jangan restart gateway/tunnel untuk perbaikan ini.

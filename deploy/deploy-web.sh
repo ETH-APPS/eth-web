@@ -47,7 +47,7 @@ git_as_ethapps() {
   runuser -u ethapps -- env -i \
     HOME='/home/ethapps' \
     PATH='/usr/bin:/bin' \
-    GIT_SSH_COMMAND="ssh -i ${DEPLOY_KEY} -o IdentitiesOnly=yes -o BatchMode=yes -o StrictHostKeyChecking=yes -o UserKnownHostsFile=${KNOWN_HOSTS}" \
+    GIT_SSH_COMMAND="ssh -p 443 -o Hostname=ssh.github.com -o HostKeyAlias=github.com -o ConnectTimeout=15 -i ${DEPLOY_KEY} -o IdentitiesOnly=yes -o BatchMode=yes -o StrictHostKeyChecking=yes -o UserKnownHostsFile=${KNOWN_HOSTS}" \
     git -C "$workdir" "$@"
 }
 
