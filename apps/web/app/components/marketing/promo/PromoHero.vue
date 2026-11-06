@@ -25,13 +25,13 @@ withDefaults(defineProps<{
 </script>
 
 <template>
-  <section class="bg-bg-0 py-6 sm:py-8 lg:py-20">
+  <section aria-labelledby="promo-page-title" class="bg-bg-0 py-6 sm:py-8 lg:py-20">
     <UiContainer>
-      <header class="mx-auto hidden max-w-[800px] text-center lg:block">
+      <header class="sr-only lg:not-sr-only lg:mx-auto lg:max-w-[800px] lg:text-center lg:block">
         <p class="text-[20px] font-normal text-primary-700">
           {{ eyebrow }}
         </p>
-        <h1 class="mt-2 text-[48px] font-semibold leading-tight text-primary-500">
+        <h1 id="promo-page-title" class="mt-2 text-[48px] font-semibold leading-tight text-primary-500">
           {{ title }} 
         </h1>
         <p

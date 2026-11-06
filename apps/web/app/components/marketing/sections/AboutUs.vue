@@ -76,10 +76,8 @@ const serviceIcons: Record<AboutServiceIcon, Component> = {
           <span class="hidden lg:inline">{{ eyebrow }}</span>
         </p>
 
-        <div class="mx-auto mt-3 w-full max-w-[360px] sm:max-w-[460px] lg:w-fit">
-          <h1 :id="titleId" class="sr-only">
-            ETH Cargo
-          </h1>
+        <h1 :id="titleId" class="mx-auto mt-3 w-full max-w-[360px] sm:max-w-[460px] lg:w-fit">
+          <span class="sr-only">{{ eyebrow }} </span>
           <img
             :src="logoUrl"
             width="600"
@@ -87,7 +85,7 @@ const serviceIcons: Record<AboutServiceIcon, Component> = {
             alt="ETH Cargo"
             class="h-auto w-full object-contain lg:w-[460px]"
           >
-        </div>
+        </h1>
  
         <p class="mx-auto mt-10 text-justify text-[15px] font-normal leading-[1.5] text-text-secondary lg:text-center lg:text-2xl lg:leading-[1.4]">
           {{ description }}

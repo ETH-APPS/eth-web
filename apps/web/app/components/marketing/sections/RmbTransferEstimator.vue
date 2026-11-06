@@ -114,8 +114,8 @@ function resetEstimate() {
             </div>
           </div>
 
-          <div class="mx-auto mt-14 hidden max-w-[560px] grid-cols-3 gap-x-8 gap-y-6 lg:grid">
-            <div
+          <ul aria-label="Metode pembayaran transfer RMB" class="mx-auto mt-14 hidden max-w-[560px] grid-cols-3 gap-x-8 gap-y-6 lg:grid">
+            <li
               v-for="logo in brandLogos"
               :key="logo.name"
               class="flex h-14 items-center justify-center"
@@ -126,11 +126,11 @@ function resetEstimate() {
                 class="h-auto max-w-full object-contain"
                 :class="logo.widthClass"
               >
-            </div>
-          </div>
+            </li>
+          </ul>
 
           <a
-            href="#rmb-calculator"
+            href="#rmb-transfer-workflow"
             class="mx-auto mt-12 hidden w-fit items-center gap-2 text-[16px] font-medium text-text-disable transition-colors hover:text-primary-500 focus-visible:rounded focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500 lg:flex"
           >
             <span>Pelajari Prosedur Transfer RMB</span>
@@ -140,10 +140,11 @@ function resetEstimate() {
 
         <form
           id="rmb-calculator"
+          aria-labelledby="rmb-calculator-title"
           class="overflow-hidden rounded-[20px] border border-border-200 bg-bg-0 shadow-md"
           @submit.prevent="calculateEstimate"
         >
-          <h2 class="bg-primary-500 px-4 py-4 text-center text-[16px] font-semibold text-bg-0 lg:px-6 lg:text-start lg:text-[20px]">
+          <h2 id="rmb-calculator-title" class="bg-primary-500 px-4 py-4 text-center text-[16px] font-semibold text-bg-0 lg:px-6 lg:text-start lg:text-[20px]">
             Hitung Estimasi Transfer RMB
           </h2>
 
@@ -203,10 +204,14 @@ function resetEstimate() {
             </dl>
 
             <div class="flex flex-col items-center gap-1 py-5 text-center lg:flex-row lg:justify-between lg:gap-0 lg:text-start">
-              <p class="text-[16px] font-normal text-text-secondary">
+              <p id="rmb-total-label" class="text-[16px] font-normal text-text-secondary">
                 Total Pembayaran
               </p>
-              <output class="text-[24px] font-semibold text-primary-500 lg:text-[22px]">
+              <output
+                for="rmb-amount rmb-account"
+                aria-labelledby="rmb-total-label"
+                class="text-[24px] font-semibold text-primary-500 lg:text-[22px]"
+              >
                 {{ formatRupiah(totalPayment) }}
               </output>
             </div>
@@ -232,7 +237,7 @@ function resetEstimate() {
         </form>
 
         <a
-          href="#rmb-calculator"
+          href="#rmb-transfer-workflow"
           class="mx-auto flex w-fit items-center gap-2 text-center text-[16px] font-medium italic text-text-disable transition-colors hover:text-primary-500 focus-visible:rounded focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500 lg:hidden"
         >
           <span>Pelajari Prosedur Transfer RMB</span>

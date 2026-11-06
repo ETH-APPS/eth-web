@@ -71,6 +71,7 @@ const policyDocuments = [
     id: 'terms-and-conditions',
     title: 'Syarat & Ketentuan',
     updatedAt: '24 SEP 2026',
+    updatedAtIso: '2026-09-24',
     content: createPolicyContent('Syarat dan Ketentuan', [
       'Penggunaan dan cakupan layanan ETH Cargo.',
       'Tanggung jawab serta kewajiban pengguna layanan.',
@@ -82,6 +83,7 @@ const policyDocuments = [
     id: 'privacy-policy',
     title: 'Kebijakan Privasi',
     updatedAt: '22 SEP 2026',
+    updatedAtIso: '2026-09-22',
     content: createPolicyContent('Kebijakan Privasi', [
       'Jenis data pribadi yang dikumpulkan.',
       'Tujuan penggunaan dan pengolahan data.',
@@ -93,6 +95,7 @@ const policyDocuments = [
     id: 'purchase-policy',
     title: 'Kebijakan Titip Beli',
     updatedAt: '20 SEP 2026',
+    updatedAtIso: '2026-09-20',
     content: createPolicyContent('Kebijakan Titip Beli', [
       'Prosedur pengajuan pembelian barang.',
       'Konfirmasi harga dan ketersediaan produk.',
@@ -104,6 +107,7 @@ const policyDocuments = [
     id: 'fcl-policy',
     title: 'Kebijakan FCL Cargo',
     updatedAt: '18 SEP 2026',
+    updatedAtIso: '2026-09-18',
     content: createPolicyContent('Kebijakan FCL Cargo', [
       'Penggunaan kontainer penuh untuk satu pengirim.',
       'Ketentuan kapasitas dan jenis kontainer.',
@@ -115,6 +119,7 @@ const policyDocuments = [
     id: 'lcl-policy',
     title: 'Kebijakan LCL Cargo',
     updatedAt: '16 SEP 2026',
+    updatedAtIso: '2026-09-16',
     content: createPolicyContent('Kebijakan LCL Cargo', [
       'Perhitungan volume dan minimum pengiriman.',
       'Proses konsolidasi muatan dalam kontainer.',
@@ -126,6 +131,7 @@ const policyDocuments = [
     id: 'air-cargo-policy',
     title: 'Kebijakan Air Cargo',
     updatedAt: '14 SEP 2026',
+    updatedAtIso: '2026-09-14',
     content: createPolicyContent('Kebijakan Air Cargo', [
       'Perhitungan berat aktual dan volumetrik.',
       'Ketentuan barang sensitif dan berbahaya.',
@@ -137,6 +143,7 @@ const policyDocuments = [
     id: 'transfer-rmb-policy',
     title: 'Kebijakan Transfer RMB',
     updatedAt: '12 SEP 2026',
+    updatedAtIso: '2026-09-12',
     content: createPolicyContent('Kebijakan Transfer RMB', [
       'Verifikasi penerima dan rekening tujuan.',
       'Konfirmasi nominal serta nilai tukar transaksi.',
@@ -148,6 +155,7 @@ const policyDocuments = [
     id: 'transfer-rmb-notice',
     title: 'Pemberitahuan Transfer RMB',
     updatedAt: '10 SEP 2026',
+    updatedAtIso: '2026-09-10',
     content: createPolicyContent('Pemberitahuan Transfer RMB', [
       'Batas waktu pengajuan transaksi harian.',
       'Perubahan nilai tukar dan biaya layanan.',

@@ -141,8 +141,8 @@ onBeforeUnmount(() => {
 
       <div class="mx-auto mt-8 grid max-w-[1080px] grid-cols-1 items-start gap-6 lg:grid-cols-[300px_minmax(0,1fr)]">
         <aside class="hidden lg:sticky lg:top-[90px] lg:block">
-          <div class="rounded-2xl border border-border-200 bg-white p-4 shadow-md">
-            <h2 class="text-[20px] font-medium text-primary-500">
+          <nav aria-labelledby="article-toc-title" class="rounded-2xl border border-border-200 bg-white p-4 shadow-md">
+            <h2 id="article-toc-title" class="text-[20px] font-medium text-primary-500">
               Daftar isi
             </h2>
 
@@ -163,6 +163,7 @@ onBeforeUnmount(() => {
                     type="button"
                     :aria-label="`${isExpanded(section.id) ? 'Tutup' : 'Buka'} subbagian ${section.title}`"
                     :aria-expanded="isExpanded(section.id)"
+                    :aria-controls="`toc-children-${section.id}`"
                     class="flex size-5 shrink-0 items-center justify-center rounded text-primary-500 hover:bg-primary-50"
                     @click="toggleSection(section.id)"
                   >
@@ -173,6 +174,8 @@ onBeforeUnmount(() => {
 
                 <div
                   v-if="section.children.length"
+                  :id="`toc-children-${section.id}`"
+                  :inert="!isExpanded(section.id)"
                   class="grid transition-[grid-template-rows,opacity] duration-200"
                   :class="isExpanded(section.id) ? 'mt-2 grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0'"
                 >
@@ -194,14 +197,14 @@ onBeforeUnmount(() => {
                 </div>
               </li>
             </ol>
-          </div>
+          </nav>
 
           <div class="mt-4">
             <MarketingBlogArticleCtaBanner />
           </div>
         </aside>
 
-        <article class="min-w-0 text-[14px] leading-[1.65] text-text-secondary">
+        <article aria-labelledby="article-detail-title" class="min-w-0 text-[14px] leading-[1.65] text-text-secondary">
           <section class="overflow-hidden rounded-xl border border-border-200">
             <h2 class="bg-border-200 px-4 py-3 text-[14px] font-semibold text-primary-500">
               Key Points

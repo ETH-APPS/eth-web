@@ -22,6 +22,10 @@ useSeoMeta({
 })
 
 const heroServices = ['Sea Cargo', 'Air Cargo']
+const heroServiceLinks = {
+  'Sea Cargo': '#sea-freight',
+  'Air Cargo': '#air-freight',
+}
 const heroHighlights = [
   { label: 'Guaranteed\nSafety', icon: ShieldCheck },
   { label: '24/7\nLive Tracking', icon: Clock3 },
@@ -57,11 +61,14 @@ const cargoBanner = {
   <CargoLandingHero
     title-id="multinational-cargo-title"
     eyebrow="Multinational Cargo"
+    include-eyebrow-in-title
     title="America"
     description="Solusi pengiriman kargo laut dan udara dari dan menuju Amerika yang aman, transparan, dan terintegrasi untuk mendukung kebutuhan logistik internasional bisnis Anda."
     service-label="In this page"
     :services="heroServices"
+    :service-links="heroServiceLinks"
     tracking-label="Track Shipment"
+    tracking-to="/live-tracking"
     quote-label="Get a Quote"
     :image="multinationalCargoHeroUrl"
     image-alt="Pelabuhan dan bandara kargo untuk layanan pengiriman multinational ETH Cargo"

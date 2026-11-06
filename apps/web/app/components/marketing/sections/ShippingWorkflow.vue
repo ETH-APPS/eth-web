@@ -167,7 +167,7 @@ onBeforeUnmount(() => {
             <button
               type="button"
               :aria-label="`Tampilkan langkah ${index + 1}: ${step.title}`"
-              :aria-pressed="activeStep === index"
+              :aria-current="activeStep === index ? 'step' : undefined"
               class="relative z-10 flex size-8 items-center justify-center rounded-full text-[15px] font-semibold transition-[background-color,color,scale] duration-200 hover:scale-105 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500"
               :class="
                 index <= circleStep
@@ -180,18 +180,15 @@ onBeforeUnmount(() => {
             </button>
           </div>
 
-          <button
-            type="button"
-            class="w-full rounded-xl border p-3 text-left transition-[border-color,box-shadow] duration-200 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500"
+          <div
+            class="relative w-full rounded-xl border p-3 text-left transition-[border-color,box-shadow] duration-200 has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-primary-500"
             :class="
               activeStep === index
                 ? 'border-primary-500 shadow-[0_5px_12px_rgba(15,23,42,0.08)]'
                 : 'border-transparent hover:border-border-200'
             "
-            :aria-pressed="activeStep === index"
-            @click="selectStep(index)"
           >
-            <span class="flex items-center gap-2.5">
+            <h3 class="flex items-center gap-2.5">
               <Layers3
                 :size="21"
                 :stroke-width="1.8"
@@ -199,17 +196,21 @@ onBeforeUnmount(() => {
                 class="shrink-0 text-primary-500"
               />
 
-              <span class="text-[16px] font-medium text-slate-800">
+              <button
+                type="button"
+                class="text-left text-[16px] font-medium text-slate-800 after:absolute after:inset-0 after:rounded-xl after:content-[''] focus-visible:outline-none"
+                @click="selectStep(index)"
+              >
                 {{ step.title }}
-              </span>
-            </span>
+              </button>
+            </h3>
 
-            <span
+            <p
               class="mt-3 block text-[12px] leading-[1.5] text-slate-700"
             >
               {{ step.description }}
-            </span>
-          </button>
+            </p>
+          </div>
         </li>
       </ol>
 

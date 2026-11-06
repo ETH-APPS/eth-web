@@ -25,6 +25,9 @@ const menuComponents: Partial<Record<NavigationLabel, Component>> = {
 }
 
 const route = useRoute()
+const quoteTo = computed(() => route.path === '/calculator-transfer-rmb'
+  ? '/transfer-rmb#transfer-rmb-quote'
+  : quoteNavigation.to)
 
 const isLight = computed(() => props.variant === 'light')
 const isScrolled = ref(false)
@@ -98,8 +101,16 @@ function closeMobileMenu() {
 }
 
 function handleEscape(event: KeyboardEvent) {
-  if (event.key === 'Escape' && isMobileMenuOpen.value) {
+  if (event.key !== 'Escape') return
+
+  if (isMobileMenuOpen.value) {
     closeMobileMenu()
+  }
+
+  if (activeMenu.value) {
+    const menu = activeMenu.value
+    document.getElementById(`navigation-trigger-${menu}`)?.focus()
+    closeAllMenus()
   }
 }
 
@@ -196,16 +207,18 @@ onBeforeUnmount(() => {
             @mouseleave="closeMenu(item.label)"
             @focusout="handleMenuFocusOut(item.label, $event)"
           >
-            <NuxtLink
-              :to="item.to"
+            <button
+              :id="`navigation-trigger-${item.label}`"
+              type="button"
               class="group flex items-center gap-2 rounded-md px-2 py-2 text-sm font-regular transition-colors focus-visible:outline-2 focus-visible:outline-offset-2"
               :class="activeMenu === item.label
                 ? 'text-primary-500 focus-visible:outline-primary-500'
                 : useLightStyle
                   ? 'text-slate-700 hover:text-primary-500 focus-visible:outline-primary-500'
                   : 'text-white hover:text-primary-200 focus-visible:outline-white'"
-              :aria-haspopup="getMenuComponent(item.label) ? 'true' : undefined"
               :aria-expanded="getMenuComponent(item.label) ? activeMenu === item.label : undefined"
+              :aria-controls="getMenuComponent(item.label) ? `navigation-panel-${item.label}` : undefined"
+              @click="openMenu(item.label)"
               @mouseenter="openMenu(item.label)"
               @focus="openMenu(item.label)"
             >
@@ -227,10 +240,13 @@ onBeforeUnmount(() => {
                   stroke-linejoin="round"
                 />
               </svg>
-            </NuxtLink>
+            </button>
 
             <div
               v-if="getMenuComponent(item.label)"
+              :id="`navigation-panel-${item.label}`"
+              :aria-hidden="activeMenu !== item.label"
+              :inert="activeMenu !== item.label"
               class="absolute inset-x-0 top-full border-y border-border-200 bg-white shadow-[0_22px_34px_-12px_rgba(15,23,42,0.28)] transition-[visibility] duration-0 [contain:layout]"
               :class="activeMenu === item.label
                 ? 'visible delay-0'
@@ -255,7 +271,7 @@ onBeforeUnmount(() => {
       </nav>
 
       <NuxtLink
-        :to="quoteNavigation.to"
+        :to="quoteTo"
         class="hidden h-9 shrink-0 items-center gap-1 rounded-lg bg-primary-500 px-3 text-sm text-white shadow-lg shadow-black/10 transition-colors hover:bg-primary-600 focus-visible:outline-2 focus-visible:outline-offset-4 lg:flex"
         :class="useLightStyle ? 'focus-visible:outline-primary-500' : 'focus-visible:outline-white'"
       >
@@ -295,7 +311,7 @@ onBeforeUnmount(() => {
           id="mobile-navigation"
           class="fixed inset-0 z-[100] overflow-y-auto bg-bg-0 lg:hidden"
         >
-          <MarketingMobileNavigation @close="closeMobileMenu" />
+          <MarketingMobileNavigation :quote-to="quoteTo" @close="closeMobileMenu" />
         </div>
       </Transition>
     </Teleport>

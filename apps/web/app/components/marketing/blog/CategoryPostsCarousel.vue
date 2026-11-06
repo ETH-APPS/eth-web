@@ -170,6 +170,7 @@ onBeforeUnmount(() => {
 
           <NuxtLink
             :to="viewAllTo"
+            :aria-label="`View All ${title}`"
             class="inline-flex shrink-0 items-center gap-2 text-[13px] font-medium text-primary-500 transition-colors hover:text-primary-600 focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-primary-500"
           >
             <span>View All</span>
@@ -178,11 +179,10 @@ onBeforeUnmount(() => {
         </div>
 
         <div class="mt-5 space-y-4 lg:hidden">
-          <NuxtLink
+          <article
             v-for="post in posts.slice(0, 4)"
             :key="post.id"
-            :to="post.to?.startsWith('/') ? post.to : `/blog/${post.id}`"
-            class="group flex min-w-0 flex-col overflow-hidden rounded-xl bg-white shadow-[0_2px_8px_rgba(15,23,42,0.04)] transition-shadow hover:shadow-md focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500"
+            class="relative group flex min-w-0 flex-col overflow-hidden rounded-xl bg-white shadow-[0_2px_8px_rgba(15,23,42,0.04)] transition-shadow hover:shadow-md focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500"
           >
             <div class="aspect-[16/9] overflow-hidden bg-bg-200">
               <img
@@ -193,15 +193,20 @@ onBeforeUnmount(() => {
             </div>
 
             <div class="flex flex-col px-2.5 pb-3 pt-2.5">
-              <h3 class="line-clamp-2 text-[15px] font-normal leading-6 text-text-secondary transition-colors group-hover:text-primary-500 group-focus-visible:text-primary-500">
-                {{ post.title }}
+              <h3 class="line-clamp-2 text-[15px] font-normal leading-6 text-text-secondary transition-colors group-hover:text-primary-500 group-has-[:focus-visible]:text-primary-500">
+                <NuxtLink
+                  :to="post.to?.startsWith('/') ? post.to : `/blog/${post.id}`"
+                  class="after:absolute after:inset-0 after:z-10 after:rounded-xl focus-visible:outline-primary-500"
+                >
+                  {{ post.title }}
+                </NuxtLink>
               </h3>
 
               <ul class="mt-3 flex flex-wrap gap-2" aria-label="Tag artikel">
                 <li v-for="tag in post.tags" :key="tag">
                   <button
                     type="button"
-                    class="rounded bg-bg-100 px-2 py-1 text-[12px] text-primary-500 transition-colors hover:bg-primary-50 focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-primary-500"
+                    class="relative z-20 rounded bg-bg-100 px-2 py-1 text-[12px] text-primary-500 transition-colors hover:bg-primary-50 focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-primary-500"
                     @click.prevent.stop="goToTag(tag)"
                   >
                     {{ tag }}
@@ -216,12 +221,12 @@ onBeforeUnmount(() => {
                 <ArrowUpRight
                   :size="24"
                   :stroke-width="1.9"
-                  class="shrink-0 text-primary-500 opacity-0 transition-opacity duration-200 group-hover:opacity-100 group-focus-visible:opacity-100"
+                  class="shrink-0 text-primary-500 opacity-0 transition-opacity duration-200 group-hover:opacity-100 group-has-[:focus-visible]:opacity-100"
                   aria-hidden="true"
                 />
               </div>
             </div>
-          </NuxtLink>
+          </article>
         </div>
 
         <div class="relative mt-5 hidden px-8 sm:px-10 lg:flow-root lg:px-[58px]">
@@ -240,13 +245,12 @@ onBeforeUnmount(() => {
             @scroll="scheduleNormalize"
           >
             <template v-for="setIndex in sets" :key="setIndex">
-              <NuxtLink
+              <article
                 v-for="post in posts"
                 :key="`${setIndex}-${post.id}`"
-                :to="post.to?.startsWith('/') ? post.to : `/blog/${post.id}`"
                 :inert="setIndex === 1 ? undefined : true"
                 data-category-card
-                class="category-post-card group flex min-w-0 shrink-0 snap-start flex-col overflow-hidden rounded-xl bg-white shadow-[0_2px_8px_rgba(15,23,42,0.04)] transition-shadow hover:shadow-md focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500"
+                class="relative category-post-card group flex min-w-0 shrink-0 snap-start flex-col overflow-hidden rounded-xl bg-white shadow-[0_2px_8px_rgba(15,23,42,0.04)] transition-shadow hover:shadow-md focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500"
               >
                 <div class="aspect-[16/9] overflow-hidden bg-bg-200">
                   <img
@@ -257,8 +261,13 @@ onBeforeUnmount(() => {
                 </div>
 
                 <div class="flex min-h-[144px] flex-1 flex-col px-2.5 pb-3 pt-2.5">
-                  <h3 class="line-clamp-2 text-[16px] font-normal leading-6 text-text-secondary transition-colors group-hover:text-primary-500 group-focus-visible:text-primary-500">
-                    {{ post.title }}
+                  <h3 class="line-clamp-2 text-[16px] font-normal leading-6 text-text-secondary transition-colors group-hover:text-primary-500 group-has-[:focus-visible]:text-primary-500">
+                    <NuxtLink
+                      :to="post.to?.startsWith('/') ? post.to : `/blog/${post.id}`"
+                      class="after:absolute after:inset-0 after:z-10 after:rounded-xl focus-visible:outline-primary-500"
+                    >
+                      {{ post.title }}
+                    </NuxtLink>
                   </h3>
 
                   <ul class="mt-3 flex flex-wrap gap-2" aria-label="Tag artikel">
@@ -268,7 +277,7 @@ onBeforeUnmount(() => {
                     >
                       <button
                         type="button"
-                        class="rounded bg-bg-100 px-2 py-1 text-[12px] text-primary-500 transition-colors hover:bg-primary-50 focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-primary-500"
+                        class="relative z-20 rounded bg-bg-100 px-2 py-1 text-[12px] text-primary-500 transition-colors hover:bg-primary-50 focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-primary-500"
                         @click.prevent.stop="goToTag(tag)"
                       >
                         {{ tag }}
@@ -283,12 +292,12 @@ onBeforeUnmount(() => {
                     <ArrowUpRight
                       :size="24"
                       :stroke-width="1.9"
-                      class="shrink-0 text-primary-500 opacity-0 transition-opacity duration-200 group-hover:opacity-100 group-focus-visible:opacity-100"
+                      class="shrink-0 text-primary-500 opacity-0 transition-opacity duration-200 group-hover:opacity-100 group-has-[:focus-visible]:opacity-100"
                       aria-hidden="true"
                     />
                   </div>
                 </div>
-              </NuxtLink>
+              </article>
             </template>
           </div>
 

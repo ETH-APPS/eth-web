@@ -22,12 +22,12 @@ const showMultinationalRoutes = computed(() => (
 
     <main>
       <slot />
-    </main>
 
-    <MarketingSectionsMultinationalRoutes
-      v-if="showMultinationalRoutes"
-      :show-top-border="!['/china-cargo', '/sea-freight', '/air-freight', '/multinational-cargo', '/live-tracking'].includes(route.path)"
-    />
+      <MarketingSectionsMultinationalRoutes
+        v-if="showMultinationalRoutes"
+        :show-top-border="!['/china-cargo', '/sea-freight', '/air-freight', '/multinational-cargo', '/live-tracking'].includes(route.path)"
+      />
+    </main>
     <MarketingFooter />
   </div>
 </template>

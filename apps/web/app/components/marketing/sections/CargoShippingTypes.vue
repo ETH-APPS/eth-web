@@ -132,6 +132,7 @@ function serviceIcon(mode: CargoShippingType['mode']) {
 
               <NuxtLink
                 :to="service.to"
+                :aria-label="`${service.linkLabel ?? 'Pelajari'} ${service.title}`"
                 class="inline-flex h-9 shrink-0 items-center gap-2 rounded-full bg-primary-500 px-4 text-[14px] font-medium text-bg-0 transition-[background-color,transform] duration-200 hover:-translate-y-0.5 hover:bg-primary-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500"
               >
                 <span>{{ service.linkLabel ?? 'Pelajari' }}</span>

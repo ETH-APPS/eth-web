@@ -78,8 +78,8 @@ const sourcingBanner = illustratedCtaBanners.sourcing
     section-id="sourcing-faq"
     :default-open-index="0"
   />
-  <div id="sourcing-quote" class="pb-6 lg:pb-10">
-    <UiContainer>
+  <div id="quote" class="pb-6 lg:pb-10">
+    <UiContainer id="sourcing-quote">
       <MarketingIllustratedCtaBanner
         v-bind="sourcingBanner"
         variant="contained"

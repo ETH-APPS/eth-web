@@ -63,6 +63,8 @@ const trackingPin = ref(props.initialPin)
 const hasSearched = ref(props.initialShowResult)
 const searchedCaseNumber = ref(props.initialPin || props.result.caseNumber)
 const titleId = computed(() => `${props.sectionId}-title`)
+const resultTitleId = computed(() => `${props.sectionId}-result-title`)
+const searchAnnouncement = ref('')
 
 const checkpointIcons = {
   seller: Store,
@@ -80,9 +82,16 @@ function checkpointIcon(kind: CheckpointKind) {
   return checkpointIcons[kind]
 }
 
-function submitSearch() {
+async function submitSearch() {
+  searchAnnouncement.value = ''
   searchedCaseNumber.value = trackingPin.value
   hasSearched.value = true
+  await nextTick()
+  searchAnnouncement.value = `Hasil tracking ditampilkan. Status terakhir: ${props.result.currentStatus}.`
+}
+
+function eventStatusLabel(status: EventStatus) {
+  return { complete: 'Selesai', current: 'Saat ini', pending: 'Menunggu' }[status]
 }
 </script>
 
@@ -106,6 +115,7 @@ function submitSearch() {
       </div>
 
       <form
+        :aria-labelledby="titleId"
         class="mx-auto mt-10 max-w-[920px] rounded-[36px] border border-border-200 bg-bg-0 p-5 shadow-[0_10px_20px_rgba(15,23,42,0.12)] sm:p-7"
         @submit.prevent="submitSearch"
       >
@@ -200,6 +210,8 @@ function submitSearch() {
 
       <div aria-hidden="true" class="mt-12 hidden h-px bg-border-200 lg:block" />
 
+      <p role="status" aria-atomic="true" class="sr-only">{{ searchAnnouncement }}</p>
+
       <Transition
         enter-active-class="transition duration-300 ease-out"
         enter-from-class="translate-y-3 opacity-0"
@@ -209,13 +221,15 @@ function submitSearch() {
           v-if="hasSearched"
           class="mt-8"
         >
-          <article class="rounded-[18px] border border-border-200 bg-bg-0 p-7">
-            <p class="text-[16px] font-normal text-text-tertiary">
+          <article :aria-labelledby="resultTitleId" class="rounded-[18px] border border-border-200 bg-bg-0 p-7">
+            <h2 :id="resultTitleId">
+            <span class="block text-[16px] font-normal text-text-tertiary">
               Case
-            </p>
-            <p class="mt-1 text-[28px] font-semibold text-primary-500">
+            </span>
+            <span class="mt-1 block text-[28px] font-semibold text-primary-500">
               {{ searchedCaseNumber }}
-            </p>
+            </span>
+            </h2>
 
             <dl class="mt-8 grid gap-3 text-[16px] font-normal sm:grid-cols-[150px_1fr]">
               <dt class="text-text-tertiary">Jenis Layanan:</dt>
@@ -245,12 +259,12 @@ function submitSearch() {
                           aria-hidden="true"
                         />
                       </span>
-                      <h2
+                      <h3
                         class="whitespace-nowrap text-[24px] font-medium"
                         :class="checkpoint.active ? 'text-primary-500' : 'text-text-secondary'"
                       >
                         {{ checkpoint.location }}
-                      </h2>
+                      </h3>
                     </div>
                     <p class="ml-9 mt-1 text-[12px] text-primary-500">
                       {{ checkpoint.label }}
@@ -274,7 +288,9 @@ function submitSearch() {
                         <span v-else aria-hidden="true" />
                         <span aria-hidden="true" class="h-px w-3 bg-border-200" />
                         <span :class="event.status === 'current' ? 'font-medium text-primary-500' : 'text-text-tertiary'">
+                          <span class="sr-only">{{ event.label }}: </span>
                           {{ event.value }}
+                          <span class="sr-only"> — {{ eventStatusLabel(event.status) }}</span>
                         </span>
                       </li>
                     </ul>
@@ -313,6 +329,7 @@ function submitSearch() {
                         </span>
                         <span :class="event.status === 'current' || event.label === 'Depart' ? 'text-primary-500' : 'text-text-tertiary'">
                           {{ event.value }}
+                          <span class="sr-only"> — {{ eventStatusLabel(event.status) }}</span>
                         </span>
                       </li>
                     </ul>

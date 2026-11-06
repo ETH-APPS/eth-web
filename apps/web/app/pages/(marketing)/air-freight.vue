@@ -111,7 +111,7 @@ const freightBanner = {
     eta="3 - 7 hari"
     :features="airCargoFeatures"
     tracking-label="Lacak Pengiriman"
-    tracking-to="/#main-services"
+    tracking-to="/live-tracking"
     cta-label="Konsultasi Kargo Udara"
     cta-to="#quote"
   />
@@ -131,6 +131,7 @@ const freightBanner = {
     fixed-cargo-service="Air Cargo"
     guide-prompt="Pelajari panduan perhitungan berat volume"
     guide-label="Selengkapnya"
+    guide-to="#faq"
   />
   <MarketingSectionsFaq :content="faqContent" />
   <div id="quote" class="pb-6 lg:pb-10">

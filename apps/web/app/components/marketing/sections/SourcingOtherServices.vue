@@ -41,8 +41,7 @@ const services = [
           id="sourcing-other-services-title"
           class="text-[24px] font-bold leading-tight text-primary-500 lg:text-[32px] lg:font-semibold"
         >
-          <span class="lg:hidden">Hitung Estimasi Tarif</span>
-          <span class="hidden lg:inline">Layanan ETH Cargo Lainnya</span>
+          Layanan ETH Cargo Lainnya
         </h2>
         <p class="mx-auto mt-6 max-w-[820px] text-[14px] font-normal leading-[1.5] text-text-tertiary lg:mt-5 lg:text-[20px]">
           Lengkapi kebutuhan impor bisnis Anda dengan ekosistem layanan B2B<br class="hidden lg:block">

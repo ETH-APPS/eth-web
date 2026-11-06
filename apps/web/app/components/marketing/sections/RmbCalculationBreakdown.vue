@@ -26,15 +26,17 @@ import {
         </p>
       </div>
 
+      <p class="sr-only">RMB Amount dikalikan Rate, ditambah Admin Fee, sama dengan Total Payments.</p>
+
       <div class="mx-auto mt-10 flex max-w-[920px] flex-col items-center gap-3 md:grid md:grid-cols-[minmax(0,1fr)_40px_minmax(0,1fr)_40px_minmax(0,1fr)_40px_minmax(0,1.55fr)] md:gap-4">
-        <div class="w-full max-w-[300px] rounded-[18px] border border-border-200 bg-bg-0 px-4 py-4 md:max-w-none">
-          <p class="text-[14px] font-normal text-text-secondary">
+        <dl class="w-full max-w-[300px] rounded-[18px] border border-border-200 bg-bg-0 px-4 py-4 md:max-w-none">
+          <dt class="text-[14px] font-normal text-text-secondary">
             RMB Amount
-          </p>
-          <p class="mt-3 whitespace-nowrap text-[18px] font-medium text-text-secondary">
+          </dt>
+          <dd class="mt-3 whitespace-nowrap text-[18px] font-medium text-text-secondary">
             ¥ 999,990.99
-          </p>
-        </div>
+          </dd>
+        </dl>
 
         <X
           :size="30"
@@ -43,14 +45,14 @@ import {
           class="shrink-0 text-text-secondary"
         />
 
-        <div class="w-full max-w-[300px] rounded-[18px] border border-border-200 bg-bg-0 px-4 py-4 md:max-w-none">
-          <p class="text-[14px] font-normal text-text-secondary">
+        <dl class="w-full max-w-[300px] rounded-[18px] border border-border-200 bg-bg-0 px-4 py-4 md:max-w-none">
+          <dt class="text-[14px] font-normal text-text-secondary">
             Rate
-          </p>
-          <p class="mt-3 whitespace-nowrap text-[18px] font-medium text-text-secondary">
+          </dt>
+          <dd class="mt-3 whitespace-nowrap text-[18px] font-medium text-text-secondary">
             Rp 2,300.00
-          </p>
-        </div>
+          </dd>
+        </dl>
 
         <Plus
           :size="30"
@@ -59,14 +61,14 @@ import {
           class="shrink-0 text-text-secondary"
         />
 
-        <div class="w-full max-w-[300px] rounded-[18px] border border-border-200 bg-bg-0 px-4 py-4 md:max-w-none">
-          <p class="text-[14px] font-normal text-text-secondary">
+        <dl class="w-full max-w-[300px] rounded-[18px] border border-border-200 bg-bg-0 px-4 py-4 md:max-w-none">
+          <dt class="text-[14px] font-normal text-text-secondary">
             Admin Fee
-          </p>
-          <p class="mt-3 whitespace-nowrap text-[18px] font-medium text-text-secondary">
+          </dt>
+          <dd class="mt-3 whitespace-nowrap text-[18px] font-medium text-text-secondary">
             Rp 50,000.00
-          </p>
-        </div>
+          </dd>
+        </dl>
 
         <Equal
           :size="30"
@@ -75,14 +77,14 @@ import {
           class="shrink-0 text-text-secondary"
         />
 
-        <div class="w-full max-w-[300px] rounded-[18px] border border-border-200 bg-primary-50 px-4 py-4 md:max-w-none">
-          <p class="text-[14px] font-normal text-primary-500">
+        <dl class="w-full max-w-[300px] rounded-[18px] border border-border-200 bg-primary-50 px-4 py-4 md:max-w-none">
+          <dt class="text-[14px] font-normal text-primary-500">
             Total Payments
-          </p>
-          <p class="mt-3 whitespace-nowrap text-[20px] font-semibold text-primary-500">
+          </dt>
+          <dd class="mt-3 whitespace-nowrap text-[20px] font-semibold text-primary-500">
             Rp 999,999,999.00
-          </p>
-        </div>
+          </dd>
+        </dl>
       </div>
 
       <div class="mx-auto mt-8 grid max-w-[920px] gap-7 border-t-2 border-border-200 pt-8 md:grid-cols-3 md:gap-12">

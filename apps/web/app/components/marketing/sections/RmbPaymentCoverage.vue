@@ -87,14 +87,14 @@ const paymentChannels = [
           :key="channel.id"
           class="row-span-3 grid grid-rows-subgrid gap-y-0 rounded-[18px] border border-border-200 bg-bg-0 px-5 pb-6 pt-5 transition-[border-color,box-shadow] duration-200 hover:border-primary-500 hover:shadow-md"
         >
-          <div class="-my-3 flex h-16 items-center">
+          <h3 class="-my-3 flex h-16 items-center">
             <img
               :src="channel.logo"
               :alt="channel.title"
               class="w-auto object-contain object-left"
               :class="channel.logoClass"
             >
-          </div>
+          </h3>
 
           <p class="mt-4 text-[14px] font-normal leading-[1.45] text-text-secondary">
             {{ channel.description }}

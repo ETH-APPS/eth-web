@@ -139,7 +139,7 @@ const freightBanner = {
     eta="3 - 4 Minggu"
     :features="fclCargoFeatures"
     tracking-label="Lacak Pengiriman"
-    tracking-to="/#main-services"
+    tracking-to="/live-tracking"
     cta-label="Konsultasi FCL"
     cta-to="#quote"
   />
@@ -152,7 +152,7 @@ const freightBanner = {
     eta="3 - 4 Minggu"
     :features="lclCargoFeatures"
     tracking-label="Lacak Pengiriman"
-    tracking-to="/#main-services"
+    tracking-to="/live-tracking"
     cta-label="Konsultasi LCL"
     cta-to="#quote"
   />
@@ -171,6 +171,7 @@ const freightBanner = {
     description="Hitung perkiraan biaya pengiriman All-In kargo laut (LCL/FCL) dari China ke Indonesia secara otomatis untuk transparansi perencanaan biaya impor Anda."
     fixed-cargo-service="LCL CARGO"
     guide-prompt="Pelajari panduan pengkategorian produk"
+    guide-to="/calculator#import-cargo-categories"
   />
   <MarketingSectionsFaq :content="faqContent" />
   <div id="quote" class="pb-6 lg:pb-10">

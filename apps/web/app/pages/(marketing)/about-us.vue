@@ -59,8 +59,8 @@ const aboutBanner = illustratedCtaBanners.about
   <MarketingSectionsAboutDigitalFeatures />
   <MarketingSectionsAboutImportSupport />
   <MarketingSectionsMultinationalRoutes :show-top-border="false" />
-  <div id="about-quote">
-    <UiContainer>
+  <div id="quote">
+    <UiContainer id="about-quote">
       <MarketingIllustratedCtaBanner
         v-bind="aboutBanner"
         variant="contained"

@@ -71,6 +71,7 @@ const supportServices = [
           <div class="mt-auto flex justify-end pt-5">
             <NuxtLink
               :to="service.to"
+              :aria-label="`${service.ctaLabel} ${service.title}`"
               class="inline-flex h-10 items-center gap-2 rounded-xl px-5 text-[14px] font-medium text-primary-500 transition-colors duration-200 group-hover:bg-primary-500 group-hover:text-white group-focus-within:bg-primary-500 group-focus-within:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500"
             >
               <span>{{ service.ctaLabel }}</span>

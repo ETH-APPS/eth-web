@@ -45,20 +45,20 @@ const bankLogos = [
 const serviceLinks = [
   { label: 'Kargo Laut', to: '/sea-freight' },
   { label: 'Kargo Udara', to: '/air-freight' },
-  { label: 'Jasa Kargo China', to: '#sourcing' },
+  { label: 'Jasa Kargo China', to: '/china-cargo' },
   { label: 'Transfer RMB', to: '/transfer-rmb' },
   { label: 'Jasa Sourcing', to: '/sourcing' },
 ]
 
 const featureLinks = [
-  { label: 'Tentang Kami', to: '#why-us' },
-  { label: 'Simulasi Kargo', to: '#main-services' },
+  { label: 'Tentang Kami', to: '/about-us' },
+  { label: 'Simulasi Kargo', to: '/calculator' },
   { label: 'Apps (Soon)', to: '#footer' },
 ]
 
 const guideLinks = [
   { label: 'Complete Guide', to: '/complete-guide' },
-  { label: 'Proses Impor Barang', to: '#alur-pengiriman' },
+  { label: 'Proses Impor Barang', to: '/china-cargo#shipping-workflow' },
   { label: 'Insights', to: '/blog' },
 ]
 
@@ -68,7 +68,7 @@ const promoLinks = [
 ]
 
 const informationLinks = [
-  { label: 'Tentang Kami', to: '#why-us' },
+  { label: 'Tentang Kami', to: '/about-us' },
   { label: 'FAQ', to: '/faq' },
 ]
 

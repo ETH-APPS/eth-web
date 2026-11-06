@@ -127,12 +127,12 @@ onBeforeUnmount(clearAutoplay)
             </div>
 
             <div class="min-w-0">
-              <h1
+              <h2
                 :title="currentPost.title"
                 class="text-[32px] font-semibold leading-tight text-text-secondary lg:truncate"
               >
                 {{ currentPost.title }}
-              </h1>
+              </h2>
 
               <p class="mt-4 text-justify text-[16px] font-normal leading-[1.55] text-text-secondary lg:line-clamp-4 lg:min-h-[6.2em]">
                 {{ currentPost.description }}
@@ -174,6 +174,7 @@ onBeforeUnmount(clearAutoplay)
 
               <div class="mt-8 flex justify-end">
                 <NuxtLink
+                  :aria-label="`Read more ${currentPost.title}`"
                   :to="currentPost.to?.startsWith('/') ? currentPost.to : `/blog/${currentPost.id}`"
                   class="inline-flex items-center gap-2 rounded-md text-[16px] font-medium text-primary-500 transition-colors hover:text-primary-600 focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-primary-500"
                 >

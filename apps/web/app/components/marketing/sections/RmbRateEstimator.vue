@@ -35,6 +35,7 @@ const selectedTarget = ref<(typeof transferTargets)[number]>('Alipay')
       </div>
 
       <form
+        aria-labelledby="rmb-rate-estimator-title"
         class="mx-auto mt-8 max-w-[360px] rounded-[20px] border border-border-200 bg-bg-0 p-5 shadow-md sm:p-6"
         @submit.prevent
       >
@@ -87,19 +88,19 @@ const selectedTarget = ref<(typeof transferTargets)[number]>('Alipay')
           />
         </div>
 
-        <div class="mt-4 flex items-start justify-between gap-5 border-t border-border-200 pt-4 text-text-secondary">
-          <div>
+        <dl class="mt-4 flex items-start justify-between gap-5 border-t border-border-200 pt-4 text-text-secondary">
+          <dt>
             <p class="text-[14px] font-normal">
               Currency Rate
             </p>
             <p class="mt-0.5 text-[9px] font-normal text-text-tertiary">
               Currency rate based on BCA per ¥ 1
             </p>
-          </div>
-          <p class="shrink-0 text-[14px] font-medium">
+          </dt>
+          <dd class="shrink-0 text-[14px] font-medium">
             Rp 2,300
-          </p>
-        </div>
+          </dd>
+        </dl>
 
         <div class="mt-5 flex justify-end">
           <button

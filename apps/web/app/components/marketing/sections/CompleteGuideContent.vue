@@ -246,17 +246,17 @@ onBeforeUnmount(() => {
     </div>
 
     <UiContainer class="pt-5 lg:pt-0">
-      <header class="lg:hidden">
-        <p class="text-[16px] font-normal text-primary-700">
+      <header class="lg:text-center">
+        <p class="text-[16px] font-normal text-primary-700 lg:text-[20px] lg:uppercase">
           Dokumentasi Impor
         </p>
-        <h1 class="mt-1 text-[32px] font-semibold leading-tight text-primary-500">
+        <h1 class="mt-1 text-[32px] font-semibold leading-tight text-primary-500 lg:mx-auto lg:mt-2 lg:max-w-[800px] lg:text-[48px]">
           Panduan Lengkap Cara Import Barang dari China
         </h1>
-        <p class="mt-5 text-[16px] font-normal leading-[1.55] text-text-secondary">
+        <p class="mt-5 text-[16px] font-normal leading-[1.55] text-text-secondary lg:mx-auto lg:mt-4 lg:max-w-[760px] lg:text-[20px] lg:leading-[1.4]">
           Pelajari tahapan mudah dan transparan proses pengiriman cargo All-In Door-to-Door bersama ETH Cargo. Mulai dari pemilihan supplier, pengiriman gudang transit China, pengurusan bea cukai, hingga barang tiba di alamat Anda di Indonesia.
         </p>
-        <div class="mt-4 flex justify-center">
+        <div class="mt-4 flex justify-center lg:hidden">
           <NuxtLink
             to="/#quote"
             class="inline-flex min-h-11 items-center gap-2 rounded-xl bg-green-500 px-5 text-[14px] font-medium text-bg-0 transition-colors hover:bg-[#16a34a] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-500"
@@ -270,20 +270,8 @@ onBeforeUnmount(() => {
           alt="Pelabuhan, kontainer, truk, dan pesawat dalam proses impor ETH Cargo"
           width="520"
           height="390"
-          class="mt-6 aspect-[7/5] w-full rounded-xl object-cover"
+          class="mt-6 aspect-[7/5] w-full rounded-xl object-cover lg:hidden"
         >
-      </header>
-
-      <header class="hidden text-center lg:block">
-        <p class="text-[20px] font-normal uppercase text-primary-700">
-          Dokumentasi Impor
-        </p>
-        <h1 class="mx-auto mt-2 max-w-[800px] text-[48px] font-semibold leading-tight text-primary-500">
-          Panduan Lengkap Cara Import Barang dari China
-        </h1>
-        <p class="mx-auto mt-4 max-w-[760px] text-[20px] font-normal leading-[1.4] text-text-secondary">
-          Pelajari tahapan mudah dan transparan proses pengiriman cargo All-In Door-to-Door bersama ETH Cargo. Mulai dari pemilihan supplier, pengiriman gudang transit China, pengurusan bea cukai, hingga barang tiba di alamat Anda di Indonesia.
-        </p>
       </header>
 
       <div class="mt-8 grid grid-cols-1 items-start gap-6 lg:mt-14 lg:grid-cols-[300px_minmax(0,1fr)]">
@@ -314,6 +302,7 @@ onBeforeUnmount(() => {
                     type="button"
                     :aria-label="`${isExpanded(section.id) ? 'Tutup' : 'Buka'} subbagian ${section.title}`"
                     :aria-expanded="isExpanded(section.id)"
+                    :aria-controls="`toc-children-${section.id}`"
                     class="flex size-5 shrink-0 items-center justify-center rounded text-primary-500 hover:bg-primary-50"
                     @click="toggleSection(section.id)"
                   >
@@ -324,6 +313,8 @@ onBeforeUnmount(() => {
 
                 <div
                   v-if="section.children.length"
+                  :id="`toc-children-${section.id}`"
+                  :inert="!isExpanded(section.id)"
                   class="grid transition-[grid-template-rows,opacity] duration-200"
                   :class="isExpanded(section.id) ? 'mt-2 grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0'"
                 >

@@ -28,6 +28,8 @@ withDefaults(defineProps<{
   inactiveTotal: undefined,
 })
 
+const titleId = useId()
+
 const emit = defineEmits<{
   select: [promo: PromoItem]
 }>()
@@ -66,10 +68,10 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <section class="bg-bg-0 py-12">
+  <section :aria-labelledby="titleId" class="bg-bg-0 py-12">
     <UiContainer>
       <div class="flex flex-col items-center gap-1 text-center lg:flex-row lg:justify-between lg:gap-6 lg:text-left">
-        <h2 class="text-[22px] font-bold text-primary-500 lg:text-[32px] lg:font-semibold">
+        <h2 :id="titleId" class="text-[22px] font-bold text-primary-500 lg:text-[32px] lg:font-semibold">
           {{ year }} PROMOS
         </h2>
         <p class="text-[16px] font-normal text-text-tertiary lg:text-[20px]">
@@ -77,11 +79,11 @@ onBeforeUnmount(() => {
         </p>
       </div>
 
-      <div
+      <ul
         v-if="activePromos.length"
         class="mt-5 grid grid-cols-1 gap-x-5 gap-y-7 lg:grid-cols-3 lg:px-16"
       >
-        <article
+        <li
           v-for="promo in activePromos"
           :key="promo.id"
           class="min-w-0"
@@ -90,6 +92,7 @@ onBeforeUnmount(() => {
             type="button"
             class="group block w-full rounded-[14px] text-left focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary-500"
             :aria-label="`Lihat detail ${promo.title}`"
+            aria-haspopup="dialog"
             @click="emit('select', promo)"
           >
             <div class="mx-2 aspect-[1.06/1] overflow-hidden rounded-[14px] bg-bg-100 lg:mx-0">
@@ -112,8 +115,8 @@ onBeforeUnmount(() => {
               </span>
             </div>
           </button>
-        </article>
-      </div>
+        </li>
+      </ul>
 
       <template v-if="inactivePromos.length">
         <div
@@ -128,13 +131,13 @@ onBeforeUnmount(() => {
           </p>
         </div>
 
-        <div
+        <ul
           ref="inactivePromoListRef"
           class="-mx-4 mt-5 flex gap-4 overflow-x-auto overscroll-x-contain px-4 pb-3 snap-x snap-mandatory [scrollbar-width:none] lg:mx-0 lg:grid lg:grid-cols-3 lg:gap-x-5 lg:gap-y-7 lg:overflow-visible lg:px-16 lg:pb-0 lg:snap-none [&::-webkit-scrollbar]:hidden"
           aria-label="Promo tidak aktif, geser untuk melihat promo lainnya"
           @scroll.passive="handleInactivePromoScroll"
         >
-          <article
+          <li
             v-for="promo in inactivePromos"
             :key="promo.id"
             class="min-w-0 w-[90%] max-w-[320px] shrink-0 snap-start lg:w-auto lg:max-w-none lg:snap-none"
@@ -143,6 +146,7 @@ onBeforeUnmount(() => {
               type="button"
               class="group block w-full rounded-[14px] text-left focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary-500"
               :aria-label="`Lihat detail ${promo.title}`"
+            aria-haspopup="dialog"
               @click="emit('select', promo)"
             >
               <div class="mx-2 aspect-[1.06/1] overflow-hidden rounded-[14px] bg-bg-100 lg:mx-0">
@@ -165,8 +169,8 @@ onBeforeUnmount(() => {
                 </span>
               </div>
             </button>
-          </article>
-        </div>
+          </li>
+        </ul>
 
         <div class="mt-1 flex justify-center lg:hidden" aria-hidden="true">
           <div class="h-1.5 w-14 overflow-hidden rounded-full bg-primary-50">

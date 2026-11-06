@@ -27,6 +27,10 @@ import australiaFlagUrl from '~/assets/images/flag/australia.png'
 import usaFlagUrl from '~/assets/images/flag/USA.png'
 import { quoteNavigation } from '~/constants/navigation'
 
+withDefaults(defineProps<{ quoteTo?: string }>(), {
+  quoteTo: quoteNavigation.to,
+})
+
 const emit = defineEmits<{
   close: []
 }>()
@@ -608,7 +612,7 @@ async function submitTracking() {
         Solusi logistik dan impor terintegrasi untuk kebutuhan bisnis Anda.
       </p>
       <NuxtLink
-        :to="quoteNavigation.to"
+        :to="quoteTo"
         class="mt-4 inline-flex h-10 items-center gap-1 rounded-xl bg-primary-500 px-4 text-sm font-medium text-white transition-colors hover:bg-primary-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500"
         @click="emit('close')"
       >

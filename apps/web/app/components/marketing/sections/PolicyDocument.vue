@@ -19,6 +19,7 @@ interface PolicyDocumentItem {
   id: string
   title: string
   updatedAt: string
+  updatedAtIso: string
   content: readonly PolicyContentBlock[]
 }
 
@@ -92,11 +93,11 @@ function selectPolicy(policyId: string, shouldScroll = true) {
     <UiContainer>
       <div class="hidden flex-col gap-5 pb-7 sm:flex-row sm:items-center sm:justify-between lg:flex">
         <nav aria-label="Breadcrumb" class="flex items-center gap-2 text-[10px] text-text-disable">
-          <span>Home</span>
+          <NuxtLink to="/">Home</NuxtLink>
           <ChevronRight :size="14" aria-hidden="true" />
-          <span>Legals</span>
+          <NuxtLink to="/legalities">Legals</NuxtLink>
           <ChevronRight :size="14" aria-hidden="true" />
-          <span class="font-medium text-primary-500">{{ activeDocument?.title }}</span>
+          <span aria-current="page" class="font-medium text-primary-500">{{ activeDocument?.title }}</span>
         </nav>
 
         <label class="relative block w-full sm:max-w-[300px]">
@@ -185,7 +186,8 @@ function selectPolicy(policyId: string, shouldScroll = true) {
                       type="button"
                       class="flex min-h-11 w-full items-center gap-3 rounded-lg px-1 text-left text-[12px] transition-colors focus-visible:outline-2 focus-visible:outline-primary-500"
                       :class="item.id === activePolicyId ? 'font-medium text-primary-500' : 'text-text-secondary hover:text-primary-500'"
-                      :aria-current="item.id === activePolicyId ? 'page' : undefined"
+                      :aria-current="item.id === activePolicyId ? 'true' : undefined"
+                      aria-controls="policy-document"
                       @click="selectPolicy(item.id)"
                     >
                       <span class="flex size-4 shrink-0 items-center justify-center">
@@ -209,8 +211,8 @@ function selectPolicy(policyId: string, shouldScroll = true) {
       </div>
 
       <div class="mt-6 grid items-start gap-6 lg:mt-8 lg:grid-cols-[280px_minmax(0,1fr)] lg:gap-8">
-        <aside class="hidden rounded-2xl border border-border-200 bg-bg-0 p-4 shadow-[0_6px_14px_rgba(15,23,42,0.09)] lg:sticky lg:top-28 lg:block">
-          <h2 class="mb-4 text-[16px] font-medium text-primary-700">
+        <nav aria-labelledby="other-policies-title" class="hidden rounded-2xl border border-border-200 bg-bg-0 p-4 shadow-[0_6px_14px_rgba(15,23,42,0.09)] lg:sticky lg:top-28 lg:block">
+          <h2 id="other-policies-title" class="mb-4 text-[16px] font-medium text-primary-700">
             Other Policies
           </h2>
 
@@ -237,7 +239,8 @@ function selectPolicy(policyId: string, shouldScroll = true) {
                     :class="item.id === activePolicyId
                       ? 'font-medium text-primary-500'
                       : 'text-text-secondary hover:text-primary-500'"
-                    :aria-current="item.id === activePolicyId ? 'page' : undefined"
+                    :aria-current="item.id === activePolicyId ? 'true' : undefined"
+                      aria-controls="policy-document"
                     @click="selectPolicy(item.id)"
                   >
                     <span>{{ item.label }}</span>
@@ -256,17 +259,17 @@ function selectPolicy(policyId: string, shouldScroll = true) {
           <p v-else class="text-[12px] leading-5 text-text-tertiary">
             Kebijakan tidak ditemukan.
           </p>
-        </aside>
+        </nav>
 
-        <article ref="documentTop" class="min-w-0 scroll-mt-28">
+        <article id="policy-document" ref="documentTop" aria-labelledby="policy-document-title" class="min-w-0 scroll-mt-28">
           <header v-if="activeDocument">
-            <h1 class="text-[32px] font-semibold leading-tight text-text-secondary lg:text-[36px]">
+            <h1 id="policy-document-title" class="text-[32px] font-semibold leading-tight text-text-secondary lg:text-[36px]">
               {{ activeDocument.title }}
             </h1>
             <div class="mt-3 flex items-center gap-3 text-[16px] text-text-secondary">
               <span>Update</span>
               <span class="h-px w-6 bg-border-300" aria-hidden="true" />
-              <time>{{ activeDocument.updatedAt }}</time>
+              <time :datetime="activeDocument.updatedAtIso">{{ activeDocument.updatedAt }}</time>
             </div>
           </header>
 

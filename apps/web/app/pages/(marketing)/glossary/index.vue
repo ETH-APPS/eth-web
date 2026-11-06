@@ -140,7 +140,7 @@ watch(normalizedQuery, () => {
         </template>
       </nav>
 
-      <div class="mt-8 flex flex-col items-center gap-1 text-center text-[14px] font-normal text-text-tertiary lg:flex-row lg:gap-4 lg:text-left">
+      <div role="status" class="mt-8 flex flex-col items-center gap-1 text-center text-[14px] font-normal text-text-tertiary lg:flex-row lg:gap-4 lg:text-left">
         <span>{{ normalizedQuery ? 'Hasil pencarian' : 'Total Bahasan' }}</span>
         <span aria-hidden="true" class="hidden h-px w-5 bg-border-300 lg:block" />
         <template v-if="normalizedQuery">
@@ -204,6 +204,7 @@ watch(normalizedQuery, () => {
 
           <div
             class="grid transition-[grid-template-rows,opacity,margin-top] duration-300 ease-out motion-reduce:transition-none"
+            :id="`glossary-extra-${group.letter}`"
             :aria-hidden="!expandedLetters.has(group.letter)"
             :inert="!expandedLetters.has(group.letter)"
             :class="expandedLetters.has(group.letter)
@@ -248,6 +249,7 @@ watch(normalizedQuery, () => {
             type="button"
             class="mx-auto mt-5 flex min-h-11 items-center gap-2 text-[16px] font-normal text-text-disable transition-colors hover:text-primary-500 focus-visible:rounded focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500 lg:min-h-0"
             :aria-expanded="expandedLetters.has(group.letter)"
+            :aria-controls="`glossary-extra-${group.letter}`"
             @click="toggleGroup(group.letter)"
           >
             <span>{{ expandedLetters.has(group.letter) ? 'View less' : `View more (+${group.terms.length - 5})` }}</span>

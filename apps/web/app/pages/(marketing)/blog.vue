@@ -204,6 +204,7 @@ const importPosts = [
   <NuxtPage v-if="isBlogChildPage" />
 
   <div v-else>
+    <h1 class="sr-only">Blog ETH Cargo</h1>
     <MarketingBlogHeroCarousel
       :posts="featuredPosts"
       :autoplay-delay="5000"

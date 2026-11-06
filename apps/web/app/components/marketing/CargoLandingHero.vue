@@ -10,11 +10,14 @@ interface HeroHighlight {
 defineProps<{
   titleId: string
   eyebrow: string
+  includeEyebrowInTitle?: boolean
   title: string
   description: string
   serviceLabel: string
   services: readonly string[]
+  serviceLinks?: Readonly<Record<string, string>>
   trackingLabel: string
+  trackingTo?: string
   quoteLabel: string
   image: string
   imageAlt: string
@@ -32,44 +35,67 @@ defineProps<{
       <UiContainer>
         <div class="grid grid-cols-1 items-center gap-10 lg:grid-cols-[1fr_520px]">
           <div>
-            <p class="text-[15px] font-normal uppercase text-primary-700 lg:text-[20px]">
-              {{ eyebrow }}
-            </p>
-
-            <h1
-              :id="titleId"
-              class="mt-2 whitespace-pre-line text-[32px] font-semibold leading-[1.2] tracking-[0.01em] text-primary-500 lg:text-[48px]"
-            >
-              {{ title }}
+            <h1 v-if="includeEyebrowInTitle" :id="titleId">
+              <span class="block text-[15px] font-normal uppercase text-primary-700 lg:text-[20px]">
+                {{ eyebrow }}
+              </span>
+              <span class="mt-2 block whitespace-pre-line text-[32px] font-semibold leading-[1.2] tracking-[0.01em] text-primary-500 lg:text-[48px]">
+                {{ title }}
+              </span>
             </h1>
+
+            <template v-else>
+              <p class="text-[15px] font-normal uppercase text-primary-700 lg:text-[20px]">
+                {{ eyebrow }}
+              </p>
+
+              <h1
+                :id="titleId"
+                class="mt-2 whitespace-pre-line text-[32px] font-semibold leading-[1.2] tracking-[0.01em] text-primary-500 lg:text-[48px]"
+              >
+                {{ title }}
+              </h1>
+            </template>
 
             <p class="mt-6 max-w-[500px] text-[16px] leading-[1.55] text-text-secondary">
               {{ description }}
             </p>
 
-            <p class="mt-3 text-center text-[16px] text-text-tertiary lg:text-start">
-              {{ serviceLabel }}
-            </p>
+            <component
+              :is="serviceLinks ? 'nav' : 'div'"
+              :aria-labelledby="serviceLinks ? `${titleId}-services-label` : undefined"
+            >
+              <p :id="`${titleId}-services-label`" class="mt-3 text-center text-[16px] text-text-tertiary lg:text-start">
+                {{ serviceLabel }}
+              </p>
 
-            <ul class="mx-auto mt-6 grid max-w-[470px] grid-cols-[auto_auto] justify-center justify-items-center gap-x-14 gap-y-6 lg:mx-0 lg:grid-cols-3 lg:justify-normal lg:justify-items-stretch lg:gap-6">
-              <li
-                v-for="service in services"
-                :key="service"
-                class="flex items-center gap-2.5 text-[14px] font-medium text-text-secondary last:odd:col-span-2 lg:text-[15px] lg:last:odd:col-auto"
-              >
-                <Cuboid
-                  :size="22"
-                  :stroke-width="1.8"
-                  aria-hidden="true"
-                  class="shrink-0 text-primary-500"
-                />
-                <span>{{ service }}</span>
-              </li>
-            </ul>
+              <ul class="mx-auto mt-6 grid max-w-[470px] grid-cols-[auto_auto] justify-center justify-items-center gap-x-14 gap-y-6 lg:mx-0 lg:grid-cols-3 lg:justify-normal lg:justify-items-stretch lg:gap-6">
+                <li
+                  v-for="service in services"
+                  :key="service"
+                  class="flex items-center gap-2.5 text-[14px] font-medium text-text-secondary last:odd:col-span-2 lg:text-[15px] lg:last:odd:col-auto"
+                >
+                  <Cuboid
+                    :size="22"
+                    :stroke-width="1.8"
+                    aria-hidden="true"
+                    class="shrink-0 text-primary-500"
+                  />
+                  <NuxtLink
+                    v-if="serviceLinks?.[service]"
+                    :to="serviceLinks[service]"
+                    class="focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500"
+                  >
+                    {{ service }}
+                  </NuxtLink>
+                  <span v-else>{{ service }}</span>
+                </li>
+              </ul>
+            </component>
 
             <div class="mx-auto mt-8 flex max-w-[490px] flex-col items-center gap-5 lg:mx-0 lg:flex-row lg:justify-between">
               <NuxtLink
-                to="/#main-services"
+                :to="trackingTo ?? '/#main-services'"
                 class="inline-flex min-h-11 items-center gap-2 text-[16px] font-medium text-primary-500 transition-colors hover:text-primary-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500 lg:min-h-0"
               >
                 <span>{{ trackingLabel }}</span>

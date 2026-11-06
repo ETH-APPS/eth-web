@@ -107,13 +107,13 @@ function goToQuestion(groupId: string, itemIndex: number) {
 </script>
 
 <template>
-  <section class="bg-bg-0 py-16 sm:py-20">
+  <section aria-labelledby="faq-directory-title" class="bg-bg-0 py-16 sm:py-20">
     <UiContainer>
       <header class="text-center">
         <p class="text-[16px] font-medium text-text-disable lg:text-[24px]">
           {{ eyebrow }}
         </p>
-        <h1 class="mt-2 text-[56px] font-bold leading-none text-primary-500 lg:text-[120px]">
+        <h1 id="faq-directory-title" class="mt-2 text-[56px] font-bold leading-none text-primary-500 lg:text-[120px]">
           {{ title }}
         </h1>
         <p class="mx-auto mt-7 max-w-[900px] text-[14px] font-normal leading-[1.55] text-text-tertiary lg:text-[20px]">
@@ -158,8 +158,8 @@ function goToQuestion(groupId: string, itemIndex: number) {
       </header>
 
       <div class="mt-14 grid items-start gap-8 lg:grid-cols-[270px_minmax(0,1fr)]">
-        <aside class="hidden rounded-2xl border border-border-200 bg-bg-0 p-4 shadow-md lg:sticky lg:top-28 lg:block">
-          <h2 class="text-[20px] font-medium text-primary-500">
+        <nav aria-labelledby="faq-toc-title" class="hidden rounded-2xl border border-border-200 bg-bg-0 p-4 shadow-md lg:sticky lg:top-28 lg:block">
+          <h2 id="faq-toc-title" class="text-[20px] font-medium text-primary-500">
             Table of Content
           </h2>
 
@@ -172,6 +172,7 @@ function goToQuestion(groupId: string, itemIndex: number) {
                 type="button"
                 class="grid w-full grid-cols-[18px_minmax(0,1fr)_16px] items-start gap-x-1.5 rounded-lg text-left focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500"
                 :aria-expanded="isTocGroupExpanded(group.id)"
+                :aria-controls="`${group.id}-toc`"
                 @click="toggleTocGroup(group.id)"
               >
                 <span class="text-[16px] leading-[1.45] text-text-secondary">
@@ -190,6 +191,9 @@ function goToQuestion(groupId: string, itemIndex: number) {
               </button>
 
               <div
+                :id="`${group.id}-toc`"
+                :aria-hidden="!isTocGroupExpanded(group.id)"
+                :inert="!isTocGroupExpanded(group.id)"
                 class="grid transition-[grid-template-rows] duration-200"
                 :class="isTocGroupExpanded(group.id) ? 'grid-rows-[1fr]' : 'grid-rows-[0fr]'"
               >
@@ -212,7 +216,7 @@ function goToQuestion(groupId: string, itemIndex: number) {
               </div>
             </li>
           </ol>
-        </aside>
+        </nav>
 
         <div>
           <p
@@ -225,10 +229,11 @@ function goToQuestion(groupId: string, itemIndex: number) {
           <section
             v-for="(group, groupIndex) in filteredGroups"
             :id="group.id"
+            :aria-labelledby="`${group.id}-title`"
             :key="group.id"
             :class="groupIndex > 0 ? 'mt-10' : ''"
           >
-            <h2 class="text-[16px] font-semibold text-text-secondary lg:text-[22px]">
+            <h2 :id="`${group.id}-title`" class="text-[16px] font-semibold text-text-secondary lg:text-[22px]">
               {{ group.title }}
             </h2>
             <p class="mt-1 text-[16px] text-text-tertiary lg:text-[20px]">
@@ -250,7 +255,7 @@ function goToQuestion(groupId: string, itemIndex: number) {
                     :aria-controls="`${itemKey(group.id, itemIndex)}-answer`"
                     @click="toggleItem(itemKey(group.id, itemIndex))"
                   >
-                    <span class="mt-0.5 flex size-4 shrink-0 items-center justify-center rounded-full bg-[#10b7a5] text-[9px] font-semibold text-bg-0">
+                    <span aria-hidden="true" class="mt-0.5 flex size-4 shrink-0 items-center justify-center rounded-full bg-[#10b7a5] text-[9px] font-semibold text-bg-0">
                       Q
                     </span>
                     <span
@@ -273,12 +278,14 @@ function goToQuestion(groupId: string, itemIndex: number) {
 
                 <div
                   :id="`${itemKey(group.id, itemIndex)}-answer`"
+                  :aria-hidden="!isOpen(itemKey(group.id, itemIndex))"
+                  :inert="!isOpen(itemKey(group.id, itemIndex))"
                   class="grid transition-[grid-template-rows] duration-250 ease-out"
                   :class="isOpen(itemKey(group.id, itemIndex)) ? 'grid-rows-[1fr]' : 'grid-rows-[0fr]'"
                 >
                   <div class="overflow-hidden">
                     <div class="mx-4 flex gap-2.5 border-t border-border-200 pb-4 pt-3">
-                      <span class="flex size-4 shrink-0 items-center justify-center rounded-full bg-primary-300 text-[9px] font-semibold text-bg-0">
+                      <span aria-hidden="true" class="flex size-4 shrink-0 items-center justify-center rounded-full bg-primary-300 text-[9px] font-semibold text-bg-0">
                         A
                       </span>
                       <p class="text-[16px] leading-[1.55] text-text-secondary">

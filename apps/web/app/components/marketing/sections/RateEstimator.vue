@@ -73,6 +73,7 @@ const titleId = computed(() => `${props.sectionId}-title`)
       </div>
 
       <form
+        :aria-labelledby="titleId"
         class="mx-auto mt-8 max-w-[600px] rounded-[20px] border border-border-200 bg-bg-0 p-5 shadow-md sm:p-7"
         @submit.prevent
       >

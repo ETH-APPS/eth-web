@@ -53,15 +53,15 @@ const labelClass = computed(() => (
           class="stats-group flex shrink-0 items-start gap-8 pr-8 text-center"
           :aria-hidden="copy === 2 ? 'true' : undefined"
         >
-          <div v-for="stat in stats" :key="stat.label" class="w-[200px] shrink-0">
-            <dt class="text-[46px] font-bold leading-none" :class="valueClass">
-              {{ stat.value }}
-            </dt>
-            <dd
+          <div v-for="stat in stats" :key="stat.label" class="flex w-[200px] shrink-0 flex-col">
+            <dt
               class="mt-3 whitespace-pre-line text-[20px] font-semibold"
               :class="[labelClass, stat.uppercase ? 'uppercase' : '']"
             >
               {{ stat.label }}
+            </dt>
+            <dd class="order-first text-[46px] font-bold leading-none" :class="valueClass">
+              {{ stat.value }}
             </dd>
           </div>
         </dl>
@@ -73,16 +73,9 @@ const labelClass = computed(() => (
         <div
           v-for="stat in stats"
           :key="stat.label"
-          class="w-full lg:w-auto"
+          class="flex w-full flex-col lg:w-auto"
         >
           <dt
-            class="text-[46px] font-bold leading-none"
-            :class="valueClass"
-          >
-            {{ stat.value }}
-          </dt>
-
-          <dd
             class="mt-3 whitespace-pre-line text-[20px] font-semibold lg:text-[24px]"
             :class="[
               labelClass,
@@ -90,6 +83,13 @@ const labelClass = computed(() => (
             ]"
           >
             {{ stat.label }}
+          </dt>
+
+          <dd
+            class="order-first text-[46px] font-bold leading-none"
+            :class="valueClass"
+          >
+            {{ stat.value }}
           </dd>
         </div>
       </dl>

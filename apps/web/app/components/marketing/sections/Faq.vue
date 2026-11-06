@@ -92,6 +92,8 @@ function toggleFaq(index: number) {
 
             <div
               :id="`${sectionId}-answer-${index}`"
+              :aria-hidden="activeFaq !== index"
+              :inert="activeFaq !== index"
               class="grid transition-[grid-template-rows] duration-300 ease-out"
               :class="activeFaq === index ? 'grid-rows-[1fr]' : 'grid-rows-[0fr]'"
             >
