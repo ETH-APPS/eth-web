@@ -7,11 +7,41 @@ definePageMeta({
   layout: 'marketing',
 })
 
+const serviceDescription = 'Solusi transfer RMB yang cepat, aman, dan transparan untuk transaksi bisnis Anda ke China.'
+const siteUrl = useRuntimeConfig().public.siteUrl || (import.meta.dev ? useRequestURL().origin : '')
+
+if (siteUrl) {
+  const homepage = new URL('/', siteUrl).href
+  const serviceUrl = new URL('/transfer-rmb', homepage).href
+
+  useHead({
+    script: [{
+      key: 'transfer-rmb-service-schema',
+      type: 'application/ld+json',
+      innerHTML: JSON.stringify({
+        '@context': 'https://schema.org',
+        '@type': 'Service',
+        '@id': serviceUrl + '#service',
+        name: 'Jasa Transfer RMB',
+        description: serviceDescription,
+        url: serviceUrl,
+        mainEntityOfPage: serviceUrl,
+        provider: {
+          '@type': 'Organization',
+          '@id': homepage + '#organization',
+          name: 'ETH Cargo',
+          url: homepage,
+        },
+      }).replace(/</g, '\\u003c'),
+    }],
+  })
+}
+
 useSeoMeta({
   title: 'Jasa Transfer RMB | ETH Cargo',
   description: 'Hitung estimasi pembayaran supplier China melalui Bank of China, Alipay, WeChat Pay, 1688, Taobao, dan Alibaba bersama ETH Cargo.',
   ogTitle: 'Jasa Transfer RMB | ETH Cargo',
-  ogDescription: 'Solusi transfer RMB yang cepat, aman, dan transparan untuk transaksi bisnis Anda ke China.',
+  ogDescription: serviceDescription,
   ogType: 'website',
 })
 

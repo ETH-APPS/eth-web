@@ -27,20 +27,48 @@ pengguna, bukan inspeksi langsung agent ke VM. Bagian **NEXT** adalah rencana,
 
 Snapshot terakhir dari output pengguna:
 
-- Image web `eth-web-web:f2a3ee2af50f`; web dan gateway healthy.
+- Commit aktif terverifikasi oleh helper:
+  `9dc1ff5832b0169da0ec235455015321823eac12` (`already deployed`).
+  Image sesuai tag helper: `eth-web-web:9dc1ff5832b0`.
 - URL terbaru: <https://runtime-keith-plaza-naval.trycloudflare.com>.
 - URL itu merespons `HTTP/2 200` pada 6 November 2026 pukul 09.01 WIB.
+  Setelah perbaikan deployment pada hari yang sama, pengguna kembali memastikan
+  respons 200 dan perubahan halaman terbaru terlihat di browser.
 - URL sebelumnya `https://dream-terrace-resolve-art.trycloudflare.com` sudah
   berganti. Log mengumumkan URL baru pada 4 November pukul 18.40 WIB.
 - Ketiga container dilaporkan memiliki uptime sekitar 38 jam. Ini mengarah pada
   kemungkinan mereka sempat mulai ulang; penyebab pastinya belum diketahui.
-- Status deployment push terbaru belum dipastikan. Image di atas adalah snapshot,
-  bukan jaminan sama dengan commit terbaru di `main`.
 - Investigasi berikutnya menemukan tiga run gagal saat fetch: koneksi
   `github.com:22` timeout. Koneksi dan autentikasi deploy key melalui
-  `ssh.github.com:443` berhasil diuji pengguna. Helper di repository sekarang
-  memakai jalur 443; pemasangan ulang helper di VM dan deployment sukses
-  setelah perbaikan **belum dikonfirmasi**.
+  `ssh.github.com:443` berhasil diuji pengguna. Helper repository dan salinan
+  root-owned di VM sudah diperbarui memakai jalur 443. Fetch setelah pemasangan
+  berhasil dan helper memastikan commit di atas sudah aktif.
+
+### Insiden 6 November: dua masalah terpisah
+
+1. **URL lama tidak bisa dibuka:** Quick Tunnel mengumumkan URL baru setelah
+   prosesnya mulai ulang. Penyebab mulai ulang belum diketahui; perbaikan SSH
+   tidak mengembalikan URL lama.
+2. **Push belum terlihat di website:** fetch dari VM ke `github.com:22` timeout,
+   sehingga deployment berhenti sebelum build dan penggantian web. Versi lama
+   tetap berjalan. Penyebab jaringan spesifik (misalnya firewall atau jalur ISP)
+   belum dibuktikan; deploy key berhasil ketika diuji lewat port 443.
+
+Perbaikan yang sudah dilakukan:
+
+- Ubah SSH helper menuju `ssh.github.com:443`, pertahankan pemeriksaan host key,
+  dan beri timeout koneksi 15 detik.
+- Commit/push `9dc1ff5`, pull di VM lewat SSH 443, validasi sintaks Bash, lalu
+  pasang helper root-owned di `/usr/local/sbin/deploy-eth-web`.
+- Percobaan manual sempat ditolak karena lock deployment sedang dipegang proses
+  lain. Tidak ada lock yang dihapus atau proses yang dipaksa berhenti. Percobaan
+  berikutnya berhasil fetch dan menghasilkan `already deployed`.
+- Pengguna mengonfirmasi respons publik 200 dan pembaruan halaman di browser.
+
+Tidak diperlukan perubahan `.env`, Caddy, atau Compose untuk memperbaiki fetch.
+Status akhir run di halaman GitHub Actions belum dibagikan, tetapi commit aktif
+dan akses website telah diverifikasi. Snapshot ini bukan jaminan bahwa setiap
+push setelah commit tersebut sudah ter-deploy; tetap periksa run masing-masing.
 
 ## 2. Flow pengunjung: browser sampai aplikasi
 
@@ -380,9 +408,7 @@ Referensi resmi:
 - URL merespons 200 tidak membuktikan commit terbaru sudah ter-deploy.
 - Jangan membagikan secret atau melakukan full system upgrade sebagai langkah
   troubleshooting otomatis.
-- Pada snapshot ini, penyebab tunnel mulai ulang dan status push terbaru masih
-  perlu dibuktikan melalui log/status Actions dan VM.
-- Perbaikan SSH 443 perlu di-commit/push, lalu diambil di VM melalui SSH 443
-  sebelum memasang ulang `/usr/local/sbin/deploy-eth-web`. Push saja tidak
-  memperbarui helper root-owned. Setelah terpasang, ulangi workflow dan periksa
-  image serta website. Jangan restart gateway/tunnel untuk perbaikan ini.
+- Perbaikan SSH 443 sudah dipasang di VM dan commit `9dc1ff5` terverifikasi aktif.
+  Penyebab awal timeout port 22 dan penyebab tunnel mulai ulang belum diketahui.
+- Untuk perubahan helper berikutnya, ingat bahwa push saja tidak memperbarui
+  salinan root-owned. Jangan restart gateway/tunnel untuk perbaikan jalur Git.

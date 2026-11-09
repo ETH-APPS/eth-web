@@ -12,13 +12,42 @@ definePageMeta({
   layout: 'marketing',
 })
 
+const serviceDescription = 'Layanan cargo laut dan udara B2B dari China ke Indonesia dengan biaya All-In Door-to-Door yang transparan.'
+const siteUrl = useRuntimeConfig().public.siteUrl || (import.meta.dev ? useRequestURL().origin : '')
+
+if (siteUrl) {
+  const homepage = new URL('/', siteUrl).href
+  const serviceUrl = new URL('/china-cargo', homepage).href
+
+  useHead({
+    script: [{
+      key: 'china-cargo-service-schema',
+      type: 'application/ld+json',
+      innerHTML: JSON.stringify({
+        '@context': 'https://schema.org',
+        '@type': 'Service',
+        '@id': serviceUrl + '#service',
+        name: 'Jasa Cargo China ke Indonesia',
+        description: serviceDescription,
+        url: serviceUrl,
+        mainEntityOfPage: serviceUrl,
+        image: new URL(cargoHeroUrl, homepage).href,
+        provider: {
+          '@type': 'Organization',
+          '@id': homepage + '#organization',
+          name: 'ETH Cargo',
+          url: homepage,
+        },
+      }).replace(/</g, '\\u003c'),
+    }],
+  })
+}
+
 useSeoMeta({
   title: 'Jasa Cargo China ke Indonesia | ETH Cargo',
-  description:
-    'Layanan cargo laut dan udara B2B dari China ke Indonesia dengan biaya All-In Door-to-Door yang transparan.',
+  description: serviceDescription,
   ogTitle: 'Jasa Cargo China ke Indonesia | ETH Cargo',
-  ogDescription:
-    'Layanan cargo laut dan udara B2B dari China ke Indonesia dengan biaya All-In Door-to-Door yang transparan.',
+  ogDescription: serviceDescription,
   ogType: 'website',
 })
 

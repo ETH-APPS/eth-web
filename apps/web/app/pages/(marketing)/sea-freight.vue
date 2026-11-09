@@ -7,13 +7,42 @@ definePageMeta({
   layout: 'marketing',
 })
 
+const serviceDescription = 'Layanan kargo laut China ke Indonesia melalui FCL dan LCL dengan tarif All-In, alokasi kontainer yang pasti, serta pengurusan bea cukai resmi.'
+const siteUrl = useRuntimeConfig().public.siteUrl || (import.meta.dev ? useRequestURL().origin : '')
+
+if (siteUrl) {
+  const homepage = new URL('/', siteUrl).href
+  const serviceUrl = new URL('/sea-freight', homepage).href
+
+  useHead({
+    script: [{
+      key: 'sea-freight-service-schema',
+      type: 'application/ld+json',
+      innerHTML: JSON.stringify({
+        '@context': 'https://schema.org',
+        '@type': 'Service',
+        '@id': serviceUrl + '#service',
+        name: 'Jasa Kargo Laut China ke Indonesia',
+        description: serviceDescription,
+        url: serviceUrl,
+        mainEntityOfPage: serviceUrl,
+        image: new URL(cargoSeaUrl, homepage).href,
+        provider: {
+          '@type': 'Organization',
+          '@id': homepage + '#organization',
+          name: 'ETH Cargo',
+          url: homepage,
+        },
+      }).replace(/</g, '\\u003c'),
+    }],
+  })
+}
+
 useSeoMeta({
   title: 'Jasa Kargo Laut China ke Indonesia | ETH Cargo',
-  description:
-    'Layanan kargo laut China ke Indonesia melalui FCL dan LCL dengan tarif All-In, alokasi kontainer yang pasti, serta pengurusan bea cukai resmi.',
+  description: serviceDescription,
   ogTitle: 'Jasa Kargo Laut China ke Indonesia | ETH Cargo',
-  ogDescription:
-    'Layanan kargo laut China ke Indonesia melalui FCL dan LCL dengan tarif All-In, alokasi kontainer yang pasti, serta pengurusan bea cukai resmi.',
+  ogDescription: serviceDescription,
   ogType: 'website',
 })
 

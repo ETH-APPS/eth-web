@@ -172,18 +172,19 @@ function handleTabKeydown(event: KeyboardEvent) {
           id="layanan"
           class="relative rounded-[24px] bg-[rgba(17,17,17,0.14)] px-6 pb-4 pt-5 text-white backdrop-blur-[4px]"
         >
-          <div class="relative h-[130px] overflow-hidden">
+          <!-- Tinggi mengikuti isi (tanpa angka fixed), overflow-hidden hanya untuk memotong judul non-aktif yang turun -->
+          <div class="relative overflow-hidden pb-2">
             <div
               role="group"
               aria-label="Pilih layanan"
-              class="grid h-full grid-cols-4"
+              class="grid grid-cols-4"
               @keydown="handleTabKeydown"
             >
               <div
                 v-for="service in services"
                 :key="service.id"
                 class="text-center transition-transform duration-300 ease-out"
-                :class="service.id === activeId ? 'translate-y-0' : 'translate-y-[78px]'"
+                :class="service.id === activeId ? 'translate-y-0' : 'translate-y-[58%]'"
               >
                 <button
                   :id="`service-tab-${service.id}`"
@@ -197,12 +198,13 @@ function handleTabKeydown(event: KeyboardEvent) {
                   {{ service.label }}
                 </button>
 
+                <!-- invisible (bukan v-show) supaya tingginya tetap dihitung dan wrapper selalu cukup tinggi -->
                 <div
-                  v-show="service.id === activeId"
                   :id="`service-panel-${service.id}`"
                   role="region"
                   :aria-labelledby="`service-tab-${service.id}`"
                   class="px-3 pt-2"
+                  :class="service.id === activeId ? 'visible' : 'invisible'"
                 >
                   <p class="mx-auto max-w-[220px] text-[12px] font-normal leading-[1.45] text-white/90">
                     {{ service.description }}
@@ -226,9 +228,10 @@ function handleTabKeydown(event: KeyboardEvent) {
             </div>
           </div>
 
+          <!-- Track garis: mt-1 + h-6 (sama dengan tinggi bulatan size-6) supaya tidak menonjol -->
           <div
             aria-hidden="true"
-            class="relative h-5"
+            class="relative mt-1 h-6"
           >
             <div class="absolute inset-x-0 top-1/2 h-px -translate-y-1/2 bg-primary-500" />
             <span

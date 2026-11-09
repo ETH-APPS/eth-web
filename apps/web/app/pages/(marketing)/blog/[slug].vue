@@ -10,6 +10,8 @@ definePageMeta({
 
 const route = useRoute()
 const slug = computed(() => String(route.params.slug || 'article'))
+const articleAuthor = 'ETH Cargo Team'
+const siteUrl = useRuntimeConfig().public.siteUrl || (import.meta.dev ? useRequestURL().origin : '')
 
 const knownArticleTitles: Record<string, string> = {
   'fcl-cargo-guide': 'Panduan FCL Cargo untuk Pengiriman Bisnis',
@@ -121,6 +123,40 @@ useSeoMeta({
   ogDescription: () => `Baca artikel ${articleTitle.value} dan temukan insight terbaru seputar logistik bersama ETH Cargo.`,
   ogType: 'article',
 })
+
+if (siteUrl) {
+  const homepage = new URL('/', siteUrl).href
+
+  useHead(() => {
+    const articleUrl = new URL(`/blog/${encodeURIComponent(slug.value)}`, homepage).href
+
+    return {
+      script: [{
+        key: 'blog-posting-schema',
+        type: 'application/ld+json',
+        innerHTML: JSON.stringify({
+          '@context': 'https://schema.org',
+          '@type': 'BlogPosting',
+          '@id': articleUrl + '#article',
+          url: articleUrl,
+          mainEntityOfPage: articleUrl,
+          headline: articleTitle.value,
+          image: new URL(articleImage, homepage).href,
+          author: {
+            '@type': 'Organization',
+            name: articleAuthor,
+          },
+          publisher: {
+            '@type': 'Organization',
+            '@id': homepage + '#organization',
+            name: 'ETH Cargo',
+            url: homepage,
+          },
+        }).replace(/</g, '\\u003c'),
+      }],
+    }
+  })
+}
 </script>
 
 <template>
@@ -129,7 +165,7 @@ useSeoMeta({
 
     <MarketingBlogArticleHero
       :title="articleTitle"
-      author="ETH Cargo Team"
+      :author="articleAuthor"
       :updated-at="articleDate"
       :released-at="articleDate"
       :image="articleImage"

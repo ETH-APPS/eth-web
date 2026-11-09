@@ -7,13 +7,42 @@ definePageMeta({
   layout: 'marketing',
 })
 
+const serviceDescription = 'Layanan kargo udara China ke Indonesia untuk pengiriman prioritas dengan transit cepat, biaya All-In, serta pengurusan bea cukai resmi.'
+const siteUrl = useRuntimeConfig().public.siteUrl || (import.meta.dev ? useRequestURL().origin : '')
+
+if (siteUrl) {
+  const homepage = new URL('/', siteUrl).href
+  const serviceUrl = new URL('/air-freight', homepage).href
+
+  useHead({
+    script: [{
+      key: 'air-freight-service-schema',
+      type: 'application/ld+json',
+      innerHTML: JSON.stringify({
+        '@context': 'https://schema.org',
+        '@type': 'Service',
+        '@id': serviceUrl + '#service',
+        name: 'Jasa Kargo Udara China ke Indonesia',
+        description: serviceDescription,
+        url: serviceUrl,
+        mainEntityOfPage: serviceUrl,
+        image: new URL(cargoAirUrl, homepage).href,
+        provider: {
+          '@type': 'Organization',
+          '@id': homepage + '#organization',
+          name: 'ETH Cargo',
+          url: homepage,
+        },
+      }).replace(/</g, '\\u003c'),
+    }],
+  })
+}
+
 useSeoMeta({
   title: 'Jasa Kargo Udara China ke Indonesia | ETH Cargo',
-  description:
-    'Layanan kargo udara China ke Indonesia untuk pengiriman prioritas dengan transit cepat, biaya All-In, serta pengurusan bea cukai resmi.',
+  description: serviceDescription,
   ogTitle: 'Jasa Kargo Udara China ke Indonesia | ETH Cargo',
-  ogDescription:
-    'Layanan kargo udara China ke Indonesia untuk pengiriman prioritas dengan transit cepat, biaya All-In, serta pengurusan bea cukai resmi.',
+  ogDescription: serviceDescription,
   ogType: 'website',
 })
 

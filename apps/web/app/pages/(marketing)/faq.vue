@@ -45,6 +45,41 @@ const faqGroups = [
     ],
   },
 ] as const
+
+const siteUrl = useRuntimeConfig().public.siteUrl || (import.meta.dev ? useRequestURL().origin : '')
+
+if (siteUrl) {
+  const homepage = new URL('/', siteUrl).href
+  const pageUrl = new URL('/faq', homepage).href
+
+  useHead({
+    script: [{
+      key: 'faq-page-schema',
+      type: 'application/ld+json',
+      innerHTML: JSON.stringify({
+        '@context': 'https://schema.org',
+        '@type': 'FAQPage',
+        '@id': pageUrl + '#webpage',
+        name: 'FAQ | ETH Cargo',
+        url: pageUrl,
+        isPartOf: {
+          '@type': 'WebSite',
+          '@id': homepage + '#website',
+          name: 'ETH Cargo',
+          url: homepage,
+        },
+        mainEntity: faqGroups.flatMap(group => group.items.map(item => ({
+          '@type': 'Question',
+          name: item.question,
+          acceptedAnswer: {
+            '@type': 'Answer',
+            text: item.answer,
+          },
+        }))),
+      }).replace(/</g, '\\u003c'),
+    }],
+  })
+}
 </script>
 
 <template>

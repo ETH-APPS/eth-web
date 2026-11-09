@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import articleImage from '~/assets/images/marketing/article.png'
 import { faqContentByPath, homeFaqContent } from '~/constants/faq'
 import { illustratedCtaBanners } from '~/constants/illustratedCtaBanners'
 
@@ -6,9 +7,40 @@ definePageMeta({
   layout: 'marketing',
 })
 
+const pageDescription = 'Panduan lengkap proses impor, pemilihan metode pengiriman, dokumen, dan pemantauan kargo bersama ETH Cargo.'
+const siteUrl = useRuntimeConfig().public.siteUrl || (import.meta.dev ? useRequestURL().origin : '')
+
+if (siteUrl) {
+  const homepage = new URL('/', siteUrl).href
+  const articleUrl = new URL('/complete-guide', homepage).href
+
+  useHead({
+    script: [{
+      key: 'complete-guide-article-schema',
+      type: 'application/ld+json',
+      innerHTML: JSON.stringify({
+        '@context': 'https://schema.org',
+        '@type': 'Article',
+        '@id': articleUrl + '#article',
+        url: articleUrl,
+        mainEntityOfPage: articleUrl,
+        headline: 'Panduan Lengkap Cara Import Barang dari China',
+        description: pageDescription,
+        image: new URL(articleImage, homepage).href,
+        publisher: {
+          '@type': 'Organization',
+          '@id': homepage + '#organization',
+          name: 'ETH Cargo',
+          url: homepage,
+        },
+      }).replace(/</g, '\\u003c'),
+    }],
+  })
+}
+
 useSeoMeta({
   title: 'Our Complete Guide | ETH Cargo',
-  description: 'Panduan lengkap proses impor, pemilihan metode pengiriman, dokumen, dan pemantauan kargo bersama ETH Cargo.',
+  description: pageDescription,
   ogTitle: 'Our Complete Guide | ETH Cargo',
   ogDescription: 'Panduan lengkap proses impor dan pengiriman internasional bersama ETH Cargo.',
   ogType: 'article',

@@ -5,13 +5,46 @@ definePageMeta({
   layout: 'marketing',
 })
 
+const pageDescription = 'Kenali ETH Cargo, penyedia layanan freight forwarding internasional dan solusi logistik All-In Door-to-Door China–Indonesia.'
+const siteUrl = useRuntimeConfig().public.siteUrl || (import.meta.dev ? useRequestURL().origin : '')
+
+if (siteUrl) {
+  const homepage = new URL('/', siteUrl).href
+  const pageUrl = new URL('/about-us', homepage).href
+
+  useHead({
+    script: [{
+      key: 'about-page-schema',
+      type: 'application/ld+json',
+      innerHTML: JSON.stringify({
+        '@context': 'https://schema.org',
+        '@type': 'AboutPage',
+        '@id': pageUrl + '#webpage',
+        name: 'Tentang Kami | ETH Cargo',
+        description: pageDescription,
+        url: pageUrl,
+        isPartOf: {
+          '@type': 'WebSite',
+          '@id': homepage + '#website',
+          name: 'ETH Cargo',
+          url: homepage,
+        },
+        mainEntity: {
+          '@type': 'Organization',
+          '@id': homepage + '#organization',
+          name: 'ETH Cargo',
+          url: homepage,
+        },
+      }).replace(/</g, '\\u003c'),
+    }],
+  })
+}
+
 useSeoMeta({
   title: 'Tentang Kami | ETH Cargo',
-  description:
-    'Kenali ETH Cargo, penyedia layanan freight forwarding internasional dan solusi logistik All-In Door-to-Door China–Indonesia.',
+  description: pageDescription,
   ogTitle: 'Tentang Kami | ETH Cargo',
-  ogDescription:
-    'Kenali ETH Cargo, penyedia layanan freight forwarding internasional dan solusi logistik All-In Door-to-Door China–Indonesia.',
+  ogDescription: pageDescription,
   ogType: 'website',
 })
 

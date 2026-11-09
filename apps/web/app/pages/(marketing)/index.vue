@@ -1,8 +1,11 @@
 <script setup lang="ts">
+import logoUrl from '~/assets/images/brand/logo.png'
 import { homeFaqContent } from '~/constants/faq'
 import { illustratedCtaBanners } from '~/constants/illustratedCtaBanners'
 
 const homeBanner = illustratedCtaBanners.about
+const siteName = 'ETH Cargo'
+const siteUrl = useRuntimeConfig().public.siteUrl || (import.meta.dev ? useRequestURL().origin : '')
 
 definePageMeta({
   layout: 'marketing'
@@ -13,6 +16,37 @@ useHead({
     lang: 'id'
   }
 })
+
+if (siteUrl) {
+  const homepage = new URL('/', siteUrl).href
+  const organizationId = homepage + '#organization'
+
+  useHead({
+    script: [{
+      key: 'homepage-schema',
+      type: 'application/ld+json',
+      innerHTML: JSON.stringify({
+        '@context': 'https://schema.org',
+        '@graph': [
+          {
+            '@type': 'Organization',
+            '@id': organizationId,
+            name: siteName,
+            url: homepage,
+            logo: new URL(logoUrl, homepage).href,
+          },
+          {
+            '@type': 'WebSite',
+            '@id': homepage + '#website',
+            name: siteName,
+            url: homepage,
+            publisher: { '@id': organizationId },
+          },
+        ],
+      }).replace(/</g, '\\u003c'),
+    }],
+  })
+}
 
 useSeoMeta({
   title: 'ETH Cargo | Express to Home',

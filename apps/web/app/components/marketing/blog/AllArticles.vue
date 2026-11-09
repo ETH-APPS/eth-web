@@ -17,6 +17,7 @@ const props = withDefaults(defineProps<{
   variant?: 'directory' | 'search-results' | 'tag-results'
   initialSearch?: string
   initialTag?: string
+  schemaListId?: string
 }>(), {
   perPage: 12,
   variant: 'directory',
@@ -100,6 +101,30 @@ const visibleArticles = computed(() => {
   const start = (currentPage.value - 1) * props.perPage
   return sortedArticles.value.slice(start, start + props.perPage)
 })
+
+useHead(() => ({
+  script: props.schemaListId ? [{
+    key: 'blog-article-list-schema',
+    type: 'application/ld+json',
+    innerHTML: JSON.stringify({
+      '@context': 'https://schema.org',
+      '@type': 'ItemList',
+      '@id': props.schemaListId,
+      name: 'All Article',
+      // The full filtered count; only the current page's items are described.
+      numberOfItems: sortedArticles.value.length,
+      itemListElement: visibleArticles.value.map((article, index) => ({
+        '@type': 'ListItem',
+        position: (currentPage.value - 1) * props.perPage + index + 1,
+        name: article.title,
+        url: new URL(
+          article.to?.startsWith('/') ? article.to : `/blog/${article.id}`,
+          props.schemaListId,
+        ).href,
+      })),
+    }).replace(/</g, '\\u003c'),
+  }] : [],
+}))
 
 const sortLabel = computed(() => sortOptions.find(option => option.value === appliedSort.value)?.label ?? '')
 

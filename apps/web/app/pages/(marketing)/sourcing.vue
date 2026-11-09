@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import sourcingHeroUrl from '~/assets/images/marketing/sourcing-hero.png'
 import { faqContentByPath, homeFaqContent } from '~/constants/faq'
 import { illustratedCtaBanners } from '~/constants/illustratedCtaBanners'
 
@@ -6,9 +7,40 @@ definePageMeta({
   layout: 'marketing',
 })
 
+const serviceDescription = 'Temukan supplier dan pabrik terpercaya di China dengan dukungan pencarian produk, negosiasi harga, pemesanan sampel, dan kontrol kualitas dari ETH Cargo.'
+const siteUrl = useRuntimeConfig().public.siteUrl || (import.meta.dev ? useRequestURL().origin : '')
+
+if (siteUrl) {
+  const homepage = new URL('/', siteUrl).href
+  const serviceUrl = new URL('/sourcing', homepage).href
+
+  useHead({
+    script: [{
+      key: 'sourcing-service-schema',
+      type: 'application/ld+json',
+      innerHTML: JSON.stringify({
+        '@context': 'https://schema.org',
+        '@type': 'Service',
+        '@id': serviceUrl + '#service',
+        name: 'Jasa Sourcing Barang China',
+        description: serviceDescription,
+        url: serviceUrl,
+        mainEntityOfPage: serviceUrl,
+        image: new URL(sourcingHeroUrl, homepage).href,
+        provider: {
+          '@type': 'Organization',
+          '@id': homepage + '#organization',
+          name: 'ETH Cargo',
+          url: homepage,
+        },
+      }).replace(/</g, '\\u003c'),
+    }],
+  })
+}
+
 useSeoMeta({
   title: 'Jasa Sourcing Barang China | ETH Cargo',
-  description: 'Temukan supplier dan pabrik terpercaya di China dengan dukungan pencarian produk, negosiasi harga, pemesanan sampel, dan kontrol kualitas dari ETH Cargo.',
+  description: serviceDescription,
   ogTitle: 'Jasa Sourcing Barang China | ETH Cargo',
   ogDescription: 'Layanan sourcing supplier dan pabrik terpercaya di China untuk kebutuhan bisnis Anda.',
   ogType: 'website',

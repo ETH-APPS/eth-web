@@ -11,13 +11,42 @@ definePageMeta({
   layout: 'marketing',
 })
 
+const serviceDescription = 'Layanan pengiriman kargo laut dan udara untuk kebutuhan logistik internasional dari dan menuju Amerika bersama ETH Cargo.'
+const siteUrl = useRuntimeConfig().public.siteUrl || (import.meta.dev ? useRequestURL().origin : '')
+
+if (siteUrl) {
+  const homepage = new URL('/', siteUrl).href
+  const serviceUrl = new URL('/multinational-cargo', homepage).href
+
+  useHead({
+    script: [{
+      key: 'multinational-cargo-service-schema',
+      type: 'application/ld+json',
+      innerHTML: JSON.stringify({
+        '@context': 'https://schema.org',
+        '@type': 'Service',
+        '@id': serviceUrl + '#service',
+        name: 'Multinational Cargo Amerika',
+        description: serviceDescription,
+        url: serviceUrl,
+        mainEntityOfPage: serviceUrl,
+        image: new URL(multinationalCargoHeroUrl, homepage).href,
+        provider: {
+          '@type': 'Organization',
+          '@id': homepage + '#organization',
+          name: 'ETH Cargo',
+          url: homepage,
+        },
+      }).replace(/</g, '\\u003c'),
+    }],
+  })
+}
+
 useSeoMeta({
   title: 'Multinational Cargo Amerika | ETH Cargo',
-  description:
-    'Layanan pengiriman kargo laut dan udara untuk kebutuhan logistik internasional dari dan menuju Amerika bersama ETH Cargo.',
+  description: serviceDescription,
   ogTitle: 'Multinational Cargo Amerika | ETH Cargo',
-  ogDescription:
-    'Layanan pengiriman kargo laut dan udara untuk kebutuhan logistik internasional dari dan menuju Amerika bersama ETH Cargo.',
+  ogDescription: serviceDescription,
   ogType: 'website',
 })
 

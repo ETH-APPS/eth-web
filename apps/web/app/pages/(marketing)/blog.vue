@@ -11,6 +11,32 @@ definePageMeta({
 const route = useRoute()
 const isBlogChildPage = computed(() => route.path !== '/blog' && route.path !== '/blog/')
 const { allArticles } = useAllBlogArticles()
+const siteUrl = useRuntimeConfig().public.siteUrl || (import.meta.dev ? useRequestURL().origin : '')
+const blogUrl = siteUrl ? new URL('/blog', siteUrl).href : ''
+const articleListId = blogUrl ? blogUrl + '#all-articles' : undefined
+
+if (blogUrl) {
+  useHead(() => ({
+    script: isBlogChildPage.value ? [] : [{
+      key: 'blog-collection-schema',
+      type: 'application/ld+json',
+      innerHTML: JSON.stringify({
+        '@context': 'https://schema.org',
+        '@type': 'CollectionPage',
+        '@id': blogUrl + '#webpage',
+        url: blogUrl,
+        name: 'Blog ETH Cargo',
+        isPartOf: {
+          '@type': 'WebSite',
+          '@id': new URL('/', blogUrl).href + '#website',
+          name: 'ETH Cargo',
+          url: new URL('/', blogUrl).href,
+        },
+        mainEntity: { '@id': articleListId },
+      }).replace(/</g, '\\u003c'),
+    }],
+  }))
+}
 
 useSeoMeta({
   title: 'Blog | ETH Cargo',
@@ -235,6 +261,7 @@ const importPosts = [
     <MarketingBlogAllArticles
       :articles="allArticles"
       :per-page="12"
+      :schema-list-id="articleListId"
     />
   </div>
 </template>
