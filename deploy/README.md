@@ -1,7 +1,7 @@
 # Deployment VM: arsitektur, CI/CD, dan operasional
 
 Panduan alur dari kode di laptop sampai website bisa dibuka pengunjung.
-Terakhir diperbarui: **9 November 2026**.
+Terakhir diperbarui: **10 November 2026**.
 
 Implementasi dijelaskan berdasarkan file repository. Status VM berdasarkan output
 pengguna, bukan inspeksi langsung agent ke VM. Bagian **NEXT** adalah rencana,
@@ -25,7 +25,35 @@ pengguna, bukan inspeksi langsung agent ke VM. Bagian **NEXT** adalah rencana,
 | Gateway | Caddy, container `eth-web-gateway-1` |
 | Port host aplikasi | Hanya `127.0.0.1:8080` menuju Caddy |
 
-Snapshot terakhir dari output pengguna:
+### Status 10 November: konfigurasi origin SEO di VM
+
+Berdasarkan output terminal yang dibagikan pengguna, image web yang aktif sudah
+berasal dari commit `c02c78ce3aa720331abcb6c72d8f7da62b34538e`, tetapi
+checkout `/opt/eth-web` masih di commit `9dc1ff5`. Ini normal untuk helper yang
+membangun dari worktree release terpisah; checkout awal bukan penentu versi web
+aktif. Pada saat pemeriksaan awal, `/etc/eth-web/site-url` belum ada dan salinan
+root-owned helper/Compose belum memuat `NUXT_PUBLIC_SITE_URL`, sehingga HTML
+publik belum memiliki schema dan canonical.
+
+Operator kemudian membuat `/etc/eth-web/site-url` berisi origin Quick Tunnel
+aktif, dengan kepemilikan `root:root` dan mode `644`. Setelah membandingkan diff,
+operator memasang `web.compose.yaml` dan `deploy-web.sh` dari worktree release
+`c02c78c` ke lokasi root-owned masing-masing. `sudo bash -n` lolos.
+`sudo /usr/local/sbin/deploy-eth-web` menggunakan ulang image
+`eth-web-web:c02c78ce3aa7` dan mengganti hanya container web; helper melaporkan
+gateway dan cloudflared tetap berjalan. Tidak ada perubahan Caddy atau konfigurasi
+tunnel.
+
+Pemeriksaan `docker inspect` menunjukkan `NUXT_PUBLIC_SITE_URL` sudah masuk ke
+container. Homepage melalui Caddy lokal dan Quick Tunnel sama-sama mengandung
+JSON-LD `WebSite` pada HTML awal; canonical homepage juga muncul pada HTML
+publik. Respons publik masih mengirim `X-Robots-Tag: none`, sedangkan respons
+Caddy lokal tidak. Asal header setelah Caddy belum dipastikan. Ini masih URL
+sementara untuk validasi; domain final, sitemap, robots, dan schema halaman lain
+belum diverifikasi ulang setelah deploy. Rincian SEO ada di
+[progres SEO](../docs/seo/progress.md).
+
+Snapshot sebelumnya, sampai 6 November, untuk riwayat:
 
 - Commit aktif terverifikasi oleh helper:
   `9dc1ff5832b0169da0ec235455015321823eac12` (`already deployed`).
@@ -263,15 +291,19 @@ sudo chmod 0644 /etc/eth-web/site-url
 ```
 
 Sebelum menjalankan helper versi baru pertama kali, pasang juga salinan spec dan
-helper root-owned setelah memeriksa diff:
+helper root-owned setelah memeriksa diff. Gunakan worktree release commit yang
+ingin dipasang; checkout `/opt/eth-web` tidak selalu mengikuti `origin/main`.
+Contoh sumber untuk release `c02c78c` yang diverifikasi pada 10 November:
 
 ```bash
-sudo install -o root -g root -m 0644 deploy/web.compose.yaml /etc/eth-web/web.compose.yaml
-sudo install -o root -g root -m 0755 deploy/deploy-web.sh /usr/local/sbin/deploy-eth-web
+release_dir=/var/lib/eth-web-deploy/releases/c02c78ce3aa720331abcb6c72d8f7da62b34538e
+sudo install -o root -g root -m 0644 "$release_dir/deploy/web.compose.yaml" /etc/eth-web/web.compose.yaml
+sudo install -o root -g root -m 0755 "$release_dir/deploy/deploy-web.sh" /usr/local/sbin/deploy-eth-web
 sudo bash -n /usr/local/sbin/deploy-eth-web
 ```
 
-Run workflow berikutnya akan meneruskan nilai itu ke container web. Jika hanya
+Menjalankan helper atau workflow berikutnya akan meneruskan nilai itu ke
+container web. Jika hanya
 site URL yang berubah dan commit sama, helper menggunakan ulang image yang sudah
 ada lalu mengganti **hanya** container web. Gateway dan cloudflared tidak
 direstart atau dibuat ulang.

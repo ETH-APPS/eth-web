@@ -165,11 +165,38 @@ HTTP 200, tetapi `siteUrl` runtime kosong dan schema tidak keluar. Homepage
 memiliki `lang="id"` dari deklarasi lama, sedangkan `/blog` belum. Ini adalah
 snapshot deployment saat itu, sebelum perubahan lokal terbaru dipasang.
 
+Perbandingan HTML homepage yang dikirim pengguna setelah push pada 10 November
+2026 menunjukkan production sudah memiliki `lang="id"` dan satu H1, tetapi
+payload runtime masih `public: { siteUrl: "" }`: tidak ada canonical atau
+`application/ld+json` di `<head>`. HTML localhost juga memuat site URL kosong,
+namun mode development memakai origin request sebagai fallback, sehingga
+canonical `http://localhost:3000/` dan schema homepage tetap muncul. Ini
+menunjukkan konfigurasi origin pada container production belum aktif; HTML yang
+disalin sendiri tidak membuktikan apakah file konfigurasi VM sudah dipasang atau
+helper deployment terbaru sudah dijalankan.
+
 Repository kemudian disiapkan untuk meneruskan `NUXT_PUBLIC_SITE_URL` melalui
 Compose dan helper deployment. Pemeriksaan sintaks, konfigurasi Compose, build
 production dengan URL terisi/kosong, serta sampel runtime lokal berhasil.
-Belum ada pemasangan file site URL di VM, deployment ulang, atau pemeriksaan
-publik sesudahnya. Quick Tunnel adalah alamat sementara, bukan domain indexing.
+Catatan ini mendahului pemasangan konfigurasi di VM.
+
+Pada 10 November 2026, file `/etc/eth-web/site-url` dipasang dengan origin
+Quick Tunnel yang aktif, dimiliki `root:root` dan bermode `644`. Salinan
+root-owned `web.compose.yaml` dan `deploy-web` diperbarui dari release commit
+`c02c78c`; `bash -n` lolos. Helper deploy menggunakan ulang image
+`eth-web-web:c02c78ce3aa7`, mengganti hanya container web, dan melaporkan
+gateway serta cloudflared tetap berjalan. Pemeriksaan `docker inspect`
+menunjukkan `NUXT_PUBLIC_SITE_URL` sudah masuk ke environment container.
+
+`curl` terhadap homepage melalui Caddy lokal dan URL publik Quick Tunnel sama-sama
+menemukan JSON-LD `WebSite` dalam HTML respons. HTML publik juga memuat canonical
+ke homepage Quick Tunnel. Kedua respons homepage mengembalikan HTTP 200.
+Respons publik memiliki dua header `X-Robots-Tag: none`, sementara respons
+langsung dari Caddy tidak memilikinya; asal header setelah Caddy belum
+dipastikan. Menurut [Google Search Central](https://developers.google.com/search/docs/crawling-indexing/robots-meta-tag),
+nilai `none` berarti `noindex, nofollow`, sehingga URL sementara ini bukan
+bukti kesiapan indexing. Schema halaman lain, sitemap, robots,
+validator publik, dan domain final belum diperiksa ulang setelah deploy.
 
 Search Console belum dikonfigurasi. Setelah domain final tersedia, rekomendasi
 yang dicatat adalah Domain property dengan verifikasi DNS TXT Cloudflare; tidak

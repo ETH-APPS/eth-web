@@ -8,18 +8,21 @@ Angka, daftar URL, hasil validator, dan riwayat pemeriksaan ada di
 
 ## Ringkasan cepat
 
-**Fondasi SEO di repository sudah dikerjakan dan diuji secara lokal. Belum ada
-klaim bahwa hasil terbaru ini sudah aktif di website publik.** Domain final,
-konfigurasi deployment, dan verifikasi Google Search Console masih menunggu.
+**Fondasi SEO sudah diuji secara lokal. Schema dan canonical homepage kini juga
+terlihat pada HTML publik Quick Tunnel.** Pada 10 November, konfigurasi
+`NUXT_PUBLIC_SITE_URL` dipasang di VM dan container web diganti tanpa mengganti
+image, gateway, atau tunnel. Ini masih alamat sementara: domain final dan Google
+Search Console belum diverifikasi. Riwayat sebelum dan sesudah perbaikan ada di
+[audit domain](audit-history.md#8-domain-deployment-dan-search-console).
 
 | Area | Status sekarang | Bukti singkat | Langkah berikutnya |
 | --- | --- | --- | --- |
 | Struktur HTML dan bahasa | Selesai untuk sampel lokal | 25 URL: HTTP 200, satu H1, `lang="id"`; konten ada di HTML awal | Ulangi pada domain final dan data API |
-| Schema markup | Terpasang pada halaman yang relevan | Hasil validator yang dikirim pengguna: 0 error dan 0 warning pada sampel; JSON-LD ada di HTML awal | Cek lagi setelah deployment dan data final |
+| Schema markup | Terpasang; homepage terlihat di Quick Tunnel | Hasil validator sebelumnya: 0 error dan 0 warning pada sampel; JSON-LD `WebSite` ada di HTML awal publik | Uji ulang validator pada URL publik dan data final |
 | SSR dan hydration | SSR aktif; sampel interaksi browser lolos | 25 URL lolos audit SSR; 8 route dan 2 interaksi diuji di Chrome headless tanpa hydration mismatch | Uji browser/perangkat lain dan deployment |
 | Title dan meta description | Dasar teknis terpasang | 23/23 komponen halaman marketing memiliki keduanya | Audit kualitas teks, keyword, dan data API |
 | Open Graph | Sebagian | 20/23 komponen halaman punya judul, deskripsi, dan tipe; belum ada `og:image`/`og:url` | Siapkan gambar dan uji preview link |
-| Canonical | Selesai secara lokal untuk URL valid | Mengikuti origin runtime dan route; search/tag dikecualikan | Isi domain final dan periksa slug tidak valid |
+| Canonical | Homepage terlihat di Quick Tunnel | HTML publik memuat canonical ke URL tunnel; search/tag dikecualikan | Ganti ke domain final dan periksa slug tidak valid |
 | Sitemap | Selesai secara lokal, daftar konservatif | 16 URL statis; blog/glossary placeholder dan search/tag tidak masuk | Tinjau kelayakan 16 URL; tambah konten published setelah API |
 | Robots dan noindex | Selesai secara lokal untuk kebijakan saat ini | Crawler boleh membaca halaman; search/tag memakai `noindex, follow` | Putuskan kebijakan blog/glossary placeholder |
 | Konten dan internal link | Ada, belum final | Link tersebar di navigasi dan konten; sebagian tujuan/konten masih placeholder | Audit broken link dan konten final |
@@ -30,6 +33,11 @@ Angka di atas berasal dari audit lokal dan pemeriksaan source pada 9–10 Novemb
 2026. Hasil validator schema adalah hasil yang dibagikan pengguna. Lihat
 [metode dan daftar sampel](audit-history.md) sebelum memakai angka untuk klaim
 yang lebih luas.
+
+**Catatan Quick Tunnel:** respons publik mengirim `X-Robots-Tag: none` dua kali,
+sedangkan respons langsung dari Caddy tidak. Artinya alamat sementara ini
+meminta crawler untuk tidak mengindeks dan tidak mengikuti tautan. Asal header
+belum dipastikan; periksa lagi pada domain final.
 
 ## Penjelasan singkat
 
@@ -75,9 +83,11 @@ dan performa masih perlu diperiksa bersama data final dan pengukuran browser.
 
 ## Yang perlu disiapkan sebelum laporan “sudah live”
 
-1. Tentukan domain HTTPS final dan konfigurasi `NUXT_PUBLIC_SITE_URL` di deployment.
-2. Deploy perubahan repository, lalu cek HTML publik, canonical, schema,
-   `/sitemap.xml`, dan `/robots.txt` memakai domain yang sama.
+1. Tentukan domain HTTPS final, lalu ganti nilai `NUXT_PUBLIC_SITE_URL` yang saat
+   ini memakai Quick Tunnel dan jalankan ulang deploy web.
+2. Pada domain final, cek HTML publik, canonical, schema, `/sitemap.xml`, dan
+   `/robots.txt` memakai domain yang sama. Schema dan canonical homepage di
+   Quick Tunnel sudah diperiksa; endpoint lain belum diperiksa setelah deploy.
 3. Tentukan nasib halaman placeholder, terutama blog, glossary, dan halaman
    statis yang belum memiliki konten final. Validasi slug artikel agar URL yang
    tidak ada merespons 404.

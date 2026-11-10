@@ -1,12 +1,13 @@
 # Rencana lanjutan SEO ETH Cargo
 
-Tanggal: 9 November 2026 (Asia/Jakarta).
+Terakhir diperbarui: 10 November 2026 (Asia/Jakarta).
 Status: **Tahap 1.1 selesai; implementasi Tahap 1.2, audit SSR Tahap 1.4, dan
 verifikasi hydration/navigasi SPA sampel selesai di workspace lokal**. Tahap 1.3
 ditunda sampai integrasi API blog. Persiapan repository Tahap 2 serta implementasi
-lokal Tahap 3 sudah selesai; pemasangan, verifikasi publik, domain final, dan
-Search Console belum dilakukan. Dokumen ini tidak merupakan izin melakukan
-commit, push, atau perubahan VM.
+lokal Tahap 3 sudah selesai. Konfigurasi VM dan schema/canonical homepage pada
+Quick Tunnel sudah diverifikasi; domain final, pemeriksaan publik yang lebih luas,
+dan Search Console belum dilakukan. Dokumen ini tidak merupakan izin melakukan
+commit atau push.
 
 ## Tujuan dan konteks
 
@@ -30,11 +31,12 @@ Temuan yang mendasari rencana:
   tidak mewakili artikel dapat tetap dirender sebagai artikel.
 - Audit awal menemukan spec deployment belum meneruskan
   `NUXT_PUBLIC_SITE_URL`; persiapan repository Tahap 2 sekarang sudah
-  meneruskannya. Schema production tetap tidak dikeluarkan jika konfigurasi ini
-  kosong.
+  meneruskannya. Pada 10 November, konfigurasi tersebut dipasang di VM dan
+  schema homepage terlihat pada HTML Quick Tunnel.
 - Audit awal belum menemukan canonical dan sitemap; implementasi lokal Tahap 3
   sekarang sudah menambah keduanya serta mengganti `robots.txt` statis dengan
-  route dinamis. Deployment publik masih memakai versi sebelumnya.
+  route dinamis. Canonical homepage sudah terlihat pada Quick Tunnel; sitemap
+  dan robots belum diperiksa ulang setelah deploy.
 
 Temuan merupakan snapshot repository dan audit lokal, bukan bukti kondisi container
 Cloudflare yang aktif. Schema glossary tetap dilewati sesuai permintaan pengguna.
@@ -90,8 +92,8 @@ akan dibuka untuk indexing sebelum API siap, keputusan ini perlu ditinjau ulang.
 
 ## Tahap 2 — Konfigurasi dan validasi deployment
 
-Kerjakan persiapan repository dahulu. Pemasangan di VM merupakan langkah operasional
-terpisah setelah perubahan konkret ditinjau dan eksekusinya diotorisasi.
+Persiapan repository dan pemasangan di VM sudah dilakukan. Pengujian domain final
+tetap menjadi langkah operasional terpisah.
 
 **Audit awal 9 November 2026:** Quick Tunnel
 `https://runtime-keith-plaza-naval.trycloudflare.com` masih aktif dan boleh dipakai
@@ -100,8 +102,8 @@ untuk pengujian sementara. Direct-request ke `/` dan `/blog` menghasilkan HTTP
 memiliki `lang="id"`, sedangkan `/blog` belum, sehingga deployment juga belum
 memuat perubahan lokal Tahap 1.2. Audit ini hanya memeriksa kondisi publik; belum
 ada konfigurasi repository, VM, container, atau tunnel yang diubah pada saat
-audit. Persiapan repository kemudian diselesaikan; pemasangan VM dan verifikasi
-publik tetap belum dilakukan.
+audit. Persiapan repository kemudian diselesaikan. Pada 10 November konfigurasi
+VM dipasang dan schema/canonical homepage diverifikasi melalui Quick Tunnel.
 
 - [x] Tambahkan mekanisme runtime environment untuk `NUXT_PUBLIC_SITE_URL` pada
   Compose bootstrap dan spec web-only. Simpan nilai environment aktual di VM,
@@ -114,15 +116,16 @@ publik tetap belum dilakukan.
   otomatis diperbarui oleh push frontend.
 - [x] Uji build production dengan site URL terisi dan kosong: nilai terisi memberi
   schema ber-origin benar; nilai kosong tetap mengikuti behavior existing.
-- [ ] Saat operator siap, gunakan URL Cloudflare aktif untuk pengujian sementara.
-  Saat domain final tersedia, ganti nilainya dan recreate container web secara
-  terencana. Jangan restart gateway/tunnel untuk perubahan konfigurasi web ini.
+- [x] Gunakan URL Cloudflare aktif untuk pengujian sementara dan ganti hanya
+  container web; gateway/tunnel tetap berjalan.
+- [ ] Saat domain final tersedia, ganti nilai site URL dan jalankan ulang deploy
+  web secara terencana.
 - [ ] Verifikasi HTML publik: H1, konten utama, metadata, schema, dan URL gambar
-  tersedia dengan origin yang benar. Build sukses atau HTTP 200 saja belum cukup.
+  tersedia dengan origin yang benar pada halaman prioritas. Schema dan canonical
+  homepage pada Quick Tunnel sudah lolos; cakupan lain masih menunggu.
 
-**Prasyarat operasional:** konfirmasi URL aktif, mekanisme konfigurasi VM yang
-akan dipakai, dan akses operator sebelum pemasangan. Jangan menebak domain final
-atau menganggap URL Quick Tunnel lama masih berlaku.
+**Prasyarat operasional berikutnya:** konfirmasi domain final dan akses operator
+sebelum mengganti konfigurasi. Jangan menganggap URL Quick Tunnel tetap berlaku.
 
 ## Tahap 3 — Canonical dan sitemap sebelum peluncuran SEO
 
@@ -141,8 +144,10 @@ atau glossary placeholder.
   yang perlu dibaca crawler untuk menemukan instruksi `noindex`.
 - [x] Perlakukan Quick Tunnel sebagai lingkungan validasi sementara, bukan target
   indexing atau Search Console. `robots.txt` tetap mengizinkan crawling agar
-  instruksi `noindex` dapat dibaca; sitemap belum dipasang ke deployment publik.
-  Saat domain final tersedia, lakukan keputusan indexing ulang.
+  instruksi `noindex` dapat dibaca. Sitemap ada pada image yang di-deploy,
+  tetapi respons publiknya belum diverifikasi setelah deploy. Respons Quick
+  Tunnel juga mengirim `X-Robots-Tag: none`; periksa kebijakan header pada domain
+  final sebelum indexing.
 - [ ] Konfirmasi apakah lingkungan domain final merupakan staging atau target
   indexing sebelum mengubah kebijakan indexing. `robots.txt` mengatur crawling;
   pencegahan indexing menggunakan `noindex` atau pembatasan akses yang sesuai.
@@ -169,8 +174,9 @@ Perbedaan crawling dan indexing dijelaskan dalam
   768, 1023, 1024, 1280, dan 1440px sesuai pedoman responsive. Tampilan, wrapping,
   focus state, dan overflow tidak boleh mengalami regresi; bandingkan screenshot
   390px dan 1440px. Laporkan bila referensi Figma tidak dapat diakses.
-- [x] Untuk tahap domain, periksa canonical/sitemap/schema memakai origin yang
-  sama, URL `noindex` tidak masuk sitemap, serta seluruh URL sitemap valid.
+- [ ] Untuk tahap domain final, periksa canonical/sitemap/schema memakai origin
+  yang sama, URL `noindex` tidak masuk sitemap, serta seluruh URL sitemap valid.
+  Canonical dan schema homepage sudah terlihat pada Quick Tunnel.
 - [x] Perbarui `progress.md` per tahap: perubahan, bukti verifikasi, batasan,
   dan status lokal versus deployment. Jangan centang pekerjaan yang belum diuji.
 
@@ -188,5 +194,6 @@ setelah domain serta konten siap**. Bagian 1.1, implementasi 1.2, dan audit SSR
 1.4 telah dijalankan. Tahap 1.3 ditunda sampai API blog; hydration dan navigasi
 SPA sampel untuk 1.2/1.4 sudah diverifikasi dengan Chrome headless. Persiapan
 repository Tahap 2 sudah selesai;
-pemasangan VM dan verifikasi publik belum dilakukan. Implementasi lokal Tahap 3
-sudah selesai; aktivasi domain final dan Search Console tetap menunggu.
+pemasangan VM dan verifikasi schema/canonical homepage Quick Tunnel sudah
+dilakukan. Implementasi lokal Tahap 3 sudah selesai; pemeriksaan halaman dan
+endpoint publik lain, aktivasi domain final, dan Search Console tetap menunggu.

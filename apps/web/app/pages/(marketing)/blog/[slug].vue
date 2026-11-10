@@ -69,13 +69,18 @@ const articleTitle = computed(() => {
   return titleFromSlug(slug.value)
 })
 
-const articleDate = computed(() => {
-  if (!articleNumber.value)
-    return '24 September 2026'
+const articleDates = computed(() => {
+  const day = articleNumber.value ? 28 - ((articleNumber.value - 1) % 28) : 24
+  const date = `2026-09-${String(day).padStart(2, '0')}`
 
-  const day = 28 - ((articleNumber.value - 1) % 28)
-  return `${day} September 2026`
+  return {
+    published: date,
+    modified: date,
+    display: `${day} September 2026`,
+  }
 })
+
+const articleDate = computed(() => articleDates.value.display)
 
 const articleTags = computed(() => {
   const value = slug.value
@@ -141,6 +146,8 @@ if (siteUrl) {
           url: articleUrl,
           mainEntityOfPage: articleUrl,
           headline: articleTitle.value,
+          datePublished: articleDates.value.published,
+          dateModified: articleDates.value.modified,
           image: new URL(articleImage, homepage).href,
           author: {
             '@type': 'Organization',
