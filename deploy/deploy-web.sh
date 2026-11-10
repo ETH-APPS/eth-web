@@ -7,12 +7,14 @@ umask 027
 export PATH='/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin'
 export HOME='/root'
 unset BASH_ENV CDPATH COMPOSE_FILE COMPOSE_PROJECT_NAME DOCKER_CONTEXT DOCKER_HOST \
-  ENV GIT_CONFIG_COUNT GIT_DIR GIT_INDEX_FILE GIT_WORK_TREE IMAGE_TAG
+  ENV GIT_CONFIG_COUNT GIT_DIR GIT_INDEX_FILE GIT_WORK_TREE IMAGE_TAG \
+  NUXT_PUBLIC_SITE_URL
 
 readonly REPO_DIR='/opt/eth-web'
 readonly REPO_URL='git@github.com:ETH-APPS/eth-web.git'
 readonly RELEASE_ROOT='/var/lib/eth-web-deploy/releases'
 readonly COMPOSE_FILE='/etc/eth-web/web.compose.yaml'
+readonly SITE_URL_FILE='/etc/eth-web/site-url'
 readonly DEPLOY_KEY='/home/ethapps/.ssh/eth-web-deploy'
 readonly KNOWN_HOSTS='/home/ethapps/.ssh/known_hosts'
 readonly PROJECT_NAME='eth-web'
@@ -33,6 +35,20 @@ fail() {
 [[ $# -eq 0 ]] || fail 'this helper does not accept arguments'
 [[ -d "$REPO_DIR/.git" ]] || fail "repository not found at ${REPO_DIR}"
 [[ -f "$COMPOSE_FILE" && ! -L "$COMPOSE_FILE" ]] || fail "fixed Compose file is missing or unsafe: ${COMPOSE_FILE}"
+[[ -f "$SITE_URL_FILE" && ! -L "$SITE_URL_FILE" ]] || fail "site URL file is missing or unsafe: ${SITE_URL_FILE}"
+[[ "$(stat -c '%U:%G' "$SITE_URL_FILE")" == 'root:root' ]] || fail "site URL file must be owned by root:root: ${SITE_URL_FILE}"
+SITE_URL_MODE="$(stat -c '%a' "$SITE_URL_FILE")"
+readonly SITE_URL_MODE
+[[ "$SITE_URL_MODE" == '600' || "$SITE_URL_MODE" == '644' ]] || fail "site URL file mode must be 600 or 644: ${SITE_URL_FILE}"
+
+mapfile -t SITE_URL_LINES < "$SITE_URL_FILE"
+readonly -a SITE_URL_LINES
+[[ "${#SITE_URL_LINES[@]}" -eq 1 ]] || fail "site URL file must contain exactly one line: ${SITE_URL_FILE}"
+SITE_URL="${SITE_URL_LINES[0]}"
+readonly SITE_URL
+[[ "$SITE_URL" =~ ^https://[A-Za-z0-9.-]+(:[0-9]{1,5})?$ ]] \
+  || fail 'site URL must be an HTTPS origin without a path, query, fragment, or trailing slash'
+
 [[ -f "$DEPLOY_KEY" ]] || fail "deploy key not found at ${DEPLOY_KEY}"
 [[ -f "$KNOWN_HOSTS" ]] || fail "SSH known_hosts not found at ${KNOWN_HOSTS}"
 docker network inspect "$NETWORK_NAME" >/dev/null
@@ -60,6 +76,7 @@ compose() {
     PATH="$PATH" \
     COMPOSE_IGNORE_ORPHANS='true' \
     IMAGE_TAG="$tag" \
+    NUXT_PUBLIC_SITE_URL="$SITE_URL" \
     docker compose \
       --project-name "$PROJECT_NAME" \
       --env-file /dev/null \
@@ -136,6 +153,11 @@ gateway_ok || fail 'the existing site is not reachable through Caddy'
 OLD_IMAGE="$(docker inspect --format '{{.Config.Image}}' "$OLD_WEB_ID")"
 readonly OLD_IMAGE
 [[ "$OLD_IMAGE" == "${IMAGE_NAME}:"* ]] || fail "unexpected current web image: ${OLD_IMAGE}"
+CURRENT_SITE_URL="$(
+  docker inspect --format '{{range .Config.Env}}{{println .}}{{end}}' "$OLD_WEB_ID" \
+    | sed -n 's/^NUXT_PUBLIC_SITE_URL=//p'
+)"
+readonly CURRENT_SITE_URL
 readonly OLD_TAG="${OLD_IMAGE#${IMAGE_NAME}:}"
 [[ "$OLD_TAG" =~ ^[A-Za-z0-9_][A-Za-z0-9_.-]{0,127}$ ]] || fail "unsafe current web image tag: ${OLD_TAG}"
 docker image inspect "$OLD_IMAGE" >/dev/null
@@ -168,7 +190,8 @@ else
 fi
 
 if [[ "$OLD_IMAGE" == "$TARGET_IMAGE" ]] && \
-  [[ "$(docker image inspect --format '{{index .Config.Labels "org.opencontainers.image.revision"}}' "$TARGET_IMAGE")" == "$TARGET_SHA" ]]; then
+  [[ "$(docker image inspect --format '{{index .Config.Labels "org.opencontainers.image.revision"}}' "$TARGET_IMAGE")" == "$TARGET_SHA" ]] && \
+  [[ "$CURRENT_SITE_URL" == "$SITE_URL" ]]; then
   log "${TARGET_SHA} is already deployed"
   exit 0
 fi
@@ -209,12 +232,17 @@ trap 'rollback_on_exit $?' EXIT
 trap 'exit 130' INT
 trap 'exit 143' TERM
 
-log "building ${TARGET_IMAGE}; the running site remains online during the build"
-docker build \
-  --label "org.opencontainers.image.revision=${TARGET_SHA}" \
-  --tag "$TARGET_IMAGE" \
-  --file "${RELEASE_DIR}/apps/web/Dockerfile" \
-  "$RELEASE_DIR"
+if docker image inspect "$TARGET_IMAGE" >/dev/null 2>&1 && \
+  [[ "$(docker image inspect --format '{{index .Config.Labels "org.opencontainers.image.revision"}}' "$TARGET_IMAGE")" == "$TARGET_SHA" ]]; then
+  log "reusing existing image ${TARGET_IMAGE}"
+else
+  log "building ${TARGET_IMAGE}; the running site remains online during the build"
+  docker build \
+    --label "org.opencontainers.image.revision=${TARGET_SHA}" \
+    --tag "$TARGET_IMAGE" \
+    --file "${RELEASE_DIR}/apps/web/Dockerfile" \
+    "$RELEASE_DIR"
+fi
 
 BUILT_REVISION="$(docker image inspect --format '{{index .Config.Labels "org.opencontainers.image.revision"}}' "$TARGET_IMAGE")"
 readonly BUILT_REVISION

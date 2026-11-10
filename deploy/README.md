@@ -1,7 +1,7 @@
 # Deployment VM: arsitektur, CI/CD, dan operasional
 
 Panduan alur dari kode di laptop sampai website bisa dibuka pengunjung.
-Terakhir diperbarui: **6 November 2026**.
+Terakhir diperbarui: **9 November 2026**.
 
 Implementasi dijelaskan berdasarkan file repository. Status VM berdasarkan output
 pengguna, bukan inspeksi langsung agent ke VM. Bagian **NEXT** adalah rencana,
@@ -168,16 +168,19 @@ sebenarnya.
 
 Implementasi: [`deploy-web.sh`](deploy-web.sh).
 
-1. Memastikan repo, deploy key, known hosts, spec Compose, dan jaringan tersedia.
-   Mengambil lock agar helper tidak berjalan bersamaan.
+1. Memastikan repo, deploy key, known hosts, spec Compose, file site URL, dan
+   jaringan tersedia. Mengambil lock agar helper tidak berjalan bersamaan.
 2. Memastikan tepat satu container berjalan untuk masing-masing service `web`,
    `gateway`, dan `cloudflared`. Web lama harus healthy dan gateway harus merespons.
 3. Mencatat image lama untuk rollback serta ID gateway/tunnel untuk pemeriksaan.
 4. Fetch `origin/main` sebagai user `ethapps` dengan deploy key read-only.
 5. Membuat worktree bersih di `/var/lib/eth-web-deploy/releases/<FULL_SHA>`.
-6. Jika tag image aktif dan label revisi sudah sesuai, selesai: `already deployed`.
-7. Build image `eth-web-web:<SHORT_SHA>` dari worktree tersebut. Web lama tetap
-   berjalan selama build.
+6. Jika tag image aktif, label revisi, dan site URL container sudah sesuai,
+   selesai: `already deployed`. Perubahan site URL tetap memicu recreate web
+   walaupun commit sama.
+7. Build image `eth-web-web:<SHORT_SHA>` dari worktree tersebut, atau gunakan
+   ulang image tervalidasi bila hanya konfigurasi site URL yang berubah. Web lama
+   tetap berjalan selama build.
 8. Menggunakan spec web-only untuk `up --detach --no-build --no-deps web`.
 9. Menunggu web healthy, menguji gateway, dan memastikan ID gateway/tunnel tetap.
 10. Jika gagal setelah penggantian dimulai, mencoba mengembalikan image lama.
@@ -202,6 +205,7 @@ cukup untuk mengetahui versi aplikasi yang sedang berjalan.
 | [`deploy/web.compose.yaml`](web.compose.yaml) | Spec web-only, disalin root-owned ke `/etc/eth-web/web.compose.yaml`. |
 | [`deploy/deploy-web.sh`](deploy-web.sh) | Helper, disalin root-owned ke `/usr/local/sbin/deploy-eth-web`. |
 | [`deploy/github-runner.sudoers`](github-runner.sudoers) | Disalin ke `/etc/sudoers.d/github-runner-deploy-eth-web`. |
+| `/etc/eth-web/site-url` | File root-owned di VM berisi satu origin HTTPS untuk `NUXT_PUBLIC_SITE_URL`; bukan file repository. |
 | [Workflow Actions](../.github/workflows/deploy-web.yml) | Trigger dan job deployment. |
 | [`.dockerignore`](../.dockerignore) | Mengecualikan dependency lokal, cache, output build, dan `.env` aktual dari build context. |
 
@@ -223,16 +227,78 @@ serta memvalidasi sudoers. Push frontend biasa tidak memerlukan langkah itu.
 
 ### Apakah `.env` lokal otomatis ikut?
 
-Tidak. Dockerfile menetapkan `NODE_ENV`, `NITRO_HOST`, dan `NITRO_PORT`, tetapi
-spec web-only belum memasang `env_file` atau environment aplikasi tambahan.
+Tidak. Dockerfile menetapkan `NODE_ENV`, `NITRO_HOST`, dan `NITRO_PORT`.
 Helper memakai environment bersih dan `--env-file /dev/null`, sehingga tidak
 mengandalkan `.env` implisit Compose. `.env` lokal aktual dikecualikan dari build.
+
+Untuk schema SEO, helper membaca satu origin HTTPS dari file root-owned
+`/etc/eth-web/site-url`, memvalidasinya, lalu meneruskan nilainya secara eksplisit
+sebagai `NUXT_PUBLIC_SITE_URL` ke spec web-only. Compose bootstrap menerima
+variabel shell dengan nama yang sama dan memakai nilai kosong jika tidak diisi.
+Nilai site URL bersifat publik, tetapi file tetap root-owned untuk mencegah
+perubahan konfigurasi deployment oleh user yang tidak berwenang.
 
 Jika fitur baru membutuhkan konfigurasi, tentukan apakah digunakan saat build
 atau runtime, serta apakah boleh terlihat browser atau harus server-side. Tambah
 mekanisme deployment yang sesuai; jangan menganggap menambah `.env` lokal lalu
 push sudah memasang nilainya di VM. Pergantian URL pada insiden November belum
 membuktikan adanya error `.env`.
+
+### Menyiapkan atau mengganti site URL schema
+
+Gunakan **origin saja**: skema, hostname, dan port opsional. Jangan menyertakan
+path, query, fragment, atau slash penutup. Untuk Quick Tunnel aktif saat dokumen
+ini diperbarui, nilainya:
+
+```text
+https://runtime-keith-plaza-naval.trycloudflare.com
+```
+
+Operator memasang nilai tersebut di VM, bukan memasukkannya ke Git:
+
+```bash
+printf '%s\n' 'https://runtime-keith-plaza-naval.trycloudflare.com' | sudo tee /etc/eth-web/site-url >/dev/null
+sudo chown root:root /etc/eth-web/site-url
+sudo chmod 0644 /etc/eth-web/site-url
+```
+
+Sebelum menjalankan helper versi baru pertama kali, pasang juga salinan spec dan
+helper root-owned setelah memeriksa diff:
+
+```bash
+sudo install -o root -g root -m 0644 deploy/web.compose.yaml /etc/eth-web/web.compose.yaml
+sudo install -o root -g root -m 0755 deploy/deploy-web.sh /usr/local/sbin/deploy-eth-web
+sudo bash -n /usr/local/sbin/deploy-eth-web
+```
+
+Run workflow berikutnya akan meneruskan nilai itu ke container web. Jika hanya
+site URL yang berubah dan commit sama, helper menggunakan ulang image yang sudah
+ada lalu mengganti **hanya** container web. Gateway dan cloudflared tidak
+direstart atau dibuat ulang.
+
+Untuk bootstrap stack dari repository, berikan variabel secara eksplisit:
+
+```bash
+NUXT_PUBLIC_SITE_URL='https://runtime-keith-plaza-naval.trycloudflare.com' docker compose up --detach
+```
+
+Quick Tunnel dapat berganti setelah proses tunnel restart. Ketika URL berubah,
+perbarui `/etc/eth-web/site-url` dan jalankan ulang workflow. Setelah domain final
+tersedia, ganti file dengan origin final. Jangan hardcode URL sementara ke source
+aplikasi atau Compose.
+
+Setelah deploy, verifikasi bahwa konfigurasi dan schema benar-benar aktif:
+
+```bash
+sudo docker inspect --format '{{range .Config.Env}}{{println .}}{{end}}' eth-web-web-1 | grep '^NUXT_PUBLIC_SITE_URL='
+curl --fail --silent --show-error http://127.0.0.1:8080/ | grep -F '"@type":"WebSite"'
+curl --fail --silent --show-error http://127.0.0.1:8080/blog | grep -F '"@type":"CollectionPage"'
+curl --fail --silent --show-error http://127.0.0.1:8080/sitemap.xml
+curl --fail --silent --show-error http://127.0.0.1:8080/robots.txt
+```
+
+Lanjutkan dengan memeriksa URL publik. URL schema dan gambar harus memakai origin
+yang sama dengan site URL. HTTP 200 saja belum membuktikan schema sudah benar.
 
 ## 5. Penggunaan sehari-hari
 

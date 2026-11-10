@@ -4,6 +4,8 @@
 services:
   web:
     image: eth-web-web:${IMAGE_TAG:?IMAGE_TAG must be set}
+    environment:
+      NUXT_PUBLIC_SITE_URL: ${NUXT_PUBLIC_SITE_URL:?NUXT_PUBLIC_SITE_URL must be set}
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:3000/').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"]

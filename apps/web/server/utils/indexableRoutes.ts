@@ -1,0 +1,18 @@
+export const indexableRoutes = [
+  '/',
+  '/china-cargo',
+  '/multinational-cargo',
+  '/sea-freight',
+  '/air-freight',
+  '/transfer-rmb',
+  '/sourcing',
+  '/calculator',
+  '/calculator-transfer-rmb',
+  '/live-tracking',
+  '/about-us',
+  '/faq',
+  '/terms-and-conditions',
+  '/legalities',
+  '/promo',
+  '/complete-guide',
+] as const

@@ -12,6 +12,9 @@ export default defineNuxtConfig({
   },
   app: {
     head: {
+      htmlAttrs: {
+        lang: 'id',
+      },
       link: [
         {
           rel: 'icon',

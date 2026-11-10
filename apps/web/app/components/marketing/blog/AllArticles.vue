@@ -50,6 +50,7 @@ const dialogRef = ref<HTMLElement>()
 let previousBodyOverflow = ''
 const isSearchResults = computed(() => props.variant === 'search-results')
 const isTagResults = computed(() => props.variant === 'tag-results')
+const headingTag = computed(() => props.variant === 'directory' ? 'h2' : 'h1')
 
 const availableTags = computed(() => (
   [...new Set(props.articles.flatMap(article => article.tags))].sort()
@@ -303,12 +304,13 @@ onBeforeUnmount(() => {
     />
     <UiContainer>
       <div class="mx-auto max-w-[1080px]">
-        <h2
+        <component
+          :is="headingTag"
           id="all-articles-title"
           class="text-[28px] font-semibold text-primary-500"
         >
           {{ isTagResults ? 'Tags' : isSearchResults ? 'Search Result' : 'All Article' }}
-        </h2>
+        </component>
 
         <div class="mt-5 flex items-center justify-between gap-4 sm:items-start">
           <form class="min-w-0 flex-1 sm:max-w-[360px]" role="search" @submit.prevent="submitSearch">

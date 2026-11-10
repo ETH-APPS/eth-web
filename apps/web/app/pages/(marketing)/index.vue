@@ -11,12 +11,6 @@ definePageMeta({
   layout: 'marketing'
 })
 
-useHead({
-  htmlAttrs: {
-    lang: 'id'
-  }
-})
-
 if (siteUrl) {
   const homepage = new URL('/', siteUrl).href
   const organizationId = homepage + '#organization'
