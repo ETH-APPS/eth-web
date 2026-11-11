@@ -44,7 +44,7 @@ async function submitTracking() {
 
           <span class="min-w-0 flex-1">
             <span class="flex items-center gap-2 text-base font-medium text-text-secondary transition-colors group-hover/item:text-primary-500 group-focus-visible/item:text-primary-500">
-              Kalkulator
+              Kalkulator Impor All-in
               <ArrowUpRight
                 :size="18"
                 aria-hidden="true"

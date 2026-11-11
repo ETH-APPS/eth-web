@@ -5,8 +5,8 @@ import airFreightUrl from '~/assets/images/marketing/air-freight.png'
 import fclCargoUrl from '~/assets/images/marketing/fcl-cargo.png'
 import lclCargoUrl from '~/assets/images/marketing/lcl-cargo.png'
 import cargoHeroUrl from '~/assets/images/marketing/multinational-cargo-hero.png'
-import importVector from '~/assets/images/marketing/vector-impor.png'
 import { faqContentByPath, homeFaqContent } from '~/constants/faq'
+import { illustratedCtaBanners } from '~/constants/illustratedCtaBanners'
 
 definePageMeta({
   layout: 'marketing',
@@ -98,13 +98,7 @@ const serviceStats = [
 ]
 
 const faqContent = faqContentByPath['/china-cargo'] ?? homeFaqContent
-const cargoBanner = {
-  title: faqContent.quoteTitle,
-  description: faqContent.quoteDescription,
-  email: 'email@ethcargo.co.id',
-  ctaLabel: 'Konsultasi Gratis',
-  ctaTo: '#quote',
-}
+const cargoBanner = illustratedCtaBanners.chinaCargo
 </script>
 
 <template>
@@ -143,17 +137,9 @@ const cargoBanner = {
   />
   <MarketingSectionsFaq :content="faqContent" />
   <div id="quote" class="pb-6 lg:pb-10">
-    <UiContainer>
-      <MarketingIllustratedCtaBanner
+    <UiContainer wide>
+      <MarketingCargoCtaBanner
         v-bind="cargoBanner"
-        variant="contained"
-        :image="importVector"
-        :image-width="1144"
-        :image-height="1008"
-        :image-max-width="360"
-        :image-top-offset="28"
-        image-align="center"
-        image-alt="Ilustrasi layanan impor barang ETH Cargo"
       />
     </UiContainer>
     <MarketingSectionsQuoteBanner

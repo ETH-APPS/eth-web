@@ -26,11 +26,11 @@ const selectedTarget = ref<(typeof transferTargets)[number]>('Alipay')
           id="rmb-rate-estimator-title"
           class="text-[28px] font-semibold leading-tight text-primary-500 lg:text-[32px] lg:font-bold"
         >
-          Hitung Estimasi Tarif
+          Kalkulator Transfer RMB
         </h1>
 
-        <p class="mx-auto mt-6 max-w-[900px] text-[16px] font-normal leading-[1.5] text-text-tertiary lg:text-[20px]">
-          Lorem ipsum dolor sit amet consectetur adipiscing elit. Quisque faucibus ex sapien vitae pellentesque sem placerat. In id cursus mi pretium tellus duis convallis.
+        <p class="mx-auto mt-6 max-w-[870px] text-[16px] font-normal leading-[1.5] text-text-tertiary lg:text-[20px]">
+          Hitung estimasi total biaya pembayaran ke supplier China Anda secara instan. Dapatkan jaminan kurs transparan dan kompetitif untuk transaksi ke Alipay, WeChat Pay, maupun Rekening Bank lokal China.
         </p>
       </div>
 
@@ -54,7 +54,7 @@ const selectedTarget = ref<(typeof transferTargets)[number]>('Alipay')
           step="1"
           required
           inputmode="decimal"
-          placeholder="Nominal transfer"
+          placeholder="Masukkan nominal dalam Yuan (¥)"
           class="h-12 w-full rounded-xl border border-border-200 bg-bg-0 px-3 text-[14px] font-normal text-text-secondary outline-none transition-[border-color,box-shadow] placeholder:text-text-disable focus:border-primary-500 focus:ring-2 focus:ring-primary-100"
         >
 
@@ -62,7 +62,7 @@ const selectedTarget = ref<(typeof transferTargets)[number]>('Alipay')
           for="rmb-transfer-target"
           class="mb-2 mt-4 block text-[14px] font-normal text-text-secondary"
         >
-          Transfer Tujuan
+          Platform Tujuan Transfer
         </label>
         <div class="relative">
           <select
@@ -91,10 +91,10 @@ const selectedTarget = ref<(typeof transferTargets)[number]>('Alipay')
         <dl class="mt-4 flex items-start justify-between gap-5 border-t border-border-200 pt-4 text-text-secondary">
           <dt>
             <p class="text-[14px] font-normal">
-              Currency Rate
+              Kurs Saat Ini
             </p>
             <p class="mt-0.5 text-[9px] font-normal text-text-tertiary">
-              Currency rate based on BCA per ¥ 1
+              Nilai tukar referensi berdasarkan rate harian BCA
             </p>
           </dt>
           <dd class="shrink-0 text-[14px] font-medium">
@@ -113,7 +113,7 @@ const selectedTarget = ref<(typeof transferTargets)[number]>('Alipay')
       </form>
 
       <p class="mx-auto mt-14 text-center text-[16px] font-normal text-text-tertiary lg:text-[20px]">
-        Lorem ipsum dolor sit amet consectetur adipiscing elit.
+        Nilai tukar dapat berfluktuasi sewaktu-waktu mengikuti kondisi pasar. Hubungi tim CS kami untuk mengunci nilai kurs (lock rate) hari ini.
       </p>
     </UiContainer>
   </section>

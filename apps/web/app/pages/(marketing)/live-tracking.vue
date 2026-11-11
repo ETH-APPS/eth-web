@@ -1,14 +1,8 @@
 <script setup lang="ts">
 import { homeFaqContent } from '~/constants/faq'
-import importVector from '~/assets/images/marketing/vector-impor.png'
+import { illustratedCtaBanners } from '~/constants/illustratedCtaBanners'
 
-const trackingBanner = {
-  title: homeFaqContent.quoteTitle,
-  description: homeFaqContent.quoteDescription,
-  email: 'email@ethcargo.co.id',
-  ctaLabel: 'Konsultasi Gratis',
-  ctaTo: '#quote',
-}
+const trackingBanner = illustratedCtaBanners.chinaCargo
 
 definePageMeta({
   layout: 'marketing',
@@ -126,17 +120,9 @@ const shippingTypes = [
   />
   <MarketingSectionsFaq :content="homeFaqContent" />
   <div id="quote" class="pb-6 lg:pb-10">
-    <UiContainer>
-      <MarketingIllustratedCtaBanner
+    <UiContainer wide>
+      <MarketingCargoCtaBanner
         v-bind="trackingBanner"
-        variant="contained"
-        :image="importVector"
-        :image-width="1144"
-        :image-height="1008"
-        :image-max-width="360"
-        :image-top-offset="28"
-        image-align="center"
-        image-alt="Ilustrasi layanan impor barang ETH Cargo"
       />
     </UiContainer>
     <MarketingSectionsQuoteBanner

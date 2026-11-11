@@ -4,7 +4,6 @@ import CargoLandingHero from '~/components/marketing/CargoLandingHero.vue'
 import cargoAirUrl from '~/assets/images/marketing/cargo-air-landscape.png'
 import cargoSeaUrl from '~/assets/images/marketing/cargo-sea-landscape.png'
 import multinationalCargoHeroUrl from '~/assets/images/marketing/multinational-cargo-hero.png'
-import importVector from '~/assets/images/marketing/vector-impor.png'
 import { faqContentByPath, homeFaqContent } from '~/constants/faq'
 
 definePageMeta({
@@ -143,17 +142,9 @@ const cargoBanner = {
   />
   <MarketingSectionsFaq :content="faqContent" />
   <div id="quote" class="pb-6 lg:pb-10">
-    <UiContainer>
-      <MarketingIllustratedCtaBanner
+    <UiContainer wide>
+      <MarketingCargoCtaBanner
         v-bind="cargoBanner"
-        variant="contained"
-        :image="importVector"
-        :image-width="1144"
-        :image-height="1008"
-        :image-max-width="360"
-        :image-top-offset="28"
-        image-align="center"
-        image-alt="Ilustrasi layanan impor barang ETH Cargo"
       />
     </UiContainer>
     <MarketingSectionsQuoteBanner

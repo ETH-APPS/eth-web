@@ -51,7 +51,7 @@ const paymentChannels = [
         id="rmb-transfer-reach-title"
         class="text-center text-[24px] font-bold leading-tight text-primary-500 lg:text-[32px] lg:font-semibold"
       >
-        Our Reach
+        Terhubung dengan Platform Terkemuka di China
       </h2>
 
       <div class="reach-marquee -mx-4 mt-10 overflow-hidden sm:hidden">
@@ -98,8 +98,8 @@ const paymentChannels = [
         </li>
       </ul>
 
-      <p class="mx-auto mt-10 max-w-[800px] text-center text-[14px] font-normal leading-[1.5] text-text-secondary lg:text-[18px]">
-        Transfer RMB ke berbagai platform pembayaran dan marketplace China dengan proses cepat, aman, dan transparan untuk mendukung kebutuhan transaksi bisnis Anda.
+      <p class="mx-auto mt-10 max-w-[850px] text-center text-[14px] font-normal leading-[1.5] text-text-secondary lg:text-[18px]">
+        Lakukan pembayaran dengan mudah dan aman ke berbagai marketplace grosir serta supplier pabrik di China. Layanan remittance kami mendukung transfer dana langsung ke dompet digital (Alipay/WeChat Pay) maupun rekening bank lokal China dengan proses yang cepat dan kurs yang transparan.
       </p>
     </UiContainer>
   </section>

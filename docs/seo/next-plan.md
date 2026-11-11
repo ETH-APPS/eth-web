@@ -151,6 +151,11 @@ atau glossary placeholder.
 - [ ] Konfirmasi apakah lingkungan domain final merupakan staging atau target
   indexing sebelum mengubah kebijakan indexing. `robots.txt` mengatur crawling;
   pencegahan indexing menggunakan `noindex` atau pembatasan akses yang sesuai.
+- [ ] Selaraskan kebijakan `noindex` dengan tim SEO: mereka memprioritaskannya
+  untuk halaman setelah login yang memerlukan autentikasi. Web saat ini belum
+  memiliki route tersebut. Tinjau kembali `noindex, follow` pada `/blog/search`
+  dan `/blog/tags` serta kebijakan placeholder sebelum domain final aktif;
+  jangan menganggap `noindex` sebagai pengganti autentikasi.
 - [ ] Setelah domain final aktif, verifikasi kepemilikan di Search Console dan
   kirim sitemap melalui akun yang diotorisasi.
 

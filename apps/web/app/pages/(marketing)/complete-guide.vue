@@ -57,13 +57,11 @@ const completeGuideBanner = illustratedCtaBanners.completeGuide
     section-id="complete-guide-faq"
     :default-open-index="1"
   />
-  <div id="complete-guide-quote" class="pb-6 lg:pb-10">
-    <UiContainer>
+  <div id="complete-guide-quote" class="pb-8 lg:pb-16">
+    <UiContainer wide>
       <MarketingIllustratedCtaBanner
         v-bind="completeGuideBanner"
-        variant="contained"
-        :image-max-width="504"
-        :image-top-offset="36"
+        variant="standard"
         image-alt="Ilustrasi panduan strategi impor B2B dari China"
       />
     </UiContainer>

@@ -24,7 +24,7 @@ Search Console belum diverifikasi. Riwayat sebelum dan sesudah perbaikan ada di
 | Open Graph | Sebagian | 20/23 komponen halaman punya judul, deskripsi, dan tipe; belum ada `og:image`/`og:url` | Siapkan gambar dan uji preview link |
 | Canonical | Homepage terlihat di Quick Tunnel | HTML publik memuat canonical ke URL tunnel; search/tag dikecualikan | Ganti ke domain final dan periksa slug tidak valid |
 | Sitemap | Selesai secara lokal, daftar konservatif | 16 URL statis; blog/glossary placeholder dan search/tag tidak masuk | Tinjau kelayakan 16 URL; tambah konten published setelah API |
-| Robots dan noindex | Selesai secara lokal untuk kebijakan saat ini | Crawler boleh membaca halaman; search/tag memakai `noindex, follow` | Putuskan kebijakan blog/glossary placeholder |
+| Robots dan noindex | Kebijakan perlu diselaraskan dengan tim SEO | Search/tag saat ini memakai `noindex, follow`; belum ada route setelah login di web | Tinjau search/tag, placeholder, dan halaman privat sebelum domain final |
 | Konten dan internal link | Ada, belum final | Link tersebar di navigasi dan konten; sebagian tujuan/konten masih placeholder | Audit broken link dan konten final |
 | Gambar dan performa | Baru diaudit | Semua 76 `<img>` punya `alt`; aset gambar sekitar 80,7 MiB | Optimasi gambar dan ukur Core Web Vitals |
 | Search Console | Menunggu domain final | Sitemap, robots, dan canonical sudah disiapkan di kode | Verifikasi kepemilikan DNS dan kirim sitemap |
@@ -75,6 +75,14 @@ agar halaman yang sudah dibaca tidak ditampilkan dalam indeks. Search/tag
 tetap boleh dirayapi supaya crawler dapat membaca instruksi `noindex` di
 dalamnya. Blog/glossary placeholder belum diberi `noindex`; kebijakannya harus
 diputuskan sebelum domain final diluncurkan.
+
+**Masukan tim SEO (10 November):** `noindex` diprioritaskan untuk halaman yang
+muncul setelah login dan membutuhkan autentikasi. Web saat ini belum memiliki
+route seperti itu. Pemakaian `noindex` pada pencarian dan tag blog adalah
+kebijakan existing yang perlu dikonfirmasi lagi dengan tim SEO; belum diubah.
+`noindex` tidak membatasi akses pengguna, sehingga halaman privat tetap harus
+dilindungi autentikasi. Aturan `X-Robots-Tag: none` yang terlihat pada seluruh
+respons Quick Tunnel juga perlu diperiksa sebelum memakai domain final.
 
 **Internal link** menghubungkan halaman di dalam situs, misalnya dari menu
 layanan ke halaman kargo. **Gambar** sudah memiliki alt text, tetapi ukuran

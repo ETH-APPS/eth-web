@@ -3,7 +3,7 @@ import logoUrl from '~/assets/images/brand/logo.png'
 import { homeFaqContent } from '~/constants/faq'
 import { illustratedCtaBanners } from '~/constants/illustratedCtaBanners'
 
-const homeBanner = illustratedCtaBanners.about
+const homeBanner = illustratedCtaBanners.cargo
 const siteName = 'ETH Cargo'
 const siteUrl = useRuntimeConfig().public.siteUrl || (import.meta.dev ? useRequestURL().origin : '')
 
@@ -61,13 +61,9 @@ useSeoMeta({
   <MarketingSectionsTestimonials />
   <MarketingSectionsFaq :content="homeFaqContent" />
   <div id="quote" class="pb-6 lg:pb-10">
-    <UiContainer>
-      <MarketingIllustratedCtaBanner
+    <UiContainer wide>
+      <MarketingCargoCtaBanner
         v-bind="homeBanner"
-        variant="contained"
-        :image-max-width="540"
-        :image-top-offset="42"
-        image-alt="Ilustrasi tim ETH Cargo mengelola rantai pasok impor"
       />
     </UiContainer>
     <MarketingSectionsQuoteBanner

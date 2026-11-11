@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import cargoCategories from '~/data/cargo-categories.json'
-import importVector from '~/assets/images/marketing/vector-impor.png'
 import { faqContentByPath, homeFaqContent } from '~/constants/faq'
 
 definePageMeta({
@@ -84,17 +83,10 @@ const calculatorBanner = {
     />
   </MarketingSectionsFaq>
   <div id="quote" class="bg-bg-100 pb-6 lg:pb-10">
-    <UiContainer>
-      <MarketingIllustratedCtaBanner
+    <UiContainer wide>
+      <MarketingCargoCtaBanner
         v-bind="calculatorBanner"
-        variant="contained"
-        :image="importVector"
-        :image-width="1144"
-        :image-height="1008"
-        :image-max-width="360"
-        :image-top-offset="28"
-        image-align="center"
-        image-alt="Ilustrasi layanan impor barang ETH Cargo"
+        estimate-to="#calculator-estimator"
       />
     </UiContainer>
     <MarketingSectionsQuoteBanner

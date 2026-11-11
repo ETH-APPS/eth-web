@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { MarketingFaqContent } from '~/constants/faq'
+import { illustratedCtaBanners } from '~/constants/illustratedCtaBanners'
 
 definePageMeta({
   layout: 'marketing',
@@ -15,35 +16,31 @@ useSeoMeta({
 
 const faqContent = {
   subtitle: 'Frequently Asked Question',
-  description: 'Lorem ipsum dolor sit amet consectetur adipiscing elit. Quisque faucibus ex sapien vitae pellentesque sem placerat.',
+  description: 'Temukan jawaban seputar waktu pemrosesan, kurs, batas transaksi, dokumen yang dibutuhkan, dan keamanan layanan transfer RMB.',
   items: [
     {
-      question: 'Lorem Ipsum',
-      answer: 'Lorem ipsum dolor sit amet consectetur adipiscing elit. Quisque faucibus ex sapien vitae pellentesque sem placerat.',
+      question: 'Berapa lama estimasi waktu agar dana masuk ke akun supplier?',
+      answer: 'Pengiriman dana ke platform e-wallet seperti Alipay dan WeChat Pay umumnya diproses sangat cepat (hitungan menit hingga jam pada hari kerja). Sedangkan untuk transfer langsung ke rekening bank lokal China, dana biasanya akan masuk dalam estimasi 1–2 hari kerja operasional bank.',
     },
     {
-      question: 'Quisque faucibus ex sapien vitae pellentesque sem placerat. In id cursus mi pretium tellus duis convallis. Tempus leo eu aenean sed diam urna tempor.',
-      answer: 'Lorem ipsum dolor sit amet consectetur adipiscing elit. Quisque faucibus ex sapien vitae pellentesque sem placerat. In id cursus mi pretium tellus duis convallis. Tempus leo eu aenean sed diam urna tempor. Pulvinar vivamus fringilla lacus nec metus bibendum egestas. Iaculis massa nisl malesuada lacinia integer nunc posuere. Ut hendrerit semper vel class aptent taciti sociosqu. Ad litora torquent per conubia nostra inceptos himenaeos.',
+      question: 'Apakah nilai tukar (kurs) yang ditampilkan sudah pasti dan final?',
+      answer: 'Kurs yang berlaku adalah transparan tanpa biaya tersembunyi. Anda dapat mengunci nilai tukar (lock rate) hari tersebut dengan langsung mengonfirmasi transaksi dan mengirimkan bukti transfer Rupiah ke tim kami.',
     },
     {
-      question: 'Lorem Ipsum',
-      answer: 'Pulvinar vivamus fringilla lacus nec metus bibendum egestas. Iaculis massa nisl malesuada lacinia integer nunc posuere.',
+      question: 'Apakah ada batas minimal atau maksimal untuk transaksi transfer RMB?',
+      answer: 'Kami melayani kebutuhan pembayaran berbagai skala, mulai dari pesanan sampel hingga bulk order partai besar. Untuk mengetahui batasan spesifik per metode pembayaran, silakan hubungi tim spesialis remittance kami.',
     },
     {
-      question: 'Lorem Ipsum',
-      answer: 'Tempus leo eu aenean sed diam urna tempor. Pulvinar vivamus fringilla lacus nec metus bibendum egestas.',
+      question: 'Data apa saja yang perlu saya siapkan untuk menggunakan jasa titip transfer ini?',
+      answer: 'Anda hanya perlu memberikan Commercial Invoice atau link tagihan dari supplier (misal dari 1688/Taobao), rincian nominal RMB yang harus dibayar, serta QR Code Alipay/WeChat atau detail nomor rekening penerima yang valid.',
     },
     {
-      question: 'Ut hendrerit semper vel class aptent taciti sociosqu. Ad litora torquent per conubia nostra inceptos himenaeos.',
-      answer: 'Quisque faucibus ex sapien vitae pellentesque sem placerat. In id cursus mi pretium tellus duis convallis.',
-    },
-    {
-      question: 'Lorem Ipsum',
-      answer: 'Lorem ipsum dolor sit amet consectetur adipiscing elit. Tempus leo eu aenean sed diam urna tempor.',
+      question: 'Apakah transaksi saya dijamin keamanannya?',
+      answer: 'Tentu. Kami menjamin 100% keamanan dana Anda. Apabila terjadi kegagalan transfer yang disebabkan oleh kendala sistem atau penolakan bank tujuan, dana Anda akan kami refund sepenuhnya sesuai dengan nominal Rupiah yang disetorkan.',
     },
   ],
-  quoteTitle: 'Lorem Ipsum',
-  quoteDescription: 'Lorem ipsum dolor sit amet consectetur adipiscing elit.',
+  quoteTitle: 'Siap Membayar Supplier China Anda?',
+  quoteDescription: 'Hitung estimasi pembayaran atau konsultasikan kebutuhan transfer RMB bisnis Anda bersama tim ETH Cargo.',
   calculatorTo: '#rmb-rate-estimator',
 } as const satisfies MarketingFaqContent
 
@@ -63,6 +60,8 @@ const cargoShippingTypes = [
     to: '/air-freight',
   },
 ] as const
+
+const transferBanner = illustratedCtaBanners.transfer
 </script>
 
 <template>
@@ -82,4 +81,24 @@ const cargoShippingTypes = [
       :services="cargoShippingTypes"
     />
   </MarketingSectionsFaq>
+  <div id="calculator-transfer-rmb-quote" class="pb-6 lg:pb-10">
+    <UiContainer wide>
+      <MarketingIllustratedCtaBanner
+        v-bind="transferBanner"
+        variant="standard"
+      />
+    </UiContainer>
+    <MarketingSectionsQuoteBanner
+      class="lg:hidden"
+      section-id="calculator-transfer-rmb-mobile-quote"
+      compact
+      :title="transferBanner.title"
+      :description="transferBanner.description"
+      email-label="Atau hubungi kami via email:"
+      :email="transferBanner.email"
+      cta-label="Transfer Sekarang!"
+      cta-to="#rmb-rate-estimator"
+      :show-image="false"
+    />
+  </div>
 </template>

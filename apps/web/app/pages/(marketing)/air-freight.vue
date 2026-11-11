@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import cargoAirUrl from '~/assets/images/marketing/cargo-air-landscape.png'
-import importVector from '~/assets/images/marketing/vector-impor.png'
+import airFreightVector from '~/assets/images/marketing/vector-air-freight.png'
 import { faqContentByPath, homeFaqContent } from '~/constants/faq'
 
 definePageMeta({
@@ -110,8 +110,8 @@ const airFreightWorkflowSteps = [
 
 const faqContent = faqContentByPath['/air-freight'] ?? homeFaqContent
 const freightBanner = {
-  title: faqContent.quoteTitle,
-  description: faqContent.quoteDescription,
+  title: 'Butuh Pengiriman Cepat dari China? Kirim via Kargo Udara!',
+  description: 'Solusi pengiriman ekspres All-In Door-to-Door yang aman untuk produk prioritas dan mendesak. Tiba lebih cepat langsung ke alamat Anda.',
   email: 'email@ethcargo.co.id',
   ctaLabel: 'Konsultasi Gratis',
   ctaTo: '#quote',
@@ -164,17 +164,14 @@ const freightBanner = {
   />
   <MarketingSectionsFaq :content="faqContent" />
   <div id="quote" class="pb-6 lg:pb-10">
-    <UiContainer>
+    <UiContainer wide>
       <MarketingIllustratedCtaBanner
         v-bind="freightBanner"
-        variant="contained"
-        :image="importVector"
-        :image-width="1144"
-        :image-height="1008"
-        :image-max-width="360"
-        :image-top-offset="28"
-        image-align="center"
-        image-alt="Ilustrasi layanan impor barang ETH Cargo"
+        variant="standard"
+        :image="airFreightVector"
+        :image-width="610"
+        :image-height="417"
+        image-alt="Ilustrasi pesawat kargo dan pengiriman udara"
       />
     </UiContainer>
     <MarketingSectionsQuoteBanner

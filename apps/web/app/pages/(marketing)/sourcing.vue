@@ -111,13 +111,11 @@ const sourcingBanner = illustratedCtaBanners.sourcing
     :default-open-index="0"
   />
   <div id="quote" class="pb-6 lg:pb-10">
-    <UiContainer id="sourcing-quote">
+    <UiContainer id="sourcing-quote" wide>
       <MarketingIllustratedCtaBanner
         v-bind="sourcingBanner"
-        variant="contained"
-        :image-max-width="396"
-        :image-top-offset="36"
-        image-alt="Ilustrasi tangan memegang paket produk sourcing China"
+        variant="standard"
+        image-alt="Ilustrasi tangan memegang paket dan barang hasil sourcing China"
       />
     </UiContainer>
     <MarketingSectionsQuoteBanner

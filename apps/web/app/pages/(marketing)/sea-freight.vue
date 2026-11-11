@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import cargoSeaUrl from '~/assets/images/marketing/cargo-sea-landscape.png'
-import importVector from '~/assets/images/marketing/vector-impor.png'
+import seaFreightVector from '~/assets/images/marketing/vector-sea-freight.png'
 import { faqContentByPath, homeFaqContent } from '~/constants/faq'
 
 definePageMeta({
@@ -137,8 +137,8 @@ const seaFreightWorkflowSteps = [
 
 const faqContent = faqContentByPath['/sea-freight'] ?? homeFaqContent
 const freightBanner = {
-  title: faqContent.quoteTitle,
-  description: faqContent.quoteDescription,
+  title: 'Siap Kirim Kargo Import Skala Besar via Laut',
+  description: 'Solusi pengiriman kargo laut All-In Door-to-Door yang aman dan ekonomis untuk bisnis Anda, Dapatkan penawaran terbaik hari ini!',
   email: 'email@ethcargo.co.id',
   ctaLabel: 'Konsultasi Gratis',
   ctaTo: '#quote',
@@ -204,17 +204,14 @@ const freightBanner = {
   />
   <MarketingSectionsFaq :content="faqContent" />
   <div id="quote" class="pb-6 lg:pb-10">
-    <UiContainer>
+    <UiContainer wide>
       <MarketingIllustratedCtaBanner
         v-bind="freightBanner"
-        variant="contained"
-        :image="importVector"
-        :image-width="1144"
-        :image-height="1008"
-        :image-max-width="360"
-        :image-top-offset="28"
-        image-align="center"
-        image-alt="Ilustrasi layanan impor barang ETH Cargo"
+        variant="standard"
+        :image="seaFreightVector"
+        :image-width="611"
+        :image-height="423"
+        image-alt="Ilustrasi kapal kontainer untuk pengiriman kargo laut"
       />
     </UiContainer>
     <MarketingSectionsQuoteBanner

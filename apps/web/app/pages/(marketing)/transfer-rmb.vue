@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import successTransferVector from '~/assets/images/marketing/vector-success-transfer.png'
 import { faqContentByPath, homeFaqContent } from '~/constants/faq'
 import { illustratedCtaBanners } from '~/constants/illustratedCtaBanners'
 
@@ -76,15 +75,7 @@ const transferWorkflowSteps = [
 
 const faqContent = faqContentByPath['/transfer-rmb'] ?? homeFaqContent
 
-const transferBanner = {
-  ...illustratedCtaBanners.transfer,
-  image: successTransferVector,
-  imageWidth: 2004,
-  imageHeight: 1444,
-  imageTopOffset: 48,
-  imageBottomOffset: 28,
-  imageAlign: 'center',
-} as const
+const transferBanner = illustratedCtaBanners.transfer
 </script>
 
 <template>
@@ -111,13 +102,10 @@ const transferBanner = {
     :content="faqContent"
   />
   <div id="transfer-rmb-quote" class="pb-6 lg:pb-10">
-    <UiContainer>
+    <UiContainer wide>
       <MarketingIllustratedCtaBanner
         v-bind="transferBanner"
-        variant="contained"
-        :image-max-width="432"
-        :image-top-offset="42"
-        :image-bottom-offset="24"
+        variant="standard"
       />
     </UiContainer>
     <MarketingSectionsQuoteBanner

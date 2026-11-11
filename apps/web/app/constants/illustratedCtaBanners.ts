@@ -1,10 +1,24 @@
 import transferVector from '~/assets/images/marketing/vector-transfer.png'
-import handPackageVector from '~/assets/images/marketing/vector-hand-package.png'
+import handPackageVector from '~/assets/images/marketing/vector-hand-package-2.png'
 import aboutUsVector from '~/assets/images/marketing/vector-about-us.png'
 import completeGuideVector from '~/assets/images/marketing/complete-guide.png'
 import importVector from '~/assets/images/marketing/vector-impor.png'
 
 export const illustratedCtaBanners = {
+  cargo: {
+    title: 'Siap Kirim Barang dari China?',
+    description: 'Hitung estimasi biaya pengiriman atau konsultasikan pilihan jalur kargo China-Indonesia yang paling sesuai untuk kebutuhan bisnis Anda.',
+    email: 'email@ethcargo.co.id',
+    ctaLabel: 'Konsultasi Gratis',
+    ctaTo: '/#quote',
+  },
+  chinaCargo: {
+    title: 'Siap Kirim Kargo Impor Anda?',
+    description: 'Hitung estimasi pengiriman dengan kalkulator kargo kami, atau konsultasikan kebutuhan impor bisnis Anda langsung bersama tim ahli ETH Cargo.',
+    email: 'email@ethcargo.co.id',
+    ctaLabel: 'Konsultasi Gratis',
+    ctaTo: '#quote',
+  },
   transfer: {
     title: 'Siap untuk Transfer RMB?',
     description: 'Proses pembayaran ke supplier China kini lebih praktis, aman, dan tanpa kendala. Konsultasikan nominal serta tujuan transfer bisnis Anda langsung bersama tim spesialis kami.',
@@ -25,12 +39,8 @@ export const illustratedCtaBanners = {
     ctaLabel: 'Konsultasi Gratis',
     ctaTo: '/#quote',
     image: handPackageVector,
-    imageAlign: 'center',
-    imageWidth: 404,
-    imageHeight: 420,
-    imageMaxWidth: 440,
-    imageTopOffset: 40,
-    imageRightOffset: 0,
+    imageWidth: 673,
+    imageHeight: 381,
   },
   about: {
     title: 'Siap Mengoptimalkan Rantai Pasok Impor Anda?',
@@ -39,12 +49,8 @@ export const illustratedCtaBanners = {
     ctaLabel: 'Konsultasi Gratis',
     ctaTo: '/#quote',
     image: aboutUsVector,
-    imageAlign: 'center',
     imageWidth: 547,
     imageHeight: 398,
-    imageMaxWidth: 600,
-    imageTopOffset: 48,
-    imageRightOffset: 0,
   },
   completeGuide: {
     title: 'Kuasai Strategi Import B2B dari China untuk Skala Bisnis Anda!',
@@ -53,12 +59,8 @@ export const illustratedCtaBanners = {
     ctaLabel: 'Konsultasi Gratis',
     ctaTo: '/#quote',
     image: completeGuideVector,
-    imageAlign: 'center',
     imageWidth: 537,
     imageHeight: 420,
-    imageMaxWidth: 560,
-    imageTopOffset: 40,
-    imageRightOffset: 0,
   },
   productSourcing: {
     title: 'Ingin Import Produk dari China Tanpa Repot? Biar ETH Cargo yang Urus!',

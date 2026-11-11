@@ -92,13 +92,11 @@ const aboutBanner = illustratedCtaBanners.about
   <MarketingSectionsAboutDigitalFeatures />
   <MarketingSectionsAboutImportSupport />
   <MarketingSectionsMultinationalRoutes :show-top-border="false" />
-  <div id="quote">
-    <UiContainer id="about-quote">
+  <div id="quote" class="pb-8 lg:pb-16">
+    <UiContainer id="about-quote" wide>
       <MarketingIllustratedCtaBanner
         v-bind="aboutBanner"
-        variant="contained"
-        :image-max-width="540"
-        :image-top-offset="42"
+        variant="standard"
         image-alt="Ilustrasi tim ETH Cargo mengelola rantai pasok impor"
       />
     </UiContainer>

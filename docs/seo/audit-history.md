@@ -131,6 +131,15 @@ valid masih bisa merespons 200 dan mendapat self-canonical; validasi 404
 ditunda sampai API blog. Kelayakan editorial seluruh 16 URL statis perlu
 dikonfirmasi sebelum domain final diaktifkan.
 
+Masukan tim SEO pada 10 November: gunakan `noindex` terutama untuk halaman
+setelah login yang memerlukan autentikasi. Inventaris route web saat ini belum
+memiliki halaman setelah login. Search/tag sudah memakai `noindex, follow`
+sebagai kebijakan terpisah untuk hasil/filter publik; penerapannya perlu
+disepakati lagi dengan tim SEO sebelum domain final diluncurkan. Tidak ada
+perubahan kode dari masukan ini. Menurut [Google Search Central](https://developers.google.com/search/docs/crawling-indexing/block-indexing),
+`noindex` mengatur kemunculan pada hasil pencarian; akses ke konten privat
+tetap memerlukan autentikasi atau pembatasan akses.
+
 ## 6. Konten dan internal link
 
 Audit source menghitung 102 kemunculan `<NuxtLink>` pada 41 file. Link tersebar
