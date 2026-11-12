@@ -308,13 +308,6 @@ onBeforeUnmount(() => {
                   :mobile-placeholder-title="mobileProductPlaceholder"
                 />
               </div>
-
-              <MarketingIllustratedCtaBanner
-                v-bind="productSourcingBanner"
-                class="mt-10"
-                variant="compact"
-                image-alt="Ilustrasi layanan impor dan sourcing produk dari China"
-              />
             </div>
           </div>
 
@@ -322,11 +315,10 @@ onBeforeUnmount(() => {
             type="button"
             aria-controls="additional-sourcing-products"
             :aria-expanded="showAdditionalProducts"
-            class="mx-auto mt-5 flex min-h-11 items-center justify-center gap-2 rounded-xl px-4 text-[16px] font-medium text-primary-500 transition-colors hover:bg-primary-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500"
+            class="mx-auto mt-5 flex min-h-11 items-center justify-center gap-2 rounded-xl px-4 text-[16px] font-medium text-primary-500 transition-colors hover:bg-primary-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500 lg:hidden"
             @click="showAdditionalProducts = !showAdditionalProducts"
           >
-            <span class="lg:hidden">{{ showAdditionalProducts ? 'View Less' : 'View More' }}</span>
-            <span class="hidden lg:inline">{{ showAdditionalProducts ? 'Lebih Sedikit' : 'Lebih Banyak' }}</span>
+            <span>{{ showAdditionalProducts ? 'View Less' : 'View More' }}</span>
             <ChevronsDown
               :size="18"
               :stroke-width="1.8"
@@ -397,6 +389,42 @@ onBeforeUnmount(() => {
           </ul>
         </aside>
       </div>
+    </UiContainer>
+
+    <UiContainer>
+      <div
+        class="grid transition-[grid-template-rows,opacity] duration-500 ease-out motion-reduce:transition-none"
+        :class="showAdditionalProducts ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0'"
+        :aria-hidden="!showAdditionalProducts"
+        :inert="!showAdditionalProducts"
+      >
+        <div class="min-h-0 overflow-hidden">
+          <MarketingIllustratedCtaBanner
+            v-bind="productSourcingBanner"
+            class="mt-10"
+            variant="background"
+            :show-estimate="false"
+            image-alt="Ilustrasi layanan impor dan sourcing produk dari China"
+          />
+        </div>
+      </div>
+
+      <button
+        type="button"
+        aria-controls="additional-sourcing-products"
+        :aria-expanded="showAdditionalProducts"
+        class="mx-auto mt-5 hidden min-h-11 items-center justify-center gap-2 rounded-xl px-4 text-[16px] font-medium text-primary-500 transition-colors hover:bg-primary-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500 lg:flex"
+        @click="showAdditionalProducts = !showAdditionalProducts"
+      >
+        <span>{{ showAdditionalProducts ? 'Lebih Sedikit' : 'Lebih Banyak' }}</span>
+        <ChevronsDown
+          :size="18"
+          :stroke-width="1.8"
+          aria-hidden="true"
+          class="transition-transform duration-500 ease-out motion-reduce:transition-none"
+          :class="showAdditionalProducts ? 'rotate-180' : ''"
+        />
+      </button>
     </UiContainer>
   </section>
 </template>

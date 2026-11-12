@@ -38,35 +38,29 @@ const props = withDefaults(defineProps<{
 })
 
 const searchQuery = ref('')
-const activeQuestion = ref('')
-const openItems = ref<string[]>(
-  props.groups.flatMap((group, groupIndex) => (
-    group.items.length > 1 && groupIndex < 3 ? [`${group.id}-1`] : []
-  )),
-)
-const expandedTocGroups = ref<string[]>(props.groups.slice(0, 1).map(group => group.id))
+const initialGroup = props.groups[0]
+const activeGroupId = ref(initialGroup?.id ?? '')
+const initialOpenKey = initialGroup
+  ? `${initialGroup.id}-${initialGroup.items.length > 1 ? 1 : 0}`
+  : ''
+const openItems = ref<string[]>(initialOpenKey ? [initialOpenKey] : [])
 
-const filteredGroups = computed(() => {
+const activeGroup = computed(() => (
+  props.groups.find(group => group.id === activeGroupId.value) ?? props.groups[0]
+))
+
+const filteredItems = computed(() => {
   const query = searchQuery.value.trim().toLocaleLowerCase('id-ID')
+  const group = activeGroup.value
 
-  if (!query) return props.groups
+  if (!group) return []
+  if (!query) return group.items
 
-  return props.groups
-    .map((group) => {
-      const groupMatches = `${group.title} ${group.description}`
-        .toLocaleLowerCase('id-ID')
-        .includes(query)
-      const items = groupMatches
-        ? group.items
-        : group.items.filter(item => (
-            `${item.question} ${item.answer}`
-              .toLocaleLowerCase('id-ID')
-              .includes(query)
-          ))
-
-      return { ...group, items }
-    })
-    .filter(group => group.items.length > 0)
+  return group.items.filter(item => (
+    `${item.question} ${item.answer}`
+      .toLocaleLowerCase('id-ID')
+      .includes(query)
+  ))
 })
 
 function itemKey(groupId: string, itemIndex: number) {
@@ -81,28 +75,15 @@ function toggleItem(key: string) {
   openItems.value = isOpen(key)
     ? openItems.value.filter(item => item !== key)
     : [...openItems.value, key]
-  activeQuestion.value = key
 }
 
-function isTocGroupExpanded(groupId: string) {
-  return expandedTocGroups.value.includes(groupId)
-}
+function selectGroup(group: FaqDirectoryGroup) {
+  activeGroupId.value = group.id
+  searchQuery.value = ''
 
-function toggleTocGroup(groupId: string) {
-  expandedTocGroups.value = isTocGroupExpanded(groupId)
-    ? expandedTocGroups.value.filter(id => id !== groupId)
-    : [...expandedTocGroups.value, groupId]
-}
-
-function goToQuestion(groupId: string, itemIndex: number) {
-  const key = itemKey(groupId, itemIndex)
-  activeQuestion.value = key
-  if (!isOpen(key)) openItems.value = [...openItems.value, key]
-
-  document.getElementById(`${key}-question`)?.scrollIntoView({
-    behavior: 'smooth',
-    block: 'center',
-  })
+  const defaultIndex = group.items.length > 1 ? 1 : 0
+  const key = group.items.length ? itemKey(group.id, defaultIndex) : ''
+  openItems.value = key ? [key] : []
 }
 </script>
 
@@ -158,22 +139,23 @@ function goToQuestion(groupId: string, itemIndex: number) {
       </header>
 
       <div class="mt-14 grid items-start gap-8 lg:grid-cols-[270px_minmax(0,1fr)]">
-        <nav aria-labelledby="faq-toc-title" class="hidden rounded-2xl border border-border-200 bg-bg-0 p-4 shadow-md lg:sticky lg:top-28 lg:block">
+        <nav aria-labelledby="faq-toc-title" class="rounded-2xl border border-border-200 bg-bg-0 p-4 shadow-md lg:sticky lg:top-28">
           <h2 id="faq-toc-title" class="text-[20px] font-medium text-primary-500">
-            Table of Content
+            Daftar FAQ
           </h2>
 
-          <ol class="mt-4 space-y-3">
+          <ol class="mt-4 grid gap-2 sm:grid-cols-2 lg:block lg:space-y-2">
             <li
               v-for="(group, groupIndex) in groups"
               :key="group.id"
             >
               <button
                 type="button"
-                class="grid w-full grid-cols-[18px_minmax(0,1fr)_16px] items-start gap-x-1.5 rounded-lg text-left focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500"
-                :aria-expanded="isTocGroupExpanded(group.id)"
-                :aria-controls="`${group.id}-toc`"
-                @click="toggleTocGroup(group.id)"
+                class="grid min-h-10 w-full grid-cols-[18px_minmax(0,1fr)] items-center gap-x-2 rounded-lg px-1.5 py-2 text-left transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500"
+                :class="activeGroupId === group.id ? 'bg-primary-50' : 'hover:bg-primary-50/60'"
+                :aria-current="activeGroupId === group.id ? 'true' : undefined"
+                :aria-controls="group.id"
+                @click="selectGroup(group)"
               >
                 <span class="text-[16px] leading-[1.45] text-text-secondary">
                   {{ groupIndex + 1 }}
@@ -181,69 +163,35 @@ function goToQuestion(groupId: string, itemIndex: number) {
                 <span class="min-w-0 text-[16px] font-medium leading-[1.45] text-text-secondary">
                   {{ group.title }}
                 </span>
-                <ChevronDown
-                  :size="16"
-                  :stroke-width="1.8"
-                  aria-hidden="true"
-                  class="mt-[3px] shrink-0 text-primary-500 transition-transform"
-                  :class="isTocGroupExpanded(group.id) ? 'rotate-180' : ''"
-                />
               </button>
-
-              <div
-                :id="`${group.id}-toc`"
-                :aria-hidden="!isTocGroupExpanded(group.id)"
-                :inert="!isTocGroupExpanded(group.id)"
-                class="grid transition-[grid-template-rows] duration-200"
-                :class="isTocGroupExpanded(group.id) ? 'grid-rows-[1fr]' : 'grid-rows-[0fr]'"
-              >
-                <div class="overflow-hidden">
-                  <div class="ml-6 mt-2 space-y-1">
-                    <button
-                      v-for="(item, itemIndex) in group.items"
-                      :key="item.question"
-                      type="button"
-                      class="block w-full rounded-md px-2 py-1.5 text-left text-[14px] leading-[1.45] transition-colors focus-visible:outline-2 focus-visible:outline-primary-500"
-                      :class="activeQuestion === itemKey(group.id, itemIndex)
-                        ? 'bg-primary-50 text-text-secondary'
-                        : 'text-text-secondary hover:bg-primary-50'"
-                      @click="goToQuestion(group.id, itemIndex)"
-                    >
-                      {{ item.question }}
-                    </button>
-                  </div>
-                </div>
-              </div>
             </li>
           </ol>
         </nav>
 
-        <div>
+        <div v-if="activeGroup" class="min-w-0">
           <p
-            v-if="filteredGroups.length === 0"
+            v-if="filteredItems.length === 0"
             class="rounded-2xl border border-border-200 px-6 py-10 text-center text-[14px] text-text-tertiary"
           >
             Tidak ada artikel yang sesuai dengan pencarian Anda.
           </p>
 
           <section
-            v-for="(group, groupIndex) in filteredGroups"
-            :id="group.id"
-            :aria-labelledby="`${group.id}-title`"
-            :key="group.id"
-            :class="groupIndex > 0 ? 'mt-10' : ''"
+            v-else
+            :id="activeGroup.id"
+            :aria-labelledby="`${activeGroup.id}-title`"
           >
-            <h2 :id="`${group.id}-title`" class="text-[16px] font-semibold text-text-secondary lg:text-[22px]">
-              {{ group.title }}
+            <h2 :id="`${activeGroup.id}-title`" class="text-[22px] font-semibold text-text-secondary lg:text-[26px]">
+              {{ activeGroup.title }}
             </h2>
             <p class="mt-1 text-[16px] text-text-tertiary lg:text-[20px]">
-              {{ group.description }}
+              {{ activeGroup.description }}
             </p>
 
             <div class="mt-4 space-y-2">
               <article
-                v-for="(item, itemIndex) in group.items"
-                :id="`${itemKey(group.id, itemIndex)}-question`"
+                v-for="(item, itemIndex) in filteredItems"
+                :id="`${itemKey(activeGroup.id, itemIndex)}-question`"
                 :key="item.question"
                 class="scroll-mt-32 overflow-hidden rounded-2xl border border-border-200 shadow-md"
               >
@@ -251,16 +199,16 @@ function goToQuestion(groupId: string, itemIndex: number) {
                   <button
                     type="button"
                     class="flex w-full items-start gap-2.5 px-4 py-3 text-left focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-primary-500"
-                    :aria-expanded="isOpen(itemKey(group.id, itemIndex))"
-                    :aria-controls="`${itemKey(group.id, itemIndex)}-answer`"
-                    @click="toggleItem(itemKey(group.id, itemIndex))"
+                    :aria-expanded="isOpen(itemKey(activeGroup.id, itemIndex))"
+                    :aria-controls="`${itemKey(activeGroup.id, itemIndex)}-answer`"
+                    @click="toggleItem(itemKey(activeGroup.id, itemIndex))"
                   >
                     <span aria-hidden="true" class="mt-0.5 flex size-4 shrink-0 items-center justify-center rounded-full bg-[#10b7a5] text-[9px] font-semibold text-bg-0">
                       Q
                     </span>
                     <span
                       class="flex-1 text-[16px] leading-[1.5] transition-colors"
-                      :class="isOpen(itemKey(group.id, itemIndex))
+                      :class="isOpen(itemKey(activeGroup.id, itemIndex))
                         ? 'font-medium text-primary-500'
                         : 'font-normal text-text-secondary'"
                     >
@@ -271,17 +219,17 @@ function goToQuestion(groupId: string, itemIndex: number) {
                       :stroke-width="1.8"
                       aria-hidden="true"
                       class="mt-0.5 shrink-0 text-text-disable transition-transform duration-200"
-                      :class="isOpen(itemKey(group.id, itemIndex)) ? 'rotate-180' : ''"
+                      :class="isOpen(itemKey(activeGroup.id, itemIndex)) ? 'rotate-180' : ''"
                     />
                   </button>
                 </h3>
 
                 <div
-                  :id="`${itemKey(group.id, itemIndex)}-answer`"
-                  :aria-hidden="!isOpen(itemKey(group.id, itemIndex))"
-                  :inert="!isOpen(itemKey(group.id, itemIndex))"
+                  :id="`${itemKey(activeGroup.id, itemIndex)}-answer`"
+                  :aria-hidden="!isOpen(itemKey(activeGroup.id, itemIndex))"
+                  :inert="!isOpen(itemKey(activeGroup.id, itemIndex))"
                   class="grid transition-[grid-template-rows] duration-250 ease-out"
-                  :class="isOpen(itemKey(group.id, itemIndex)) ? 'grid-rows-[1fr]' : 'grid-rows-[0fr]'"
+                  :class="isOpen(itemKey(activeGroup.id, itemIndex)) ? 'grid-rows-[1fr]' : 'grid-rows-[0fr]'"
                 >
                   <div class="overflow-hidden">
                     <div class="mx-4 flex gap-2.5 border-t border-border-200 pb-4 pt-3">

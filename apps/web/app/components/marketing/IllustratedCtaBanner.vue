@@ -13,6 +13,7 @@ const props = withDefaults(defineProps<{
   ctaTo: string
   estimateLabel?: string
   estimateTo?: string
+  showEstimate?: boolean
   image: string
   imageAlt?: string
   imageWidth: number
@@ -31,6 +32,7 @@ const props = withDefaults(defineProps<{
   ctaTo: '/#quote',
   estimateLabel: 'Hitung Biaya',
   estimateTo: '/calculator',
+  showEstimate: true,
   imageAlt: '',
   imageMaxWidth: 480,
   imageTopOffset: 72,
@@ -86,7 +88,7 @@ const titleId = `illustrated-cta-${useId()}`
 
           <div class="flex flex-wrap gap-2">
             <NuxtLink
-              v-if="variant === 'background'"
+              v-if="variant === 'background' && showEstimate"
               :to="estimateTo"
               class="inline-flex min-h-9 items-center justify-center gap-2 rounded-full bg-primary-500 px-3 text-[12px] font-semibold text-white transition-colors hover:bg-primary-600 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white"
             >
