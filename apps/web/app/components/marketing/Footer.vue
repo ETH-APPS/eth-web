@@ -79,9 +79,61 @@ const mobileNavigationGroups = [
   { id: 'information', label: 'Informasi', links: informationLinks },
 ] as const
 
+const desktopNavigationGroups = [
+  {
+    id: 'layanan',
+    label: 'Layanan',
+    links: [
+      { label: 'Jasa Cargo China', to: '/china-cargo' },
+      { label: 'Jasa Transfer RMB', to: '/transfer-rmb' },
+      { label: 'Jasa Sourcing', to: '/sourcing' },
+    ],
+  },
+  {
+    id: 'fitur',
+    label: 'Fitur',
+    links: [
+      { label: 'Kalkulator Impor', to: '/calculator' },
+      { label: 'Kalkulator RMB', to: '/calculator-rmb' },
+      { label: 'Live Tracking', to: '/tracking' },
+    ],
+  },
+  {
+    id: 'insight',
+    label: 'Insight',
+    links: [
+      { label: 'Promosi', to: '/promo' },
+      { label: 'Blog', to: '/blog' },
+      { label: 'Glossrium', to: '/glossary' },
+      { label: 'Cara Import Barang dari China', to: '/china-cargo#shipping-workflow', narrow: true },
+    ],
+  },
+  {
+    id: 'information',
+    label: 'Information',
+    links: [
+      { label: 'Tentang Kami', to: '/about-us' },
+      { label: 'FAQ', to: '/faq' },
+      { label: 'Syarat & Ketentuan', to: '#footer' },
+    ],
+  },
+] as const
+
 const activeMobileSection = ref<string | null>(null)
 const mobileSeoOpen = ref(false)
 const seoDescription = 'Informasi tambahan mengenai layanan forwarder China–Indonesia, pengiriman kargo laut dan udara, jasa sourcing, serta solusi impor B2B ETH Cargo.'
+
+const seoTitle = 'Tentang ETH Cargo | Jasa Forwarder China Indonesia #1'
+const seoParagraphs = [
+  'ETH Cargo (PT Express Trade Handling) adalah penyedia layanan forwarder China Indonesia terpercaya sejak 2013. Kami berdedikasi membantu korporasi, manufaktur, dan pelaku usaha di Indonesia memindahkan barang dari supplier China dengan proses operasional yang terkelola.',
+  'Sebagai importir resmi yang fokus pada pasar B2B, ETH Cargo menghadirkan solusi logistik end-to-end. Mulai dari penerimaan di gudang Guangzhou, pengiriman via udara/laut, hingga pengurusan izin impor (All-In) untuk memastikan rantai pasok Anda berjalan transparan, aman, dan dapat diprediksi.',
+]
+const seoServicesTitle = 'Layanan Utama Kami:'
+const seoServices = [
+  'Jasa cargo China: Pengiriman kargo yang efisien dari Guangzhou & Yiwu ke Jakarta (Kargo Udara & Kargo Laut) dengan tarif transparan dan sistem pelacakan terpadu.',
+  'Jasa Transfer RMB: Solusi perantara pembayaran aman ke supplier atau dompet digital di China bagi bisnis tanpa rekening lokal.',
+  'Jasa Sourcing China: Kemudahan pengadaan barang dari marketplace China tanpa kendala bahasa dan pembayaran.',
+]
 
 function toggleMobileSection(id: string) {
   activeMobileSection.value = activeMobileSection.value === id ? null : id
@@ -99,6 +151,7 @@ const navHeadingClass = 'text-[16px] font-medium text-text-disable'
     class="bg-bg-100 text-text-secondary"
   >
     <UiContainer class="py-6 lg:py-12">
+      <!-- MOBILE -->
       <div class="lg:hidden">
         <div class="text-center">
           <NuxtLink
@@ -200,8 +253,9 @@ const navHeadingClass = 'text-[16px] font-medium text-text-disable'
         </div>
       </div>
 
-      <div class="hidden grid-cols-[1fr_auto] gap-16 lg:grid">
-        <div>
+      <!-- DESKTOP -->
+      <div class="hidden gap-10 lg:flex lg:justify-between xl:gap-16">
+        <div class="shrink-0">
           <NuxtLink
             to="/"
             aria-label="ETH Cargo home"
@@ -215,10 +269,6 @@ const navHeadingClass = 'text-[16px] font-medium text-text-disable'
               class="h-[66px] w-[220px] object-contain object-left"
             >
           </NuxtLink>
-
-          <p class="mt-2 text-[14px] font-normal text-text-secondary">
-            Jasa pengiriman impor dari China ke mancanegara.
-          </p>
 
           <div
             class="mt-4 flex items-center gap-6"
@@ -246,7 +296,7 @@ const navHeadingClass = 'text-[16px] font-medium text-text-disable'
             <p :class="headingClass">
               Operasional
             </p>
-            <p class="mt-2 flex items-center gap-2.5 text-[15px] text-text-secondary">
+            <p class="mt-2 flex items-center gap-2.5 whitespace-nowrap text-[15px] text-text-secondary">
               <Clock3
                 :size="24"
                 :stroke-width="1.8"
@@ -258,135 +308,73 @@ const navHeadingClass = 'text-[16px] font-medium text-text-disable'
             </p>
           </div>
 
-          <ul
-            class="mt-6 flex flex-wrap items-center gap-x-5 gap-y-3"
-            aria-label="Marketplace"
-          >
-            <li
-              v-for="logo in marketplaceLogos"
-              :key="logo.name"
+          <div class="mt-6">
+            <p :class="headingClass">
+              E-Commerce
+            </p>
+            <ul
+              class="mt-3 flex flex-nowrap items-center gap-x-4"
+              aria-label="Marketplace"
             >
-              <img
-                :src="logo.src"
-                :alt="logo.name"
-                loading="lazy"
-                class="w-auto object-contain"
-                :class="logo.class"
+              <li
+                v-for="logo in mobileMarketplaceLogos"
+                :key="logo.name"
               >
-            </li>
-          </ul>
+                <img
+                  :src="logo.src"
+                  :alt="logo.name"
+                  loading="lazy"
+                  class="w-auto object-contain"
+                  :class="logo.class ?? logo.mobileClass"
+                >
+              </li>
+            </ul>
+          </div>
 
-          <ul
-            class="mt-5 flex flex-wrap items-center gap-x-8 gap-y-4"
-            aria-label="Bank pembayaran"
-          >
-            <li
-              v-for="logo in bankLogos"
-              :key="logo.name"
+          <div class="mt-6">
+            <p :class="headingClass">
+              Pembayaran
+            </p>
+            <ul
+              class="mt-3 flex flex-nowrap items-center gap-x-7"
+              aria-label="Bank pembayaran"
             >
-              <img
-                :src="logo.src"
-                :alt="logo.name"
-                loading="lazy"
-                class="w-auto object-contain"
-                :class="logo.class"
+              <li
+                v-for="logo in bankLogos"
+                :key="logo.name"
               >
-            </li>
-          </ul>
+                <img
+                  :src="logo.src"
+                  :alt="logo.name"
+                  loading="lazy"
+                  class="w-auto object-contain"
+                  :class="logo.class"
+                >
+              </li>
+            </ul>
+          </div>
         </div>
 
         <nav
           aria-label="Navigasi footer"
-          class="grid grid-cols-[auto_1fr_1fr] content-start gap-x-10 gap-y-4 pl-28 pt-3"
+          class="ml-auto flex w-full min-w-0 max-w-[640px] items-start justify-between gap-x-6 pt-3"
         >
-          <div class="row-span-2">
+          <div
+            v-for="group in desktopNavigationGroups"
+            :key="group.id"
+            class="shrink-0"
+          >
             <p :class="navHeadingClass">
-              Services
+              {{ group.label }}
             </p>
             <ul class="mt-2 space-y-2">
               <li
-                v-for="link in serviceLinks"
-                :key="link.label"
+                v-for="link in group.links"
+                :key="`${group.id}-${link.label}`"
               >
                 <NuxtLink
                   :to="link.to"
-                  :class="linkClass"
-                >
-                  {{ link.label }}
-                </NuxtLink>
-              </li>
-            </ul>
-          </div>
-
-          <div>
-            <p :class="navHeadingClass">
-              Fitur
-            </p>
-            <ul class="mt-2 space-y-2">
-              <li
-                v-for="link in featureLinks"
-                :key="link.label"
-              >
-                <NuxtLink
-                  :to="link.to"
-                  :class="linkClass"
-                >
-                  {{ link.label }}
-                </NuxtLink>
-              </li>
-            </ul>
-          </div>
-
-          <div>
-            <p :class="navHeadingClass">
-              Promo
-            </p>
-            <ul class="mt-2 space-y-2">
-              <li
-                v-for="link in promoLinks"
-                :key="link.label"
-              >
-                <NuxtLink
-                  :to="link.to"
-                  :class="linkClass"
-                >
-                  {{ link.label }}
-                </NuxtLink>
-              </li>
-            </ul>
-          </div>
-
-          <div>
-            <p :class="navHeadingClass">
-              Panduan
-            </p>
-            <ul class="mt-2 space-y-2">
-              <li
-                v-for="link in guideLinks"
-                :key="link.label"
-              >
-                <NuxtLink
-                  :to="link.to"
-                  :class="linkClass"
-                >
-                  {{ link.label }}
-                </NuxtLink>
-              </li>
-            </ul>
-          </div>
-
-          <div>
-            <p :class="navHeadingClass">
-              Informasi
-            </p>
-            <ul class="mt-2 space-y-2">
-              <li
-                v-for="link in informationLinks"
-                :key="link.label"
-              >
-                <NuxtLink
-                  :to="link.to"
-                  :class="linkClass"
+                  :class="[linkClass, 'narrow' in link && link.narrow ? 'inline-block max-w-[130px]' : '']"
                 >
                   {{ link.label }}
                 </NuxtLink>
@@ -396,8 +384,40 @@ const navHeadingClass = 'text-[16px] font-medium text-text-disable'
         </nav>
       </div>
 
-      <div class="mt-10 text-center text-[10px] font-normal text-text-disable lg:text-[12px]">
-        <p>
+      <!-- SEO BOX (desktop) -->
+      <section
+        aria-labelledby="footer-seo-title"
+        class="mt-10 hidden rounded-xl border border-border-200 px-4 pt-4 pb-8 lg:block"
+      >
+        <h2
+          id="footer-seo-title"
+          class="border-b border-border-200 pb-3 text-[16px] font-normal text-text-tertiary"
+        >
+          {{ seoTitle }}
+        </h2>
+
+        <div class="mt-2 grid grid-cols-2 gap-x-16">
+          <div class="space-y-4 text-[12px] leading-relaxed text-text-tertiary">
+            <p v-for="paragraph in seoParagraphs" :key="paragraph">
+              {{ paragraph }}
+            </p>
+          </div>
+
+          <div>
+            <h3 class="text-[14px] font-normal text-text-tertiary">
+              {{ seoServicesTitle }}
+            </h3>
+            <ul class="mt-3 list-disc space-y-1 pl-[18px] text-[12px] leading-relaxed text-text-tertiary">
+              <li v-for="service in seoServices" :key="service">
+                {{ service }}
+              </li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <div class="mt-10 text-center text-[10px] font-normal text-text-disable lg:mt-16 lg:text-[12px]">
+        <p class="lg:hidden">
           <a
             href="#footer"
             class="underline underline-offset-2 transition-colors hover:text-primary-500"
@@ -408,7 +428,7 @@ const navHeadingClass = 'text-[16px] font-medium text-text-disable'
             class="underline underline-offset-2 transition-colors hover:text-primary-500"
           >Kebijakan Privasi</a>
         </p>
-        <p class="mt-2">
+        <p class="mt-2 lg:mt-0">
           © {{ currentYear }} ETH Cargo. All rights reserved.
         </p>
       </div>
@@ -442,21 +462,6 @@ const navHeadingClass = 'text-[16px] font-medium text-text-disable'
           </div>
         </div>
       </div>
-
-      <details class="group mt-6 hidden border-y border-border-200 lg:block">
-        <summary class="flex cursor-pointer list-none items-center justify-between py-3 text-[14px] text-text-tertiary focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500">
-          <span>SEO BOX</span>
-          <ChevronDown
-            :size="18"
-            :stroke-width="1.8"
-            aria-hidden="true"
-            class="transition-transform duration-300 group-open:rotate-180"
-          />
-        </summary>
-        <p class="max-w-[900px] pb-4 text-[12px] leading-relaxed text-text-tertiary">
-          {{ seoDescription }}
-        </p>
-      </details>
     </UiContainer>
   </footer>
 </template>
