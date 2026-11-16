@@ -1,11 +1,6 @@
 <script setup lang="ts">
 import chinaFlagUrl from '~/assets/images/flag/china.png'
-import taiwanFlagUrl from '~/assets/images/flag/taiwan.png'
-import singaporeFlagUrl from '~/assets/images/flag/singapore.png'
-import malaysiaFlagUrl from '~/assets/images/flag/malaysia.png'
-import koreaFlagUrl from '~/assets/images/flag/korea.png'
-import usaFlagUrl from '~/assets/images/flag/USA.png'
-import australiaFlagUrl from '~/assets/images/flag/australia.png'
+import { multinationalCountries, multinationalCountryPath } from '~/constants/multinationalCountries'
 
 withDefaults(defineProps<{
   showTopBorder?: boolean
@@ -14,14 +9,12 @@ withDefaults(defineProps<{
 })
 
 const countries = [
-  { name: 'China', label: 'CHINA', flag: chinaFlagUrl },
-  { name: 'Taiwan', label: 'TAIWAN', flag: taiwanFlagUrl },
-  { name: 'Singapore', label: 'SINGAPORE', flag: singaporeFlagUrl },
-  { name: 'Malaysia', label: 'MALAYSIA', flag: malaysiaFlagUrl },
-  { name: 'Korea Selatan', label: 'S. KOREA', flag: koreaFlagUrl },
-  { name: 'Amerika Serikat', label: 'USA', flag: usaFlagUrl },
-  { name: 'Australia', label: 'AUSTRALIA', flag: australiaFlagUrl },
-] as const
+  { name: 'China', navigationName: 'China', routeLabel: 'CHINA', flag: chinaFlagUrl, to: '/china-cargo' },
+  ...multinationalCountries.map(country => ({
+    ...country,
+    to: multinationalCountryPath(country.slug),
+  })),
+]
 </script>
 
 <template>
@@ -47,15 +40,15 @@ const countries = [
         </p>
       </div>
 
-      <ul class="mx-auto mt-8 grid max-w-[500px] grid-cols-2 items-start gap-x-5 gap-y-8 lg:mt-10 lg:max-w-[980px] lg:grid-cols-7">
+      <ul class="mx-auto mt-8 grid max-w-[500px] grid-cols-2 items-start gap-x-5 gap-y-8 lg:mt-10 lg:max-w-[1080px] lg:grid-cols-8">
         <li
           v-for="country in countries"
           :key="country.name"
-          class="flex justify-center last:col-span-2 lg:last:col-span-1"
+          class="flex justify-center"
         >
           <NuxtLink
-            to="/multinational-cargo#quote"
-            :aria-label="`Lihat layanan kargo ${country.name}`"
+            :to="country.to"
+            :aria-label="`Lihat layanan kargo ${country.navigationName}`"
             class="group flex min-w-[92px] flex-col items-center rounded-xl focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary-500 lg:pb-9"
           >
             <span
@@ -76,7 +69,7 @@ const countries = [
             <span
               class="mt-4 text-center text-[16px] font-semibold leading-none text-text-secondary transition-colors duration-200 group-hover:text-primary-500 group-focus-visible:text-primary-500 lg:text-[14px]"
             >
-              {{ country.label }}
+              {{ country.routeLabel }}
             </span>
           </NuxtLink>
         </li>

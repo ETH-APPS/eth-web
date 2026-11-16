@@ -230,7 +230,18 @@ const importPosts = [
   <NuxtPage v-if="isBlogChildPage" />
 
   <div v-else>
-    <h1 class="sr-only">Blog ETH Cargo</h1>
+    <header class="bg-bg-0 pt-8 sm:pt-10 lg:pt-12">
+      <UiContainer>
+        <div class="mx-auto max-w-[850px] text-center">
+          <h1 class="text-[32px] font-semibold leading-[1.2] text-primary-500 lg:text-[48px]">
+            Blog &amp; Berita Impor
+          </h1>
+          <p class="mt-6 text-justify text-[16px] font-normal leading-[1.5] text-text-tertiary lg:text-center lg:text-[20px] lg:leading-[1.4]">
+            Temukan panduan praktis, regulasi kepabeanan terbaru, dan strategi rantai pasok untuk memastikan kelancaran operasional impor B2B Anda bersama ETH Cargo.
+          </p>
+        </div>
+      </UiContainer>
+    </header>
     <MarketingBlogHeroCarousel
       :posts="featuredPosts"
       :autoplay-delay="5000"

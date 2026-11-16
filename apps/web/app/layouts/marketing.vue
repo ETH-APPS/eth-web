@@ -5,7 +5,9 @@ const isPolicyPage = computed(() => (
 ))
 
 const headerVariant = computed(() => {
-  const isBlogDirectoryPage = route.path === '/blog/search' || route.path === '/blog/tags'
+  const isBlogDirectoryPage = route.path === '/blog/search'
+    || route.path === '/blog/tags'
+    || route.path.startsWith('/blog/author/')
   const isBlogDetail = route.path.startsWith('/blog/') && !isBlogDirectoryPage
 
   return route.path === '/' || isBlogDetail ? 'overlay' : 'light'
@@ -25,7 +27,7 @@ const showMultinationalRoutes = computed(() => (
 
       <MarketingSectionsMultinationalRoutes
         v-if="showMultinationalRoutes"
-        :show-top-border="!['/china-cargo', '/sea-freight', '/air-freight', '/multinational-cargo', '/live-tracking'].includes(route.path)"
+        :show-top-border="!['/china-cargo', '/sea-freight', '/air-freight', '/live-tracking'].includes(route.path) && !route.path.startsWith('/multinational-cargo')"
       />
     </main>
     <MarketingFooter />

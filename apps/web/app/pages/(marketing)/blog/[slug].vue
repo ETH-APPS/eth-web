@@ -3,6 +3,7 @@ import airCargoImage from '~/assets/images/marketing/cargo-air-landscape.png'
 import articleImage from '~/assets/images/marketing/article.png'
 import cargoHeroImage from '~/assets/images/marketing/multinational-cargo-hero.png'
 import seaCargoImage from '~/assets/images/marketing/cargo-sea-landscape.png'
+import { blogAuthor } from '~/constants/blogAuthor'
 
 definePageMeta({
   layout: 'marketing',
@@ -10,7 +11,7 @@ definePageMeta({
 
 const route = useRoute()
 const slug = computed(() => String(route.params.slug || 'article'))
-const articleAuthor = 'ETH Cargo Team'
+const articleAuthor = blogAuthor.name
 const siteUrl = useRuntimeConfig().public.siteUrl || (import.meta.dev ? useRequestURL().origin : '')
 
 const knownArticleTitles: Record<string, string> = {
@@ -152,6 +153,7 @@ if (siteUrl) {
           author: {
             '@type': 'Organization',
             name: articleAuthor,
+            url: new URL(blogAuthor.to, homepage).href,
           },
           publisher: {
             '@type': 'Organization',
@@ -173,6 +175,7 @@ if (siteUrl) {
     <MarketingBlogArticleHero
       :title="articleTitle"
       :author="articleAuthor"
+      :author-to="blogAuthor.to"
       :updated-at="articleDate"
       :released-at="articleDate"
       :image="articleImage"

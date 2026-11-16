@@ -5,6 +5,7 @@ const props = withDefaults(defineProps<{
   variant?: 'standard' | 'background' | 'compact'
   backgroundImage?: string
   shiftImageLeftOnWideScreens?: boolean
+  largeImageOnWideScreens?: boolean
   title: string
   description: string
   email: string
@@ -27,6 +28,7 @@ const props = withDefaults(defineProps<{
   variant: 'standard',
   backgroundImage: '',
   shiftImageLeftOnWideScreens: false,
+  largeImageOnWideScreens: false,
   emailLabel: 'Atau hubungi kami via email:',
   ctaLabel: 'Konsultasi Gratis',
   ctaTo: '/#quote',
@@ -115,10 +117,10 @@ const titleId = `illustrated-cta-${useId()}`
         decoding="async"
         class="pointer-events-none absolute bottom-0 z-10 h-auto object-contain"
         :class="[
-          variant === 'standard' ? 'w-[45%] max-w-[560px]' : 'w-[32%] max-w-[369px]',
+          variant === 'standard' ? 'w-[45%] max-w-[560px]' : largeImageOnWideScreens ? 'w-[32%] max-w-[369px] xl:w-[46%] xl:max-w-[570px]' : 'w-[32%] max-w-[369px]',
           shiftImageLeftOnWideScreens ? 'xl:-translate-x-24' : '',
         ]"
-        :style="{ right: variant === 'standard' ? '0' : `calc(11% + ${props.imageRightOffset}px)` }"
+        :style="{ right: variant === 'standard' ? '0' : largeImageOnWideScreens ? '3%' : `calc(11% + ${props.imageRightOffset}px)` }"
       >
     </div>
     <div

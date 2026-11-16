@@ -23,6 +23,7 @@ defineProps<{
   imageAlt: string
   highlights: readonly HeroHighlight[]
   highlightsAriaLabel: string
+  countryVariant?: boolean
 }>()
 </script>
 
@@ -33,7 +34,7 @@ defineProps<{
   >
     <div class="bg-bg-0 py-12 sm:py-16 lg:py-20">
       <UiContainer>
-        <div class="grid grid-cols-1 items-center gap-10 lg:grid-cols-[1fr_520px]">
+        <div class="grid grid-cols-1 items-center gap-10 lg:grid-cols-[1fr_520px]" :class="countryVariant ? 'lg:gap-8' : ''">
           <div>
             <h1 v-if="includeEyebrowInTitle" :id="titleId">
               <span class="block text-[15px] font-normal uppercase text-primary-700 lg:text-[20px]">
@@ -45,7 +46,7 @@ defineProps<{
             </h1>
 
             <template v-else>
-              <p class="text-[15px] font-normal uppercase text-primary-700 lg:text-[20px]">
+              <p class="text-[15px] font-normal text-primary-700 lg:text-[20px]" :class="countryVariant ? '' : 'uppercase'">
                 {{ eyebrow }}
               </p>
 
@@ -85,6 +86,7 @@ defineProps<{
                     v-if="serviceLinks?.[service]"
                     :to="serviceLinks[service]"
                     class="focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500"
+                    :class="countryVariant ? 'inline-flex min-h-11 items-center' : ''"
                   >
                     {{ service }}
                   </NuxtLink>
@@ -128,7 +130,8 @@ defineProps<{
             loading="eager"
             decoding="async"
             fetchpriority="high"
-            class="aspect-[4/3] h-auto w-full rounded-[20px] object-cover object-center shadow-md lg:aspect-auto lg:h-[430px]"
+            class="aspect-[4/3] h-auto w-full object-cover object-center"
+            :class="countryVariant ? 'rounded-xl sm:mx-auto sm:max-w-[520px] lg:h-[390px]' : 'rounded-[20px] shadow-md lg:aspect-auto lg:h-[430px]'"
           >
         </div>
       </UiContainer>

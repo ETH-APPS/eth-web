@@ -2,6 +2,7 @@
 const props = defineProps<{
   title: string
   author: string
+  authorTo: string
   updatedAt: string
   releasedAt: string
   image: string
@@ -38,7 +39,12 @@ const props = defineProps<{
             </dt>
             <span class="h-px bg-white/55" aria-hidden="true" />
             <dd class="font-medium">
-              {{ props.author }}
+              <NuxtLink
+                :to="props.authorTo"
+                class="inline-flex min-h-11 items-center rounded-sm transition-colors hover:text-primary-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white lg:min-h-0"
+              >
+                {{ props.author }}
+              </NuxtLink>
             </dd>
           </div>
 

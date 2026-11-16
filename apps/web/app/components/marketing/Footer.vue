@@ -357,7 +357,7 @@ const navHeadingClass = 'text-[16px] font-medium text-text-disable'
 
         <nav
           aria-label="Navigasi footer"
-          class="ml-auto flex w-full min-w-0 max-w-[640px] items-start justify-between gap-x-6 pt-3"
+          class="ml-auto flex w-full min-w-0 max-w-[640px] items-start justify-between gap-x-2 pt-3 xl:gap-x-6"
         >
           <div
             v-for="group in desktopNavigationGroups"

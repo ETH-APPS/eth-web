@@ -14,6 +14,7 @@ import tiktokDark from '~/assets/images/marketing/Tiktok-dark.png'
 import xDark from '~/assets/images/marketing/X-dark.png'
 import youtubeDark from '~/assets/images/marketing/youtube.png'
 import { blogArticleToc as tableOfContents } from '~/constants/blogArticleToc'
+import { blogAuthor } from '~/constants/blogAuthor'
 import { illustratedCtaBanners } from '~/constants/illustratedCtaBanners'
 
 interface RelatedArticle {
@@ -32,6 +33,7 @@ const props = defineProps<{
 }>()
 
 const articleBanner = illustratedCtaBanners.transfer
+const { allArticles } = useAllBlogArticles()
 
 const expandedSections = ref<string[]>(['memahami-kebutuhan', 'memilih-layanan'])
 const activeSection = ref('memahami-kebutuhan')
@@ -312,20 +314,22 @@ onBeforeUnmount(() => {
                 <div
                   class="size-16 shrink-0 rounded-full bg-border-200"
                   role="img"
-                  aria-label="Foto profil ETH Cargo Team"
+                  :aria-label="`Foto profil ${blogAuthor.name}`"
                 />
 
                 <div class="min-w-0 flex-1">
                   <h2 id="article-author-title" class="text-[24px] font-semibold leading-tight text-text-secondary">
-                    ETH Cargo Team
+                    <NuxtLink :to="blogAuthor.to" class="rounded-sm hover:text-primary-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500">
+                      {{ blogAuthor.name }}
+                    </NuxtLink>
                   </h2>
                   <p class="mt-1 text-[16px] font-medium text-text-secondary">
-                    Logistics Specialist
+                    {{ blogAuthor.jobTitle }}
                   </p>
                 </div>
 
                 <NuxtLink
-                  to="/about-us"
+                  :to="blogAuthor.to"
                   class="ml-auto inline-flex w-full shrink-0 items-center justify-end gap-2 text-[14px] font-medium text-primary-500 transition-colors hover:text-primary-600 focus-visible:rounded focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500 lg:ml-0 lg:mt-2 lg:w-auto lg:justify-start"
                 >
                   <span>Lihat Profil</span>
@@ -336,7 +340,7 @@ onBeforeUnmount(() => {
               <div class="mt-5 flex flex-wrap items-center justify-between gap-x-8 gap-y-4 lg:pl-20">
                 <div class="inline-flex h-10 items-center gap-2 rounded-full bg-primary-50 px-4 text-[14px] font-normal tracking-wide text-primary-500">
                   <PhFileText :size="18" weight="fill" aria-hidden="true" />
-                  <span>32 Articles</span>
+                  <span>{{ allArticles.length }} Articles</span>
                 </div>
 
                 <div class="flex flex-wrap items-center gap-4 lg:flex-nowrap lg:gap-6">
@@ -375,7 +379,7 @@ onBeforeUnmount(() => {
                     aria-label="YouTube ETH Cargo"
                     class="transition-opacity hover:opacity-70"
                   >
-                    <img :src="youtubeDark" alt="" aria-hidden="true" class="size-6 object-contain grayscale">
+                    <img :src="youtubeDark" alt="" aria-hidden="true" class="size-6 object-contain grayscale brightness-75">
                   </a>
                 </div>
               </div>

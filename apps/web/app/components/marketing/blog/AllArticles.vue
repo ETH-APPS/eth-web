@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ArrowUpRight, Check, ChevronLeft, ChevronRight, Funnel, Search, Tags } from 'lucide-vue-next'
+import { blogAuthor } from '~/constants/blogAuthor'
 
 interface Article {
   id: string
@@ -14,15 +15,19 @@ interface Article {
 const props = withDefaults(defineProps<{
   articles: readonly Article[]
   perPage?: number
-  variant?: 'directory' | 'search-results' | 'tag-results'
+  variant?: 'directory' | 'search-results' | 'tag-results' | 'author' | 'author-search'
   initialSearch?: string
   initialTag?: string
+  initialTopic?: string
+  authorName?: string
   schemaListId?: string
 }>(), {
   perPage: 12,
   variant: 'directory',
   initialSearch: '',
   initialTag: '',
+  initialTopic: '',
+  authorName: '',
 })
 
 type SortOption = 'newest' | 'oldest' | 'az' | 'za'
@@ -36,6 +41,8 @@ const sortOptions: { value: SortOption, label: string }[] = [
 
 const router = useRouter()
 const searchTerm = ref(props.initialSearch)
+const submittedSearch = ref(props.initialSearch)
+const selectedTopic = ref(props.initialTopic)
 const selectedTags = ref<string[]>([])
 const pendingTags = ref<string[]>([])
 const currentPage = ref(1)
@@ -50,34 +57,58 @@ const dialogRef = ref<HTMLElement>()
 let previousBodyOverflow = ''
 const isSearchResults = computed(() => props.variant === 'search-results')
 const isTagResults = computed(() => props.variant === 'tag-results')
+const isAuthor = computed(() => props.variant === 'author')
+const isAuthorSearch = computed(() => props.variant === 'author-search')
+const isAuthorView = computed(() => isAuthor.value || isAuthorSearch.value)
 const headingTag = computed(() => props.variant === 'directory' ? 'h2' : 'h1')
 
 const availableTags = computed(() => (
   [...new Set(props.articles.flatMap(article => article.tags))].sort()
 ))
 
-const filteredArticles = computed(() => {
-  const rawQuery = props.variant === 'directory'
+const searchMatchedArticles = computed(() => {
+  const rawQuery = props.variant === 'directory' || isAuthor.value
     ? ''
-    : searchTerm.value.trim().toLocaleLowerCase('id-ID')
+    : (isAuthorSearch.value ? submittedSearch.value : searchTerm.value).trim().toLocaleLowerCase('id-ID')
   const query = rawQuery === 'ekspor'
     ? 'export'
     : rawQuery === 'impor'
       ? 'import'
       : rawQuery
 
-  return props.articles.filter((article) => {
-    const matchesSearch = !query
-      || article.title.toLocaleLowerCase('id-ID').includes(query)
-      || article.tags.some(tag => tag.toLocaleLowerCase('id-ID').includes(query))
+  return props.articles.filter((article) => (
+    !query
+    || article.title.toLocaleLowerCase('id-ID').includes(query)
+    || article.tags.some(tag => tag.toLocaleLowerCase('id-ID').includes(query))
+  ))
+})
 
+const availableTopics = computed(() => {
+  const counts = new Map<string, number>()
+
+  for (const article of searchMatchedArticles.value) {
+    for (const tag of article.tags)
+      counts.set(tag, (counts.get(tag) ?? 0) + 1)
+  }
+
+  return [...counts].sort((first, second) => second[1] - first[1] || first[0].localeCompare(second[0], 'id-ID')).slice(0, 3)
+})
+
+function topicLabel(topic: string) {
+  return ({ Export: 'Ekspor', Import: 'Impor', Customs: 'Kepabeanan' } as Record<string, string>)[topic] ?? topic
+}
+
+const filteredArticles = computed(() => {
+  return searchMatchedArticles.value.filter((article) => {
     const activeTags = isTagResults.value
       ? appliedTag.value ? [appliedTag.value] : []
       : selectedTags.value
     const matchesTags = activeTags.length === 0
       || activeTags.every(tag => article.tags.includes(tag))
 
-    return matchesSearch && matchesTags
+    const matchesTopic = !isAuthorSearch.value || !selectedTopic.value || article.tags.includes(selectedTopic.value)
+
+    return matchesTags && matchesTopic
   })
 })
 
@@ -178,9 +209,26 @@ function submitSearch() {
   if (!query)
     return
 
+  if (isAuthorView.value) {
+    navigateTo({ path: blogAuthor.searchTo, query: { q: query } })
+    return
+  }
+
   navigateTo({
     path: '/blog/search',
     query: { q: query },
+  })
+}
+
+function setTopic(topic: string) {
+  selectedTopic.value = topic
+  currentPage.value = 1
+  router.replace({
+    path: blogAuthor.searchTo,
+    query: {
+      q: submittedSearch.value || undefined,
+      topic: topic || undefined,
+    },
   })
 }
 
@@ -267,6 +315,13 @@ watch([searchTerm, () => selectedTags.value.join('|'), appliedSort, appliedTag],
 
 watch(() => props.initialSearch, (value) => {
   searchTerm.value = value
+  submittedSearch.value = value
+  currentPage.value = 1
+})
+
+watch(() => props.initialTopic, (value) => {
+  selectedTopic.value = value
+  currentPage.value = 1
 })
 
 watch(() => props.initialTag, (value) => {
@@ -294,7 +349,8 @@ onBeforeUnmount(() => {
     id="all-articles"
     ref="allArticlesSection"
     aria-labelledby="all-articles-title"
-    class="scroll-mt-20 bg-bg-0 py-14 sm:py-16 lg:py-20"
+    class="scroll-mt-20 bg-bg-0"
+    :class="isAuthorView ? 'pb-14 pt-4 lg:pt-4' : 'py-14 sm:py-16 lg:py-20'"
   >
     <div
       v-if="filterOpen || tagOpen"
@@ -304,7 +360,11 @@ onBeforeUnmount(() => {
     />
     <UiContainer>
       <div class="mx-auto max-w-[1080px]">
+        <h2 v-if="isAuthorView" id="all-articles-title" class="sr-only">
+          {{ isAuthorSearch ? 'Hasil pencarian artikel' : 'Artikel' }} oleh {{ props.authorName || 'penulis' }}
+        </h2>
         <component
+          v-if="!isAuthorView"
           :is="headingTag"
           id="all-articles-title"
           class="text-[28px] font-semibold text-primary-500"
@@ -312,7 +372,7 @@ onBeforeUnmount(() => {
           {{ isTagResults ? 'Tags' : isSearchResults ? 'Search Result' : 'All Article' }}
         </component>
 
-        <div class="mt-5 flex items-center justify-between gap-4 sm:items-start">
+        <div class="flex items-center justify-between gap-4 sm:items-start" :class="isAuthorView ? '' : 'mt-5'">
           <form class="min-w-0 flex-1 sm:max-w-[360px]" role="search" @submit.prevent="submitSearch">
             <label class="relative block w-full">
               <span class="sr-only">Cari artikel</span>
@@ -325,7 +385,7 @@ onBeforeUnmount(() => {
               <input
                 v-model="searchTerm"
                 type="search"
-                placeholder="Cari artikel"
+                :placeholder="isAuthorView ? 'Cari topik atau istilah (mis: CBM, FCL, Pajak)...' : 'Cari artikel'"
                 class="h-11 w-full rounded-full border border-border-200 bg-bg-0 pl-11 pr-4 text-[14px] font-normal text-text-secondary outline-none transition-[border-color,box-shadow] placeholder:italic placeholder:text-text-tertiary focus:border-primary-500 focus:ring-2 focus:ring-primary-100"
               >
             </label>
@@ -334,13 +394,13 @@ onBeforeUnmount(() => {
           <div class="relative shrink-0 sm:self-start">
             <button
               type="button"
-              aria-label="Filter Article"
+              :aria-label="isAuthorView ? 'Filter artikel penulis' : 'Filter Article'"
               :aria-expanded="filterOpen"
               :aria-controls="isSearchResults || isTagResults ? 'article-sort-panel' : 'article-filter-panel'"
               class="inline-flex size-11 items-center justify-center rounded-full bg-primary-500 text-white transition-colors hover:bg-primary-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500 lg:h-11 lg:w-auto lg:gap-2 lg:rounded-lg lg:bg-transparent lg:px-3 lg:text-[16px] lg:font-medium lg:text-primary-500 lg:hover:bg-primary-50"
               @click="isSearchResults || isTagResults ? openFilter() : filterOpen = !filterOpen"
             >
-              <span class="hidden lg:inline">Filter Article</span>
+              <span class="hidden lg:inline">{{ isAuthorView ? 'Filter' : 'Filter Article' }}</span>
               <span
                 v-if="!isSearchResults && !isTagResults && selectedTags.length"
                 class="absolute -right-1 -top-1 flex size-5 items-center justify-center rounded-full border border-primary-500 bg-white text-[10px] text-primary-500 lg:static lg:border-0 lg:bg-primary-500 lg:text-white"
@@ -559,68 +619,111 @@ onBeforeUnmount(() => {
             <span class="h-px w-5 bg-border-200" aria-hidden="true" />
             <span>Found {{ sortedArticles.length }} articles</span>
           </template>
+          <template v-else-if="isAuthorSearch">
+            <div class="w-full">
+              <p>Menampilkan hasil pencarian <strong class="font-medium italic text-text-secondary">“{{ submittedSearch || 'Semua Artikel' }}”</strong></p>
+              <p class="mt-1">{{ sortedArticles.length }} artikel ditemukan</p>
+            </div>
+          </template>
           <template v-else>
-            <span>Total of {{ sortedArticles.length }} Articles</span>
-            <span class="hidden h-px w-5 bg-border-200 lg:block" aria-hidden="true" />
-            <span>{{ sortLabel }}</span>
+            <span>{{ isAuthor ? `${sortedArticles.length} Artikel Diterbitkan` : `Total of ${sortedArticles.length} Articles` }}</span>
+            <template v-if="!isAuthor">
+              <span class="hidden h-px w-5 bg-border-200 lg:block" aria-hidden="true" />
+              <span>{{ sortLabel }}</span>
+            </template>
           </template>
         </div>
 
         <div
           v-if="visibleArticles.length"
-          class="mt-6 grid gap-x-6 gap-y-8 sm:grid-cols-2 lg:grid-cols-3"
+          class="mt-6"
+          :class="isAuthorSearch ? 'grid items-start gap-4 lg:grid-cols-[260px_minmax(0,1fr)]' : ''"
         >
-          <article
-            v-for="article in visibleArticles"
-            :key="article.id"
-            class="relative group flex min-w-0 flex-col overflow-hidden rounded-xl bg-white shadow-[0_2px_8px_rgba(15,23,42,0.04)] transition-shadow hover:shadow-md focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500"
-          >
-            <div class="aspect-[16/9] overflow-hidden bg-bg-200">
-              <img
-                :src="article.image"
-                :alt="article.imageAlt"
-                class="size-full object-cover transition-transform duration-300 group-hover:scale-[1.03]"
-              >
-            </div>
-
-            <div class="flex min-h-[144px] flex-1 flex-col px-2.5 pb-3 pt-2.5">
-              <h3 class="line-clamp-2 text-[15px] font-normal leading-6 text-text-secondary transition-colors group-hover:text-primary-500 group-has-[:focus-visible]:text-primary-500 lg:text-[16px]">
-                <NuxtLink
-                  :to="article.to?.startsWith('/') ? article.to : `/blog/${article.id}`"
-                  class="after:absolute after:inset-0 after:z-10 after:rounded-xl focus-visible:outline-primary-500"
+          <aside v-if="isAuthorSearch" aria-labelledby="author-topics-title" class="rounded-xl border border-border-200 bg-bg-0 p-4 shadow-[0_2px_5px_rgba(15,23,42,0.08)]">
+            <h3 id="author-topics-title" class="text-[18px] font-semibold text-primary-500">
+              Kategori Topik
+            </h3>
+            <ul class="mt-2 space-y-1">
+              <li>
+                <button
+                  type="button"
+                  class="flex min-h-11 w-full items-center rounded-md px-2 text-left text-[14px] text-text-secondary transition-colors hover:bg-primary-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500"
+                  :class="!selectedTopic ? 'bg-primary-50 text-primary-500' : ''"
+                  :aria-pressed="!selectedTopic"
+                  @click="setTopic('')"
                 >
-                  {{ article.title }}
-                </NuxtLink>
-              </h3>
-
-              <ul class="mt-3 flex flex-wrap gap-2" aria-label="Tag artikel">
-                <li
-                  v-for="tag in article.tags"
-                  :key="tag"
+                  Semua topik
+                </button>
+              </li>
+              <li v-for="(entry, index) in availableTopics" :key="entry[0]">
+                <button
+                  type="button"
+                  class="flex min-h-11 w-full items-center gap-3 rounded-md px-2 text-left text-[14px] text-text-secondary transition-colors hover:bg-primary-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500"
+                  :class="selectedTopic === entry[0] ? 'bg-primary-50 text-primary-500' : ''"
+                  :aria-pressed="selectedTopic === entry[0]"
+                  @click="setTopic(entry[0])"
                 >
-                  <button
-                    type="button"
-                    class="relative z-20 rounded bg-bg-100 px-2 py-1 text-[12px] text-primary-500 transition-colors hover:bg-primary-50 focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-primary-500"
-                    @click.prevent.stop="goToTag(tag)"
-                  >
-                    {{ tag }}
-                  </button>
-                </li>
-              </ul>
+                  <span class="w-4 shrink-0 text-center">{{ index + 1 }}</span>
+                  <span class="min-w-0 flex-1">{{ topicLabel(entry[0]) }}</span>
+                  <ArrowUpRight v-if="selectedTopic === entry[0]" :size="16" aria-hidden="true" />
+                </button>
+              </li>
+            </ul>
+          </aside>
 
-              <div class="mt-auto flex items-center justify-between gap-2 pt-3">
-                <time class="text-[12px] font-normal text-text-tertiary">
-                  {{ article.releaseDate }}
-                </time>
-                <ArrowUpRight
-                  :size="24"
-                  :stroke-width="1.9"
-                  class="shrink-0 text-primary-500 opacity-0 transition-opacity duration-200 group-hover:opacity-100 group-has-[:focus-visible]:opacity-100"
-                  aria-hidden="true"
-                />
+          <div class="grid min-w-0 gap-x-6 gap-y-8 sm:grid-cols-2" :class="isAuthorSearch ? '' : 'lg:grid-cols-3'">
+            <article
+              v-for="article in visibleArticles"
+              :key="article.id"
+              class="relative group flex min-w-0 flex-col overflow-hidden rounded-xl bg-white shadow-[0_2px_8px_rgba(15,23,42,0.04)] transition-shadow hover:shadow-md focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500"
+            >
+              <div class="aspect-[16/9] overflow-hidden bg-bg-200">
+                <img
+                  :src="article.image"
+                  :alt="article.imageAlt"
+                  class="size-full object-cover transition-transform duration-300 group-hover:scale-[1.03]"
+                >
               </div>
-            </div>
-          </article>
+
+              <div class="flex min-h-[144px] flex-1 flex-col px-2.5 pb-3 pt-2.5">
+                <h3 class="line-clamp-2 text-[15px] font-normal leading-6 text-text-secondary transition-colors group-hover:text-primary-500 group-has-[:focus-visible]:text-primary-500 lg:text-[16px]">
+                  <NuxtLink
+                    :to="article.to?.startsWith('/') ? article.to : `/blog/${article.id}`"
+                    class="after:absolute after:inset-0 after:z-10 after:rounded-xl focus-visible:outline-primary-500"
+                  >
+                    {{ article.title }}
+                  </NuxtLink>
+                </h3>
+
+                <ul class="mt-3 flex flex-wrap gap-2" aria-label="Tag artikel">
+                  <li
+                    v-for="tag in article.tags"
+                    :key="tag"
+                  >
+                    <button
+                      type="button"
+                      class="relative z-20 rounded bg-bg-100 px-2 py-1 text-[12px] text-primary-500 transition-colors hover:bg-primary-50 focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-primary-500"
+                      @click.prevent.stop="goToTag(tag)"
+                    >
+                      {{ tag }}
+                    </button>
+                  </li>
+                </ul>
+
+                <div class="mt-auto flex items-center justify-between gap-2 pt-3">
+                  <time class="text-[12px] font-normal text-text-tertiary">
+                    {{ article.releaseDate }}
+                  </time>
+                  <ArrowUpRight
+                    :size="24"
+                    :stroke-width="1.9"
+                    class="shrink-0 text-primary-500 opacity-0 transition-opacity duration-200 group-hover:opacity-100 group-has-[:focus-visible]:opacity-100"
+                    aria-hidden="true"
+                  />
+                </div>
+              </div>
+            </article>
+          </div>
         </div>
 
         <div
@@ -644,16 +747,22 @@ onBeforeUnmount(() => {
             type="button"
             aria-label="Halaman sebelumnya"
             :disabled="currentPage === 1"
-            class="flex size-8 items-center justify-center rounded-md text-primary-500 transition-colors hover:bg-primary-50 disabled:cursor-not-allowed disabled:text-border-300"
+            class="flex items-center justify-center rounded-md text-primary-500 transition-colors hover:bg-primary-50 disabled:cursor-not-allowed disabled:text-border-300"
+            :class="isAuthorView ? 'size-11 lg:size-8' : 'size-8'"
             @click="setPage(currentPage - 1)"
           >
             <ChevronLeft :size="17" :stroke-width="1.8" aria-hidden="true" />
           </button>
 
+          <span v-if="isAuthorView" class="px-3 text-[14px] text-text-secondary lg:hidden">
+            Halaman {{ currentPage }} dari {{ totalPages }}
+          </span>
+
           <template v-for="item in paginationItems" :key="item">
             <span
               v-if="typeof item === 'string'"
-              class="flex size-8 items-center justify-center text-[12px] text-text-tertiary"
+              class="size-8 items-center justify-center text-[12px] text-text-tertiary"
+              :class="isAuthorView ? 'hidden lg:flex' : 'flex'"
               aria-hidden="true"
             >
               …
@@ -663,10 +772,10 @@ onBeforeUnmount(() => {
               type="button"
               :aria-label="`Halaman ${item}`"
               :aria-current="currentPage === item ? 'page' : undefined"
-              :class="currentPage === item
+              class="size-8 items-center justify-center rounded-md text-[12px] transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500"
+              :class="[currentPage === item
                 ? 'bg-primary-50 font-medium text-primary-500'
-                : 'text-text-secondary hover:bg-bg-100'"
-              class="flex size-8 items-center justify-center rounded-md text-[12px] transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500"
+                : 'text-text-secondary hover:bg-bg-100', isAuthorView ? 'hidden lg:flex' : 'flex']"
               @click="setPage(item)"
             >
               {{ item }}
@@ -677,14 +786,15 @@ onBeforeUnmount(() => {
             type="button"
             aria-label="Halaman berikutnya"
             :disabled="currentPage === totalPages"
-            class="flex size-8 items-center justify-center rounded-md text-primary-500 transition-colors hover:bg-primary-50 disabled:cursor-not-allowed disabled:text-border-300"
+            class="flex items-center justify-center rounded-md text-primary-500 transition-colors hover:bg-primary-50 disabled:cursor-not-allowed disabled:text-border-300"
+            :class="isAuthorView ? 'size-11 lg:size-8' : 'size-8'"
             @click="setPage(currentPage + 1)"
           >
             <ChevronRight :size="17" :stroke-width="1.8" aria-hidden="true" />
           </button>
         </nav>
 
-        <div class="mt-16 text-center">
+        <div v-if="!isAuthorView" class="mt-16 text-center">
           <p class="mx-auto max-w-[680px] text-[12px] leading-relaxed text-text-tertiary">
             Temukan insight terbaru seputar ekspor, impor, dan pengiriman kargo untuk mendukung perkembangan bisnis Anda.
           </p>

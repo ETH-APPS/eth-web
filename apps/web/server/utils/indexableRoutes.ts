@@ -1,7 +1,6 @@
 export const indexableRoutes = [
   '/',
   '/china-cargo',
-  '/multinational-cargo',
   '/sea-freight',
   '/air-freight',
   '/transfer-rmb',

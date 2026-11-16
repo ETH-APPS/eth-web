@@ -3,50 +3,55 @@ import { Blocks, Clock3, Headset, PackageCheck, ShieldCheck } from 'lucide-vue-n
 import CargoLandingHero from '~/components/marketing/CargoLandingHero.vue'
 import cargoAirUrl from '~/assets/images/marketing/cargo-air-landscape.png'
 import cargoSeaUrl from '~/assets/images/marketing/cargo-sea-landscape.png'
-import multinationalCargoHeroUrl from '~/assets/images/marketing/multinational-cargo-hero.png'
-import { faqContentByPath, homeFaqContent } from '~/constants/faq'
+import multinationalVectorUrl from '~/assets/images/marketing/vector-multinational.png'
+import { multinationalCountries, multinationalCountryPath } from '~/constants/multinationalCountries'
 
 definePageMeta({
   layout: 'marketing',
+  validate: route => multinationalCountries.some(country => country.slug === route.params.country),
 })
 
-const serviceDescription = 'Layanan pengiriman kargo laut dan udara untuk kebutuhan logistik internasional dari dan menuju Amerika bersama ETH Cargo.'
+const route = useRoute()
+const country = computed(() => multinationalCountries.find(item => item.slug === route.params.country)!)
+const serviceDescription = computed(() => country.value.hero.description)
 const siteUrl = useRuntimeConfig().public.siteUrl || (import.meta.dev ? useRequestURL().origin : '')
 
 if (siteUrl) {
   const homepage = new URL('/', siteUrl).href
-  const serviceUrl = new URL('/multinational-cargo', homepage).href
-
-  useHead({
-    script: [{
-      key: 'multinational-cargo-service-schema',
-      type: 'application/ld+json',
-      innerHTML: JSON.stringify({
-        '@context': 'https://schema.org',
-        '@type': 'Service',
-        '@id': serviceUrl + '#service',
-        name: 'Multinational Cargo Amerika',
-        description: serviceDescription,
-        url: serviceUrl,
-        mainEntityOfPage: serviceUrl,
-        image: new URL(multinationalCargoHeroUrl, homepage).href,
-        provider: {
-          '@type': 'Organization',
-          '@id': homepage + '#organization',
-          name: 'ETH Cargo',
-          url: homepage,
-        },
-      }).replace(/</g, '\\u003c'),
-    }],
+  useHead(() => {
+    const serviceUrl = new URL(multinationalCountryPath(country.value.slug), homepage).href
+    return {
+      script: [{
+        key: 'multinational-cargo-service-schema',
+        type: 'application/ld+json',
+        innerHTML: JSON.stringify({
+          '@context': 'https://schema.org',
+          '@type': 'Service',
+          '@id': serviceUrl + '#service',
+          name: country.value.hero.title.replace('\n', ' '),
+          description: serviceDescription.value,
+          url: serviceUrl,
+          mainEntityOfPage: serviceUrl,
+          image: new URL(country.value.hero.image, homepage).href,
+          provider: {
+            '@type': 'Organization',
+            '@id': homepage + '#organization',
+            name: 'ETH Cargo',
+            url: homepage,
+          },
+        }).replace(/</g, '\\u003c'),
+      }],
+    }
   })
 }
 
 useSeoMeta({
-  title: 'Multinational Cargo Amerika | ETH Cargo',
+  title: () => `${country.value.hero.title.replace('\n', ' ')} | ETH Cargo`,
   description: serviceDescription,
-  ogTitle: 'Multinational Cargo Amerika | ETH Cargo',
+  ogTitle: () => `${country.value.hero.title.replace('\n', ' ')} | ETH Cargo`,
   ogDescription: serviceDescription,
   ogType: 'website',
+  robots: 'noindex, follow',
 })
 
 const heroServices = ['Sea Cargo', 'Air Cargo']
@@ -75,33 +80,33 @@ const shippingWorkflowSteps = Array.from({ length: 5 }, () => ({
     'Lorem ipsum dolor sit amet consectetur adipiscing elit. Quisque faucibus ex sapien vitae pellentesque sem placerat.',
 }))
 
-const faqContent = faqContentByPath['/multinational-cargo'] ?? homeFaqContent
-const cargoBanner = {
-  title: faqContent.quoteTitle,
-  description: faqContent.quoteDescription,
+const faqContent = computed(() => country.value.faq)
+const cargoBanner = computed(() => ({
+  title: `Siap Kirim Kargo Impor dari ${country.value.name}?`,
+  description: 'Hitung estimasi pengiriman dengan kalkulator kargo kami, atau konsultasikan kebutuhan impor bisnis Anda langsung bersama tim ahli ETH Cargo.',
   email: 'email@ethcargo.co.id',
   ctaLabel: 'Konsultasi Gratis',
-  ctaTo: '#quote',
-}
+  ctaTo: '/#quote',
+}))
 </script>
 
 <template>
   <CargoLandingHero
     title-id="multinational-cargo-title"
-    eyebrow="Multinational Cargo"
-    include-eyebrow-in-title
-    title="America"
-    description="Solusi pengiriman kargo laut dan udara dari dan menuju Amerika yang aman, transparan, dan terintegrasi untuk mendukung kebutuhan logistik internasional bisnis Anda."
-    service-label="In this page"
+    :eyebrow="country.hero.eyebrow"
+    :title="country.hero.title"
+    :description="country.hero.description"
+    service-label="Layanan di halaman ini:"
     :services="heroServices"
     :service-links="heroServiceLinks"
-    tracking-label="Track Shipment"
+    tracking-label="Lacak Pengiriman"
     tracking-to="/live-tracking"
-    quote-label="Get a Quote"
-    :image="multinationalCargoHeroUrl"
-    image-alt="Pelabuhan dan bandara kargo untuk layanan pengiriman multinational ETH Cargo"
+    quote-label="Dapatkan Penawaran"
+    :image="country.hero.image"
+    :image-alt="country.hero.imageAlt"
     :highlights="heroHighlights"
     highlights-aria-label="Multinational cargo service benefits"
+    country-variant
   />
   <MarketingSectionsFreightService
     eyebrow="Our Service"
@@ -143,8 +148,14 @@ const cargoBanner = {
   <MarketingSectionsFaq :content="faqContent" />
   <div id="quote" class="pb-6 lg:pb-10">
     <UiContainer wide>
-      <MarketingCargoCtaBanner
+      <MarketingIllustratedCtaBanner
         v-bind="cargoBanner"
+        variant="background"
+        :image="multinationalVectorUrl"
+        :image-width="512"
+        :image-height="350"
+        large-image-on-wide-screens
+        image-alt="Ilustrasi pengiriman kargo internasional melalui darat, laut, dan udara"
       />
     </UiContainer>
     <MarketingSectionsQuoteBanner

@@ -19,13 +19,8 @@ import QuestionMarkIcon from './QuestionMarkIcon.vue'
 import ShippingContainerIcon from './ShippingContainerIcon.vue'
 import logoUrl from '~/assets/images/brand/logo-white.png'
 import chinaFlagUrl from '~/assets/images/flag/china.png'
-import taiwanFlagUrl from '~/assets/images/flag/taiwan.png'
-import koreaFlagUrl from '~/assets/images/flag/korea.png'
-import singaporeFlagUrl from '~/assets/images/flag/singapore.png'
-import malaysiaFlagUrl from '~/assets/images/flag/malaysia.png'
-import australiaFlagUrl from '~/assets/images/flag/australia.png'
-import usaFlagUrl from '~/assets/images/flag/USA.png'
 import { quoteNavigation } from '~/constants/navigation'
+import { multinationalCountries, multinationalCountryPath } from '~/constants/multinationalCountries'
 
 withDefaults(defineProps<{ quoteTo?: string }>(), {
   quoteTo: quoteNavigation.to,
@@ -40,15 +35,6 @@ type MobileSection = 'Layanan' | 'Fitur' | 'Informasi' | 'Insights'
 const activeSection = ref<MobileSection | null>(null)
 const trackingCode = ref('')
 const trackingPin = ref('')
-
-const multinationalCountries = [
-  { name: 'Taiwan', flag: taiwanFlagUrl },
-  { name: 'Korea Selatan', flag: koreaFlagUrl },
-  { name: 'Singapura', flag: singaporeFlagUrl },
-  { name: 'Malaysia', flag: malaysiaFlagUrl },
-  { name: 'Australia', flag: australiaFlagUrl },
-  { name: 'Amerika Serikat', flag: usaFlagUrl },
-] as const
 
 const insightSections = [
   {
@@ -306,21 +292,19 @@ async function submitTracking() {
                   <p class="mb-3 text-xs font-medium text-text-tertiary">
                     Multinational Shipping
                   </p>
-                  <NuxtLink
-                    to="/multinational-cargo"
-                    aria-label="Lihat layanan multinational shipping"
-                    class="flex w-fit flex-wrap gap-3 rounded-lg focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500"
-                    @click="emit('close')"
-                  >
-                    <span
+                  <div class="flex flex-wrap gap-2">
+                    <NuxtLink
                       v-for="country in multinationalCountries"
-                      :key="country.name"
-                      class="block size-9 rounded-full bg-bg-0 p-0.5 shadow-md"
-                      :title="country.name"
+                      :key="country.slug"
+                      :to="multinationalCountryPath(country.slug)"
+                      :aria-label="`Lihat layanan kargo ${country.navigationName}`"
+                      class="flex size-11 items-center justify-center rounded-full bg-bg-0 p-0.5 shadow-md focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500"
+                      :title="country.navigationName"
+                      @click="emit('close')"
                     >
                       <img :src="country.flag" alt="" class="size-full rounded-full object-cover">
-                    </span>
-                  </NuxtLink>
+                    </NuxtLink>
+                  </div>
                 </div>
               </div>
             </div>
