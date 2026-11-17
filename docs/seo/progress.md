@@ -1,6 +1,6 @@
 # Progres SEO ETH Cargo
 
-Terakhir diperbarui: 10 November 2026 (Asia/Jakarta).
+Terakhir diperbarui: 16 November 2026 (Asia/Jakarta).
 
 Dokumen ini adalah ringkasan untuk membaca progres dan melaporkannya ke tim SEO.
 Angka, daftar URL, hasil validator, dan riwayat pemeriksaan ada di
@@ -22,7 +22,7 @@ Search Console belum diverifikasi. Riwayat sebelum dan sesudah perbaikan ada di
 | SSR dan hydration | SSR aktif; sampel interaksi browser lolos | 25 URL lolos audit SSR; 8 route dan 2 interaksi diuji di Chrome headless tanpa hydration mismatch | Uji browser/perangkat lain dan deployment |
 | Title dan meta description | Dasar teknis terpasang | 23/23 komponen halaman marketing memiliki keduanya | Audit kualitas teks, keyword, dan data API |
 | Open Graph | Sebagian | 20/23 komponen halaman punya judul, deskripsi, dan tipe; belum ada `og:image`/`og:url` | Siapkan gambar dan uji preview link |
-| Canonical | Homepage terlihat di Quick Tunnel | HTML publik memuat canonical ke URL tunnel; search/tag dikecualikan | Ganti ke domain final dan periksa slug tidak valid |
+| Canonical | Homepage terlihat di Quick Tunnel; pagination blog diuji lokal | `/blog?page=2`–`10` memiliki self-canonical dan tautan pagination; search/tag dikecualikan | Ganti ke domain final, verifikasi pagination publik, dan periksa slug artikel tidak valid |
 | Sitemap | Selesai secara lokal, daftar konservatif | 16 URL statis; blog/glossary placeholder dan search/tag tidak masuk | Tinjau kelayakan 16 URL; tambah konten published setelah API |
 | Robots dan noindex | Kebijakan perlu diselaraskan dengan tim SEO | Search/tag saat ini memakai `noindex, follow`; belum ada route setelah login di web | Tinjau search/tag, placeholder, dan halaman privat sebelum domain final |
 | Konten dan internal link | Ada, belum final | Link tersebar di navigasi dan konten; sebagian tujuan/konten masih placeholder | Audit broken link dan konten final |
@@ -61,6 +61,17 @@ beberapa variasi alamat. Misalnya `/china-cargo` dan
 `/china-cargo?utm_source=instagram` menunjuk ke URL utama `/china-cargo`.
 Canonical tidak memindahkan pengunjung. Domain final nantinya harus sama dengan
 origin schema dan sitemap.
+
+**Pembaruan lokal 16 November:** daftar `/blog` kini memakai URL `?page=n` untuk
+halaman berikutnya. Setiap halaman valid mempunyai self-canonical dan tautan
+pagination yang dapat diikuti crawler. Parameter pelacakan tidak masuk canonical;
+`?page=1` menunjuk ke `/blog`. Nomor halaman yang tidak valid atau melewati
+halaman terakhir menampilkan halaman 404 tanpa canonical di browser. Ini telah
+diperiksa di browser lokal, termasuk navigasi maju/mundur dan viewport 320–1440px
+tanpa overflow horizontal. Build production berhasil. Status HTTP dan HTML respons
+mentah belum dapat diperiksa dalam lingkungan kerja ini, sehingga verifikasi SSR
+langsung dan domain final masih perlu dilakukan. Blog tetap di luar sitemap
+karena artikel saat ini masih berupa placeholder.
 
 **Sitemap** adalah daftar URL penting yang kita sarankan untuk ditemukan mesin
 pencari. Jumlahnya saat ini 16 karena dari 23 jenis route marketing, tujuh

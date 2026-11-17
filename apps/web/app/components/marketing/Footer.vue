@@ -15,6 +15,8 @@ import iconTiktok from '~/assets/images/marketing/tiktok.png'
 import iconYoutube from '~/assets/images/marketing/youtube.png'
 
 const currentYear = new Date().getFullYear()
+const route = useRoute()
+const isHomePage = computed(() => route.path === '/')
 
 const socials = [
   { label: 'Facebook ETH Cargo', icon: iconFacebook },
@@ -386,6 +388,7 @@ const navHeadingClass = 'text-[16px] font-medium text-text-disable'
 
       <!-- SEO BOX (desktop) -->
       <section
+        v-if="isHomePage"
         aria-labelledby="footer-seo-title"
         class="mt-10 hidden rounded-xl border border-border-200 px-4 pt-4 pb-8 lg:block"
       >
@@ -433,7 +436,7 @@ const navHeadingClass = 'text-[16px] font-medium text-text-disable'
         </p>
       </div>
 
-      <div class="mt-10 lg:hidden">
+      <div v-if="isHomePage" class="mt-10 lg:hidden">
         <button
           type="button"
           class="flex min-h-12 w-full items-center justify-between rounded-xl border border-border-200 px-3 text-left text-[16px] text-text-tertiary focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500"

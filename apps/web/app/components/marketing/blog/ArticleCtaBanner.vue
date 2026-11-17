@@ -1,5 +1,15 @@
+<script setup lang="ts">
+import articleCtaImage from '~/assets/images/marketing/article-cta.png'
+</script>
+
 <template>
-  <div class="flex aspect-[16/9] items-center justify-center rounded-2xl bg-primary-600 px-4 text-center text-[32px] font-semibold text-white lg:aspect-[4/5]">
-    CTA BANNER
-  </div>
+  <img
+    :src="articleCtaImage"
+    alt="Impor dari China diurus satu pintu bersama ETH Cargo"
+    width="1240"
+    height="1920"
+    loading="lazy"
+    decoding="async"
+    class="block h-auto w-full rounded-2xl"
+  >
 </template>

@@ -19,6 +19,7 @@ interface FaqDirectoryGroup {
 
 const props = withDefaults(defineProps<{
   groups: readonly FaqDirectoryGroup[]
+  selectedGroupId?: string
   eyebrow?: string
   title?: string
   description?: string
@@ -38,8 +39,8 @@ const props = withDefaults(defineProps<{
 })
 
 const searchQuery = ref('')
-const initialGroup = props.groups[0]
-const activeGroupId = ref(initialGroup?.id ?? '')
+const initialGroup = props.groups.find(group => group.id === props.selectedGroupId) ?? props.groups[0]
+const activeGroupId = computed(() => props.selectedGroupId ?? props.groups[0]?.id ?? '')
 const initialOpenKey = initialGroup
   ? `${initialGroup.id}-${initialGroup.items.length > 1 ? 1 : 0}`
   : ''
@@ -77,14 +78,15 @@ function toggleItem(key: string) {
     : [...openItems.value, key]
 }
 
-function selectGroup(group: FaqDirectoryGroup) {
-  activeGroupId.value = group.id
+watch(activeGroupId, (groupId) => {
   searchQuery.value = ''
 
+  const group = props.groups.find(item => item.id === groupId)
+  if (!group) return
   const defaultIndex = group.items.length > 1 ? 1 : 0
   const key = group.items.length ? itemKey(group.id, defaultIndex) : ''
   openItems.value = key ? [key] : []
-}
+})
 </script>
 
 <template>
@@ -149,13 +151,11 @@ function selectGroup(group: FaqDirectoryGroup) {
               v-for="(group, groupIndex) in groups"
               :key="group.id"
             >
-              <button
-                type="button"
+              <NuxtLink
+                :to="`/faq/${group.id}`"
                 class="grid min-h-10 w-full grid-cols-[18px_minmax(0,1fr)] items-center gap-x-2 rounded-lg px-1.5 py-2 text-left transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500"
                 :class="activeGroupId === group.id ? 'bg-primary-50' : 'hover:bg-primary-50/60'"
-                :aria-current="activeGroupId === group.id ? 'true' : undefined"
-                :aria-controls="group.id"
-                @click="selectGroup(group)"
+                :aria-current="activeGroupId === group.id ? 'page' : undefined"
               >
                 <span class="text-[16px] leading-[1.45] text-text-secondary">
                   {{ groupIndex + 1 }}
@@ -163,7 +163,7 @@ function selectGroup(group: FaqDirectoryGroup) {
                 <span class="min-w-0 text-[16px] font-medium leading-[1.45] text-text-secondary">
                   {{ group.title }}
                 </span>
-              </button>
+              </NuxtLink>
             </li>
           </ol>
         </nav>

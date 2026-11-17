@@ -3,28 +3,47 @@ import airCargoImage from '~/assets/images/marketing/cargo-air-landscape.png'
 import cargoHeroImage from '~/assets/images/marketing/multinational-cargo-hero.png'
 import seaCargoImage from '~/assets/images/marketing/cargo-sea-landscape.png'
 import transferImage from '~/assets/images/marketing/transfer.png'
+import { useAllBlogArticles } from '~/composables/useAllBlogArticles'
+import { BLOG_PAGE_SIZE, parseBlogPage } from '~/utils/blogPagination'
 
 definePageMeta({
   layout: 'marketing',
+  validate(route) {
+    const { allArticles } = useAllBlogArticles()
+    return parseBlogPage(route.query.page, Math.ceil(allArticles.length / BLOG_PAGE_SIZE)) !== null
+  },
 })
 
 const route = useRoute()
 const isBlogChildPage = computed(() => route.path !== '/blog' && route.path !== '/blog/')
 const { allArticles } = useAllBlogArticles()
+const page = computed(() => parseBlogPage(route.query.page, Math.ceil(allArticles.length / BLOG_PAGE_SIZE)) ?? 1)
 const siteUrl = useRuntimeConfig().public.siteUrl || (import.meta.dev ? useRequestURL().origin : '')
 const blogUrl = siteUrl ? new URL('/blog', siteUrl).href : ''
-const articleListId = blogUrl ? blogUrl + '#all-articles' : undefined
+const canonicalBlogUrl = computed(() => {
+  if (!blogUrl || isBlogChildPage.value)
+    return ''
+
+  const url = new URL(blogUrl)
+  if (page.value > 1)
+    url.searchParams.set('page', String(page.value))
+  return url.href
+})
+const articleListId = computed(() => canonicalBlogUrl.value ? canonicalBlogUrl.value + '#all-articles' : undefined)
 
 if (blogUrl) {
   useHead(() => ({
+    link: canonicalBlogUrl.value
+      ? [{ key: 'canonical', rel: 'canonical', href: canonicalBlogUrl.value }]
+      : [],
     script: isBlogChildPage.value ? [] : [{
       key: 'blog-collection-schema',
       type: 'application/ld+json',
       innerHTML: JSON.stringify({
         '@context': 'https://schema.org',
         '@type': 'CollectionPage',
-        '@id': blogUrl + '#webpage',
-        url: blogUrl,
+        '@id': canonicalBlogUrl.value + '#webpage',
+        url: canonicalBlogUrl.value,
         name: 'Blog ETH Cargo',
         isPartOf: {
           '@type': 'WebSite',
@@ -32,7 +51,7 @@ if (blogUrl) {
           name: 'ETH Cargo',
           url: new URL('/', blogUrl).href,
         },
-        mainEntity: { '@id': articleListId },
+        mainEntity: { '@id': articleListId.value },
       }).replace(/</g, '\\u003c'),
     }],
   }))
@@ -271,7 +290,8 @@ const importPosts = [
 
     <MarketingBlogAllArticles
       :articles="allArticles"
-      :per-page="12"
+      :per-page="BLOG_PAGE_SIZE"
+      :initial-page="page"
       :schema-list-id="articleListId"
     />
   </div>

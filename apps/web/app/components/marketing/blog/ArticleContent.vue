@@ -35,7 +35,7 @@ const props = defineProps<{
 const articleBanner = illustratedCtaBanners.transfer
 const { allArticles } = useAllBlogArticles()
 
-const expandedSections = ref<string[]>(['memahami-kebutuhan', 'memilih-layanan'])
+const expandedSections = ref<string[]>([])
 const activeSection = ref('memahami-kebutuhan')
 const shareUrl = ref('')
 const copied = ref(false)

@@ -15,6 +15,7 @@ interface Article {
 const props = withDefaults(defineProps<{
   articles: readonly Article[]
   perPage?: number
+  initialPage?: number
   variant?: 'directory' | 'search-results' | 'tag-results' | 'author' | 'author-search'
   initialSearch?: string
   initialTag?: string
@@ -23,6 +24,7 @@ const props = withDefaults(defineProps<{
   schemaListId?: string
 }>(), {
   perPage: 12,
+  initialPage: 1,
   variant: 'directory',
   initialSearch: '',
   initialTag: '',
@@ -40,12 +42,13 @@ const sortOptions: { value: SortOption, label: string }[] = [
 ]
 
 const router = useRouter()
+const route = useRoute()
 const searchTerm = ref(props.initialSearch)
 const submittedSearch = ref(props.initialSearch)
 const selectedTopic = ref(props.initialTopic)
 const selectedTags = ref<string[]>([])
 const pendingTags = ref<string[]>([])
-const currentPage = ref(1)
+const currentPage = ref(props.initialPage)
 const filterOpen = ref(false)
 const tagOpen = ref(false)
 const appliedSort = ref<SortOption>('newest')
@@ -56,6 +59,7 @@ const allArticlesSection = ref<HTMLElement>()
 const dialogRef = ref<HTMLElement>()
 let previousBodyOverflow = ''
 const isSearchResults = computed(() => props.variant === 'search-results')
+const isDirectory = computed(() => props.variant === 'directory')
 const isTagResults = computed(() => props.variant === 'tag-results')
 const isAuthor = computed(() => props.variant === 'author')
 const isAuthorSearch = computed(() => props.variant === 'author-search')
@@ -184,12 +188,24 @@ function setPage(page: number) {
 
   currentPage.value = nextPage
 
+  scrollToArticles()
+}
+
+function scrollToArticles() {
   nextTick(() => {
     allArticlesSection.value?.scrollIntoView({
       behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth',
       block: 'start',
     })
   })
+}
+
+function directoryPageLink(page: number) {
+  return {
+    path: '/blog',
+    query: page > 1 ? { page: String(page) } : undefined,
+    hash: '#all-articles',
+  }
 }
 
 function resetDirectoryFilter() {
@@ -311,6 +327,12 @@ watch([filterOpen, tagOpen], async ([filter, tag]) => {
 
 watch([searchTerm, () => selectedTags.value.join('|'), appliedSort, appliedTag], () => {
   currentPage.value = 1
+  if (isDirectory.value && route.query.page !== undefined)
+    router.replace('/blog')
+})
+
+watch(() => props.initialPage, (value) => {
+  currentPage.value = value
 })
 
 watch(() => props.initialSearch, (value) => {
@@ -743,7 +765,18 @@ onBeforeUnmount(() => {
           class="mt-12 flex items-center justify-center gap-1.5"
           aria-label="Pagination artikel"
         >
+          <NuxtLink
+            v-if="isDirectory && currentPage > 1"
+            :to="directoryPageLink(currentPage - 1)"
+            aria-current-value="false"
+            aria-label="Halaman sebelumnya"
+            class="flex items-center justify-center rounded-md text-primary-500 transition-colors hover:bg-primary-50"
+            :class="isAuthorView ? 'size-11 lg:size-8' : 'size-8'"
+          >
+            <ChevronLeft :size="17" :stroke-width="1.8" aria-hidden="true" />
+          </NuxtLink>
           <button
+            v-else-if="!isDirectory"
             type="button"
             aria-label="Halaman sebelumnya"
             :disabled="currentPage === 1"
@@ -753,6 +786,14 @@ onBeforeUnmount(() => {
           >
             <ChevronLeft :size="17" :stroke-width="1.8" aria-hidden="true" />
           </button>
+          <span
+            v-else
+            aria-label="Halaman sebelumnya"
+            aria-disabled="true"
+            class="flex size-8 items-center justify-center rounded-md text-border-300"
+          >
+            <ChevronLeft :size="17" :stroke-width="1.8" aria-hidden="true" />
+          </span>
 
           <span v-if="isAuthorView" class="px-3 text-[14px] text-text-secondary lg:hidden">
             Halaman {{ currentPage }} dari {{ totalPages }}
@@ -767,6 +808,18 @@ onBeforeUnmount(() => {
             >
               …
             </span>
+            <NuxtLink
+              v-else-if="isDirectory"
+              :to="directoryPageLink(item)"
+              :aria-current-value="currentPage === item ? 'page' : 'false'"
+              :aria-label="`Halaman ${item}`"
+              class="size-8 items-center justify-center rounded-md text-[12px] transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500"
+              :class="[currentPage === item
+                ? 'bg-primary-50 font-medium text-primary-500'
+                : 'text-text-secondary hover:bg-bg-100', isAuthorView ? 'hidden lg:flex' : 'flex']"
+            >
+              {{ item }}
+            </NuxtLink>
             <button
               v-else
               type="button"
@@ -782,7 +835,18 @@ onBeforeUnmount(() => {
             </button>
           </template>
 
+          <NuxtLink
+            v-if="isDirectory && currentPage < totalPages"
+            :to="directoryPageLink(currentPage + 1)"
+            aria-current-value="false"
+            aria-label="Halaman berikutnya"
+            class="flex items-center justify-center rounded-md text-primary-500 transition-colors hover:bg-primary-50"
+            :class="isAuthorView ? 'size-11 lg:size-8' : 'size-8'"
+          >
+            <ChevronRight :size="17" :stroke-width="1.8" aria-hidden="true" />
+          </NuxtLink>
           <button
+            v-else-if="!isDirectory"
             type="button"
             aria-label="Halaman berikutnya"
             :disabled="currentPage === totalPages"
@@ -792,6 +856,14 @@ onBeforeUnmount(() => {
           >
             <ChevronRight :size="17" :stroke-width="1.8" aria-hidden="true" />
           </button>
+          <span
+            v-else
+            aria-label="Halaman berikutnya"
+            aria-disabled="true"
+            class="flex size-8 items-center justify-center rounded-md text-border-300"
+          >
+            <ChevronRight :size="17" :stroke-width="1.8" aria-hidden="true" />
+          </span>
         </nav>
 
         <div v-if="!isAuthorView" class="mt-16 text-center">

@@ -164,6 +164,14 @@ Canonical merupakan sinyal pilihan URL utama, bukan jaminan pilihan Google.
 Perbedaan crawling dan indexing dijelaskan dalam
 [panduan robots.txt Google](https://developers.google.com/search/docs/crawling-indexing/robots/intro).
 
+**Pembaruan lokal 16 November 2026:** pagination daftar `/blog` sekarang mempunyai
+URL `?page=n`, tautan yang dapat diikuti crawler, dan self-canonical per halaman.
+Halaman 1 serta parameter pelacakan mengarah ke canonical bersih; nomor halaman
+tidak valid menampilkan halaman 404 di browser. Sitemap tetap mengecualikan blog
+sampai konten published dan validasi slug artikel siap. Verifikasi status HTTP,
+HTML respons mentah, serta domain final masih diperlukan sebelum menyatakan
+kesiapan indexing publik.
+
 ## Verifikasi dan kriteria selesai
 
 - [x] Jalankan `pnpm --filter ./apps/web build`, pemeriksaan tipe yang tersedia
