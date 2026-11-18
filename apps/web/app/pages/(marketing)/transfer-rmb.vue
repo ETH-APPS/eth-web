@@ -37,10 +37,11 @@ if (siteUrl) {
 }
 
 useSeoMeta({
-  title: 'Jasa Transfer RMB | ETH Cargo',
-  description: 'Hitung estimasi pembayaran supplier China melalui Bank of China, Alipay, WeChat Pay, 1688, Taobao, dan Alibaba bersama ETH Cargo.',
-  ogTitle: 'Jasa Transfer RMB | ETH Cargo',
-  ogDescription: serviceDescription,
+  keywords: 'jasa transfer rmb',
+  title: 'Jasa Transfer RMB ke Supplier China | ETH Cargo',
+  description: 'Bayar supplier di China tanpa rekening RMB. Transfer dari Rupiah ke Yuan lewat ETH Cargo dengan rumus fee yang jelas. Hubungi tim untuk kurs hari ini.',
+  ogTitle: 'Jasa Transfer RMB ke Supplier China | ETH Cargo',
+  ogDescription: 'Bayar supplier di China tanpa rekening RMB. Transfer dari Rupiah ke Yuan lewat ETH Cargo dengan rumus fee yang jelas. Hubungi tim untuk kurs hari ini.',
   ogType: 'website',
 })
 

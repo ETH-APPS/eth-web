@@ -20,7 +20,7 @@ const { allArticles } = useAllBlogArticles()
 const page = computed(() => parseBlogPage(route.query.page, Math.ceil(allArticles.length / BLOG_PAGE_SIZE)) ?? 1)
 const siteUrl = useRuntimeConfig().public.siteUrl || (import.meta.dev ? useRequestURL().origin : '')
 const blogUrl = siteUrl ? new URL('/blog', siteUrl).href : ''
-const canonicalBlogUrl = computed(() => {
+const pageUrl = computed(() => {
   if (!blogUrl || isBlogChildPage.value)
     return ''
 
@@ -29,12 +29,12 @@ const canonicalBlogUrl = computed(() => {
     url.searchParams.set('page', String(page.value))
   return url.href
 })
-const articleListId = computed(() => canonicalBlogUrl.value ? canonicalBlogUrl.value + '#all-articles' : undefined)
+const articleListId = computed(() => pageUrl.value ? pageUrl.value + '#all-articles' : undefined)
 
 if (blogUrl) {
   useHead(() => ({
-    link: canonicalBlogUrl.value
-      ? [{ key: 'canonical', rel: 'canonical', href: canonicalBlogUrl.value }]
+    link: pageUrl.value
+      ? [{ key: 'canonical', rel: 'canonical', href: blogUrl }]
       : [],
     script: isBlogChildPage.value ? [] : [{
       key: 'blog-collection-schema',
@@ -42,8 +42,8 @@ if (blogUrl) {
       innerHTML: JSON.stringify({
         '@context': 'https://schema.org',
         '@type': 'CollectionPage',
-        '@id': canonicalBlogUrl.value + '#webpage',
-        url: canonicalBlogUrl.value,
+        '@id': pageUrl.value + '#webpage',
+        url: pageUrl.value,
         name: 'Blog ETH Cargo',
         isPartOf: {
           '@type': 'WebSite',
@@ -58,10 +58,10 @@ if (blogUrl) {
 }
 
 useSeoMeta({
-  title: 'Blog | ETH Cargo',
-  description: 'Artikel, kabar, dan insight terbaru seputar logistik, impor, serta pengiriman internasional dari ETH Cargo.',
-  ogTitle: 'Blog | ETH Cargo',
-  ogDescription: 'Artikel, kabar, dan insight terbaru seputar logistik, impor, serta pengiriman internasional dari ETH Cargo.',
+  title: 'Blog Panduan Impor China Indonesia | ETH Cargo',
+  description: 'Panduan impor China Indonesia: cara hitung CBM, HS Code, dokumen impor, hingga kargo laut vs udara. Artikel edukasi dari tim ETH Cargo.',
+  ogTitle: 'Blog Panduan Impor China Indonesia | ETH Cargo',
+  ogDescription: 'Panduan impor China Indonesia: cara hitung CBM, HS Code, dokumen impor, hingga kargo laut vs udara. Artikel edukasi dari tim ETH Cargo.',
   ogType: 'website',
 })
 

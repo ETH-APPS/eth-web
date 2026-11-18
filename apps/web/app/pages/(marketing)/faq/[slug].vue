@@ -9,11 +9,16 @@ definePageMeta({
 
 const route = useRoute()
 const group = computed(() => faqDirectoryGroups.find(item => item.id === route.params.slug))
-const pageTitle = computed(() => `${group.value?.title ?? 'FAQ'} | ETH Cargo`)
-const pageDescription = computed(() => group.value?.description ?? '')
+const pageTitle = computed(() => group.value?.id === 'pertanyaan-umum'
+  ? 'FAQ Impor & Kargo China | ETH Cargo'
+  : `${group.value?.title ?? 'FAQ'} | ETH Cargo`)
+const pageDescription = computed(() => group.value?.id === 'pertanyaan-umum'
+  ? 'Jawaban seputar jasa sourcing, transfer RMB, kargo udara & laut ETH Cargo: estimasi waktu, biaya, refund, dan syarat. Konsultasi bila butuh bantuan.'
+  : group.value?.description ?? '')
 
 useSeoMeta({
   title: pageTitle,
+  keywords: () => group.value?.id === 'pertanyaan-umum' ? 'faq impor china' : undefined,
   description: pageDescription,
   ogTitle: pageTitle,
   ogDescription: pageDescription,

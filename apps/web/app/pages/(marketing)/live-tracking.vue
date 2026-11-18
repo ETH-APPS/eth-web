@@ -9,12 +9,13 @@ definePageMeta({
 })
 
 useSeoMeta({
-  title: 'Live Tracking Cargo | ETH Cargo',
+  keywords: 'cek status pengiriman impor',
+  title: 'Cek Status Pengiriman Impor (Live Tracking) | ETH Cargo',
   description:
-    'Pantau status dan perjalanan pengiriman cargo ETH Cargo menggunakan Marking ID dan PIN tracking Anda.',
-  ogTitle: 'Live Tracking Cargo | ETH Cargo',
+    'Pantau status pesanan dan pengiriman barang impor Anda dari akun ETH Cargo. Butuh bantuan? Hubungi tim kami di jam operasional.',
+  ogTitle: 'Cek Status Pengiriman Impor (Live Tracking) | ETH Cargo',
   ogDescription:
-    'Pantau status dan perjalanan pengiriman cargo ETH Cargo menggunakan Marking ID dan PIN tracking Anda.',
+    'Pantau status pesanan dan pengiriman barang impor Anda dari akun ETH Cargo. Butuh bantuan? Hubungi tim kami di jam operasional.',
   ogType: 'website',
 })
 

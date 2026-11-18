@@ -7,12 +7,13 @@ definePageMeta({
 })
 
 useSeoMeta({
-  title: 'Kalkulator Estimasi Tarif Kargo | ETH Cargo',
+  keywords: 'kalkulator biaya impor china',
+  title: 'Kalkulator Estimasi Biaya Impor dari China | ETH Cargo',
   description:
-    'Hitung estimasi biaya pengiriman kargo laut dan udara berdasarkan kategori, dimensi, berat, dan jumlah koli bersama ETH Cargo.',
-  ogTitle: 'Kalkulator Estimasi Tarif Kargo | ETH Cargo',
+    'Hitung estimasi biaya impor dari China: jasa beli, kargo laut, dan kargo udara. Hasil berupa estimasi; hubungi tim ETH Cargo untuk penawaran resmi.',
+  ogTitle: 'Kalkulator Estimasi Biaya Impor dari China | ETH Cargo',
   ogDescription:
-    'Hitung estimasi biaya pengiriman kargo laut dan udara berdasarkan kategori, dimensi, berat, dan jumlah koli bersama ETH Cargo.',
+    'Hitung estimasi biaya impor dari China: jasa beli, kargo laut, dan kargo udara. Hasil berupa estimasi; hubungi tim ETH Cargo untuk penawaran resmi.',
   ogType: 'website',
 })
 

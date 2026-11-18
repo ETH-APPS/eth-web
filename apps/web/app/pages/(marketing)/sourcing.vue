@@ -39,10 +39,11 @@ if (siteUrl) {
 }
 
 useSeoMeta({
-  title: 'Jasa Sourcing Barang China | ETH Cargo',
-  description: serviceDescription,
-  ogTitle: 'Jasa Sourcing Barang China | ETH Cargo',
-  ogDescription: 'Layanan sourcing supplier dan pabrik terpercaya di China untuk kebutuhan bisnis Anda.',
+  keywords: 'jasa beli barang china',
+  title: 'Jasa Titip Aliexpress, 1688, Taobao, Tmall, Alibaba | ETH Cargo',
+  description: 'ETH Cargo menyediakan jasa impor barang dari China melalui e-commerce China seperti 1688, Aliexpress, Alibaba, Taobao, serta Tmall. Kami juga melayani pengiriman barang dari Hongkong, Singapura, Thailand, Korea, dan USA.',
+  ogTitle: 'Jasa Titip Aliexpress, 1688, Taobao, Tmall, Alibaba | ETH Cargo',
+  ogDescription: 'ETH Cargo menyediakan jasa impor barang dari China melalui e-commerce China seperti 1688, Aliexpress, Alibaba, Taobao, serta Tmall. Kami juga melayani pengiriman barang dari Hongkong, Singapura, Thailand, Korea, dan USA.',
   ogType: 'website',
 })
 

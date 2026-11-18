@@ -11,10 +11,11 @@ definePageMeta({
 })
 
 useSeoMeta({
-  title: 'Glossary | ETH Cargo',
-  description: 'Pelajari istilah penting seputar industri kargo, logistik, ekspor, dan impor bersama ETH Cargo.',
-  ogTitle: 'Glossary | ETH Cargo',
-  ogDescription: 'Pelajari istilah penting seputar industri kargo, logistik, ekspor, dan impor bersama ETH Cargo.',
+  keywords: 'glosarium impor',
+  title: 'Glosarium Impor: Arti CBM, HS Code, Lartas, PIB | ETH Cargo',
+  description: 'Kamus istilah impor-kargo: CBM, HS Code, Lartas, PIB, LCL, FCL, B/L, dan AWB dijelaskan sederhana oleh tim ETH Cargo.',
+  ogTitle: 'Glosarium Impor: Arti CBM, HS Code, Lartas, PIB | ETH Cargo',
+  ogDescription: 'Kamus istilah impor-kargo: CBM, HS Code, Lartas, PIB, LCL, FCL, B/L, dan AWB dijelaskan sederhana oleh tim ETH Cargo.',
   ogType: 'website',
 })
 

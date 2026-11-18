@@ -39,10 +39,11 @@ if (siteUrl) {
 }
 
 useSeoMeta({
-  title: 'Jasa Kargo Laut China ke Indonesia | ETH Cargo',
-  description: serviceDescription,
-  ogTitle: 'Jasa Kargo Laut China ke Indonesia | ETH Cargo',
-  ogDescription: serviceDescription,
+  keywords: 'kargo laut china',
+  title: 'Kargo Laut China ke Jakarta per CBM | ETH Cargo',
+  description: 'Kargo laut China ke Jakarta dari gudang Guangzhou, dihitung per CBM. Estimasi 25–35 hari kerja (dapat berubah). Hubungi marketing untuk tarif terbaru.',
+  ogTitle: 'Kargo Laut China ke Jakarta per CBM | ETH Cargo',
+  ogDescription: 'Kargo laut China ke Jakarta dari gudang Guangzhou, dihitung per CBM. Estimasi 25–35 hari kerja (dapat berubah). Hubungi marketing untuk tarif terbaru.',
   ogType: 'website',
 })
 

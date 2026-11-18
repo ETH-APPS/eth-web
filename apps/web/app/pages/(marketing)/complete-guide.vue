@@ -39,10 +39,11 @@ if (siteUrl) {
 }
 
 useSeoMeta({
-  title: 'Our Complete Guide | ETH Cargo',
-  description: pageDescription,
-  ogTitle: 'Our Complete Guide | ETH Cargo',
-  ogDescription: 'Panduan lengkap proses impor dan pengiriman internasional bersama ETH Cargo.',
+  keywords: 'cara import barang dari china',
+  title: 'Cara Import Barang dari China: Langkah Lengkap | ETH Cargo',
+  description: 'Langkah impor barang dari China ke Indonesia: pilih supplier, kode marking, kirim ke gudang, kargo, hingga dokumen impor. Baca panduannya.',
+  ogTitle: 'Cara Import Barang dari China: Langkah Lengkap | ETH Cargo',
+  ogDescription: 'Langkah impor barang dari China ke Indonesia: pilih supplier, kode marking, kirim ke gudang, kargo, hingga dokumen impor. Baca panduannya.',
   ogType: 'article',
 })
 

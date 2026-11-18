@@ -6,10 +6,11 @@ definePageMeta({
 })
 
 useSeoMeta({
-  title: 'Promo | ETH Cargo',
-  description: 'Temukan promo dan penawaran terbaru dari ETH Cargo untuk kebutuhan pengiriman bisnis Anda.',
-  ogTitle: 'Promo | ETH Cargo',
-  ogDescription: 'Temukan promo dan penawaran terbaru dari ETH Cargo untuk kebutuhan pengiriman bisnis Anda.',
+  keywords: 'promo eth cargo',
+  title: 'Promo ETH Cargo untuk Jasa Beli & Kargo | Syarat Berlaku',
+  description: 'Lihat promo dan kode promo ETH Cargo untuk jasa beli barang, transfer RMB, dan kargo. Syarat berlaku; cek periode promo terbaru.',
+  ogTitle: 'Promo ETH Cargo untuk Jasa Beli & Kargo | Syarat Berlaku',
+  ogDescription: 'Lihat promo dan kode promo ETH Cargo untuk jasa beli barang, transfer RMB, dan kargo. Syarat berlaku; cek periode promo terbaru.',
   ogType: 'website',
 })
 

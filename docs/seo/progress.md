@@ -1,6 +1,6 @@
 # Progres SEO ETH Cargo
 
-Terakhir diperbarui: 16 November 2026 (Asia/Jakarta).
+Terakhir diperbarui: 18 November 2026 (Asia/Jakarta).
 
 Dokumen ini adalah ringkasan untuk membaca progres dan melaporkannya ke tim SEO.
 Angka, daftar URL, hasil validator, dan riwayat pemeriksaan ada di
@@ -20,17 +20,19 @@ Search Console belum diverifikasi. Riwayat sebelum dan sesudah perbaikan ada di
 | Struktur HTML dan bahasa | Selesai untuk sampel lokal | 25 URL: HTTP 200, satu H1, `lang="id"`; konten ada di HTML awal | Ulangi pada domain final dan data API |
 | Schema markup | Terpasang; homepage terlihat di Quick Tunnel | Hasil validator sebelumnya: 0 error dan 0 warning pada sampel; JSON-LD `WebSite` ada di HTML awal publik | Uji ulang validator pada URL publik dan data final |
 | SSR dan hydration | SSR aktif; sampel interaksi browser lolos | 25 URL lolos audit SSR; 8 route dan 2 interaksi diuji di Chrome headless tanpa hydration mismatch | Uji browser/perangkat lain dan deployment |
-| Title dan meta description | Dasar teknis terpasang | 23/23 komponen halaman marketing memiliki keduanya | Audit kualitas teks, keyword, dan data API |
-| Open Graph | Sebagian | 20/23 komponen halaman punya judul, deskripsi, dan tipe; belum ada `og:image`/`og:url` | Siapkan gambar dan uji preview link |
-| Canonical | Homepage terlihat di Quick Tunnel; pagination blog diuji lokal | `/blog?page=2`–`10` memiliki self-canonical dan tautan pagination; search/tag dikecualikan | Ganti ke domain final, verifikasi pagination publik, dan periksa slug artikel tidak valid |
+| Title dan meta description | Sesuai sheet di localhost | 23/23 route memiliki satu title dan description yang cocok dengan sheet `Structure` pada HTML awal | Tinjau klaim/placeholder dan verifikasi publik setelah deploy |
+| Meta keywords | Terpasang lokal sesuai permintaan | 22 route dengan nilai kolom `Keyword` di sheet `Structure`; Blog (`-`) tanpa tag, Aplikasi belum punya route; 23 route yang ada cocok dengan sheet pada HTML awal localhost | Verifikasi ulang setelah deploy; tag ini tidak memengaruhi indeks/peringkat Google |
+| Open Graph | Judul/deskripsi/tipe terpasang; gambar belum | 23/23 route sheet memiliki `og:title`, `og:description`, dan `og:type` di HTML awal localhost; belum ada `og:image`/`og:url` | Siapkan gambar dan uji preview link |
+| Canonical | Homepage terlihat di Quick Tunnel; kebijakan pagination blog diperbarui lokal | Canonical semua halaman pagination `/blog?page=n` menunjuk ke `/blog`; search/tag dikecualikan | Deploy kebijakan baru, periksa HTML publik, dan periksa slug artikel tidak valid |
 | Sitemap | Selesai secara lokal, daftar konservatif | 16 URL statis; blog/glossary placeholder dan search/tag tidak masuk | Tinjau kelayakan 16 URL; tambah konten published setelah API |
 | Robots dan noindex | Kebijakan perlu diselaraskan dengan tim SEO | Search/tag saat ini memakai `noindex, follow`; belum ada route setelah login di web | Tinjau search/tag, placeholder, dan halaman privat sebelum domain final |
 | Konten dan internal link | Ada, belum final | Link tersebar di navigasi dan konten; sebagian tujuan/konten masih placeholder | Audit broken link dan konten final |
 | Gambar dan performa | Baru diaudit | Semua 76 `<img>` punya `alt`; aset gambar sekitar 80,7 MiB | Optimasi gambar dan ukur Core Web Vitals |
 | Search Console | Menunggu domain final | Sitemap, robots, dan canonical sudah disiapkan di kode | Verifikasi kepemilikan DNS dan kirim sitemap |
 
-Angka di atas berasal dari audit lokal dan pemeriksaan source pada 9–10 November
-2026. Hasil validator schema adalah hasil yang dibagikan pengguna. Lihat
+Angka fondasi berasal dari audit 9–10 November 2026; baris metadata
+(title, description, keywords, dan Open Graph) diperbarui dengan pemeriksaan
+localhost 18 November 2026. Hasil validator schema dibagikan pengguna. Lihat
 [metode dan daftar sampel](audit-history.md) sebelum memakai angka untuk klaim
 yang lebih luas.
 
@@ -72,6 +74,13 @@ tanpa overflow horizontal. Build production berhasil. Status HTTP dan HTML respo
 mentah belum dapat diperiksa dalam lingkungan kerja ini, sehingga verifikasi SSR
 langsung dan domain final masih perlu dilakukan. Blog tetap di luar sitemap
 karena artikel saat ini masih berupa placeholder.
+
+**Keputusan 18 November:** atas arahan pemilik proyek, canonical halaman
+pagination `/blog?page=n` kini menunjuk ke `/blog`. URL dan tautan pagination
+tetap ada, begitu pula schema daftar artikel per halaman. Kebijakan ini
+berbeda dari rekomendasi Google untuk memberi tiap halaman pagination canonical
+sendiri; dampaknya pada pemilihan canonical oleh Google perlu diperiksa setelah
+konten dan domain final siap. Perubahan ini baru dilakukan di workspace lokal.
 
 **Sitemap** adalah daftar URL penting yang kita sarankan untuk ditemukan mesin
 pencari. Jumlahnya saat ini 16 karena dari 23 jenis route marketing, tujuh

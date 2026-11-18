@@ -20,6 +20,7 @@ const props = withDefaults(defineProps<{
   imageWidth: number
   imageHeight: number
   imageMaxWidth?: number
+  standardImageMaxWidth?: number
   imageTopOffset?: number
   imageRightOffset?: number
   imageBottomOffset?: number
@@ -118,9 +119,12 @@ const titleId = `illustrated-cta-${useId()}`
         class="pointer-events-none absolute bottom-0 z-10 h-auto object-contain"
         :class="[
           variant === 'standard' ? 'w-[45%] max-w-[560px]' : largeImageOnWideScreens ? 'w-[32%] max-w-[369px] xl:w-[46%] xl:max-w-[570px]' : 'w-[32%] max-w-[369px]',
-          shiftImageLeftOnWideScreens ? 'xl:-translate-x-24' : '',
+          shiftImageLeftOnWideScreens ? variant === 'standard' ? 'xl:-translate-x-10' : 'xl:-translate-x-24' : '',
         ]"
-        :style="{ right: variant === 'standard' ? '0' : largeImageOnWideScreens ? '3%' : `calc(11% + ${props.imageRightOffset}px)` }"
+        :style="{
+          right: variant === 'standard' ? '0' : largeImageOnWideScreens ? '3%' : `calc(11% + ${props.imageRightOffset}px)`,
+          maxWidth: variant === 'standard' && props.standardImageMaxWidth ? `${props.standardImageMaxWidth}px` : undefined,
+        }"
       >
     </div>
     <div

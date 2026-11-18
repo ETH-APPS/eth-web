@@ -7,10 +7,11 @@ definePageMeta({
 })
 
 useSeoMeta({
-  title: 'Kalkulator Transfer RMB | ETH Cargo',
-  description: 'Hitung estimasi transfer RMB untuk pembayaran supplier dan transaksi bisnis Anda ke China bersama ETH Cargo.',
-  ogTitle: 'Kalkulator Transfer RMB | ETH Cargo',
-  ogDescription: 'Simulasikan nominal transfer RMB ke Alipay, Bank of China, WeChat Pay, 1688, Taobao, dan Alibaba.',
+  keywords: 'kalkulator transfer rmb',
+  title: 'Kalkulator Transfer RMB ke Rupiah | ETH Cargo',
+  description: 'Hitung estimasi transfer RMB ke supplier China: (nominal + fee) × kurs. Hasil hanya estimasi, hubungi tim ETH Cargo untuk kurs harian.',
+  ogTitle: 'Kalkulator Transfer RMB ke Rupiah | ETH Cargo',
+  ogDescription: 'Hitung estimasi transfer RMB ke supplier China: (nominal + fee) × kurs. Hasil hanya estimasi, hubungi tim ETH Cargo untuk kurs harian.',
   ogType: 'website',
 })
 
@@ -81,7 +82,7 @@ const transferBanner = illustratedCtaBanners.transfer
       :services="cargoShippingTypes"
     />
   </MarketingSectionsFaq>
-  <div id="calculator-transfer-rmb-quote" class="pb-6 lg:pb-10">
+  <div id="calculator-transfer-rmb-quote" class="pb-6 lg:pt-8 lg:pb-10">
     <UiContainer wide>
       <MarketingIllustratedCtaBanner
         v-bind="transferBanner"

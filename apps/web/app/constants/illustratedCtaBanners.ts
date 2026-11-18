@@ -61,6 +61,8 @@ export const illustratedCtaBanners = {
     image: completeGuideVector,
     imageWidth: 537,
     imageHeight: 420,
+    standardImageMaxWidth: 480,
+    shiftImageLeftOnWideScreens: true,
   },
   productSourcing: {
     title: 'Ingin Import Produk dari China Tanpa Repot? Biar ETH Cargo yang Urus!',

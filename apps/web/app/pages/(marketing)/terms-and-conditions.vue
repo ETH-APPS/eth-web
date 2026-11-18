@@ -4,10 +4,11 @@ definePageMeta({
 })
 
 useSeoMeta({
-  title: 'Syarat & Ketentuan | ETH Cargo',
-  description: 'Syarat dan ketentuan penggunaan layanan pengiriman ETH Cargo.',
-  ogTitle: 'Syarat & Ketentuan | ETH Cargo',
-  ogDescription: 'Syarat dan ketentuan penggunaan layanan pengiriman ETH Cargo.',
+  keywords: 'syarat dan ketentuan eth cargo',
+  title: 'Syarat & Ketentuan Layanan | ETH Cargo',
+  description: 'Syarat dan ketentuan layanan ETH Cargo: jasa beli barang, transfer RMB, kargo, refund, dan batas tanggung jawab. Baca sebelum order.',
+  ogTitle: 'Syarat & Ketentuan Layanan | ETH Cargo',
+  ogDescription: 'Syarat dan ketentuan layanan ETH Cargo: jasa beli barang, transfer RMB, kargo, refund, dan batas tanggung jawab. Baca sebelum order.',
   ogType: 'website',
 })
 

@@ -44,10 +44,11 @@ if (siteUrl) {
 }
 
 useSeoMeta({
-  title: 'Jasa Cargo China ke Indonesia | ETH Cargo',
-  description: serviceDescription,
-  ogTitle: 'Jasa Cargo China ke Indonesia | ETH Cargo',
-  ogDescription: serviceDescription,
+  keywords: 'cargo china ke Indonesia',
+  title: 'Cargo China ke Indonesia via Udara & Laut | ETH Cargo',
+  description: 'Cargo China ke Indonesia dari gudang Guangzhou ke Jakarta via udara atau laut, plus dokumen impor. Estimasi 7–12 hari (udara), 25–35 hari (laut).',
+  ogTitle: 'Cargo China ke Indonesia via Udara & Laut | ETH Cargo',
+  ogDescription: 'Cargo China ke Indonesia dari gudang Guangzhou ke Jakarta via udara atau laut, plus dokumen impor. Estimasi 7–12 hari (udara), 25–35 hari (laut).',
   ogType: 'website',
 })
 

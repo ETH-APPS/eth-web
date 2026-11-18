@@ -43,10 +43,11 @@ if (siteUrl) {
 }
 
 useSeoMeta({
-  title: 'ETH Cargo | Express to Home',
-  description: 'Solusi pengiriman kargo laut, udara, dan internasional bersama ETH Cargo.',
-  ogTitle: 'ETH Cargo | Express to Home',
-  ogDescription: 'Solusi pengiriman kargo laut, udara, dan internasional bersama ETH Cargo.',
+  keywords: 'forwarder china Indonesia',
+  title: 'Forwarder China Indonesia untuk Bisnis | ETH Cargo',
+  description: 'Forwarder China Indonesia untuk bisnis: beli barang, transfer RMB, kargo udara & laut, hingga dokumen impor diurus satu pintu. Konsultasi gratis.',
+  ogTitle: 'Forwarder China Indonesia untuk Bisnis | ETH Cargo',
+  ogDescription: 'Forwarder China Indonesia untuk bisnis: beli barang, transfer RMB, kargo udara & laut, hingga dokumen impor diurus satu pintu. Konsultasi gratis.',
   ogType: 'website',
   twitterCard: 'summary_large_image'
 })

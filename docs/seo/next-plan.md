@@ -1,6 +1,6 @@
 # Rencana lanjutan SEO ETH Cargo
 
-Terakhir diperbarui: 10 November 2026 (Asia/Jakarta).
+Terakhir diperbarui: 18 November 2026 (Asia/Jakarta).
 Status: **Tahap 1.1 selesai; implementasi Tahap 1.2, audit SSR Tahap 1.4, dan
 verifikasi hydration/navigasi SPA sampel selesai di workspace lokal**. Tahap 1.3
 ditunda sampai integrasi API blog. Persiapan repository Tahap 2 serta implementasi
@@ -8,6 +8,11 @@ lokal Tahap 3 sudah selesai. Konfigurasi VM dan schema/canonical homepage pada
 Quick Tunnel sudah diverifikasi; domain final, pemeriksaan publik yang lebih luas,
 dan Search Console belum dilakukan. Dokumen ini tidak merupakan izin melakukan
 commit atau push.
+
+Implementasi metadata sheet `Structure` (title, description, dan keyword yang
+tersedia) telah selesai dan diverifikasi pada HTML awal localhost untuk 23
+route. Status per baris, pengecualian Aplikasi/Blog, dan peninjauan konten yang
+masih terbuka ada di [checklist metadata](metadata-checklist.md).
 
 ## Tujuan dan konteks
 
@@ -171,6 +176,13 @@ tidak valid menampilkan halaman 404 di browser. Sitemap tetap mengecualikan blog
 sampai konten published dan validasi slug artikel siap. Verifikasi status HTTP,
 HTML respons mentah, serta domain final masih diperlukan sebelum menyatakan
 kesiapan indexing publik.
+
+**Keputusan 18 November 2026:** sesuai arahan pemilik proyek, canonical semua
+halaman pagination `/blog?page=n` diubah agar menunjuk ke `/blog`. URL dan tautan
+antarhalaman tetap tersedia. Ini menyimpang dari rekomendasi Google untuk
+self-canonical per halaman pagination; periksa hasil pemilihan canonical Google
+setelah konten final dan domain final tersedia. Perubahan masih lokal dan perlu
+diverifikasi pada HTML publik setelah deployment.
 
 ## Verifikasi dan kriteria selesai
 

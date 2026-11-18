@@ -14,6 +14,46 @@ definePageMeta({
 const route = useRoute()
 const country = computed(() => multinationalCountries.find(item => item.slug === route.params.country)!)
 const serviceDescription = computed(() => country.value.hero.description)
+const countrySeoMeta: Record<string, { title: string, description: string, keywords: string }> = {
+  thailand: {
+    title: 'Cargo Thailand ke Indonesia | ETH Cargo',
+    description: 'Kirim barang dari Thailand ke Indonesia lewat ETH Cargo. Tanyakan rute, estimasi waktu, dan tarif terbaru ke tim marketing kami.',
+    keywords: 'cargo thailand',
+  },
+  singapura: {
+    title: 'Cargo Singapura ke Indonesia | ETH Cargo',
+    description: 'Kirim barang dari Singapura ke Indonesia lewat ETH Cargo. Tanyakan rute, estimasi waktu, dan tarif terbaru ke tim marketing kami.',
+    keywords: 'cargo singapura',
+  },
+  'korea-selatan': {
+    title: 'Cargo Korea Selatan ke Indonesia | ETH Cargo',
+    description: 'Kirim barang dari Korea Selatan ke Indonesia lewat ETH Cargo. Tanyakan rute, estimasi waktu, dan tarif terbaru ke tim marketing kami.',
+    keywords: 'cargo korea selatan',
+  },
+  malaysia: {
+    title: 'Cargo Malaysia ke Indonesia | ETH Cargo',
+    description: 'Kirim barang dari Malaysia ke Indonesia lewat ETH Cargo. Tanyakan rute, estimasi waktu, dan tarif terbaru ke tim marketing kami.',
+    keywords: 'cargo malaysia',
+  },
+  amerika: {
+    title: 'Cargo USA ke Indonesia | ETH Cargo',
+    description: 'Kirim barang dari Amerika Serikat ke Indonesia lewat ETH Cargo. Tanyakan rute, estimasi waktu, dan tarif terbaru ke tim marketing kami.',
+    keywords: 'cargo usa',
+  },
+  taiwan: {
+    title: 'Cargo Taiwan ke Indonesia | ETH Cargo',
+    description: 'Kirim barang dari Taiwan ke Indonesia lewat ETH Cargo. Tanyakan rute, estimasi waktu, dan tarif terbaru ke tim marketing kami.',
+    keywords: 'cargo taiwan',
+  },
+  australia: {
+    title: 'Cargo Australia ke Indonesia | ETH Cargo',
+    description: 'Kirim barang dari Australia ke Indonesia lewat ETH Cargo. Tanyakan rute, estimasi waktu, dan tarif terbaru ke tim marketing kami.',
+    keywords: 'cargo australia',
+  },
+}
+const seoTitle = computed(() => countrySeoMeta[country.value.slug]?.title ?? `${country.value.hero.title.replace('\n', ' ')} | ETH Cargo`)
+const seoDescription = computed(() => countrySeoMeta[country.value.slug]?.description ?? serviceDescription.value)
+const seoKeywords = computed(() => countrySeoMeta[country.value.slug]?.keywords)
 const siteUrl = useRuntimeConfig().public.siteUrl || (import.meta.dev ? useRequestURL().origin : '')
 
 if (siteUrl) {
@@ -46,10 +86,11 @@ if (siteUrl) {
 }
 
 useSeoMeta({
-  title: () => `${country.value.hero.title.replace('\n', ' ')} | ETH Cargo`,
-  description: serviceDescription,
-  ogTitle: () => `${country.value.hero.title.replace('\n', ' ')} | ETH Cargo`,
-  ogDescription: serviceDescription,
+  title: seoTitle,
+  description: seoDescription,
+  keywords: seoKeywords,
+  ogTitle: seoTitle,
+  ogDescription: seoDescription,
   ogType: 'website',
   robots: 'noindex, follow',
 })
