@@ -2,6 +2,7 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module.js';
 import { configureLogging } from './logging/configure-logging.js';
 import { apiLogging } from './logging/logger.js';
+import { setupApiDocs } from './openapi/setup-api-docs.js';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
@@ -10,6 +11,7 @@ async function bootstrap() {
   });
   try {
     await configureLogging(app);
+    setupApiDocs(app);
     await app.listen(process.env.PORT ?? 3001);
     apiLogging.logger.info(
       { event: 'app.started', url: await app.getUrl() },

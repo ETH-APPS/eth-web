@@ -159,7 +159,19 @@ describe('HTTP logging', () => {
     ['/missing', 404, 'Cannot GET /missing'],
     ['/failure', 500, 'Test server failure'],
   ])('logs %s with status and actual error', async (url, status, message) => {
-    await request(app.getHttpServer()).get(url).expect(status);
+    const response = await request(app.getHttpServer()).get(url).expect(status);
+    expect(response.body.request_id).toBe(response.headers['x-request-id']);
+    expect(response.body.error).toMatchObject({
+      code:
+        status === 400
+          ? 'BAD_REQUEST'
+          : status === 401
+            ? 'UNAUTHORIZED'
+            : status === 404
+              ? 'NOT_FOUND'
+              : 'INTERNAL_ERROR',
+      message: status === 500 ? 'Internal Server Error' : message,
+    });
     const event = events().find((entry) => entry.method);
     expect(events().filter((entry) => entry.method)).toHaveLength(1);
     expect(events().filter((entry) => entry.level === 'error')).toHaveLength(
@@ -174,11 +186,13 @@ describe('HTTP logging', () => {
   });
 
   it('logs malformed JSON even when parsing fails before the controller', async () => {
-    await request(app.getHttpServer())
+    const response = await request(app.getHttpServer())
       .post('/echo')
       .set('content-type', 'application/json')
       .send('{"invalid":')
       .expect(400);
+    expect(response.body.request_id).toBe(response.headers['x-request-id']);
+    expect(response.body.error.code).toBe('BAD_REQUEST');
     expect(events().find((event) => event.method)).toMatchObject({
       level: 'warn',
       method: 'POST',

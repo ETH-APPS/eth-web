@@ -20,7 +20,9 @@ Backend menghasilkan satu log otomatis setelah request selesai:
 4xx memakai `warn` dan `error.message`; field validasi tersedia melalui
 `error.fields` bila exception menyediakan mapping tersebut. 5xx memakai `error`
 dan menambahkan `error.type` serta lokasi kode aplikasi relatif `error.at` bila
-tersedia. Respons HTTP tetap mengikuti Nest. Request terputus memakai
+tersedia. Body respons API memakai `request_id` dan `data` untuk sukses atau
+`request_id` dan `error` untuk gagal; detailnya ada di
+[README API](../apps/api/README.md#format-respons-api). Request terputus memakai
 `aborted: true`. Tidak ada log request masuk atau header otomatis.
 
 ## Konfigurasi

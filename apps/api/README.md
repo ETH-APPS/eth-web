@@ -3,6 +3,104 @@
 Cara menjalankan FE/BE, konfigurasi Pino, contoh request, dan panduan menambahkan
 log ada di [docs/logging.md](../../docs/logging.md).
 
+## Database lokal
+
+Backend menggunakan PostgreSQL dan Prisma. Siapkan database lokal, lalu salin
+`apps/api/.env.example` ke `apps/api/.env` dan isi `DATABASE_URL` dengan kredensial
+lokal. File `.env` tidak masuk Git.
+
+Dari root repository:
+
+```sh
+pnpm --filter api db:validate
+pnpm --filter api db:migrate:dev
+pnpm --filter api db:generate
+```
+
+Migration tersimpan di `apps/api/prisma/migrations`. Saat deployment, gunakan
+`pnpm --filter api db:migrate:deploy` untuk menerapkan migration yang sudah
+di-commit.
+
+## Auth dan pengajuan kargo (Fase 1)
+
+Jalankan API dengan `pnpm --filter api dev` dari root. Dokumentasi interaktif
+tersedia di [Swagger UI](http://localhost:3001/docs), dan spesifikasi OpenAPI
+JSON di `http://localhost:3001/docs-json`. Untuk mencoba auth di Swagger:
+
+1. Buka `POST /auth/register`, klik **Try it out**, isi data pelanggan, lalu
+   **Execute**. Gunakan email berbeda jika sudah pernah mendaftar.
+2. Salin `data.accessToken` dari respons, klik **Authorize**, dan masukkan token
+   tersebut pada skema Bearer.
+3. Coba `GET /auth/me`. `refreshToken` dipakai pada `POST /auth/refresh` atau
+   `POST /auth/logout`, bukan pada tombol Authorize.
+
+Swagger UI hanya alat mencoba API. Akun dan token yang dibuat tetap tersimpan
+di database lokal `eth_apps`.
+
+### Format respons API
+
+Respons sukses menggunakan `request_id` dan `data`. Untuk daftar yang belum
+dipaginasi, `data` berupa array. `request_id` sama dengan header `x-request-id`.
+
+```json
+{
+  "request_id": "0f24a86d-37d4-4bb5-a987-042d79430376",
+  "data": {
+    "id": "e1dcc78e-0e71-4a5e-ad44-933643bfb9ce",
+    "status": "PENDING_REVIEW"
+  }
+}
+```
+
+Respons gagal tetap memakai status HTTP yang sesuai, dengan rincian di `error`:
+
+```json
+{
+  "request_id": "0f24a86d-37d4-4bb5-a987-042d79430376",
+  "error": {
+    "code": "VALIDATION_ERROR",
+    "message": "Payload Validation Failed",
+    "fields": { "boxCount": ["MIN_VALUE"] }
+  }
+}
+```
+
+`fields` hanya ada bila error terkait field input. `POST /auth/logout` berhasil
+dengan status 204 dan body kosong. Swagger di `/docs` dan spesifikasi `/docs-json`
+menampilkan format respons ini sehingga dapat diimpor ke Postman.
+
+Set `JWT_ACCESS_SECRET` acak minimal 32 byte pada `.env`. Untuk akun staf lokal,
+set `STAFF_EMAIL`, `STAFF_FIRST_NAME`, dan `STAFF_PASSWORD` (minimal 8 karakter)
+sebagai environment variable sementara, lalu jalankan `pnpm --filter api build`
+dan `pnpm --filter api staff:create` dari root. Perintah ini membuat akun staf
+baru; alamat email yang sudah terdaftar akan ditolak. Jangan simpan password
+staf di repository. Pelanggan mendaftar sendiri melalui API.
+
+| Method | Path | Akses | Fungsi |
+| --- | --- | --- | --- |
+| POST | `/auth/register` | Publik | Daftar pelanggan dengan email, nama depan, password, dan `acceptedTerms: true` |
+| POST | `/auth/login` | Publik | Login email/password |
+| POST | `/auth/refresh` | Publik | Tukar `refreshToken` dan rotasi token |
+| POST | `/auth/logout` | Publik | Cabut `refreshToken` (204) |
+| GET | `/auth/me` | Bearer | Profil ringkas akun |
+| POST, GET | `/cargo-requests` | Pelanggan | Kirim dan lihat pengajuan sendiri |
+| GET, PUT | `/cargo-requests/:id` | Pelanggan | Lihat atau kirim ulang setelah diminta revisi |
+| GET | `/staff/cargo-requests` | Staf | Antrean; filter opsional `?status=PENDING_REVIEW` |
+| GET | `/staff/cargo-requests/:id` | Staf | Detail pengajuan |
+| POST | `/staff/cargo-requests/:id/review` | Staf | `decision`: `APPROVED`, `NEEDS_REVISION`, atau `REJECTED` |
+
+Body pengajuan berisi `shippingMethod` (`FCL`, `LCL`, atau `AIR`), `cargoType`,
+`heightCm`, `lengthCm`, `widthCm`, `boxWeightKg`, `boxCount`, dan `notes` opsional.
+Alasan `reason` wajib untuk keputusan revisi atau penolakan. Access token berlaku
+15 menit; refresh token berlaku 30 hari dan disimpan sebagai hash. PIN mobile
+belum menjadi bagian dari auth server.
+
+Untuk tes API, salin `.env.test.example` ke `.env.test`, gunakan database lokal
+terpisah dengan nama berakhiran `_test`, lalu terapkan migration dengan
+`DOTENV_CONFIG_PATH=.env.test pnpm --filter api db:migrate:deploy`. Jalankan
+`pnpm --filter api test:e2e` dari root. Tes menolak database yang tidak
+berakhiran `_test`.
+
 <p align="center">
   <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
 </p>
