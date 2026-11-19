@@ -12,17 +12,23 @@ import {
   ApiBearerAuth,
   ApiBadRequestResponse,
   ApiConflictResponse,
+  ApiForbiddenResponse,
   ApiNoContentResponse,
   ApiOperation,
+  ApiServiceUnavailableResponse,
   ApiTags,
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
 import { ApiDataResponse } from '../openapi/api-data-response.decorator.js';
 import { ApiErrorResponseDto } from '../openapi/api-error-response.dto.js';
+import { UserRole } from '../generated/prisma/client.js';
 import { AccessGuard, type AuthenticatedRequest } from './auth.guard.js';
+import { Roles } from './roles.decorator.js';
 import { AuthTokenResponseDto } from './dto/auth-token-response.dto.js';
 import { AuthUserResponseDto } from './dto/auth-user-response.dto.js';
 import { LoginDto } from './dto/login.dto.js';
+import { GoogleAuthDto } from './dto/google-auth.dto.js';
+import { LinkGoogleDto } from './dto/link-google.dto.js';
 import { RefreshTokenDto } from './dto/refresh-token.dto.js';
 import { RegisterDto } from './dto/register.dto.js';
 import { AuthService } from './auth.service.js';
@@ -55,6 +61,39 @@ export class AuthController {
   })
   login(@Body() input: LoginDto) {
     return this.auth.login(input);
+  }
+
+  @Post('google')
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'Register or log in a customer with Google' })
+  @ApiDataResponse(200, AuthTokenResponseDto)
+  @ApiBadRequestResponse({ type: ApiErrorResponseDto })
+  @ApiUnauthorizedResponse({ type: ApiErrorResponseDto })
+  @ApiConflictResponse({ type: ApiErrorResponseDto })
+  @ApiServiceUnavailableResponse({
+    type: ApiErrorResponseDto,
+    description: 'Google OAuth client ID is not configured',
+  })
+  googleLogin(@Body() input: GoogleAuthDto) {
+    return this.auth.googleLogin(input);
+  }
+
+  @Post('google/link')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  @UseGuards(AccessGuard)
+  @Roles(UserRole.CUSTOMER)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Link Google to a customer account' })
+  @ApiNoContentResponse()
+  @ApiBadRequestResponse({ type: ApiErrorResponseDto })
+  @ApiUnauthorizedResponse({ type: ApiErrorResponseDto })
+  @ApiForbiddenResponse({ type: ApiErrorResponseDto })
+  @ApiConflictResponse({ type: ApiErrorResponseDto })
+  linkGoogle(
+    @Req() request: AuthenticatedRequest,
+    @Body() input: LinkGoogleDto,
+  ) {
+    return this.auth.linkGoogle(request.authUser.id, input.idToken);
   }
 
   @Post('refresh')

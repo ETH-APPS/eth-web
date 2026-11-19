@@ -82,6 +82,8 @@ staf di repository. Pelanggan mendaftar sendiri melalui API.
 | POST | `/auth/login` | Publik | Login email/password |
 | POST | `/auth/refresh` | Publik | Tukar `refreshToken` dan rotasi token |
 | POST | `/auth/logout` | Publik | Cabut `refreshToken` (204) |
+| POST | `/auth/google` | Publik | Daftar atau masuk pelanggan dengan Google ID token |
+| POST | `/auth/google/link` | Pelanggan | Tautkan Google ke akun email/password yang sedang login (204) |
 | GET | `/auth/me` | Bearer | Profil ringkas akun |
 | POST, GET | `/cargo-requests` | Pelanggan | Kirim dan lihat pengajuan sendiri |
 | GET, PUT | `/cargo-requests/:id` | Pelanggan | Lihat atau kirim ulang setelah diminta revisi |
@@ -94,6 +96,27 @@ Body pengajuan berisi `shippingMethod` (`FCL`, `LCL`, atau `AIR`), `cargoType`,
 Alasan `reason` wajib untuk keputusan revisi atau penolakan. Access token berlaku
 15 menit; refresh token berlaku 30 hari dan disimpan sebagai hash. PIN mobile
 belum menjadi bagian dari auth server.
+
+### Google Sign-In untuk mobile
+
+Isi `GOOGLE_WEB_CLIENT_ID` dari OAuth Client bertipe **Web application** di
+Google Cloud. Backend memakai ID ini untuk memverifikasi Google ID token dari
+aplikasi mobile; client secret dan callback URL web tidak digunakan. Jika belum
+diisi, login email/password tetap berjalan dan endpoint Google mengembalikan
+`GOOGLE_AUTH_NOT_CONFIGURED`.
+
+Aplikasi mobile mengirim `POST /auth/google` dengan body `{ "idToken": "..." }`.
+Jika akun Google baru, API mengembalikan `TERMS_ACCEPTANCE_REQUIRED`; setelah
+pelanggan menerima syarat, kirim ulang dengan `acceptedTerms: true`. Respons
+berhasil memakai `data.user`, `data.accessToken`, dan `data.refreshToken` yang
+sama seperti login email/password. Google ID token tidak dipakai sebagai Bearer
+token ETH Cargo.
+
+Jika email sudah terdaftar dengan password, responsnya `ACCOUNT_LINK_REQUIRED`.
+Pelanggan masuk lewat password dahulu, lalu kirim Google ID token ke
+`POST /auth/google/link` dengan Bearer access token ETH Cargo. Staf tidak dapat
+masuk atau menautkan akun lewat Google pada tahap ini. Konfigurasi OAuth mobile
+dan development build dijelaskan dalam README `eth-mobile`.
 
 Untuk tes API, salin `.env.test.example` ke `.env.test`, gunakan database lokal
 terpisah dengan nama berakhiran `_test`, lalu terapkan migration dengan

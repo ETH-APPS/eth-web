@@ -1,16 +1,20 @@
 import {
+  BadRequestException,
   ConflictException,
+  ForbiddenException,
   Injectable,
   UnauthorizedException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import argon2 from 'argon2';
 import { createHash, randomBytes } from 'node:crypto';
-import { Prisma, type User } from '../generated/prisma/client.js';
+import { Prisma, UserRole, type User } from '../generated/prisma/client.js';
 import { PrismaService } from '../database/prisma.service.js';
 import type { LoginDto } from './dto/login.dto.js';
+import type { GoogleAuthDto } from './dto/google-auth.dto.js';
 import type { RegisterDto } from './dto/register.dto.js';
 import type { AuthUser } from './auth-user.js';
+import { GoogleTokenVerifier } from './google-token-verifier.js';
 
 const ACCESS_TOKEN_SECONDS = 15 * 60;
 const REFRESH_TOKEN_DAYS = 30;
@@ -38,6 +42,7 @@ export class AuthService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly jwt: JwtService,
+    private readonly google: GoogleTokenVerifier,
   ) {
     const secret = process.env.JWT_ACCESS_SECRET;
     if (!secret || Buffer.byteLength(secret, 'utf8') < 32) {
@@ -80,10 +85,101 @@ export class AuthService {
   async login(input: LoginDto) {
     const email = input.email.trim().toLowerCase();
     const user = await this.prisma.user.findUnique({ where: { email } });
-    if (!user || !(await argon2.verify(user.passwordHash, input.password))) {
+    if (
+      !user?.passwordHash ||
+      !(await argon2.verify(user.passwordHash, input.password))
+    ) {
       throw new UnauthorizedException('Invalid credentials');
     }
     return this.issueTokens(user);
+  }
+
+  async googleLogin(input: GoogleAuthDto) {
+    const identity = await this.google.verify(input.idToken);
+    const linked = await this.prisma.user.findUnique({
+      where: { googleSub: identity.sub },
+    });
+    if (linked) return this.issueTokens(linked);
+
+    const existing = await this.prisma.user.findUnique({
+      where: { email: identity.email },
+    });
+    if (existing) {
+      throw new ConflictException({
+        code: 'ACCOUNT_LINK_REQUIRED',
+        message: 'Sign in with your password, then link Google to this account',
+      });
+    }
+    if (input.acceptedTerms !== true) {
+      throw new BadRequestException({
+        code: 'TERMS_ACCEPTANCE_REQUIRED',
+        message: 'Accept the terms before creating an account',
+      });
+    }
+
+    try {
+      const user = await this.prisma.user.create({
+        data: {
+          email: identity.email,
+          firstName: identity.firstName,
+          lastName: identity.lastName,
+          googleSub: identity.sub,
+        },
+      });
+      return this.issueTokens(user);
+    } catch (error) {
+      if (
+        error instanceof Prisma.PrismaClientKnownRequestError &&
+        error.code === 'P2002'
+      ) {
+        const linkedAfterRace = await this.prisma.user.findUnique({
+          where: { googleSub: identity.sub },
+        });
+        if (linkedAfterRace) return this.issueTokens(linkedAfterRace);
+        throw new ConflictException({
+          code: 'ACCOUNT_LINK_REQUIRED',
+          message:
+            'Sign in with your password, then link Google to this account',
+        });
+      }
+      throw error;
+    }
+  }
+
+  async linkGoogle(userId: string, idToken: string): Promise<void> {
+    const identity = await this.google.verify(idToken);
+    const user = await this.prisma.user.findUnique({ where: { id: userId } });
+    if (!user) throw new UnauthorizedException('Invalid access token');
+    if (user.role !== UserRole.CUSTOMER) {
+      throw new ForbiddenException('Google sign-in is for customers only');
+    }
+    if (user.email !== identity.email) {
+      throw new ConflictException({
+        code: 'GOOGLE_EMAIL_MISMATCH',
+        message: 'Google email must match your account email',
+      });
+    }
+    if (user.googleSub === identity.sub) return;
+    if (user.googleSub) {
+      throw new ConflictException('Another Google account is already linked');
+    }
+    try {
+      const linked = await this.prisma.user.updateMany({
+        where: { id: userId, googleSub: null },
+        data: { googleSub: identity.sub },
+      });
+      if (linked.count !== 1) {
+        throw new ConflictException('Another Google account is already linked');
+      }
+    } catch (error) {
+      if (
+        error instanceof Prisma.PrismaClientKnownRequestError &&
+        error.code === 'P2002'
+      ) {
+        throw new ConflictException('Google account is already linked');
+      }
+      throw error;
+    }
   }
 
   async refresh(refreshToken: string) {

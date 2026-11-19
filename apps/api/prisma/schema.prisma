@@ -37,7 +37,8 @@ model User {
   firstName       String
   lastName        String?
   whatsapp        String?
-  passwordHash    String
+  passwordHash    String?
+  googleSub       String?              @unique
   role            UserRole             @default(CUSTOMER)
   cargoRequests   CargoRequest[]
   reviews         CargoRequestReview[]
