@@ -1,7 +1,7 @@
 <script setup lang="ts">
 const route = useRoute()
 const siteUrl = useRuntimeConfig().public.siteUrl || (import.meta.dev ? useRequestURL().origin : '')
-const routesWithoutCanonical = new Set(['/blog', '/blog/', '/blog/search', '/blog/tags'])
+const routesWithoutCanonical = new Set(['/artikel', '/artikel/', '/artikel/search', '/artikel/tags'])
 
 const canonicalUrl = computed(() => {
   if (!siteUrl || routesWithoutCanonical.has(route.path))

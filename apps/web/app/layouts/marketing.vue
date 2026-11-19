@@ -5,16 +5,16 @@ const isPolicyPage = computed(() => (
 ))
 
 const headerVariant = computed(() => {
-  const isBlogDirectoryPage = route.path === '/blog/search'
-    || route.path === '/blog/tags'
-    || route.path.startsWith('/blog/author/')
-  const isBlogDetail = route.path.startsWith('/blog/') && !isBlogDirectoryPage
+  const isBlogDirectoryPage = route.path === '/artikel/search'
+    || route.path === '/artikel/tags'
+    || route.path.startsWith('/artikel/author/')
+  const isBlogDetail = route.path.startsWith('/artikel/') && !isBlogDirectoryPage
 
   return route.path === '/' || isBlogDetail ? 'overlay' : 'light'
 })
 
 const showMultinationalRoutes = computed(() => (
-  route.path !== '/' && route.path !== '/about-us' && !route.path.startsWith('/blog') && route.path !== '/calculator' && route.path !== '/calculator-transfer-rmb' && !route.path.startsWith('/faq') && !route.path.startsWith('/glossary') && route.path !== '/promo' && route.path !== '/transfer-rmb' && route.path !== '/sourcing' && route.path !== '/complete-guide' && !isPolicyPage.value
+  route.path !== '/' && route.path !== '/about-us' && !route.path.startsWith('/artikel') && route.path !== '/calculator' && route.path !== '/calculator-transfer-rmb' && !route.path.startsWith('/faq') && !route.path.startsWith('/glossary') && route.path !== '/promo' && route.path !== '/transfer-rmb' && route.path !== '/sourcing' && route.path !== '/complete-guide' && !isPolicyPage.value
 ))
 </script>
 

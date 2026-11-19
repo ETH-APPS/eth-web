@@ -34,7 +34,7 @@ const sets = computed(() => (isReady.value && isLooping.value ? [0, 1, 2] : [1])
 
 function goToTag(tag: string) {
   router.push({
-    path: '/blog/tags',
+    path: '/artikel/tags',
     query: { tag },
   })
 }
@@ -184,18 +184,18 @@ onBeforeUnmount(() => {
             :key="post.id"
             class="relative group flex min-w-0 flex-col overflow-hidden rounded-xl bg-white shadow-[0_2px_8px_rgba(15,23,42,0.04)] transition-shadow hover:shadow-md focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500"
           >
-            <div class="aspect-[16/9] overflow-hidden bg-bg-200">
+            <div class="aspect-[924/490] overflow-hidden bg-bg-200">
               <img
                 :src="post.image"
                 :alt="post.imageAlt"
-                class="size-full object-cover transition-transform duration-300 group-hover:scale-[1.03]"
+                class="size-full object-contain"
               >
             </div>
 
             <div class="flex flex-col px-2.5 pb-3 pt-2.5">
               <h3 class="line-clamp-2 text-[15px] font-normal leading-6 text-text-secondary transition-colors group-hover:text-primary-500 group-has-[:focus-visible]:text-primary-500">
                 <NuxtLink
-                  :to="post.to?.startsWith('/') ? post.to : `/blog/${post.id}`"
+                  :to="post.to?.startsWith('/') ? post.to : `/artikel/${post.id}`"
                   class="after:absolute after:inset-0 after:z-10 after:rounded-xl focus-visible:outline-primary-500"
                 >
                   {{ post.title }}
@@ -252,18 +252,18 @@ onBeforeUnmount(() => {
                 data-category-card
                 class="relative category-post-card group flex min-w-0 shrink-0 snap-start flex-col overflow-hidden rounded-xl bg-white shadow-[0_2px_8px_rgba(15,23,42,0.04)] transition-shadow hover:shadow-md focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500"
               >
-                <div class="aspect-[16/9] overflow-hidden bg-bg-200">
+                <div class="aspect-[924/490] overflow-hidden bg-bg-200">
                   <img
                     :src="post.image"
                     :alt="post.imageAlt"
-                    class="size-full object-cover transition-transform duration-300 group-hover:scale-[1.03]"
+                    class="size-full object-contain"
                   >
                 </div>
 
                 <div class="flex min-h-[144px] flex-1 flex-col px-2.5 pb-3 pt-2.5">
                   <h3 class="line-clamp-2 text-[16px] font-normal leading-6 text-text-secondary transition-colors group-hover:text-primary-500 group-has-[:focus-visible]:text-primary-500">
                     <NuxtLink
-                      :to="post.to?.startsWith('/') ? post.to : `/blog/${post.id}`"
+                      :to="post.to?.startsWith('/') ? post.to : `/artikel/${post.id}`"
                       class="after:absolute after:inset-0 after:z-10 after:rounded-xl focus-visible:outline-primary-500"
                     >
                       {{ post.title }}

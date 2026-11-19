@@ -1,15 +1,17 @@
 <script setup lang="ts">
 import { ChevronDown, Search } from 'lucide-vue-next'
-import { blogArticleToc } from '~/constants/blogArticleToc'
+import type { ArticleTocSection } from '~/content/articleCatalog'
+
+const props = defineProps<{ tableOfContents: readonly ArticleTocSection[] }>()
 
 const isOpen = ref(false)
 const searchQuery = ref('')
-const activeId = ref<string>(blogArticleToc[0].id)
+const activeId = ref<string>(props.tableOfContents[0]?.id ?? '')
 const filteredSections = computed(() => {
   const query = searchQuery.value.trim().toLocaleLowerCase('id-ID')
-  if (!query) return blogArticleToc
+  if (!query) return props.tableOfContents
 
-  return blogArticleToc
+  return props.tableOfContents
     .map(section => {
       const sectionMatches = section.title.toLocaleLowerCase('id-ID').includes(query)
       return {
@@ -32,8 +34,8 @@ function selectSection(id: string) {
 }
 
 function updateActiveSection() {
-  let currentId: string = blogArticleToc[0].id
-  for (const section of blogArticleToc) {
+  let currentId: string = props.tableOfContents[0]?.id ?? ''
+  for (const section of props.tableOfContents) {
     for (const item of [section, ...section.children]) {
       const heading = document.getElementById(item.id)
       if (heading && heading.getBoundingClientRect().top <= 130)
@@ -42,6 +44,13 @@ function updateActiveSection() {
   }
   activeId.value = currentId
 }
+
+watch(() => props.tableOfContents, () => {
+  activeId.value = props.tableOfContents[0]?.id ?? ''
+  searchQuery.value = ''
+  isOpen.value = false
+  nextTick(updateActiveSection)
+})
 
 function handleKeydown(event: KeyboardEvent) {
   if (event.key === 'Escape') isOpen.value = false

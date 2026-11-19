@@ -2,7 +2,7 @@
 import {
   ArrowUpRight,
   BadgePercent,
-  Notebook,
+  // Notebook,
   Route,
 } from 'lucide-vue-next'
 import NewsIcon from '../NewsIcon.vue'
@@ -42,7 +42,7 @@ import NewsIcon from '../NewsIcon.vue'
         </NuxtLink>
 
         <NuxtLink
-          to="/blog"
+          to="/artikel"
           class="group/item flex items-start gap-4 rounded-lg focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary-500"
         >
           <span class="flex size-10 shrink-0 items-center justify-center rounded-full bg-primary-50 text-primary-500 transition-colors duration-200 motion-reduce:transition-none group-hover/item:bg-primary-500 group-hover/item:text-white group-focus-visible/item:bg-primary-500 group-focus-visible/item:text-white">
@@ -74,6 +74,7 @@ import NewsIcon from '../NewsIcon.vue'
       </p>
 
       <div class="space-y-5">
+        <!-- Kamus Istilah Impor dinonaktifkan sementara sampai halaman glossary siap.
         <NuxtLink
           to="/glossary"
           class="group/item flex items-start gap-4 rounded-lg focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary-500"
@@ -95,6 +96,7 @@ import NewsIcon from '../NewsIcon.vue'
             </span>
           </span>
         </NuxtLink>
+        -->
 
         <NuxtLink
           to="/complete-guide"

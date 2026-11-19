@@ -154,7 +154,7 @@ useHead(() => ({
         position: (currentPage.value - 1) * props.perPage + index + 1,
         name: article.title,
         url: new URL(
-          article.to?.startsWith('/') ? article.to : `/blog/${article.id}`,
+          article.to?.startsWith('/') ? article.to : `/artikel/${article.id}`,
           props.schemaListId,
         ).href,
       })),
@@ -202,7 +202,7 @@ function scrollToArticles() {
 
 function directoryPageLink(page: number) {
   return {
-    path: '/blog',
+    path: '/artikel',
     query: page > 1 ? { page: String(page) } : undefined,
     hash: '#all-articles',
   }
@@ -231,7 +231,7 @@ function submitSearch() {
   }
 
   navigateTo({
-    path: '/blog/search',
+    path: '/artikel/search',
     query: { q: query },
   })
 }
@@ -280,7 +280,7 @@ function applyTag() {
   tagOpen.value = false
 
   router.replace({
-    path: '/blog/tags',
+    path: '/artikel/tags',
     query: appliedTag.value ? { tag: appliedTag.value } : undefined,
   })
 }
@@ -290,12 +290,12 @@ function resetTag() {
   appliedTag.value = ''
   currentPage.value = 1
   tagOpen.value = false
-  router.replace('/blog/tags')
+  router.replace('/artikel/tags')
 }
 
 function goToTag(tag: string) {
   router.push({
-    path: '/blog/tags',
+    path: '/artikel/tags',
     query: { tag },
   })
 }
@@ -328,7 +328,7 @@ watch([filterOpen, tagOpen], async ([filter, tag]) => {
 watch([searchTerm, () => selectedTags.value.join('|'), appliedSort, appliedTag], () => {
   currentPage.value = 1
   if (isDirectory.value && route.query.page !== undefined)
-    router.replace('/blog')
+    router.replace('/artikel')
 })
 
 watch(() => props.initialPage, (value) => {
@@ -699,18 +699,18 @@ onBeforeUnmount(() => {
               :key="article.id"
               class="relative group flex min-w-0 flex-col overflow-hidden rounded-xl bg-white shadow-[0_2px_8px_rgba(15,23,42,0.04)] transition-shadow hover:shadow-md focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500"
             >
-              <div class="aspect-[16/9] overflow-hidden bg-bg-200">
+              <div class="aspect-[924/490] overflow-hidden bg-bg-200">
                 <img
                   :src="article.image"
                   :alt="article.imageAlt"
-                  class="size-full object-cover transition-transform duration-300 group-hover:scale-[1.03]"
+                  class="size-full object-contain"
                 >
               </div>
 
               <div class="flex min-h-[144px] flex-1 flex-col px-2.5 pb-3 pt-2.5">
                 <h3 class="line-clamp-2 text-[15px] font-normal leading-6 text-text-secondary transition-colors group-hover:text-primary-500 group-has-[:focus-visible]:text-primary-500 lg:text-[16px]">
                   <NuxtLink
-                    :to="article.to?.startsWith('/') ? article.to : `/blog/${article.id}`"
+                    :to="article.to?.startsWith('/') ? article.to : `/artikel/${article.id}`"
                     class="after:absolute after:inset-0 after:z-10 after:rounded-xl focus-visible:outline-primary-500"
                   >
                     {{ article.title }}

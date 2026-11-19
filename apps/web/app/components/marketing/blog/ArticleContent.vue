@@ -13,7 +13,7 @@ import threadsDark from '~/assets/images/marketing/Threads-dark.png'
 import tiktokDark from '~/assets/images/marketing/Tiktok-dark.png'
 import xDark from '~/assets/images/marketing/X-dark.png'
 import youtubeDark from '~/assets/images/marketing/youtube.png'
-import { blogArticleToc as tableOfContents } from '~/constants/blogArticleToc'
+import type { ArticleTocSection } from '~/content/articleCatalog'
 import { blogAuthor } from '~/constants/blogAuthor'
 import { illustratedCtaBanners } from '~/constants/illustratedCtaBanners'
 
@@ -28,15 +28,20 @@ interface RelatedArticle {
 
 const props = defineProps<{
   title: string
+  author: string
   tags: readonly string[]
+  keyPoints: readonly string[]
+  bodyHtml: string
+  tableOfContents: readonly ArticleTocSection[]
   relatedArticles: readonly RelatedArticle[]
 }>()
 
 const articleBanner = illustratedCtaBanners.transfer
 const { allArticles } = useAllBlogArticles()
+const tableOfContents = computed(() => props.tableOfContents)
 
 const expandedSections = ref<string[]>([])
-const activeSection = ref('memahami-kebutuhan')
+const activeSection = ref(props.tableOfContents[0]?.id ?? '')
 const shareUrl = ref('')
 const copied = ref(false)
 
@@ -100,13 +105,22 @@ onMounted(() => {
   shareUrl.value = window.location.href
 
   // Urutan sama dengan urutan di halaman: 1, 1.1, 1.2, 2, 2.1, 3
-  headingElements = tableOfContents.flatMap(section => [
+  headingElements = tableOfContents.value.flatMap(section => [
     document.getElementById(section.id),
     ...section.children.map(child => document.getElementById(child.id)),
   ]).filter((heading): heading is HTMLElement => Boolean(heading))
 
   updateActiveSection()
   window.addEventListener('scroll', handleScroll, { passive: true })
+})
+
+watch(tableOfContents, async () => {
+  await nextTick()
+  headingElements = tableOfContents.value.flatMap(section => [
+    document.getElementById(section.id),
+    ...section.children.map(child => document.getElementById(child.id)),
+  ]).filter((heading): heading is HTMLElement => Boolean(heading))
+  updateActiveSection()
 })
 
 onBeforeUnmount(() => {
@@ -128,7 +142,7 @@ onBeforeUnmount(() => {
             <ChevronRight :size="13" :stroke-width="1.7" />
           </li>
           <li>
-            <NuxtLink to="/blog" class="transition-colors hover:text-primary-500">
+            <NuxtLink to="/artikel" class="transition-colors hover:text-primary-500">
               Blog
             </NuxtLink>
           </li>
@@ -212,92 +226,14 @@ onBeforeUnmount(() => {
               Key Points
             </h2>
             <ul class="divide-y divide-border-200 text-[14px]">
-              <li class="flex gap-3 px-4 py-3">
+              <li v-for="(point, index) in props.keyPoints" :key="point" class="flex gap-3 px-4 py-3" :class="index % 2 ? 'bg-bg-100' : ''">
                 <span class="text-primary-500" aria-hidden="true">–</span>
-                <span>Pahami karakter, volume, dan tingkat urgensi barang sebelum menentukan metode pengiriman.</span>
-              </li>
-              <li class="flex gap-3 bg-bg-100 px-4 py-3">
-                <span class="text-primary-500" aria-hidden="true">–</span>
-                <span>Bandingkan estimasi waktu, biaya, serta kebutuhan dokumen dari setiap pilihan layanan.</span>
-              </li>
-              <li class="flex gap-3 px-4 py-3">
-                <span class="text-primary-500" aria-hidden="true">–</span>
-                <span>Gunakan penyedia logistik yang transparan dan mampu menangani proses secara Door-to-Door.</span>
+                <span>{{ point }}</span>
               </li>
             </ul>
           </section>
 
-          <div class="mt-6 space-y-5">
-            <p>
-              Proses pengiriman internasional membutuhkan perencanaan yang matang agar barang tiba dengan aman, tepat waktu, dan sesuai anggaran. Setiap bisnis memiliki kebutuhan berbeda sehingga metode pengiriman perlu disesuaikan dengan karakter barang, volume, serta target waktu penerimaan.
-            </p>
-            <p>
-              Melalui perencanaan yang tepat, pelaku usaha dapat mengurangi risiko keterlambatan, biaya tidak terduga, dan kendala kepabeanan. Transparansi informasi sejak awal juga membantu bisnis membuat keputusan yang lebih akurat sebelum barang diberangkatkan.
-            </p>
-          </div>
-
-          <section class="mt-7 scroll-mt-28" id="memahami-kebutuhan">
-            <h2 class="text-[20px] font-semibold text-text-secondary">
-              1. Memahami kebutuhan pengiriman
-            </h2>
-            <p class="mt-3">
-              Langkah pertama adalah memahami kebutuhan operasional bisnis secara menyeluruh. Catat jenis komoditas, jumlah koli, berat aktual, volume, nilai barang, serta jadwal barang tersebut harus tersedia di lokasi tujuan.
-            </p>
-
-            <section class="mt-6 scroll-mt-28" id="mengenali-karakter-barang">
-              <h3 class="text-[16px] font-semibold text-text-secondary">
-                1.1 Mengenali karakter dan kebutuhan barang
-              </h3>
-              <p class="mt-3">
-                Barang umum, produk sensitif, cairan, baterai, dan mesin industri memerlukan perlakuan yang berbeda. Informasi yang lengkap membantu tim logistik menentukan jenis kemasan, dokumen, serta moda pengiriman yang paling aman.
-              </p>
-            </section>
-
-            <section class="mt-6 scroll-mt-28" id="menentukan-target-pengiriman">
-              <h3 class="text-[16px] font-semibold text-text-secondary">
-                1.2 Menentukan target waktu pengiriman
-              </h3>
-              <p class="mt-3">
-                Tentukan tenggat penerimaan barang sejak awal. Kargo udara cocok untuk kebutuhan mendesak, sedangkan jalur laut lebih ekonomis untuk muatan besar dengan perencanaan waktu yang lebih longgar.
-              </p>
-            </section>
-          </section>
-
-          <section class="mt-8 scroll-mt-28" id="memilih-layanan">
-            <h2 class="text-[20px] font-semibold text-text-secondary">
-              2. Memilih layanan yang tepat
-            </h2>
-            <p class="mt-3">
-              Pemilihan layanan tidak hanya ditentukan oleh harga terendah. Pertimbangkan pula kepastian jadwal, keamanan penanganan, proses customs clearance, serta kejelasan biaya hingga barang diterima di alamat tujuan.
-            </p>
-
-            <section class="mt-6 scroll-mt-28" id="membandingkan-opsi">
-              <h3 class="text-[16px] font-semibold text-text-secondary">
-                2.1 Membandingkan opsi pengiriman
-              </h3>
-              <p class="mt-3">
-                FCL memberikan kapasitas satu kontainer penuh, sementara LCL memungkinkan barang berbagi ruang dengan muatan lain. Untuk produk ringan atau mendesak, air cargo dapat menjadi pilihan yang lebih efektif meskipun struktur biayanya berbeda.
-              </p>
-              <ol class="mt-4 list-decimal space-y-1 pl-6">
-                <li>Periksa estimasi waktu pengiriman setiap layanan.</li>
-                <li>Bandingkan perhitungan berat aktual dan volume.</li>
-                <li>Pastikan cakupan biaya dan proses kepabeanan jelas.</li>
-                <li>Konfirmasi perlindungan barang selama perjalanan.</li>
-              </ol>
-            </section>
-          </section>
-
-          <section class="mt-8 scroll-mt-28" id="kesimpulan">
-            <h2 class="text-[20px] font-semibold text-text-secondary">
-              3. Kesimpulan
-            </h2>
-            <p class="mt-3">
-              Keputusan pengiriman yang tepat berawal dari data barang yang lengkap dan tujuan bisnis yang jelas. Dengan pendampingan tim profesional, seluruh proses pengiriman dapat berjalan lebih transparan, aman, dan mudah dipantau.
-            </p>
-            <p class="mt-5">
-              ETH Cargo menyediakan solusi pengiriman All-In Door-to-Door untuk membantu bisnis mengelola kebutuhan impor dan ekspor secara lebih efisien, mulai dari penjemputan, kepabeanan, hingga pengantaran akhir.
-            </p>
-          </section>
+          <div class="article-body mt-6" v-html="props.bodyHtml" />
 
           <MarketingIllustratedCtaBanner
             v-bind="articleBanner"
@@ -314,17 +250,17 @@ onBeforeUnmount(() => {
                 <div
                   class="size-16 shrink-0 rounded-full bg-border-200"
                   role="img"
-                  :aria-label="`Foto profil ${blogAuthor.name}`"
+                  :aria-label="`Foto profil ${props.author}`"
                 />
 
                 <div class="min-w-0 flex-1">
                   <h2 id="article-author-title" class="text-[24px] font-semibold leading-tight text-text-secondary">
                     <NuxtLink :to="blogAuthor.to" class="rounded-sm hover:text-primary-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500">
-                      {{ blogAuthor.name }}
+                      {{ props.author }}
                     </NuxtLink>
                   </h2>
                   <p class="mt-1 text-[16px] font-medium text-text-secondary">
-                    {{ blogAuthor.jobTitle }}
+                    Penulis ETH Cargo
                   </p>
                 </div>
 
@@ -335,6 +271,7 @@ onBeforeUnmount(() => {
                   <span>Lihat Profil</span>
                   <ArrowUpRight :size="16" :stroke-width="2" aria-hidden="true" />
                 </NuxtLink>
+
               </div>
 
               <div class="mt-5 flex flex-wrap items-center justify-between gap-x-8 gap-y-4 lg:pl-20">
@@ -393,7 +330,7 @@ onBeforeUnmount(() => {
               <NuxtLink
                 v-for="tag in props.tags"
                 :key="tag"
-                :to="{ path: '/blog/tags', query: { tag } }"
+                :to="{ path: '/artikel/tags', query: { tag } }"
                 class="rounded-md bg-primary-500 px-2.5 py-1 text-[14px] font-normal text-white"
               >
                 {{ tag }}
@@ -490,3 +427,46 @@ onBeforeUnmount(() => {
     </UiContainer>
   </section>
 </template>
+
+<style scoped>
+.article-body :deep(h2) {
+  margin-top: 28px;
+  scroll-margin-top: 112px;
+  font-size: 20px;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+.article-body :deep(h3) {
+  margin-top: 24px;
+  scroll-margin-top: 112px;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+.article-body :deep(h4) {
+  margin-top: 20px;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.article-body :deep(p),
+.article-body :deep(ul),
+.article-body :deep(ol),
+.article-body :deep(blockquote),
+.article-body :deep(table) {
+  margin-top: 12px;
+}
+
+.article-body :deep(ul) { list-style: disc; padding-left: 24px; }
+.article-body :deep(ol) { list-style: decimal; padding-left: 24px; }
+.article-body :deep(li + li) { margin-top: 4px; }
+.article-body :deep(a) { text-decoration: underline; text-underline-offset: 2px; }
+.article-body :deep(a:hover) { color: #144b9b; }
+.article-body :deep(img) { max-width: 100%; height: auto; border-radius: 12px; }
+.article-body :deep(table) { display: block; max-width: 100%; overflow-x: auto; border-collapse: collapse; }
+.article-body :deep(th),
+.article-body :deep(td) { min-width: 110px; border: 1px solid #e2e5ea; padding: 8px 10px; text-align: left; vertical-align: top; }
+.article-body :deep(blockquote) { border-left: 3px solid #e2e5ea; padding-left: 16px; }
+</style>

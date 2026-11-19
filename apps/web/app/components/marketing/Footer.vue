@@ -61,7 +61,7 @@ const featureLinks = [
 const guideLinks = [
   { label: 'Complete Guide', to: '/complete-guide' },
   { label: 'Proses Impor Barang', to: '/china-cargo#shipping-workflow' },
-  { label: 'Insights', to: '/blog' },
+  { label: 'Insights', to: '/artikel' },
 ]
 
 const promoLinks = [
@@ -105,7 +105,7 @@ const desktopNavigationGroups = [
     label: 'Insight',
     links: [
       { label: 'Promosi', to: '/promo' },
-      { label: 'Blog', to: '/blog' },
+      { label: 'Blog', to: '/artikel' },
       { label: 'Glossrium', to: '/glossary' },
       { label: 'Cara Import Barang dari China', to: '/china-cargo#shipping-workflow', narrow: true },
     ],

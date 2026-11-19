@@ -1,5 +1,10 @@
 <script setup lang="ts">
 import { ArrowUpRight, ChevronDown } from 'lucide-vue-next'
+import {
+  calculateAirCargoEstimate,
+  calculateSeaCargoEstimate,
+  type CargoEstimate,
+} from '~/utils/cargoEstimate'
 
 const props = withDefaults(
   defineProps<{
@@ -15,6 +20,7 @@ const props = withDefaults(
     contactTo?: string
     sectionId?: string
     variant?: 'default' | 'page-hero'
+    calculatorEnabled?: boolean
   }>(),
   {
     title: 'Hitung Estimasi Tarif',
@@ -41,10 +47,72 @@ const props = withDefaults(
     contactTo: '#quote',
     sectionId: 'rate-estimator',
     variant: 'default',
+    calculatorEnabled: false,
   },
 )
 
 const titleId = computed(() => `${props.sectionId}-title`)
+const itemName = ref('')
+const category = ref('')
+const cargoService = ref('')
+const lengthCm = ref('')
+const widthCm = ref('')
+const heightCm = ref('')
+const weightPerBoxKg = ref('')
+const boxCount = ref('')
+const estimate = ref<CargoEstimate | null>(null)
+
+const currencyFormatter = new Intl.NumberFormat('id-ID', {
+  style: 'currency',
+  currency: 'IDR',
+  maximumFractionDigits: 0,
+})
+
+const decimalFormatter = new Intl.NumberFormat('id-ID', {
+  maximumFractionDigits: 4,
+})
+
+const totalAirWeightKg = computed(() => {
+  if (estimate.value?.mode !== 'air')
+    return 0
+
+  return estimate.value.totalWeightKg
+})
+
+function formatCurrency(value: number) {
+  return currencyFormatter.format(value)
+}
+
+function formatDecimal(value: number) {
+  return decimalFormatter.format(value)
+}
+
+function handleSubmit() {
+  if (!props.calculatorEnabled)
+    return
+
+  const quantity = Number(boxCount.value)
+
+  if (cargoService.value === 'Air Cargo') {
+    const totalWeight = Number(weightPerBoxKg.value) * quantity
+    estimate.value = calculateAirCargoEstimate(totalWeight)
+    return
+  }
+
+  estimate.value = calculateSeaCargoEstimate({
+    lengthCm: Number(lengthCm.value),
+    widthCm: Number(widthCm.value),
+    heightCm: Number(heightCm.value),
+    boxCount: quantity,
+  })
+}
+
+watch(
+  [itemName, category, cargoService, lengthCm, widthCm, heightCm, weightPerBoxKg, boxCount],
+  () => {
+    estimate.value = null
+  },
+)
 </script>
 
 <template>
@@ -75,7 +143,7 @@ const titleId = computed(() => `${props.sectionId}-title`)
       <form
         :aria-labelledby="titleId"
         class="mx-auto mt-8 max-w-[600px] rounded-[20px] border border-border-200 bg-bg-0 p-5 shadow-md sm:p-7"
-        @submit.prevent
+        @submit.prevent="handleSubmit"
       >
         <div class="grid gap-4 sm:grid-cols-2">
           <div>
@@ -87,6 +155,7 @@ const titleId = computed(() => `${props.sectionId}-title`)
             </label>
             <input
               id="item-name"
+              v-model.trim="itemName"
               name="item-name"
               type="text"
               required
@@ -107,11 +176,12 @@ const titleId = computed(() => `${props.sectionId}-title`)
             <div class="relative">
               <select
                 id="item-category"
+                v-model="category"
                 name="item-category"
                 required
                 class="h-12 w-full appearance-none rounded-lg border border-border-200 bg-bg-0 px-3 pr-10 text-[16px] font-normal text-text-secondary outline-none transition-[border-color,box-shadow] invalid:text-text-disable focus:border-primary-500 focus:ring-2 focus:ring-primary-100"
               >
-                <option value="" disabled selected>
+                <option value="" disabled>
                   Pilih kategori
                 </option>
                 <option
@@ -154,11 +224,12 @@ const titleId = computed(() => `${props.sectionId}-title`)
           <div class="relative">
             <select
               id="cargo-service"
+              v-model="cargoService"
               name="cargo-service"
               required
               class="h-12 w-full appearance-none rounded-lg border border-border-200 bg-bg-0 px-3 pr-10 text-[16px] font-normal text-text-secondary outline-none transition-[border-color,box-shadow] invalid:text-text-disable focus:border-primary-500 focus:ring-2 focus:ring-primary-100"
             >
-              <option value="" disabled selected>
+              <option value="" disabled>
                 Pilih jenis layanan
               </option>
               <option
@@ -189,6 +260,7 @@ const titleId = computed(() => `${props.sectionId}-title`)
               <span>Panjang <span class="sr-only text-text-tertiary sm:not-sr-only">(cm)</span></span>
               <input
                 name="length"
+                v-model="lengthCm"
                 type="number"
                 min="0"
                 step="0.1"
@@ -203,6 +275,7 @@ const titleId = computed(() => `${props.sectionId}-title`)
               <span>Lebar <span class="sr-only text-text-tertiary sm:not-sr-only">(cm)</span></span>
               <input
                 name="width"
+                v-model="widthCm"
                 type="number"
                 min="0"
                 step="0.1"
@@ -217,6 +290,7 @@ const titleId = computed(() => `${props.sectionId}-title`)
               <span>Tinggi <span class="sr-only text-text-tertiary sm:not-sr-only">(cm)</span></span>
               <input
                 name="height"
+                v-model="heightCm"
                 type="number"
                 min="0"
                 step="0.1"
@@ -234,6 +308,7 @@ const titleId = computed(() => `${props.sectionId}-title`)
             <span>Berat Box <span class="text-text-tertiary">(kg)</span></span>
             <input
               name="weight"
+              v-model="weightPerBoxKg"
               type="number"
               min="0"
               step="0.1"
@@ -248,6 +323,7 @@ const titleId = computed(() => `${props.sectionId}-title`)
             <span>Jumlah Box <span class="text-text-tertiary">(koli)</span></span>
             <input
               name="box-count"
+              v-model="boxCount"
               type="number"
               min="1"
               step="1"
@@ -266,6 +342,28 @@ const titleId = computed(() => `${props.sectionId}-title`)
           >
             {{ submitLabel }}
           </button>
+        </div>
+
+        <div
+          v-if="calculatorEnabled && estimate"
+          class="mt-6 rounded-xl border border-primary-100 bg-primary-50 p-4"
+          aria-live="polite"
+        >
+          <p class="text-[14px] font-normal text-text-tertiary">
+            Total Estimasi Biaya
+          </p>
+          <p class="mt-1 text-[24px] font-semibold leading-tight text-primary-500">
+            {{ formatCurrency(estimate.totalPrice) }}
+          </p>
+          <p v-if="estimate.mode === 'air'" class="mt-2 text-[12px] leading-relaxed text-text-tertiary">
+            {{ formatDecimal(totalAirWeightKg) }} kg × {{ formatCurrency(estimate.ratePerKg) }}/kg
+          </p>
+          <p v-else class="mt-2 text-[12px] leading-relaxed text-text-tertiary">
+            {{ formatDecimal(estimate.totalVolumeCbm) }} CBM × {{ formatCurrency(estimate.ratePerCbm) }}/CBM
+          </p>
+          <p class="mt-2 text-[12px] leading-relaxed text-text-tertiary">
+            * Hasil di atas merupakan estimasi awal dan dapat berubah setelah pengecekan barang.
+          </p>
         </div>
       </form>
 

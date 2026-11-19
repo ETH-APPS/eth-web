@@ -118,11 +118,11 @@ onBeforeUnmount(clearAutoplay)
             class="grid items-stretch gap-3 lg:grid-cols-[minmax(0,1.45fr)_minmax(300px,0.95fr)] lg:gap-10"
             aria-live="polite"
           >
-            <div class="relative w-full overflow-hidden rounded-xl bg-bg-100 lg:rounded-[18px]">
+            <div class="aspect-[924/490] w-full self-start overflow-hidden rounded-xl bg-bg-100 lg:rounded-[18px]">
               <img
                 :src="currentPost.image"
                 :alt="currentPost.imageAlt"
-                class="block aspect-[16/9] w-full object-cover lg:absolute lg:inset-0 lg:size-full lg:aspect-auto"
+                class="block size-full object-contain"
               >
             </div>
 
@@ -162,7 +162,7 @@ onBeforeUnmount(clearAutoplay)
                       :key="tag"
                     >
                       <NuxtLink
-                        :to="{ path: '/blog/tags', query: { tag } }"
+                        :to="{ path: '/artikel/tags', query: { tag } }"
                         class="block rounded-md bg-bg-100 px-1.5 py-0.5 text-[14px] text-primary-500 transition-colors hover:bg-primary-50 focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-primary-500 lg:px-2.5 lg:py-1.5"
                       >
                         {{ tag }}
@@ -175,7 +175,7 @@ onBeforeUnmount(clearAutoplay)
               <div class="mt-8 flex justify-end">
                 <NuxtLink
                   :aria-label="`Read more ${currentPost.title}`"
-                  :to="currentPost.to?.startsWith('/') ? currentPost.to : `/blog/${currentPost.id}`"
+                  :to="currentPost.to?.startsWith('/') ? currentPost.to : `/artikel/${currentPost.id}`"
                   class="inline-flex items-center gap-2 rounded-md text-[16px] font-medium text-primary-500 transition-colors hover:text-primary-600 focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-primary-500"
                 >
                   <span>Read more</span>

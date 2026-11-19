@@ -62,6 +62,7 @@ const calculatorBanner = {
     description="Hitung perkiraan biaya pengiriman kargo Anda dari China ke Indonesia secara cepat dan transparan. Masukkan rincian jenis barang, dimensi, serta jumlah koli untuk mendapatkan estimasi tarif pengiriman All-In."
     guide-prompt="Hasil perhitungan merupakan estimasi awal berbasis volume (CBM) dan berat kargo. Biaya final All-In akan dikonfirmasi ulang oleh tim profesional ETH Cargo saat barang ditimbang di gudang China."
     :show-guide-action="false"
+    calculator-enabled
   />
   <MarketingSectionsCargoCategories
     section-id="import-cargo-categories"

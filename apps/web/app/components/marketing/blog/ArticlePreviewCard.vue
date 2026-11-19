@@ -14,14 +14,14 @@ const props = defineProps<{
 
 <template>
   <NuxtLink
-    :to="props.to?.startsWith('/') ? props.to : `/blog/${props.id}`"
+    :to="props.to?.startsWith('/') ? props.to : `/artikel/${props.id}`"
     class="group flex min-w-0 flex-col overflow-hidden rounded-xl bg-white shadow-[0_2px_8px_rgba(15,23,42,0.04)] transition-shadow hover:shadow-md focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500"
   >
-    <div class="aspect-[16/9] overflow-hidden bg-bg-200">
+    <div class="aspect-[924/490] overflow-hidden bg-bg-200">
       <img
         :src="props.image"
         :alt="props.imageAlt"
-        class="size-full object-cover transition-transform duration-300 group-hover:scale-[1.03]"
+        class="size-full object-contain"
       >
     </div>
 

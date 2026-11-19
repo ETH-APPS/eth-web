@@ -461,10 +461,10 @@ onBeforeUnmount(() => {
             <div class="flex items-center gap-3">
               <span class="text-[14px] font-normal text-text-tertiary">Tag</span>
               <span aria-hidden="true" class="h-px w-6 bg-border-200" />
-              <NuxtLink to="/blog/tags?tag=FCL%20Cargo" class="rounded-md bg-primary-500 px-2.5 py-1 text-[14px] font-normal text-white hover:bg-primary-600">
+              <NuxtLink to="/artikel/tags?tag=FCL%20Cargo" class="rounded-md bg-primary-500 px-2.5 py-1 text-[14px] font-normal text-white hover:bg-primary-600">
                 FCL Cargo
               </NuxtLink>
-              <NuxtLink to="/blog/tags?tag=Sea%20Freight" class="rounded-md bg-primary-500 px-2.5 py-1 text-[14px] font-normal text-white hover:bg-primary-600">
+              <NuxtLink to="/artikel/tags?tag=Sea%20Freight" class="rounded-md bg-primary-500 px-2.5 py-1 text-[14px] font-normal text-white hover:bg-primary-600">
                 Sea Freight
               </NuxtLink>
             </div>

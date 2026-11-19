@@ -4,7 +4,7 @@ import {
   BadgePercent,
   ChevronDown,
   Handbag,
-  Notebook,
+  // Notebook,
   PackageSearch,
   Plane,
   Route,
@@ -48,7 +48,7 @@ const insightSections = [
         icon: BadgePercent,
       },
       {
-        to: '/blog',
+        to: '/artikel',
         label: 'Blog & Berita Impor',
         description: 'Artikel edukasi seputar tips impor barang dari China, tren komoditas, hingga analisis peluang bisnis.',
         icon: NewsIcon,
@@ -59,12 +59,12 @@ const insightSections = [
     id: 'mobile-guides-title',
     title: 'Panduan',
     items: [
-      {
-        to: '/glossary',
-        label: 'Kamus Istilah Impor',
-        description: 'Pahami istilah-istilah kepabeanan dan logistik seperti CBM, FCL, LCL, HS Code, Bill of Lading (BL), dan Lartas.',
-        icon: Notebook,
-      },
+      // {
+      //   to: '/glossary',
+      //   label: 'Kamus Istilah Impor',
+      //   description: 'Pahami istilah-istilah kepabeanan dan logistik seperti CBM, FCL, LCL, HS Code, Bill of Lading (BL), dan Lartas.',
+      //   icon: Notebook,
+      // },
       {
         to: '/complete-guide',
         label: 'Cara Import Barang dari China',

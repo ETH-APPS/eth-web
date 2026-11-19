@@ -1,4 +1,6 @@
-export const indexableRoutes = [
+import { articleSlugs } from '../../app/content/articleSlugs'
+
+const staticRoutes = [
   '/',
   '/china-cargo',
   '/sea-freight',
@@ -17,4 +19,10 @@ export const indexableRoutes = [
   '/legalities',
   '/promo',
   '/complete-guide',
+  '/artikel',
 ] as const
+
+export const indexableRoutes = [
+  ...staticRoutes,
+  ...Object.values(articleSlugs).map(slug => `/artikel/${slug}`),
+]

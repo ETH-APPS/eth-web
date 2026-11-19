@@ -2,7 +2,7 @@
 const props = defineProps<{
   title: string
   author: string
-  authorTo: string
+  authorTo?: string
   updatedAt: string
   releasedAt: string
   image: string
@@ -40,11 +40,13 @@ const props = defineProps<{
             <span class="h-px bg-white/55" aria-hidden="true" />
             <dd class="font-medium">
               <NuxtLink
+                v-if="props.authorTo"
                 :to="props.authorTo"
                 class="inline-flex min-h-11 items-center rounded-sm transition-colors hover:text-primary-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white lg:min-h-0"
               >
                 {{ props.author }}
               </NuxtLink>
+              <span v-else>{{ props.author }}</span>
             </dd>
           </div>
 
