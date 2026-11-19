@@ -32,6 +32,12 @@ const isLooping = computed(() => props.posts.length > 4)
 
 const sets = computed(() => (isReady.value && isLooping.value ? [0, 1, 2] : [1]))
 
+function visibleTags(post: CategoryPost) {
+  return post.tags
+    .filter(tag => tag !== props.title)
+    .slice(0, 1)
+}
+
 function goToTag(tag: string) {
   router.push({
     path: '/artikel/tags',
@@ -203,7 +209,7 @@ onBeforeUnmount(() => {
               </h3>
 
               <ul class="mt-3 flex flex-wrap gap-2" aria-label="Tag artikel">
-                <li v-for="tag in post.tags" :key="tag">
+                <li v-for="tag in visibleTags(post)" :key="tag">
                   <button
                     type="button"
                     class="relative z-20 rounded bg-bg-100 px-2 py-1 text-[12px] text-primary-500 transition-colors hover:bg-primary-50 focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-primary-500"
@@ -272,7 +278,7 @@ onBeforeUnmount(() => {
 
                   <ul class="mt-3 flex flex-wrap gap-2" aria-label="Tag artikel">
                     <li
-                      v-for="tag in post.tags"
+                      v-for="tag in visibleTags(post)"
                       :key="tag"
                     >
                       <button

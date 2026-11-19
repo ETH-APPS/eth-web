@@ -719,7 +719,7 @@ onBeforeUnmount(() => {
 
                 <ul class="mt-3 flex flex-wrap gap-2" aria-label="Tag artikel">
                   <li
-                    v-for="tag in article.tags"
+                    v-for="tag in article.tags.slice(0, 1)"
                     :key="tag"
                   >
                     <button
