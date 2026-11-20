@@ -31,5 +31,6 @@ const showMultinationalRoutes = computed(() => (
       />
     </main>
     <MarketingFooter />
+    <MarketingFloatingWhatsapp />
   </div>
 </template>
