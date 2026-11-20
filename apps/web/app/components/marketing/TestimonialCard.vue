@@ -1,11 +1,12 @@
 <script setup lang="ts">
-import { ShieldCheck, Star } from 'lucide-vue-next'
+import { Star } from 'lucide-vue-next'
 
 withDefaults(defineProps<{
   name: string
   reviewSource: string
   reviewDate: string
   content: string
+  avatar: string
   attachments?: number
 }>(), {
   attachments: 0,
@@ -18,13 +19,13 @@ withDefaults(defineProps<{
     :class="attachments > 0 ? 'min-h-[212px]' : 'min-h-[152px]'"
   >
     <div class="flex items-start gap-3">
-      <span class="flex size-10 shrink-0 items-center justify-center rounded-xl bg-primary-50 text-primary-500">
-        <ShieldCheck
-          :size="30"
-          :stroke-width="2"
-          aria-hidden="true"
-        />
-      </span>
+      <img
+        :src="avatar"
+        alt=""
+        width="40"
+        height="40"
+        class="size-10 shrink-0 rounded-xl object-cover"
+      >
 
       <div class="min-w-0 flex-1">
         <h3 class="truncate text-[16px] font-medium leading-tight text-text-secondary">

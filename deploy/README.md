@@ -1,7 +1,9 @@
 # Deployment VM: arsitektur, CI/CD, dan operasional
 
 Panduan alur dari kode di laptop sampai website bisa dibuka pengunjung.
-Terakhir diperbarui: **10 November 2026**.
+Untuk penjelasan yang lebih singkat, baca [alur CI/CD frontend](../docs/ci-cd-frontend.md).
+
+Terakhir diperbarui: **20 November 2026**.
 
 Implementasi dijelaskan berdasarkan file repository. Status VM berdasarkan output
 pengguna, bukan inspeksi langsung agent ke VM. Bagian **NEXT** adalah rencana,
@@ -15,7 +17,7 @@ pengguna, bukan inspeksi langsung agent ke VM. Bagian **NEXT** adalah rencana,
 | Backend NestJS | Ada di monorepo, belum termasuk deployment ini |
 | VM | Ubuntu 24.04.2 LTS amd64, hostname `eth-apps` |
 | Operator | User `ethapps` |
-| IP lokal | `192.168.10.95`; akses IP publik belum dikonfirmasi |
+| IP lokal | `192.168.10.95`, di belakang router `192.168.10.1` |
 | Repository | Private, `ETH-APPS/eth-web`, branch `main` |
 | Checkout awal | `/opt/eth-web` |
 | Auto-deploy | GitHub Actions, self-hosted runner di VM |
@@ -422,6 +424,39 @@ di browser, terutama setelah perubahan konfigurasi atau integrasi API.
 Domain adalah alamat pengunjung. Tunnel adalah salah satu jalur menuju VM.
 Domain sendiri dapat dipakai dengan ataupun tanpa tunnel.
 
+### Pemeriksaan jaringan 20 November 2026
+
+Pemeriksaan ini hanya membaca kondisi VM. Belum ada perubahan DNS, router,
+firewall, Caddy, atau tunnel.
+
+- Container web dan Caddy sehat. Caddy merespons `HTTP 200` melalui
+  `http://127.0.0.1:8080/` di VM.
+- SSH ke `103.118.175.181:58811` berhasil dari luar. Di dalam sesi itu,
+  `SSH_CONNECTION` menunjukkan koneksi dari router `192.168.10.1` ke
+  `192.168.10.95:22`. Ini membuktikan jalur SSH sampai ke VM, belum membuktikan
+  jalur website pada port 80/443 siap.
+- IP yang dilaporkan VM saat keluar ke internet adalah `36.77.235.25`, berbeda
+  dari IP tujuan SSH. Penyebabnya belum dipastikan; periksa konfigurasi jaringan
+  sebelum memilih IP untuk DNS.
+- Di VM, hanya `127.0.0.1:8080` yang mendengarkan untuk web. Firewall UFW aktif,
+  menolak koneksi masuk secara default, dan hanya mengizinkan SSH port 22.
+
+Jika memakai domain langsung tanpa tunnel, alurnya:
+
+```text
+Domain → IP publik → router kantor → firewall VM → Caddy → Nuxt
+```
+
+DNS hanya memilih alamat. Router harus meneruskan port website 80/443 ke VM;
+firewall VM harus mengizinkan port itu; Caddy harus mendengarkan dan melayani
+HTTPS. Mengubah DNS saja tidak membuka ketiga pintu tersebut. Port SSH `58811`
+bukan port website.
+
+Langkah berikutnya: periksa IP WAN dan aturan port forwarding pada router kantor,
+termasuk apakah IP tujuan SSH tetap. Setelah jalur masuk jelas, siapkan Caddy,
+Compose, firewall, dan helper deploy; uji dari luar sebelum mengalihkan DNS.
+Jangan hentikan Quick Tunnel selama jalur baru belum terverifikasi.
+
 ### Pilihan A: domain langsung ke Caddy, tanpa tunnel
 
 ```text
@@ -468,9 +503,9 @@ Hostname domain tetap dikonfigurasi meskipun proses tunnel restart. Akses masih
 bisa terputus selama restart; alamat tetap bukan jaminan server selalu online.
 Caddy dapat tetap menggunakan HTTP internal pada pilihan ini.
 
-**Belum diputuskan:** domain, pengelola DNS, serta apakah VM punya akses IP publik
-atau port forwarding. IP lokal `192.168.10.95` tidak bisa langsung dijadikan
-alamat tujuan website publik dari internet.
+**Belum diputuskan:** pengelola DNS, IP publik yang tepat untuk website, dan
+aturan router untuk port 80/443. IP lokal `192.168.10.95` tidak bisa langsung
+dijadikan alamat tujuan website publik dari internet.
 
 Referensi resmi:
 
