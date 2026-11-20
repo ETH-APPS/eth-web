@@ -1,7 +1,7 @@
 # Deployment VM: arsitektur, CI/CD, dan operasional
 
 Panduan alur dari kode di laptop sampai website bisa dibuka pengunjung.
-Untuk penjelasan yang lebih singkat, baca [alur CI/CD frontend](../docs/ci-cd-frontend.md).
+Untuk penjelasan yang lebih sederhana, baca [alur akses website](../docs/alur-akses-website.md).
 
 Terakhir diperbarui: **20 November 2026**.
 

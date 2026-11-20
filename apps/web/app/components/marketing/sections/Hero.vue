@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ArrowUpRight, ChevronLeft, ChevronRight } from 'lucide-vue-next'
-import heroUrl from '~/assets/images/marketing/hero.png'
+import heroUrl from '~/assets/images/marketing/hero.webp'
 
 const services = [
   {
@@ -93,8 +93,8 @@ function handleTabKeydown(event: KeyboardEvent) {
     <img
       :src="heroUrl"
       alt=""
-      width="1440"
-      height="810"
+      width="2560"
+      height="1440"
       loading="eager"
       decoding="async"
       fetchpriority="high"
@@ -104,8 +104,8 @@ function handleTabKeydown(event: KeyboardEvent) {
     <img
       :src="heroUrl"
       alt=""
-      width="1440"
-      height="810"
+      width="2560"
+      height="1440"
       aria-hidden="true"
       class="absolute left-1/2 top-4 h-auto w-[128%] max-w-none -translate-x-1/2 [mask-image:linear-gradient(to_bottom,transparent_0%,black_12%,black_88%,transparent_100%)] [-webkit-mask-image:linear-gradient(to_bottom,transparent_0%,black_12%,black_88%,transparent_100%)] md:hidden"
     >
