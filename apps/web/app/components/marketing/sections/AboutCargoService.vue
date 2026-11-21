@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ArrowUpRight, Container, Package, Plane } from 'lucide-vue-next'
+import { Container, Package, Plane } from 'lucide-vue-next'
 import aboutUsImageUrl from '~/assets/images/marketing/about-us.png'
 
 const shippingMethods = [
@@ -132,17 +132,14 @@ const mobileShippingMethods = [
           Ingin mengetahui estimasi biaya pengiriman kargo bisnis Anda?
         </p>
 
-        <NuxtLink
+        <UiAnimatedArrowButton
           to="#quote"
-          class="mt-3 inline-flex h-10 items-center gap-2 rounded-xl bg-primary-500 px-5 text-[14px] font-semibold text-white transition-[background-color,transform] duration-200 hover:-translate-y-0.5 hover:bg-primary-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500"
+          variant="plain"
+          :icon-size="16"
+          class="mt-3 inline-flex h-10 items-center gap-2 rounded-xl bg-primary-500 px-5 text-[14px] font-semibold text-white transition-[background-color,color,box-shadow] duration-200 hover:bg-primary-100 hover:text-primary-500 hover:ring-2 hover:ring-inset hover:ring-primary-500 focus-visible:bg-primary-100 focus-visible:text-primary-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500 focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-primary-500"
         >
-          <span>Konsultasi Gratis</span>
-          <ArrowUpRight
-            :size="16"
-            :stroke-width="2"
-            aria-hidden="true"
-          />
-        </NuxtLink>
+          Konsultasi Gratis
+        </UiAnimatedArrowButton>
       </div>
     </UiContainer>
   </section>

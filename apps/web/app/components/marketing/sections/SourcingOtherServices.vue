@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import {
-  ArrowUpRight,
   Cuboid,
   Headphones,
 } from 'lucide-vue-next'
@@ -75,25 +74,27 @@ const services = [
           </p>
 
           <div class="mt-auto flex justify-end pt-5 lg:hidden">
-            <NuxtLink
+            <UiAnimatedArrowButton
               :to="service.mobileTo"
-              class="inline-flex min-h-11 items-center gap-1.5 rounded-xl bg-primary-500 px-5 text-[14px] font-medium text-white transition-[background-color,transform] duration-200 hover:-translate-y-0.5 hover:bg-primary-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500"
+              variant="plain"
+              :icon-size="16"
+              class="inline-flex min-h-11 items-center gap-1.5 rounded-xl bg-primary-500 px-5 text-[14px] font-medium text-white transition-[background-color,color,box-shadow] duration-200 hover:bg-primary-100 hover:text-primary-500 hover:ring-2 hover:ring-inset hover:ring-primary-500 focus-visible:bg-primary-100 focus-visible:text-primary-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500 focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-primary-500"
             >
-              <span>Selengkapnya</span>
-              <ArrowUpRight :size="16" :stroke-width="2" aria-hidden="true" />
-            </NuxtLink>
+              Selengkapnya
+            </UiAnimatedArrowButton>
           </div>
 
           <div class="mt-auto hidden justify-end gap-3 pt-5 lg:flex">
-            <NuxtLink
+            <UiAnimatedArrowButton
               v-for="link in service.links"
               :key="link.label"
               :to="link.to"
-              class="inline-flex h-10 items-center gap-1.5 rounded-xl bg-transparent px-4 text-[14px] font-medium text-primary-500 transition-[background-color,color,translate] duration-200 hover:-translate-y-0.5 group-hover:bg-primary-500 group-hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500"
+              variant="plain"
+              :icon-size="16"
+              class="inline-flex h-10 items-center gap-1.5 rounded-xl bg-transparent px-4 text-[14px] font-medium text-primary-500 transition-[background-color,color,box-shadow] duration-200 group-hover:bg-primary-500 group-hover:text-white group-hover:hover:bg-primary-100 group-hover:hover:text-primary-500 group-hover:hover:ring-2 group-hover:hover:ring-inset group-hover:hover:ring-primary-500 group-hover:focus-visible:bg-primary-100 group-hover:focus-visible:text-primary-500 group-hover:focus-visible:ring-2 group-hover:focus-visible:ring-inset group-hover:focus-visible:ring-primary-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500"
             >
-              <span>{{ link.label }}</span>
-              <ArrowUpRight :size="16" :stroke-width="2" aria-hidden="true" />
-            </NuxtLink>
+              {{ link.label }}
+            </UiAnimatedArrowButton>
           </div>
         </li>
       </ul>

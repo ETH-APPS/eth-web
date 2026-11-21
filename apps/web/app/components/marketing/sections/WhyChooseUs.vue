@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ChevronLeft, ChevronRight, Cuboid } from 'lucide-vue-next'
+import tribunnewsLogo from '~/assets/images/marketing/Tribunnews.png'
 
 const stats = [
   { value: '+10.000', label: 'Pengiriman\nSelesai' },
@@ -40,6 +41,20 @@ const benefits = [
       'Nikmati layanan personal dari tim kami yang siap memberikan update berkala dan solusi cepat untuk setiap kebutuhan impor bisnis Anda.',
   },
 ]
+
+const mediaOutlets = [
+  { name: 'Tribunnews.com', image: tribunnewsLogo },
+]
+
+// Fill the visible row with the supplied logo until more media assets are available.
+const pressTiles = Array.from({ length: Math.max(5, mediaOutlets.length) }, (_, index) =>
+  mediaOutlets[index % mediaOutlets.length]!,
+)
+const pressTrackStyle = {
+  '--press-mobile-width': `${pressTiles.length * 150}%`,
+  '--press-desktop-width': `${pressTiles.length * 75}%`,
+  '--press-tile-width': `${100 / pressTiles.length}%`,
+}
 
 const carouselRef = ref<HTMLElement | null>(null)
 const activeIndex = ref(0)
@@ -193,6 +208,77 @@ onBeforeUnmount(() => {
           <ChevronRight :size="22" :stroke-width="2" aria-hidden="true" />
         </button>
       </div>
+
+      <div class="mt-20 text-center lg:mt-24">
+        <p class="text-[20px] font-medium text-text-tertiary">
+          Diliput oleh
+        </p>
+
+        <div
+          class="press-marquee mt-7 overflow-hidden"
+          role="img"
+          :aria-label="`Media yang meliput ETH Cargo: ${mediaOutlets.map(outlet => outlet.name).join(', ')}`"
+        >
+          <div class="press-track" :style="pressTrackStyle" aria-hidden="true">
+            <div v-for="group in 3" :key="group" class="press-group">
+              <div
+                v-for="(outlet, index) in pressTiles"
+                :key="`${group}-${index}`"
+                class="press-tile flex min-w-0 items-center justify-center px-2 lg:px-3"
+              >
+                <img
+                  :src="outlet.image"
+                  alt=""
+                  width="512"
+                  height="125"
+                  loading="lazy"
+                  class="h-auto w-full max-w-[230px] object-contain"
+                >
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </UiContainer>
   </section>
 </template>
+
+<style scoped>
+.press-track {
+  display: flex;
+  width: var(--press-mobile-width);
+  animation: press-marquee 28s linear infinite;
+  will-change: transform;
+}
+
+.press-group {
+  display: flex;
+  flex: 0 0 33.333333%;
+}
+
+.press-tile {
+  flex: 0 0 var(--press-tile-width);
+}
+
+.press-marquee:hover .press-track {
+  animation-play-state: paused;
+}
+
+@keyframes press-marquee {
+  to {
+    transform: translateX(-33.333333%);
+  }
+}
+
+@media (min-width: 48rem) {
+  .press-track {
+    width: var(--press-desktop-width);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .press-track {
+    animation: none;
+  }
+}
+</style>

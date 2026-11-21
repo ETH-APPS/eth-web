@@ -1,7 +1,8 @@
-<script setup lang="ts">
+cd<script setup lang="ts">
 import cargoSeaUrl from '~/assets/images/marketing/cargo-sea-landscape.png'
 import seaFreightVector from '~/assets/images/marketing/vector-sea-freight.png'
 import { faqContentByPath, homeFaqContent } from '~/constants/faq'
+import { whatsappConsultationUrl } from '~/constants/whatsapp'
 
 definePageMeta({
   layout: 'marketing',
@@ -142,7 +143,7 @@ const freightBanner = {
   description: 'Solusi pengiriman kargo laut All-In Door-to-Door yang aman dan ekonomis untuk bisnis Anda, Dapatkan penawaran terbaik hari ini!',
   email: 'email@ethcargo.co.id',
   ctaLabel: 'Konsultasi Gratis',
-  ctaTo: '#quote',
+  ctaTo: whatsappConsultationUrl,
 }
 </script>
 
@@ -172,6 +173,7 @@ const freightBanner = {
     tracking-to="/live-tracking"
     cta-label="Konsultasi FCL"
     cta-to="#quote"
+    animated-cta
   />
   <MarketingSectionsFreightOverview
     section-id="lcl-overview"
@@ -185,6 +187,7 @@ const freightBanner = {
     tracking-to="/live-tracking"
     cta-label="Konsultasi LCL"
     cta-to="#quote"
+    animated-cta
   />
   <MarketingSectionsShippingWorkflow
     section-id="sea-freight-workflow"

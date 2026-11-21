@@ -2,7 +2,6 @@
 import type { Component } from 'vue'
 import {
   Armchair,
-  ArrowUpRight,
   Baby,
   Bike,
   Boxes,
@@ -125,17 +124,14 @@ function categoryIcon(icon?: string) {
         <p class="text-[16px] text-text-tertiary">
           {{ ctaPrompt }}
         </p>
-        <NuxtLink
+        <UiAnimatedArrowButton
           :to="ctaTo"
-          class="mt-3 inline-flex h-10 items-center gap-2 rounded-lg bg-primary-500 px-6 text-[14px] font-medium text-bg-0 transition-[background-color,transform] duration-200 hover:-translate-y-0.5 hover:bg-primary-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500"
+          variant="plain"
+          :icon-size="17"
+          class="mt-3 inline-flex h-10 items-center gap-2 rounded-lg bg-primary-500 px-6 text-[14px] font-medium text-bg-0 transition-[background-color,color,box-shadow] duration-200 hover:bg-primary-100 hover:text-primary-500 hover:ring-2 hover:ring-inset hover:ring-primary-500 focus-visible:bg-primary-100 focus-visible:text-primary-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500 focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-primary-500"
         >
-          <span>{{ ctaLabel }}</span>
-          <ArrowUpRight
-            :size="17"
-            :stroke-width="2"
-            aria-hidden="true"
-          />
-        </NuxtLink>
+          {{ ctaLabel }}
+        </UiAnimatedArrowButton>
       </div>
     </UiContainer>
   </section>

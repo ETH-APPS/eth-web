@@ -2,6 +2,7 @@
 import cargoAirUrl from '~/assets/images/marketing/cargo-air-landscape.png'
 import airFreightVector from '~/assets/images/marketing/vector-air-freight.png'
 import { faqContentByPath, homeFaqContent } from '~/constants/faq'
+import { whatsappConsultationUrl } from '~/constants/whatsapp'
 
 definePageMeta({
   layout: 'marketing',
@@ -115,7 +116,7 @@ const freightBanner = {
   description: 'Solusi pengiriman ekspres All-In Door-to-Door yang aman untuk produk prioritas dan mendesak. Tiba lebih cepat langsung ke alamat Anda.',
   email: 'email@ethcargo.co.id',
   ctaLabel: 'Konsultasi Gratis',
-  ctaTo: '#quote',
+  ctaTo: whatsappConsultationUrl,
 }
 </script>
 
@@ -144,6 +145,7 @@ const freightBanner = {
     tracking-to="/live-tracking"
     cta-label="Konsultasi Kargo Udara"
     cta-to="#quote"
+    animated-cta
   />
   <MarketingSectionsShippingWorkflow
     section-id="air-freight-workflow"

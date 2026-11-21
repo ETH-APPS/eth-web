@@ -30,6 +30,7 @@ const props = withDefaults(
     trackingTo: string
     ctaLabel: string
     ctaTo: string
+    animatedCta?: boolean
     sectionId?: string
   }>(),
   {
@@ -135,7 +136,18 @@ const titleId = computed(() => `${props.sectionId}-title`)
           <span>{{ trackingLabel }}</span>
         </NuxtLink>
 
+        <UiAnimatedArrowButton
+          v-if="animatedCta"
+          :to="ctaTo"
+          variant="plain"
+          :icon-size="20"
+          class="inline-flex h-14 items-center gap-2 rounded-xl bg-primary-500 px-6 text-[16px] font-medium text-white transition-[background-color,color,box-shadow] duration-200 hover:bg-primary-100 hover:text-primary-500 hover:ring-2 hover:ring-inset hover:ring-primary-500 focus-visible:bg-primary-100 focus-visible:text-primary-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500 focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-primary-500"
+        >
+          {{ ctaLabel }}
+        </UiAnimatedArrowButton>
+
         <NuxtLink
+          v-else
           :to="ctaTo"
           class="inline-flex h-14 items-center gap-2 rounded-xl bg-primary-500 px-6 text-[16px] font-medium text-white transition-[background-color,transform] duration-200 hover:-translate-y-0.5 hover:bg-primary-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500"
         >

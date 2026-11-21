@@ -98,6 +98,7 @@ const aboutBanner = illustratedCtaBanners.about
       <MarketingIllustratedCtaBanner
         v-bind="aboutBanner"
         variant="standard"
+        animated-cta
         image-alt="Ilustrasi tim ETH Cargo mengelola rantai pasok impor"
       />
     </UiContainer>
@@ -111,6 +112,7 @@ const aboutBanner = illustratedCtaBanners.about
       :email="aboutBanner.email"
       :cta-label="aboutBanner.ctaLabel"
       :cta-to="aboutBanner.ctaTo"
+      animated-cta
       :show-image="false"
     />
   </div>

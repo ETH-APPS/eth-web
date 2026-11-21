@@ -8,7 +8,7 @@ const props = defineProps<{
   email: string
   ctaLabel: string
   ctaTo: string
-  estimateTo?: string
+  animatedCta?: boolean
 }>()
 </script>
 

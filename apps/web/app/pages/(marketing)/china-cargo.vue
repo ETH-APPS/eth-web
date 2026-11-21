@@ -4,7 +4,7 @@ import CargoLandingHero from '~/components/marketing/CargoLandingHero.vue'
 import airFreightUrl from '~/assets/images/marketing/air-freight.png'
 import fclCargoUrl from '~/assets/images/marketing/fcl-cargo.png'
 import lclCargoUrl from '~/assets/images/marketing/lcl-cargo.png'
-import cargoHeroUrl from '~/assets/images/marketing/multinational-cargo-hero.png'
+import cargoHeroUrl from '~/assets/images/marketing/cargo-china.png'
 import { faqContentByPath, homeFaqContent } from '~/constants/faq'
 import { illustratedCtaBanners } from '~/constants/illustratedCtaBanners'
 
@@ -112,6 +112,7 @@ const cargoBanner = illustratedCtaBanners.chinaCargo
     :services="heroServices"
     tracking-label="Lacak Pengiriman"
     quote-label="Konsultasi Tarif"
+    animated-quote-button
     :image="cargoHeroUrl"
     image-alt="Kapal cargo untuk pengiriman barang dari China ke Indonesia"
     :highlights="heroHighlights"

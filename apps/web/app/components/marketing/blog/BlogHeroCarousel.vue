@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ArrowUpRight, ChevronLeft, ChevronRight } from 'lucide-vue-next'
+import { ChevronLeft, ChevronRight } from 'lucide-vue-next'
 
 interface BlogPost {
   id: string
@@ -173,14 +173,15 @@ onBeforeUnmount(clearAutoplay)
               </div>
 
               <div class="mt-8 flex justify-end">
-                <NuxtLink
+                <UiAnimatedArrowButton
                   :aria-label="`Read more ${currentPost.title}`"
                   :to="currentPost.to?.startsWith('/') ? currentPost.to : `/artikel/${currentPost.id}`"
-                  class="inline-flex items-center gap-2 rounded-md text-[16px] font-medium text-primary-500 transition-colors hover:text-primary-600 focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-primary-500"
+                  variant="plain"
+                  :icon-size="18"
+                  class="inline-flex min-h-11 items-center gap-2 rounded-md bg-bg-0 px-4 text-[16px] font-medium text-primary-500 transition-colors duration-200 hover:bg-primary-500 hover:text-white focus-visible:bg-primary-500 focus-visible:text-white focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-primary-500"
                 >
-                  <span>Read more</span>
-                  <ArrowUpRight :size="18" :stroke-width="2" aria-hidden="true" />
-                </NuxtLink>
+                  Read more
+                </UiAnimatedArrowButton>
               </div>
             </div>
           </article>

@@ -7,6 +7,7 @@ defineProps<{
   eyebrow: string
   image?: string
   imageAlt?: string
+  to: string
 }>()
 </script>
 
@@ -42,7 +43,7 @@ defineProps<{
         </p>
 
         <NuxtLink
-          to="#layanan"
+          :to="to"
           class="inline-flex shrink-0 items-center gap-2 rounded-sm text-[13px] font-medium text-primary-500 transition-colors hover:text-primary-700 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary-500"
         >
           <span>Lihat Detail</span>

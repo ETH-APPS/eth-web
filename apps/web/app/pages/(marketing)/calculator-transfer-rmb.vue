@@ -80,6 +80,7 @@ const transferBanner = illustratedCtaBanners.transfer
       surface="muted"
       plain-header
       :services="cargoShippingTypes"
+      animated-links
     />
   </MarketingSectionsFaq>
   <div id="calculator-transfer-rmb-quote" class="pb-6 lg:pt-8 lg:pb-10">

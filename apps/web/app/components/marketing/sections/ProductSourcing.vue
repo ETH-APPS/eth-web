@@ -403,7 +403,6 @@ onBeforeUnmount(() => {
             v-bind="productSourcingBanner"
             class="mt-10"
             variant="background"
-            :show-estimate="false"
             image-alt="Ilustrasi layanan impor dan sourcing produk dari China"
           />
         </div>

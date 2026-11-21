@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ArrowUpRight, Info, Layers3 } from 'lucide-vue-next'
+import { Info, Layers3 } from 'lucide-vue-next'
 
 interface ShippingWorkflowStep {
   title: string
@@ -235,18 +235,14 @@ onBeforeUnmount(() => {
           {{ ctaPrompt }}
         </p>
 
-        <NuxtLink
+        <UiAnimatedArrowButton
           :to="ctaTo"
-          class="mt-3 inline-flex h-10 items-center gap-2 rounded-xl bg-primary-500 px-5 text-[12px] font-semibold text-white transition-[background-color,translate] duration-200 hover:-translate-y-0.5 hover:bg-primary-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500"
+          variant="plain"
+          :icon-size="16"
+          class="relative mt-3 inline-flex h-10 items-center gap-2 rounded-xl bg-primary-500 px-5 text-[12px] font-semibold text-white transition-[background-color,color,box-shadow] duration-200 before:absolute before:-inset-y-0.5 before:inset-x-0 before:content-[''] hover:bg-primary-100 hover:text-primary-500 hover:ring-2 hover:ring-inset hover:ring-primary-500 focus-visible:bg-primary-100 focus-visible:text-primary-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500 focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-primary-500"
         >
-          <span>{{ ctaLabel }}</span>
-
-          <ArrowUpRight
-            :size="16"
-            :stroke-width="2"
-            aria-hidden="true"
-          />
-        </NuxtLink>
+          {{ ctaLabel }}
+        </UiAnimatedArrowButton>
       </div>
     </UiContainer>
   </section>

@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import {
   ArrowRight,
-  ArrowUpRight,
   Bookmark,
   CalendarClock,
   Check,
@@ -158,14 +157,18 @@ function eventStatusLabel(status: EventStatus) {
             >
           </label>
 
-          <button
+          <UiAnimatedArrowButton
             type="submit"
             aria-label="Cari status pengiriman"
-            class="flex h-[60px] items-center justify-center justify-self-end gap-3 rounded-full bg-primary-500 px-6 text-[16px] font-medium text-bg-0 transition-[background-color,transform] duration-200 hover:scale-105 hover:bg-primary-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500 lg:size-[60px] lg:justify-self-center lg:px-0"
+            variant="plain"
+            icon-only
+            class="flex h-[60px] items-center justify-center justify-self-end gap-3 rounded-full bg-primary-500 px-6 text-[16px] font-medium text-bg-0 transition-[background-color,color,box-shadow] duration-200 hover:bg-primary-100 hover:text-primary-500 hover:ring-2 hover:ring-inset hover:ring-primary-500 focus-visible:bg-primary-100 focus-visible:text-primary-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500 focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-primary-500 lg:size-[60px] lg:justify-self-center lg:px-0"
           >
-            <span class="lg:hidden">Track!</span>
-            <Search :size="27" aria-hidden="true" />
-          </button>
+            <template #trailing>
+              <span class="lg:hidden">Track!</span>
+              <Search :size="27" aria-hidden="true" />
+            </template>
+          </UiAnimatedArrowButton>
         </div>
 
         <div class="tracking-highlights-marquee -mx-5 mt-8 overflow-hidden sm:-mx-7 lg:hidden">
@@ -199,13 +202,14 @@ function eventStatusLabel(status: EventStatus) {
         <p class="text-[14px] font-normal text-text-tertiary">
           {{ ctaPrompt }}
         </p>
-        <NuxtLink
+        <UiAnimatedArrowButton
           :to="ctaTo"
-          class="mt-3 inline-flex h-11 items-center gap-2 rounded-xl bg-primary-500 px-6 text-[14px] font-medium text-bg-0 transition-[background-color,transform] duration-200 hover:-translate-y-0.5 hover:bg-primary-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500"
+          variant="plain"
+          :icon-size="17"
+          class="mt-3 inline-flex h-11 items-center gap-2 rounded-xl bg-primary-500 px-6 text-[14px] font-medium text-bg-0 transition-[background-color,color,box-shadow] duration-200 hover:bg-primary-100 hover:text-primary-500 hover:ring-2 hover:ring-inset hover:ring-primary-500 focus-visible:bg-primary-100 focus-visible:text-primary-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500 focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-primary-500"
         >
-          <span>{{ ctaLabel }}</span>
-          <ArrowUpRight :size="17" aria-hidden="true" />
-        </NuxtLink>
+          {{ ctaLabel }}
+        </UiAnimatedArrowButton>
       </div>
 
       <div aria-hidden="true" class="mt-12 hidden h-px bg-border-200 lg:block" />
@@ -354,13 +358,14 @@ function eventStatusLabel(status: EventStatus) {
             <p class="text-[16px] font-normal text-text-tertiary">
               {{ ctaPrompt }}
             </p>
-            <NuxtLink
+            <UiAnimatedArrowButton
               :to="ctaTo"
-              class="mt-3 inline-flex h-11 items-center gap-2 rounded-xl bg-primary-500 px-6 text-[14px] font-medium text-bg-0 transition-[background-color,transform] duration-200 hover:-translate-y-0.5 hover:bg-primary-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500"
+              variant="plain"
+              :icon-size="17"
+              class="mt-3 inline-flex h-11 items-center gap-2 rounded-xl bg-primary-500 px-6 text-[14px] font-medium text-bg-0 transition-[background-color,color,box-shadow] duration-200 hover:bg-primary-100 hover:text-primary-500 hover:ring-2 hover:ring-inset hover:ring-primary-500 focus-visible:bg-primary-100 focus-visible:text-primary-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500 focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-primary-500"
             >
-              <span>{{ ctaLabel }}</span>
-              <ArrowUpRight :size="17" aria-hidden="true" />
-            </NuxtLink>
+              {{ ctaLabel }}
+            </UiAnimatedArrowButton>
           </div>
         </div>
       </Transition>

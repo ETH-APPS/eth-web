@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import { ArrowUpRight } from 'lucide-vue-next'
 import deaMaharaniAvatar from '~/assets/images/marketing/testimonials/dea-maharani.jpg'
 import helsaAvatar from '~/assets/images/marketing/testimonials/helsa.jpg'
 import raraRiriAvatar from '~/assets/images/marketing/testimonials/rara-riri.jpg'
 import sehunOohAvatar from '~/assets/images/marketing/testimonials/sehun-ooh.jpg'
+import { whatsappConsultationUrl } from '~/constants/whatsapp'
 
 const topTestimonials = [
   {
@@ -134,20 +134,18 @@ const bottomTestimonials = [
       </div>
 
       <div class="mt-14 hidden text-center lg:block">
-        <p class="text-[16px] text-text-tertiary">
+        <p class="text-[16px] font-normal text-text-tertiary">
           Siap mengoptimalkan rantai pasok dan efisiensi pengiriman bisnis Anda?
         </p>
-        <a
-          href="#quote"
-          class="mt-3 inline-flex h-10 items-center gap-2 rounded-xl bg-primary-500 px-5 text-[14px] text-bg-0 transition-colors hover:bg-primary-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500"
+        <UiAnimatedArrowButton
+          :href="whatsappConsultationUrl"
+          target="_blank"
+          tone="green"
+          :height="48"
+          class="mt-3"
         >
-          <span>Konsultasi Gratis</span>
-          <ArrowUpRight
-            :size="18"
-            :stroke-width="3"
-            aria-hidden="true"
-          />
-        </a>
+          Konsultasi Gratis
+        </UiAnimatedArrowButton>
       </div>
     </UiContainer>
   </section>

@@ -44,44 +44,7 @@ const bankLogos = [
   { name: 'Permata Bank', src: logoPermata, class: 'h-6' },
 ]
 
-const serviceLinks = [
-  { label: 'Kargo Laut', to: '/sea-freight' },
-  { label: 'Kargo Udara', to: '/air-freight' },
-  { label: 'Jasa Kargo China', to: '/china-cargo' },
-  { label: 'Transfer RMB', to: '/transfer-rmb' },
-  { label: 'Jasa Sourcing', to: '/sourcing' },
-]
-
-const featureLinks = [
-  { label: 'Tentang Kami', to: '/about-us' },
-  { label: 'Simulasi Kargo', to: '/calculator' },
-  { label: 'Apps (Soon)', to: '#footer' },
-]
-
-const guideLinks = [
-  { label: 'Complete Guide', to: '/complete-guide' },
-  { label: 'Proses Impor Barang', to: '/china-cargo#shipping-workflow' },
-  { label: 'Insights', to: '/artikel' },
-]
-
-const promoLinks = [
-  { label: 'This Months Promo', to: '/promo' },
-  { label: 'All Promo', to: '/promo' },
-]
-
-const informationLinks = [
-  { label: 'Tentang Kami', to: '/about-us' },
-  { label: 'FAQ', to: '/faq' },
-]
-
-const mobileNavigationGroups = [
-  { id: 'services', label: 'Services', links: serviceLinks },
-  { id: 'features', label: 'Fitur', links: featureLinks },
-  { id: 'insight', label: 'Insight', links: [...guideLinks, ...promoLinks] },
-  { id: 'information', label: 'Informasi', links: informationLinks },
-] as const
-
-const desktopNavigationGroups = [
+const navigationGroups = [
   {
     id: 'layanan',
     label: 'Layanan',
@@ -96,8 +59,8 @@ const desktopNavigationGroups = [
     label: 'Fitur',
     links: [
       { label: 'Kalkulator Impor', to: '/calculator' },
-      { label: 'Kalkulator RMB', to: '/calculator-rmb' },
-      { label: 'Live Tracking', to: '/tracking' },
+      { label: 'Kalkulator RMB', to: '/calculator-transfer-rmb' },
+      { label: 'Live Tracking', to: '/live-tracking' },
     ],
   },
   {
@@ -106,8 +69,8 @@ const desktopNavigationGroups = [
     links: [
       { label: 'Promosi', to: '/promo' },
       { label: 'Blog', to: '/artikel' },
-      { label: 'Glossrium', to: '/glossary' },
-      { label: 'Cara Import Barang dari China', to: '/china-cargo#shipping-workflow', narrow: true },
+      { label: 'Glosarium', to: '/glossary' },
+      { label: 'Cara Import Barang dari China', to: '/complete-guide', narrow: true },
     ],
   },
   {
@@ -116,7 +79,7 @@ const desktopNavigationGroups = [
     links: [
       { label: 'Tentang Kami', to: '/about-us' },
       { label: 'FAQ', to: '/faq' },
-      { label: 'Syarat & Ketentuan', to: '#footer' },
+      { label: 'Syarat & Ketentuan', to: '/terms-and-conditions' },
     ],
   },
 ] as const
@@ -184,7 +147,7 @@ const navHeadingClass = 'text-[16px] font-medium text-text-disable'
         </div>
 
         <nav aria-label="Navigasi footer" class="mt-7">
-          <section v-for="group in mobileNavigationGroups" :key="group.id">
+          <section v-for="group in navigationGroups" :key="group.id">
             <h2>
               <button
                 type="button"
@@ -362,7 +325,7 @@ const navHeadingClass = 'text-[16px] font-medium text-text-disable'
           class="ml-auto flex w-full min-w-0 max-w-[640px] items-start justify-between gap-x-2 pt-3 xl:gap-x-6"
         >
           <div
-            v-for="group in desktopNavigationGroups"
+            v-for="group in navigationGroups"
             :key="group.id"
             class="shrink-0"
           >
@@ -420,18 +383,7 @@ const navHeadingClass = 'text-[16px] font-medium text-text-disable'
       </section>
 
       <div class="mt-10 text-center text-[10px] font-normal text-text-disable lg:mt-16 lg:text-[12px]">
-        <p class="lg:hidden">
-          <a
-            href="#footer"
-            class="underline underline-offset-2 transition-colors hover:text-primary-500"
-          >Syarat &amp; Ketentuan</a>
-          <span aria-hidden="true"> · </span>
-          <a
-            href="#footer"
-            class="underline underline-offset-2 transition-colors hover:text-primary-500"
-          >Kebijakan Privasi</a>
-        </p>
-        <p class="mt-2 lg:mt-0">
+        <p>
           © {{ currentYear }} ETH Cargo. All rights reserved.
         </p>
       </div>

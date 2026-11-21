@@ -58,6 +58,7 @@ useSeoMeta({
   <MarketingSectionsMainServices />
   <MarketingSectionsWhyChooseUs />
   <MarketingSectionsShippingFlow />
+  <MarketingSectionsHomeRateEstimator />
   <MarketingSectionsProductSourcing />
   <MarketingSectionsTestimonials />
   <MarketingSectionsFaq :content="homeFaqContent" />

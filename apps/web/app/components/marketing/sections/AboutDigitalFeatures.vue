@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ArrowUpRight, Headphones, Cuboid, ShieldCheck } from 'lucide-vue-next'
+import { Headphones, Cuboid, ShieldCheck } from 'lucide-vue-next'
 
 const digitalFeatures = [
   {
@@ -75,17 +75,14 @@ const digitalFeatures = [
           </p>
 
           <div class="mt-auto flex justify-end pt-5">
-            <NuxtLink
+            <UiAnimatedArrowButton
               :to="feature.to"
-              class="inline-flex h-8 items-center gap-2 rounded-xl px-4 text-[14px] font-medium text-primary-500 transition-colors duration-200 group-hover:bg-primary-500 group-hover:text-white group-focus-within:bg-primary-500 group-focus-within:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500"
+              variant="plain"
+              :icon-size="14"
+              class="inline-flex h-8 items-center gap-2 rounded-xl px-4 text-[14px] font-medium text-primary-500 transition-[background-color,color,box-shadow] duration-200 group-hover:bg-primary-500 group-hover:text-white group-hover:hover:bg-primary-100 group-hover:hover:text-primary-500 group-hover:hover:ring-2 group-hover:hover:ring-inset group-hover:hover:ring-primary-500 group-focus-within:bg-primary-500 group-focus-within:text-white group-focus-within:focus-visible:bg-primary-100 group-focus-within:focus-visible:text-primary-500 group-focus-within:focus-visible:ring-2 group-focus-within:focus-visible:ring-inset group-focus-within:focus-visible:ring-primary-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500"
             >
-              <span>{{ feature.ctaLabel }}</span>
-              <ArrowUpRight
-                :size="14"
-                :stroke-width="2"
-                aria-hidden="true"
-              />
-            </NuxtLink>
+              {{ feature.ctaLabel }}
+            </UiAnimatedArrowButton>
           </div>
         </li>
       </ul>

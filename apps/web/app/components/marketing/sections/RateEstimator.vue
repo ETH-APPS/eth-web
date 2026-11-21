@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ArrowUpRight, ChevronDown } from 'lucide-vue-next'
+import { ChevronDown } from 'lucide-vue-next'
 import {
   calculateAirCargoEstimate,
   calculateSeaCargoEstimate,
@@ -10,30 +10,21 @@ const props = withDefaults(
   defineProps<{
     title?: string
     description?: string
-    categories?: readonly string[]
     cargoServices?: readonly string[]
     submitLabel?: string
     guidePrompt?: string
     guideLabel?: string
     guideTo?: string
     showGuideAction?: boolean
-    contactTo?: string
     sectionId?: string
-    variant?: 'default' | 'page-hero'
+    variant?: 'default' | 'page-hero' | 'split'
     calculatorEnabled?: boolean
+    animatedSubmit?: boolean
   }>(),
   {
     title: 'Hitung Estimasi Tarif',
     description:
       'Dapatkan kalkulasi perkiraan biaya pengiriman All-In dari China ke Indonesia secara instan untuk perencanaan modal bisnis Anda.',
-    categories: () => [
-      'Barang umum',
-      'Elektronik',
-      'Fashion & tekstil',
-      'Mesin & perlengkapan industri',
-      'Furnitur & perlengkapan rumah',
-      'Kosmetik & perawatan diri',
-    ],
     cargoServices: () => [
       'FCL Cargo',
       'LCL Cargo',
@@ -44,16 +35,15 @@ const props = withDefaults(
     guideLabel: 'Lihat Panduan Kategori',
     guideTo: '/#sourcing',
     showGuideAction: true,
-    contactTo: '#quote',
     sectionId: 'rate-estimator',
     variant: 'default',
     calculatorEnabled: false,
+    animatedSubmit: false,
   },
 )
 
 const titleId = computed(() => `${props.sectionId}-title`)
 const itemName = ref('')
-const category = ref('')
 const cargoService = ref('')
 const lengthCm = ref('')
 const widthCm = ref('')
@@ -108,7 +98,7 @@ function handleSubmit() {
 }
 
 watch(
-  [itemName, category, cargoService, lengthCm, widthCm, heightCm, weightPerBoxKg, boxCount],
+  [itemName, cargoService, lengthCm, widthCm, heightCm, weightPerBoxKg, boxCount],
   () => {
     estimate.value = null
   },
@@ -119,98 +109,64 @@ watch(
   <section
     :id="sectionId"
     :aria-labelledby="titleId"
-    class="bg-bg-100 py-16 sm:py-20"
+    class="bg-bg-100"
+    :class="variant === 'split' ? 'py-10' : 'py-16 sm:py-20'"
   >
     <UiContainer>
       <div class="text-center">
         <component
           :is="variant === 'page-hero' ? 'h1' : 'h2'"
           :id="titleId"
-          class="leading-tight text-primary-500 lg:text-[32px]"
-          :class="variant === 'page-hero' ? 'text-[28px] font-semibold lg:font-bold' : 'text-[24px] font-bold'"
+          class="leading-tight text-primary-500"
+          :class="variant === 'page-hero'
+            ? 'text-[28px] font-semibold lg:text-[32px] lg:font-bold'
+            : variant === 'split'
+              ? 'text-[24px] font-semibold lg:text-[28px]'
+              : 'text-[24px] font-bold lg:text-[32px]'"
         >
           {{ title }}
         </component>
 
         <p
-          class="mx-auto mt-6 max-w-[900px] font-normal leading-[1.5] text-text-tertiary lg:text-[20px]"
-          :class="variant === 'page-hero' ? 'text-[16px]' : 'text-[14px]'"
+          class="mx-auto max-w-[900px] font-normal leading-[1.5] text-text-tertiary"
+          :class="variant === 'split'
+            ? 'mt-4 text-[14px] lg:text-[16px]'
+            : variant === 'page-hero'
+              ? 'mt-6 text-[16px] lg:text-[20px]'
+              : 'mt-6 text-[14px] lg:text-[20px]'"
         >
           {{ description }}
         </p>
       </div>
 
+      <div :class="variant === 'split' ? 'mx-auto mt-3 grid max-w-[840px] items-start gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,435px)] lg:gap-12' : 'contents'">
+        <div v-if="variant === 'split'" class="mx-auto w-full max-w-[380px] min-w-0 lg:pt-4">
+          <slot name="aside" />
+        </div>
+
       <form
         :aria-labelledby="titleId"
-        class="mx-auto mt-8 max-w-[600px] rounded-[20px] border border-border-200 bg-bg-0 p-5 shadow-md sm:p-7"
+        class="mx-auto w-full rounded-[20px] border border-border-200 bg-bg-0 p-5 shadow-md sm:p-7"
+        :class="variant === 'split' ? 'split-form max-w-[435px]' : 'mt-8 max-w-[600px]'"
         @submit.prevent="handleSubmit"
       >
-        <div class="grid gap-4 sm:grid-cols-2">
-          <div>
-            <label
-              for="item-name"
-              class="mb-2 block text-[16px] font-normal text-text-secondary"
-            >
-              Nama Barang
-            </label>
-            <input
-              id="item-name"
-              v-model.trim="itemName"
-              name="item-name"
-              type="text"
-              required
-              autocomplete="off"
-              placeholder="Masukkan nama barang"
-              class="h-12 w-full rounded-lg border border-border-200 bg-bg-0 px-3 text-[16px] font-normal text-text-secondary outline-none transition-[border-color,box-shadow] placeholder:text-text-disable focus:border-primary-500 focus:ring-2 focus:ring-primary-100"
-            >
-          </div>
-
-          <div>
-            <label
-              for="item-category"
-              class="mb-2 block text-[16px] font-normal text-text-secondary"
-            >
-              Kategori Barang
-            </label>
-
-            <div class="relative">
-              <select
-                id="item-category"
-                v-model="category"
-                name="item-category"
-                required
-                class="h-12 w-full appearance-none rounded-lg border border-border-200 bg-bg-0 px-3 pr-10 text-[16px] font-normal text-text-secondary outline-none transition-[border-color,box-shadow] invalid:text-text-disable focus:border-primary-500 focus:ring-2 focus:ring-primary-100"
-              >
-                <option value="" disabled>
-                  Pilih kategori
-                </option>
-                <option
-                  v-for="category in categories"
-                  :key="category"
-                  :value="category"
-                >
-                  {{ category }}
-                </option>
-              </select>
-
-              <ChevronDown
-                :size="20"
-                :stroke-width="1.8"
-                aria-hidden="true"
-                class="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-text-tertiary"
-              />
-            </div>
-
-            <p class="mt-1.5 text-[12px] leading-tight text-text-tertiary">
-              Bingung kategori?
-              <NuxtLink
-                :to="contactTo"
-                class="font-medium text-primary-500 underline underline-offset-2 hover:text-primary-700"
-              >
-                Hubungi Customer Service
-              </NuxtLink>
-            </p>
-          </div>
+        <div>
+          <label
+            for="item-name"
+            class="mb-2 block text-[16px] font-normal text-text-secondary"
+          >
+            Nama Barang
+          </label>
+          <input
+            id="item-name"
+            v-model.trim="itemName"
+            name="item-name"
+            type="text"
+            required
+            autocomplete="off"
+            placeholder="Masukkan nama barang"
+            class="h-12 w-full rounded-lg border border-border-200 bg-bg-0 px-3 text-[16px] font-normal text-text-secondary outline-none transition-[border-color,box-shadow] placeholder:text-text-disable focus:border-primary-500 focus:ring-2 focus:ring-primary-100"
+          >
         </div>
 
         <div class="mt-4">
@@ -336,7 +292,18 @@ watch(
         </div>
 
         <div class="mt-8 flex justify-end">
+          <UiAnimatedArrowButton
+            v-if="animatedSubmit"
+            type="submit"
+            variant="plain"
+            :show-arrow="false"
+            class="inline-flex h-14 w-full items-center justify-center rounded-xl bg-primary-500 px-6 text-[16px] font-semibold text-bg-0 transition-[background-color,color,box-shadow] duration-200 hover:bg-primary-100 hover:text-primary-500 hover:ring-2 hover:ring-inset hover:ring-primary-500 focus-visible:bg-primary-100 focus-visible:text-primary-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500 focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-primary-500 sm:w-auto lg:text-[15px]"
+          >
+            {{ submitLabel }}
+          </UiAnimatedArrowButton>
+
           <button
+            v-else
             type="submit"
             class="inline-flex h-14 w-full items-center justify-center rounded-xl bg-primary-500 px-6 text-[16px] font-semibold text-bg-0 transition-[background-color,transform] duration-200 hover:-translate-y-0.5 hover:bg-primary-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500 sm:w-auto lg:text-[15px]"
           >
@@ -366,8 +333,9 @@ watch(
           </p>
         </div>
       </form>
+      </div>
 
-      <div class="mt-14 flex flex-col items-center justify-center gap-3 text-center sm:flex-row sm:gap-5">
+      <div v-if="variant !== 'split'" class="mt-14 flex flex-col items-center justify-center gap-3 text-center sm:flex-row sm:gap-5">
         <p
           class="text-text-tertiary lg:font-normal"
           :class="variant === 'page-hero' ? 'text-[16px] font-normal lg:text-[20px]' : 'text-[14px] font-medium lg:text-[16px]'"
@@ -375,19 +343,55 @@ watch(
           {{ guidePrompt }}
         </p>
 
-        <NuxtLink
+        <UiAnimatedArrowButton
           v-if="showGuideAction"
           :to="guideTo"
-          class="inline-flex h-11 items-center gap-2 rounded-xl bg-primary-50 px-5 text-[14px] font-medium text-primary-500 transition-colors hover:bg-primary-100 hover:text-primary-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500"
+          variant="plain"
+          :icon-size="16"
+          class="inline-flex h-11 items-center gap-2 rounded-xl bg-primary-50 px-5 text-[14px] font-medium text-primary-500 transition-colors hover:bg-primary-500 hover:text-white focus-visible:bg-primary-500 focus-visible:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500"
         >
-          <span>{{ guideLabel }}</span>
-          <ArrowUpRight
-            :size="16"
-            :stroke-width="2"
-            aria-hidden="true"
-          />
-        </NuxtLink>
+          {{ guideLabel }}
+        </UiAnimatedArrowButton>
       </div>
     </UiContainer>
   </section>
 </template>
+
+<style scoped>
+.split-form {
+  padding: 1.25rem;
+}
+
+.split-form label {
+  font-size: 0.8125rem;
+  line-height: 1.5;
+}
+
+.split-form input,
+.split-form select {
+  height: 2.75rem;
+  font-size: 0.8125rem;
+}
+
+.split-form label.mb-2 {
+  margin-bottom: 0.375rem;
+}
+
+.split-form label input.mt-2 {
+  margin-top: 0.375rem;
+}
+
+.split-form > .mt-4,
+.split-form > fieldset.mt-4 {
+  margin-top: 0.75rem;
+}
+
+.split-form > .mt-8 {
+  margin-top: 1.5rem;
+}
+
+.split-form button[type='submit'] {
+  height: 3rem;
+  font-size: 0.8125rem;
+}
+</style>

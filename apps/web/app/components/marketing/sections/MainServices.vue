@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ArrowUpRight, PackageSearch, ReceiptText, Search } from 'lucide-vue-next'
+import { whatsappConsultationUrl } from '~/constants/whatsapp'
 import cargoAirUrl from '~/assets/images/marketing/cargo-air.png'
 import cargoSeaUrl from '~/assets/images/marketing/cargo-sea.png'
 import transferUrl from '~/assets/images/marketing/transfer.png'
@@ -13,20 +14,23 @@ const services = [
     description: 'Solusi pengiriman ekonomis untuk kapasitas besar. Pilihan FCL (Full Container) untuk skala industri atau LCL (Eceran) untuk efisiensi modal. Bebas pengurusan bea cukai (All-In Door to Door).',
     eyebrow: 'Cocok untuk Skala Besar & Rutin',
     image: cargoSeaUrl,
-    imageAlt: 'Kapal kargo membawa kontainer di laut'
+    imageAlt: 'Kapal kargo membawa kontainer di laut',
+    to: '/sea-freight'
   },
   {
     title: 'KARGO UDARA (EXPRESS)',
     description: 'Prioritas pengiriman cepat 3–7 hari kerja untuk sampel produk, barang dengan tren tinggi, atau kebutuhan mendesak. Sistem pemantauan real-time dengan garansi keamanan barang.',
     eyebrow: 'Cocok untuk Pengiriman Prioritas',
     image: cargoAirUrl,
-    imageAlt: 'Pesawat kargo ETH Cargo sedang memuat barang'
+    imageAlt: 'Pesawat kargo ETH Cargo sedang memuat barang',
+    to: '/air-freight'
   },
   {
     title: 'JASA TRANSFER RMB',
     description: 'Proses pembayaran ke supplier di China cepat, transparan, dan tanpa limit. Menggunakan kurs realtime yang kompetitif lengkap dengan bukti kuitansi resmi untuk pembukuan bisnis.',
     eyebrow: 'Proses Cepat & Legal',
     image: transferUrl,
+    to: '/transfer-rmb'
   }
 ] as const
 </script>
@@ -111,19 +115,23 @@ const services = [
 
         <p class="mt-6 hidden text-center text-[#68748c] lg:block lg:text-md">
           Butuh bantuan terkait posisi kargo Anda?
-          <NuxtLink
-            to="#quote"
-            class="ml-1 inline-flex items-center gap-1 font-semibold text-primary-500 underline underline-offset-2 transition-colors hover:text-primary-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500"
+          <a
+            :href="whatsappConsultationUrl"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="group ml-1 inline-flex items-center gap-0 font-semibold text-primary-500 transition-[color,gap] duration-200 hover:gap-1 hover:text-primary-700 focus-visible:gap-1 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500 motion-reduce:transition-none"
           >
-            <span>Hubungi Tim CS Kami</span>
+            <span class="underline-offset-2 group-hover:underline group-focus-visible:underline">Hubungi Tim CS Kami</span>
 
-            <ArrowUpRight
-              aria-hidden="true"
-              :size="16"
-              :stroke-width="1.5"
-              absolute-stroke-width
-            />
-          </NuxtLink>
+            <span aria-hidden="true" class="inline-flex w-0 min-w-0 overflow-hidden opacity-0 transition-[width,opacity] duration-200 group-hover:w-4 group-hover:opacity-100 group-focus-visible:w-4 group-focus-visible:opacity-100 motion-reduce:transition-none">
+              <ArrowUpRight
+                :size="16"
+                :stroke-width="1.5"
+                absolute-stroke-width
+                class="size-4 shrink-0"
+              />
+            </span>
+          </a>
         </p>
       </div>
 

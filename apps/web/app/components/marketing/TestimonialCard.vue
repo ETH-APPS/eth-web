@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { Star } from 'lucide-vue-next'
+import googleLogo from '~/assets/images/marketing/google.png'
 
 withDefaults(defineProps<{
   name: string
@@ -28,12 +29,24 @@ withDefaults(defineProps<{
       >
 
       <div class="min-w-0 flex-1">
-        <h3 class="truncate text-[16px] font-medium leading-tight text-text-secondary">
-          {{ name }}
-        </h3>
-        <p class="mt-1 text-[12px] font-normal text-text-disable">
-          {{ reviewSource }}
-        </p>
+        <div class="flex items-start justify-between gap-3">
+          <div class="min-w-0">
+            <h3 class="truncate text-[16px] font-medium leading-tight text-text-secondary">
+              {{ name }}
+            </h3>
+            <p class="mt-1 text-[12px] font-normal text-text-disable">
+              {{ reviewSource }}
+            </p>
+          </div>
+          <img
+            :src="googleLogo"
+            alt="Google"
+            width="24"
+            height="24"
+            loading="lazy"
+            class="size-6 shrink-0 object-contain"
+          >
+        </div>
 
         <div class="mt-1.5 flex items-center justify-between gap-4">
           <div

@@ -118,12 +118,14 @@ const shippingTypes = [
     variant="compact"
     description="Pilih fitur dan jalur pengiriman yang paling sesuai dengan kebutuhan operasional bisnis Anda."
     :services="shippingTypes"
+    animated-links
   />
   <MarketingSectionsFaq :content="homeFaqContent" />
   <div id="quote" class="pb-6 lg:pb-10">
     <UiContainer wide>
       <MarketingCargoCtaBanner
         v-bind="trackingBanner"
+        animated-cta
       />
     </UiContainer>
     <MarketingSectionsQuoteBanner
@@ -133,6 +135,7 @@ const shippingTypes = [
       compact
       email-label="Atau hubungi kami via email:"
       :show-image="false"
+      animated-cta
     />
   </div>
 </template>

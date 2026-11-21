@@ -31,70 +31,80 @@ const steps = [
 
 const activeStep = ref(0)
 const cardRefs = ref<(HTMLElement | null)[]>([])
-const stepViewportRef = ref<HTMLElement | null>(null)
-let wheelLocked = false
-let wheelTimer: ReturnType<typeof setTimeout> | undefined
+const stepOffsets = ref<number[]>([])
+const flowRef = ref<HTMLElement | null>(null)
+const pinnedSectionRef = ref<HTMLElement | null>(null)
+const trackRef = ref<HTMLElement | null>(null)
+const stickyTop = ref<number | null>(null)
+let scrollAnimationFrame: number | undefined
+let sectionResizeObserver: ResizeObserver | undefined
 
 function setCardRef(el: unknown, index: number) {
   cardRefs.value[index] = (el as HTMLElement | null) ?? null
 }
 
 const trackStyle = computed(() => {
-  const offset = cardRefs.value[activeStep.value]?.offsetTop ?? 0
+  const offset = stepOffsets.value[activeStep.value] ?? 0
 
   return {
     '--step-offset': `-${offset}px`,
   }
 })
 
+function updateStepOffsets() {
+  stepOffsets.value = cardRefs.value.map(card => card?.offsetTop ?? 0)
+}
+
 function selectStep(index: number) {
-  activeStep.value = (index + steps.length) % steps.length
-
-  if (window.matchMedia('(max-width: 1023px)').matches) {
-    stepViewportRef.value?.scrollTo({
-      top: cardRefs.value[activeStep.value]?.offsetTop ?? 0,
-      behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth',
-    })
-  }
-}
-
-function handleStepScroll(event: Event) {
-  if (window.matchMedia('(min-width: 1024px)').matches)
+  const flow = flowRef.value
+  const pinnedSection = pinnedSectionRef.value
+  if (!flow || !pinnedSection)
     return
 
-  const scrollTop = (event.currentTarget as HTMLElement).scrollTop
-  let nearestStep = 0
-  let nearestDistance = Infinity
+  const targetStep = Math.min(Math.max(index, 0), steps.length - 1)
+  const scrollDistance = flow.offsetHeight - pinnedSection.offsetHeight
+  const top = stickyTop.value ?? (Number.parseFloat(getComputedStyle(pinnedSection).top) || 0)
 
-  cardRefs.value.forEach((card, index) => {
-    if (!card)
-      return
-
-    const distance = Math.abs(card.offsetTop - scrollTop)
-    if (distance < nearestDistance) {
-      nearestDistance = distance
-      nearestStep = index
-    }
+  window.scrollTo({
+    top: window.scrollY + flow.getBoundingClientRect().top - top
+      + (targetStep / (steps.length - 1)) * scrollDistance,
+    behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth',
   })
-
-  activeStep.value = nearestStep
 }
 
-function handleWheel(event: WheelEvent) {
-  if (window.matchMedia('(max-width: 1023px)').matches)
+function updateStickyTop() {
+  const pinnedSection = pinnedSectionRef.value
+  if (!pinnedSection)
     return
 
-  event.preventDefault()
+  const headerHeight = window.matchMedia('(min-width: 1024px)').matches ? 70 : 64
+  stickyTop.value = Math.min(headerHeight, window.innerHeight - pinnedSection.offsetHeight)
+}
 
-  if (wheelLocked || Math.abs(event.deltaY) < 10) {
+function updateStepFromPageScroll() {
+  const flow = flowRef.value
+  const pinnedSection = pinnedSectionRef.value
+  if (!flow || !pinnedSection)
     return
-  }
 
-  selectStep(activeStep.value + (event.deltaY > 0 ? 1 : -1))
-  wheelLocked = true
-  wheelTimer = setTimeout(() => {
-    wheelLocked = false
-  }, 450)
+  const scrollDistance = flow.offsetHeight - pinnedSection.offsetHeight
+  const top = stickyTop.value ?? (Number.parseFloat(getComputedStyle(pinnedSection).top) || 0)
+  const progress = Math.min(Math.max(
+    (top - flow.getBoundingClientRect().top) / scrollDistance,
+    0,
+  ), 1)
+
+  activeStep.value = Math.round(progress * (steps.length - 1))
+}
+
+function handlePageScroll() {
+  if (scrollAnimationFrame !== undefined)
+    return
+
+  scrollAnimationFrame = requestAnimationFrame(() => {
+    updateStepFromPageScroll()
+    scrollAnimationFrame = undefined
+  })
 }
 
 function handleNavigationKeydown(event: KeyboardEvent) {
@@ -109,17 +119,50 @@ function handleNavigationKeydown(event: KeyboardEvent) {
   }
 }
 
+onMounted(() => {
+  updateStepOffsets()
+  updateStickyTop()
+  updateStepFromPageScroll()
+  sectionResizeObserver = new ResizeObserver(() => {
+    updateStepOffsets()
+    updateStickyTop()
+    handlePageScroll()
+  })
+  if (pinnedSectionRef.value)
+    sectionResizeObserver.observe(pinnedSectionRef.value)
+  if (trackRef.value)
+    sectionResizeObserver.observe(trackRef.value)
+  window.addEventListener('scroll', handlePageScroll, { passive: true })
+  window.addEventListener('resize', handleResize)
+})
+
+function handleResize() {
+  updateStepOffsets()
+  updateStickyTop()
+  handlePageScroll()
+}
+
 onBeforeUnmount(() => {
-  clearTimeout(wheelTimer)
+  window.removeEventListener('scroll', handlePageScroll)
+  window.removeEventListener('resize', handleResize)
+  sectionResizeObserver?.disconnect()
+  if (scrollAnimationFrame !== undefined)
+    cancelAnimationFrame(scrollAnimationFrame)
 })
 </script>
 
 <template>
-  <section
+  <div
     id="alur-pengiriman"
-    aria-labelledby="shipping-flow-title"
-    class=" bg-white py-16 mt-8"
+    ref="flowRef"
+    class="relative mt-8 bg-white"
   >
+    <section
+      ref="pinnedSectionRef"
+      aria-labelledby="shipping-flow-title"
+      class="sticky top-16 bg-white py-16 lg:top-[70px]"
+      :style="stickyTop === null ? undefined : { top: `${stickyTop}px` }"
+    >
     <UiContainer>
       <div class="text-center">
         <h2
@@ -182,8 +225,8 @@ onBeforeUnmount(() => {
 
           <p class="mt-4 text-[12.5px] text-text-disable">
             Sudah punya kode marking?&nbsp; — &nbsp;
-            <a
-              href="#main-services"
+            <NuxtLink
+              to="/live-tracking"
               class="inline-flex items-center gap-1 text-primary-500 transition-colors hover:text-primary-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500"
             >
               Lacak
@@ -192,7 +235,7 @@ onBeforeUnmount(() => {
                 :stroke-width="2"
                 aria-hidden="true"
               />
-            </a>
+            </NuxtLink>
           </p>
         </div>
 
@@ -243,16 +286,14 @@ onBeforeUnmount(() => {
         </div>
 
         <div
-          ref="stepViewportRef"
-          class="h-[260px] min-w-0 snap-y snap-proximity overflow-x-hidden overflow-y-auto touch-pan-y [mask-image:linear-gradient(to_bottom,black_65%,transparent_100%)] lg:h-[296px] lg:snap-none lg:overflow-hidden lg:touch-auto"
+          class="h-[260px] min-w-0 overflow-hidden [mask-image:linear-gradient(to_bottom,black_65%,transparent_100%)] lg:h-[296px]"
           tabindex="0"
           role="region"
-          aria-label="Daftar langkah pengiriman. Gunakan scroll atau tombol panah untuk berpindah langkah."
-          @scroll.passive="handleStepScroll"
-          @wheel="handleWheel"
+          aria-label="Daftar langkah pengiriman. Gulir halaman atau gunakan tombol panah untuk berpindah langkah."
           @keydown="handleNavigationKeydown"
         >
           <div
+            ref="trackRef"
             class="shipping-flow-track relative space-y-4 transition-transform duration-500 ease-out"
             :style="trackStyle"
           >
@@ -260,7 +301,7 @@ onBeforeUnmount(() => {
               v-for="(step, index) in steps"
               :key="step.title"
               :ref="(el) => setCardRef(el, index)"
-              class="snap-start rounded-[22px] border bg-white p-[18px] transition-[border-color,box-shadow] duration-300 lg:p-5"
+              class="rounded-[22px] border bg-white p-[18px] transition-[border-color,box-shadow] duration-300 lg:p-5"
               :class="activeStep === index
                 ? 'border-primary-500 shadow-[0_5px_12px_rgba(15,23,42,0.10)]'
                 : 'border-border-200'"
@@ -283,13 +324,19 @@ onBeforeUnmount(() => {
         </div>
       </div>
     </UiContainer>
-  </section>
+    </section>
+    <div aria-hidden="true" class="h-[960px] lg:h-[1200px]" />
+  </div>
 </template>
 
 <style scoped>
-@media (min-width: 64rem) {
+.shipping-flow-track {
+  transform: translateY(var(--step-offset));
+}
+
+@media (prefers-reduced-motion: reduce) {
   .shipping-flow-track {
-    transform: translateY(var(--step-offset));
+    transition: none;
   }
 }
 </style>

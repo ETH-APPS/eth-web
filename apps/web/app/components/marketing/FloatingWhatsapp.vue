@@ -1,13 +1,11 @@
 <script setup lang="ts">
 import whatsappIcon from '~/assets/images/marketing/whatsapp.png'
-
-const message = 'Halo, saya tertarik untuk import barang dari China, boleh tanya-tanya dulu? ETH-WB'
-const whatsappHref = `https://wa.me/6281323459722?text=${encodeURIComponent(message)}`
+import { whatsappConsultationUrl } from '~/constants/whatsapp'
 </script>
 
 <template>
   <a
-    :href="whatsappHref"
+    :href="whatsappConsultationUrl"
     class="floating-whatsapp"
     aria-label="Konsultasi Sekarang via WhatsApp"
     target="_blank"

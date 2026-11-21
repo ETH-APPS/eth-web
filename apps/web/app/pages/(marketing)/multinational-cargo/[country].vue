@@ -5,6 +5,7 @@ import cargoAirUrl from '~/assets/images/marketing/cargo-air-landscape.png'
 import cargoSeaUrl from '~/assets/images/marketing/cargo-sea-landscape.png'
 import multinationalVectorUrl from '~/assets/images/marketing/vector-multinational.png'
 import { multinationalCountries, multinationalCountryPath } from '~/constants/multinationalCountries'
+import { whatsappConsultationUrl } from '~/constants/whatsapp'
 
 definePageMeta({
   layout: 'marketing',
@@ -127,7 +128,7 @@ const cargoBanner = computed(() => ({
   description: 'Hitung estimasi pengiriman dengan kalkulator kargo kami, atau konsultasikan kebutuhan impor bisnis Anda langsung bersama tim ahli ETH Cargo.',
   email: 'email@ethcargo.co.id',
   ctaLabel: 'Konsultasi Gratis',
-  ctaTo: '/#quote',
+  ctaTo: whatsappConsultationUrl,
 }))
 </script>
 
@@ -143,6 +144,7 @@ const cargoBanner = computed(() => ({
     tracking-label="Lacak Pengiriman"
     tracking-to="/live-tracking"
     quote-label="Dapatkan Penawaran"
+    animated-quote-button
     :image="country.hero.image"
     :image-alt="country.hero.imageAlt"
     :highlights="heroHighlights"
@@ -158,6 +160,7 @@ const cargoBanner = computed(() => ({
     cta-prompt="Pelajari layanan pengiriman laut untuk kebutuhan bisnis internasional Anda"
     cta-label="Learn more"
     cta-to="#quote"
+    animated-cta
   />
   <MarketingSectionsStats
     :stats="serviceStats"
@@ -173,6 +176,7 @@ const cargoBanner = computed(() => ({
     cta-prompt="Pelajari layanan pengiriman udara untuk kebutuhan bisnis internasional Anda"
     cta-label="Learn more"
     cta-to="#quote"
+    animated-cta
   />
   <MarketingSectionsShippingWorkflow
     title="HOW IT WORKS"

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ArrowUpRight, ChevronLeft, ChevronRight } from 'lucide-vue-next'
+import { ChevronLeft, ChevronRight } from 'lucide-vue-next'
 import heroUrl from '~/assets/images/marketing/hero.webp'
 
 const services = [
@@ -32,6 +32,10 @@ const services = [
 type ServiceId = typeof services[number]['id']
 
 const activeId = ref<ServiceId>('sea')
+const hoveredDesktopId = ref<ServiceId | null>(null)
+const focusedDesktopId = ref<ServiceId | null>(null)
+const desktopActiveId = computed(() => hoveredDesktopId.value ?? focusedDesktopId.value)
+const desktopActiveIndex = computed(() => services.findIndex(service => service.id === desktopActiveId.value))
 
 const activeIndex = computed(() => {
   const index = services.findIndex(service => service.id === activeId.value)
@@ -61,25 +65,74 @@ function selectByIndex(index: number, moveFocus = true) {
   }
 }
 
+function handleDesktopPointerEnter(id: ServiceId, event: PointerEvent) {
+  if (event.pointerType !== 'touch' && window.matchMedia('(hover: hover)').matches) {
+    hoveredDesktopId.value = id
+  }
+}
+
+function handleDesktopPointerLeave(event: PointerEvent) {
+  if (event.pointerType === 'touch') {
+    return
+  }
+
+  hoveredDesktopId.value = null
+
+  if (!(document.activeElement instanceof HTMLElement && document.activeElement.matches(':focus-visible'))) {
+    focusedDesktopId.value = null
+  }
+}
+
+function handleDesktopFocusIn(id: ServiceId, event: FocusEvent) {
+  if (event.target instanceof HTMLElement && event.target.matches(':focus-visible')) {
+    focusedDesktopId.value = id
+  }
+}
+
+function handleDesktopFocusOut(event: FocusEvent) {
+  if (!(event.currentTarget instanceof HTMLElement) || !event.relatedTarget || !event.currentTarget.contains(event.relatedTarget as Node)) {
+    focusedDesktopId.value = null
+  }
+}
+
+function handleDesktopClick(id: ServiceId, event: MouseEvent) {
+  if (event.detail === 0 || !window.matchMedia('(hover: hover)').matches) {
+    focusedDesktopId.value = id
+  }
+}
+
+async function selectDesktopByIndex(index: number) {
+  const service = services[(index + services.length) % services.length]
+
+  if (!service) {
+    return
+  }
+
+  hoveredDesktopId.value = null
+  focusedDesktopId.value = service.id
+  await nextTick()
+  document.getElementById(`service-tab-${service.id}`)?.focus()
+}
+
 function handleTabKeydown(event: KeyboardEvent) {
   if (event.key === 'ArrowLeft') {
     event.preventDefault()
-    selectByIndex(activeIndex.value - 1)
+    void selectDesktopByIndex((desktopActiveIndex.value === -1 ? 0 : desktopActiveIndex.value) - 1)
   }
 
   if (event.key === 'ArrowRight') {
     event.preventDefault()
-    selectByIndex(activeIndex.value + 1)
+    void selectDesktopByIndex((desktopActiveIndex.value === -1 ? 0 : desktopActiveIndex.value) + 1)
   }
 
   if (event.key === 'Home') {
     event.preventDefault()
-    selectByIndex(0)
+    void selectDesktopByIndex(0)
   }
 
   if (event.key === 'End') {
     event.preventDefault()
-    selectByIndex(services.length - 1)
+    void selectDesktopByIndex(services.length - 1)
   }
 }
 </script>
@@ -129,13 +182,13 @@ function handleTabKeydown(event: KeyboardEvent) {
             {{ activeService.label }}
           </p>
 
-          <NuxtLink
+          <UiAnimatedArrowButton
             :to="activeService.to"
             :aria-label="`Buka layanan ${activeService.label}`"
-            class="flex size-11 shrink-0 items-center justify-center rounded-[12px] bg-primary-500 text-white transition-colors hover:bg-primary-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white lg:hidden"
-          >
-            <ArrowUpRight :size="22" :stroke-width="2" aria-hidden="true" />
-          </NuxtLink>
+            variant="plain"
+            icon-only
+            class="flex size-11 shrink-0 items-center justify-center rounded-[12px] bg-primary-500 text-white transition-[background-color,color,box-shadow] hover:bg-primary-100 hover:text-primary-500 hover:ring-2 hover:ring-inset hover:ring-primary-500 focus-visible:bg-primary-100 focus-visible:text-primary-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-primary-500 lg:hidden"
+          />
         </div>
 
         <div class="mt-2 flex justify-center gap-2 lg:hidden">
@@ -171,6 +224,7 @@ function handleTabKeydown(event: KeyboardEvent) {
         <div
           id="layanan"
           class="relative rounded-[24px] bg-[rgba(17,17,17,0.14)] px-6 pb-4 pt-5 text-white backdrop-blur-[4px]"
+          @pointerleave="handleDesktopPointerLeave"
         >
           <!-- Tinggi mengikuti isi (tanpa angka fixed), overflow-hidden hanya untuk memotong judul non-aktif yang turun -->
           <div class="relative overflow-hidden pb-2">
@@ -179,21 +233,24 @@ function handleTabKeydown(event: KeyboardEvent) {
               aria-label="Pilih layanan"
               class="grid grid-cols-4"
               @keydown="handleTabKeydown"
+              @focusout="handleDesktopFocusOut"
             >
               <div
                 v-for="service in services"
                 :key="service.id"
                 class="text-center transition-transform duration-300 ease-out"
-                :class="service.id === activeId ? 'translate-y-0' : 'translate-y-[58%]'"
+                :class="service.id === desktopActiveId ? 'translate-y-0' : 'translate-y-[58%]'"
+                @pointerenter="handleDesktopPointerEnter(service.id, $event)"
+                @focusin="handleDesktopFocusIn(service.id, $event)"
               >
                 <button
                   :id="`service-tab-${service.id}`"
                   type="button"
                   :aria-controls="`service-panel-${service.id}`"
-                  :aria-pressed="service.id === activeId"
-                  :tabindex="service.id === activeId ? 0 : -1"
+                  :aria-pressed="service.id === desktopActiveId"
+                  :tabindex="service.id === (desktopActiveId ?? services[0]?.id) ? 0 : -1"
                   class="whitespace-nowrap rounded-md px-2 text-[22px] font-medium uppercase leading-tight tracking-[0.01em] text-white transition-colors hover:text-primary-200 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white"
-                  @click="selectService(service.id)"
+                  @click="handleDesktopClick(service.id, $event)"
                 >
                   {{ service.label }}
                 </button>
@@ -204,25 +261,20 @@ function handleTabKeydown(event: KeyboardEvent) {
                   role="region"
                   :aria-labelledby="`service-tab-${service.id}`"
                   class="px-3 pt-2"
-                  :class="service.id === activeId ? 'visible' : 'invisible'"
+                  :class="service.id === desktopActiveId ? 'visible' : 'invisible'"
                 >
                   <p class="mx-auto max-w-[220px] text-[12px] font-normal leading-[1.45] text-white/90">
                     {{ service.description }}
                   </p>
 
-                  <NuxtLink
+                  <UiAnimatedArrowButton
                     :to="service.to"
-                    class="mt-2 inline-flex h-9 items-center gap-1 whitespace-nowrap rounded-[10px] bg-primary-500 px-3 text-[14px] font-medium text-white transition-colors hover:bg-primary-600 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white"
+                    variant="plain"
+                    :icon-size="17"
+                    class="mt-2 inline-flex h-9 items-center gap-1 whitespace-nowrap rounded-[10px] bg-primary-500 px-3 text-[14px] font-medium text-white transition-[background-color,color,box-shadow] hover:bg-primary-100 hover:text-primary-500 hover:ring-2 hover:ring-inset hover:ring-primary-500 focus-visible:bg-primary-100 focus-visible:text-primary-500 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-primary-500"
                   >
-                    <span>Pelajari {{ service.label }}</span>
-
-                    <ArrowUpRight
-                      aria-hidden="true"
-                      :size="17"
-                      :stroke-width="1.5"
-                      absolute-stroke-width
-                    />
-                  </NuxtLink>
+                    Pelajari {{ service.label }}
+                  </UiAnimatedArrowButton>
                 </div>
               </div>
             </div>
@@ -235,9 +287,17 @@ function handleTabKeydown(event: KeyboardEvent) {
           >
             <div class="absolute inset-x-0 top-1/2 h-px -translate-y-1/2 bg-primary-500" />
             <span
+              v-if="desktopActiveIndex !== -1"
               class="absolute top-1/2 size-6 -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary-400 transition-[left] duration-300 ease-out"
-              :style="{ left: `${(activeIndex + 0.5) * 25}%` }"
+              :style="{ left: `${(desktopActiveIndex + 0.5) * 25}%` }"
             />
+            <div aria-hidden="true" class="absolute inset-0 grid grid-cols-4">
+              <div
+                v-for="service in services"
+                :key="service.id"
+                @pointerenter="handleDesktopPointerEnter(service.id, $event)"
+              />
+            </div>
           </div>
         </div>
       </div>

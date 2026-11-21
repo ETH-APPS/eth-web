@@ -20,6 +20,7 @@ const props = withDefaults(defineProps<{
   surface?: 'auto' | 'plain' | 'muted'
   prominentHeader?: boolean
   plainHeader?: boolean
+  animatedLinks?: boolean
 }>(), {
   title: 'Tipe Pengiriman Kargo',
   sectionId: 'cargo-shipping-types',
@@ -27,6 +28,7 @@ const props = withDefaults(defineProps<{
   surface: 'auto',
   prominentHeader: false,
   plainHeader: false,
+  animatedLinks: false,
 })
 
 const titleId = computed(() => `${props.sectionId}-title`)
@@ -130,7 +132,19 @@ function serviceIcon(mode: CargoShippingType['mode']) {
                 <span v-for="tag in service.tags" :key="tag">{{ tag }}</span>
               </p>
 
+              <UiAnimatedArrowButton
+                v-if="animatedLinks"
+                :to="service.to"
+                :aria-label="`${service.linkLabel ?? 'Pelajari'} ${service.title}`"
+                variant="plain"
+                :icon-size="16"
+                class="relative inline-flex h-9 shrink-0 items-center gap-2 rounded-full bg-primary-500 px-4 text-[14px] font-medium text-bg-0 transition-[background-color,color,box-shadow] duration-200 before:absolute before:-inset-y-1 before:inset-x-0 before:content-[''] hover:bg-primary-100 hover:text-primary-500 hover:ring-2 hover:ring-inset hover:ring-primary-500 focus-visible:bg-primary-100 focus-visible:text-primary-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500 focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-primary-500"
+              >
+                {{ service.linkLabel ?? 'Pelajari' }}
+              </UiAnimatedArrowButton>
+
               <NuxtLink
+                v-else
                 :to="service.to"
                 :aria-label="`${service.linkLabel ?? 'Pelajari'} ${service.title}`"
                 class="inline-flex h-9 shrink-0 items-center gap-2 rounded-full bg-primary-500 px-4 text-[14px] font-medium text-bg-0 transition-[background-color,transform] duration-200 hover:-translate-y-0.5 hover:bg-primary-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500"

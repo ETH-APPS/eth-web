@@ -11,6 +11,7 @@ const props = withDefaults(defineProps<{
   email: string
   ctaLabel?: string
   ctaTo?: string
+  animatedCta?: boolean
   image?: string
   imageAlt?: string
   imagePlaceholder?: string
@@ -21,6 +22,7 @@ const props = withDefaults(defineProps<{
   emailLabel: 'via Email',
   ctaLabel: 'Get A Quote',
   ctaTo: '#quote',
+  animatedCta: false,
   image: '',
   imageAlt: '',
   imagePlaceholder: 'Image\nW: 532   x   H: 230',
@@ -29,6 +31,7 @@ const props = withDefaults(defineProps<{
 
 const titleId = computed(() => `${props.sectionId}-title`)
 const emailHref = computed(() => `mailto:${props.email}`)
+const isWhatsappCta = computed(() => props.ctaTo?.startsWith('https://wa.me/'))
 </script>
 
 <template>
@@ -69,8 +72,26 @@ const emailHref = computed(() => `mailto:${props.email}`)
             </a>
           </div>
 
-          <NuxtLink
+          <UiAnimatedArrowButton
+            v-if="animatedCta"
             :to="ctaTo"
+            :target="isWhatsappCta ? '_blank' : undefined"
+            :rel="isWhatsappCta ? 'noopener noreferrer' : undefined"
+            variant="plain"
+            :class="compact ? 'h-11 px-5 text-[14px]' : 'h-12 px-6 text-[16px]'"
+            class="inline-flex shrink-0 items-center justify-center gap-2 self-start rounded-xl bg-[#22c55e] font-medium text-bg-0 transition-[background-color,color,box-shadow] hover:bg-green-100 hover:text-green-700 hover:ring-2 hover:ring-inset hover:ring-green-700 focus-visible:bg-green-100 focus-visible:text-green-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-bg-0 focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-green-700 sm:self-auto"
+          >
+            {{ ctaLabel }}
+            <template #trailing>
+              <img :src="whatsappUrl" alt="" aria-hidden="true" width="20" height="20" class="size-5 shrink-0 object-contain">
+            </template>
+          </UiAnimatedArrowButton>
+
+          <NuxtLink
+            v-else
+            :to="ctaTo"
+            :target="isWhatsappCta ? '_blank' : undefined"
+            :rel="isWhatsappCta ? 'noopener noreferrer' : undefined"
             :class="compact ? 'h-11 px-5 text-[14px]' : 'h-12 px-6 text-[16px]'"
             class="inline-flex shrink-0 items-center justify-center gap-2 self-start rounded-xl bg-[#22c55e] font-medium text-bg-0 transition-[background-color,transform] hover:-translate-y-0.5 hover:bg-[#16a34a] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-bg-0 sm:self-auto"
           >

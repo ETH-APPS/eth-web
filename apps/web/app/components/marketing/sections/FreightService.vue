@@ -20,6 +20,7 @@ const props = withDefaults(
     ctaPrompt?: string
     ctaLabel?: string
     ctaTo?: string
+    animatedCta?: boolean
     sectionId?: string
   }>(),
   {
@@ -128,11 +129,20 @@ const hasCta = computed(() => props.ctaPrompt && props.ctaLabel && props.ctaTo)
         v-if="hasCta"
         class="mt-10 text-center"
       >
-        <p class="text-[16px] text-text-tertiary lg:text-[11px]">
+        <p class="text-[16px] text-text-tertiary" :class="animatedCta ? '' : 'lg:text-[11px]'">
           {{ ctaPrompt }}
         </p>
 
+        <UiAnimatedArrowButton
+          v-if="animatedCta"
+          :to="ctaTo"
+          class="mt-3"
+        >
+          {{ ctaLabel }}
+        </UiAnimatedArrowButton>
+
         <NuxtLink
+          v-else
           :to="ctaTo"
           class="mt-3 inline-flex h-11 items-center gap-2 rounded-xl bg-primary-500 px-4 text-[14px] font-semibold text-white transition-[background-color,transform] duration-200 hover:-translate-y-0.5 hover:bg-primary-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500 lg:h-9 lg:text-[11px]"
         >

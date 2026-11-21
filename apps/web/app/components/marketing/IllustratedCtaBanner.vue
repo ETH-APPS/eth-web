@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import { Mail } from 'lucide-vue-next'
+import whatsappIcon from '~/assets/images/marketing/whatsapp.png'
+import { whatsappConsultationUrl } from '~/constants/whatsapp'
 
 const props = withDefaults(defineProps<{
   variant?: 'standard' | 'background' | 'compact'
@@ -12,9 +14,7 @@ const props = withDefaults(defineProps<{
   emailLabel?: string
   ctaLabel?: string
   ctaTo: string
-  estimateLabel?: string
-  estimateTo?: string
-  showEstimate?: boolean
+  animatedCta?: boolean
   image: string
   imageAlt?: string
   imageWidth: number
@@ -32,10 +32,8 @@ const props = withDefaults(defineProps<{
   largeImageOnWideScreens: false,
   emailLabel: 'Atau hubungi kami via email:',
   ctaLabel: 'Konsultasi Gratis',
-  ctaTo: '/#quote',
-  estimateLabel: 'Hitung Biaya',
-  estimateTo: '/calculator',
-  showEstimate: true,
+  ctaTo: whatsappConsultationUrl,
+  animatedCta: false,
   imageAlt: '',
   imageMaxWidth: 480,
   imageTopOffset: 72,
@@ -73,11 +71,11 @@ const titleId = `illustrated-cta-${useId()}`
         <h2 :id="titleId" class="max-w-[520px] text-[26px] font-bold leading-[1.2]">
           {{ title }}
         </h2>
-        <p class="max-w-[520px] text-[15px] font-medium leading-[1.4]">
+        <p class="max-w-[520px] text-justify text-[15px] font-medium leading-[1.4]">
           {{ description }}
         </p>
 
-        <div class="mt-4 flex flex-wrap items-end gap-x-5 gap-y-3">
+        <div class="mt-4 flex max-w-[480px] flex-wrap items-end gap-x-5 gap-y-3 xl:max-w-[520px]">
           <div class="min-w-0">
             <p class="text-[13px] font-semibold leading-[1.5]">{{ emailLabel }}</p>
             <a
@@ -89,22 +87,30 @@ const titleId = `illustrated-cta-${useId()}`
             </a>
           </div>
 
-          <div class="flex flex-wrap gap-2">
-            <NuxtLink
-              v-if="variant === 'background' && showEstimate"
-              :to="estimateTo"
-              class="inline-flex min-h-9 items-center justify-center gap-2 rounded-full bg-primary-500 px-3 text-[12px] font-semibold text-white transition-colors hover:bg-primary-600 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white"
-            >
-              {{ estimateLabel }}
-              <span aria-hidden="true" class="size-4 rounded-full bg-white/80" />
-            </NuxtLink>
-            <NuxtLink
-              :to="ctaTo"
-              class="inline-flex min-h-9 items-center justify-center gap-2 rounded-full bg-green-500 px-3 text-[12px] font-semibold text-white transition-colors hover:bg-green-600 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white"
+          <div class="ml-auto flex flex-wrap gap-2">
+            <UiAnimatedArrowButton
+              v-if="animatedCta"
+              :href="ctaTo"
+              target="_blank"
+              rel="noopener noreferrer"
+              variant="plain"
+              class="inline-flex min-h-9 items-center justify-center gap-2 rounded-full bg-green-500 px-3 text-[12px] font-semibold text-white transition-[background-color,color,box-shadow] hover:bg-green-100 hover:text-green-700 hover:ring-2 hover:ring-inset hover:ring-green-700 focus-visible:bg-green-100 focus-visible:text-green-700 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-green-700"
             >
               {{ ctaLabel }}
-              <span aria-hidden="true" class="size-4 rounded-full bg-white/80" />
-            </NuxtLink>
+              <template #trailing>
+                <img :src="whatsappIcon" alt="" aria-hidden="true" width="20" height="20" class="size-5 shrink-0 object-contain">
+              </template>
+            </UiAnimatedArrowButton>
+            <a
+              v-else
+              :href="ctaTo"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="inline-flex min-h-9 items-center justify-center gap-2 rounded-full bg-green-500 px-3 text-[12px] font-semibold text-white transition-colors hover:bg-green-600 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white"
+            >
+              <span>{{ ctaLabel }}</span>
+              <img :src="whatsappIcon" alt="" aria-hidden="true" width="20" height="20" class="size-5 shrink-0 object-contain">
+            </a>
           </div>
         </div>
       </div>
@@ -151,12 +157,15 @@ const titleId = `illustrated-cta-${useId()}`
             </a>
           </div>
 
-          <NuxtLink
-            :to="ctaTo"
-            class="inline-flex min-h-9 max-w-full items-center justify-center rounded-lg bg-green-500 px-3 py-2 text-center text-[12px] font-medium leading-[1.4] transition-colors hover:bg-green-600 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white"
+          <a
+            :href="ctaTo"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="inline-flex min-h-9 max-w-full items-center justify-center gap-2 rounded-lg bg-green-500 px-3 py-2 text-center text-[12px] font-medium leading-[1.4] transition-colors hover:bg-green-600 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white"
           >
-            {{ ctaLabel }}
-          </NuxtLink>
+            <span>{{ ctaLabel }}</span>
+            <img :src="whatsappIcon" alt="" aria-hidden="true" width="20" height="20" class="size-5 shrink-0 object-contain">
+          </a>
         </div>
       </div>
 

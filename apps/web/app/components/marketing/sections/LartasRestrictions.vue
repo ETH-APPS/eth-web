@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import {
-  ArrowUpRight,
   TriangleAlert,
   X,
 } from 'lucide-vue-next'
@@ -146,13 +145,14 @@ const restrictedGroups = [
         <p class="text-[16px] text-text-tertiary">
           Butuh Daftar Lengkap Komoditas Lartas? Unduh Dokumen Di Sini!
         </p>
-        <button
+        <UiAnimatedArrowButton
           type="button"
-          class="mt-4 inline-flex h-10 items-center gap-2 rounded-lg bg-primary-500 px-5 text-[14px] font-medium text-bg-0 transition-[background-color,transform] hover:-translate-y-0.5 hover:bg-primary-600 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary-500"
+          variant="plain"
+          :icon-size="16"
+          class="relative mt-4 inline-flex h-10 items-center gap-2 rounded-lg bg-primary-500 px-5 text-[14px] font-medium text-bg-0 transition-[background-color,color,box-shadow] before:absolute before:-inset-y-0.5 before:inset-x-0 before:content-[''] hover:bg-primary-100 hover:text-primary-500 hover:ring-2 hover:ring-inset hover:ring-primary-500 focus-visible:bg-primary-100 focus-visible:text-primary-500 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary-500 focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-primary-500"
         >
-          <span>Download Full Document</span>
-          <ArrowUpRight :size="16" :stroke-width="2" aria-hidden="true" />
-        </button>
+          Download Full Document
+        </UiAnimatedArrowButton>
       </footer>
     </UiContainer>
   </section>
