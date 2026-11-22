@@ -144,7 +144,7 @@ const freightBanner = {
     tracking-label="Lacak Pengiriman"
     tracking-to="/live-tracking"
     cta-label="Konsultasi Kargo Udara"
-    cta-to="#quote"
+    :cta-to="whatsappConsultationUrl"
     animated-cta
   />
   <MarketingSectionsShippingWorkflow
@@ -154,7 +154,7 @@ const freightBanner = {
     :steps="airFreightWorkflowSteps"
     cta-prompt="Butuh pengiriman cepat untuk stok atau sampel kargo bisnis Anda?"
     cta-label="Konsultasi Gratis"
-    cta-to="#quote"
+    :cta-to="whatsappConsultationUrl"
   />
   <MarketingSectionsRateEstimator
     section-id="air-freight-rate-estimator"
@@ -163,7 +163,8 @@ const freightBanner = {
     fixed-cargo-service="Air Cargo"
     guide-prompt="Pelajari panduan perhitungan berat volume"
     guide-label="Selengkapnya"
-    guide-to="#faq"
+    guide-to="/artikel"
+    animated-submit
   />
   <MarketingSectionsFaq :content="faqContent" />
   <div id="quote" class="pb-6 lg:pb-10">

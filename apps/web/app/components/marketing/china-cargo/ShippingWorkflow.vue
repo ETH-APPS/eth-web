@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { whatsappConsultationUrl } from '~/constants/whatsapp'
+
 const steps = [
   {
     title: 'Konsultasi & Hitung Estimasi',
@@ -35,6 +37,6 @@ const steps = [
     :steps="steps"
     cta-prompt="Siap memulai pengiriman kargo bisnis Anda hari ini?"
     cta-label="Konsultasi Gratis"
-    cta-to="#quote"
+    :cta-to="whatsappConsultationUrl"
   />
 </template>

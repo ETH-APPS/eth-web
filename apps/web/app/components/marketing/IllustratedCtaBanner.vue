@@ -98,7 +98,7 @@ const titleId = `illustrated-cta-${useId()}`
             >
               {{ ctaLabel }}
               <template #trailing>
-                <img :src="whatsappIcon" alt="" aria-hidden="true" width="20" height="20" class="size-5 shrink-0 object-contain">
+                <UiWhatsappIcon class="size-5" />
               </template>
             </UiAnimatedArrowButton>
             <a

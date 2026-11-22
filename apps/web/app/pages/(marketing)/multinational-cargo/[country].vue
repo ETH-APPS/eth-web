@@ -144,6 +144,7 @@ const cargoBanner = computed(() => ({
     tracking-label="Lacak Pengiriman"
     tracking-to="/live-tracking"
     quote-label="Dapatkan Penawaran"
+    :quote-to="whatsappConsultationUrl"
     animated-quote-button
     :image="country.hero.image"
     :image-alt="country.hero.imageAlt"
@@ -159,7 +160,7 @@ const cargoBanner = computed(() => ({
     image-alt="Kapal kontainer untuk layanan sea freight multinational ETH Cargo"
     cta-prompt="Pelajari layanan pengiriman laut untuk kebutuhan bisnis internasional Anda"
     cta-label="Learn more"
-    cta-to="#quote"
+    cta-to="/sea-freight"
     animated-cta
   />
   <MarketingSectionsStats
@@ -175,7 +176,7 @@ const cargoBanner = computed(() => ({
     image-alt="Pesawat cargo untuk layanan air freight multinational ETH Cargo"
     cta-prompt="Pelajari layanan pengiriman udara untuk kebutuhan bisnis internasional Anda"
     cta-label="Learn more"
-    cta-to="#quote"
+    cta-to="/air-freight"
     animated-cta
   />
   <MarketingSectionsShippingWorkflow
@@ -184,11 +185,12 @@ const cargoBanner = computed(() => ({
     :steps="shippingWorkflowSteps"
     cta-prompt="Lorem ipsum dolor sit amet consectetur adipiscing elit"
     cta-label="Get a Quote"
-    cta-to="#quote"
+    :cta-to="whatsappConsultationUrl"
   />
   <MarketingSectionsRateEstimator
     title="Hitung Estimasi Tarif Multinasional"
     description="Dapatkan kalkulasi perkiraan biaya pengiriman internasional secara instan untuk membantu perencanaan logistik dan anggaran bisnis Anda."
+    animated-submit
   />
   <MarketingSectionsFaq :content="faqContent" />
   <div id="quote" class="pb-6 lg:pb-10">

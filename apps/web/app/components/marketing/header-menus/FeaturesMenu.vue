@@ -123,7 +123,7 @@ async function submitTracking() {
         </NuxtLink>
 
         <form
-          class="mt-5 grid grid-cols-[minmax(0,0.8fr)_minmax(0,1fr)_40px] gap-2 pl-14"
+          class="mt-5 grid grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)_40px] gap-2 pl-14"
           @submit.prevent="submitTracking"
         >
           <label class="sr-only" for="header-tracking-code">

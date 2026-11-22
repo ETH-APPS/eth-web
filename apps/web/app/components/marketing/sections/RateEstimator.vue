@@ -33,7 +33,7 @@ const props = withDefaults(
     submitLabel: 'Hitung Estimasi Tarif',
     guidePrompt: 'Pelajari panduan pengkategorian barang',
     guideLabel: 'Lihat Panduan Kategori',
-    guideTo: '/#sourcing',
+    guideTo: '/artikel',
     showGuideAction: true,
     sectionId: 'rate-estimator',
     variant: 'default',

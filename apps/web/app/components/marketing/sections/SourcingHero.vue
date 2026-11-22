@@ -5,7 +5,7 @@ import {
   Wrench,
 } from 'lucide-vue-next'
 import sourcingHeroUrl from '~/assets/images/marketing/sourcing-hero.png'
-import whatsappUrl from '~/assets/images/marketing/whatsapp.png'
+import { whatsappConsultationUrl } from '~/constants/whatsapp'
 
 const popularCategories = [
   {
@@ -70,29 +70,29 @@ const popularCategories = [
 
           <div class="mt-12 flex flex-col items-center lg:mt-5">
             <div class="flex w-full max-w-[540px] justify-center lg:justify-end">
-              <NuxtLink
-                to="/#quote"
-                class="inline-flex h-12 items-center gap-2 rounded-xl bg-green-500 px-6 text-[16px] font-medium text-bg-0 transition-[background-color,transform] hover:-translate-y-0.5 hover:bg-[#16a34a] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-500"
+              <UiAnimatedArrowButton
+                :href="whatsappConsultationUrl"
+                target="_blank"
+                variant="plain"
+                class="inline-flex h-12 items-center gap-2 rounded-xl bg-green-500 px-6 text-[16px] font-medium text-bg-0 transition-[background-color,color,box-shadow] hover:bg-green-100 hover:text-green-700 hover:ring-2 hover:ring-inset hover:ring-green-700 focus-visible:bg-green-100 focus-visible:text-green-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-700 focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-green-700"
               >
-                <span>Konsultasi</span>
-                <img
-                  :src="whatsappUrl"
-                  alt=""
-                  aria-hidden="true"
-                  width="20"
-                  height="20"
-                  class="size-6 object-contain lg:size-5"
-                >
-              </NuxtLink>
+                Konsultasi
+                <template #trailing>
+                  <UiWhatsappIcon class="size-6 lg:size-5" />
+                </template>
+              </UiAnimatedArrowButton>
             </div>
 
-            <a
-              href="#sourcing-details"
+            <UiAnimatedArrowButton
+              to="#sourcing-details"
+              variant="plain"
               class="mt-3 hidden items-center gap-2 text-[12px] font-normal text-text-tertiary transition-colors hover:text-primary-500 focus-visible:rounded focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500 lg:inline-flex"
             >
-              <span>Learn more</span>
-              <ChevronsDown :size="15" :stroke-width="1.8" aria-hidden="true" />
-            </a>
+              Learn more
+              <template #trailing>
+                <ChevronsDown :size="15" :stroke-width="1.8" aria-hidden="true" />
+              </template>
+            </UiAnimatedArrowButton>
           </div>
         </div>
 

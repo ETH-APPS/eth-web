@@ -2,6 +2,7 @@
 import sourcingHeroUrl from '~/assets/images/marketing/sourcing-hero.png'
 import { faqContentByPath, homeFaqContent } from '~/constants/faq'
 import { illustratedCtaBanners } from '~/constants/illustratedCtaBanners'
+import { whatsappConsultationUrl } from '~/constants/whatsapp'
 
 definePageMeta({
   layout: 'marketing',
@@ -102,7 +103,7 @@ const sourcingBanner = illustratedCtaBanners.sourcing
     important-note="Layanan sourcing ETH Cargo dapat diintegrasikan langsung dengan pengiriman kargo (Laut/Udara) dan transfer RMB, memberikan Anda kemudahan pengelolaan rantai pasok impor dari satu pintu (one-stop solution)."
     cta-prompt="Siap menemukan supplier tangan pertama untuk produk bisnis Anda?"
     cta-label="Konsultasi Gratis"
-    cta-to="/#quote"
+    :cta-to="whatsappConsultationUrl"
   />
   <MarketingSectionsMultinationalRoutes :show-top-border="false" />
   <MarketingSectionsSourcingOtherServices />
@@ -117,6 +118,7 @@ const sourcingBanner = illustratedCtaBanners.sourcing
         v-bind="sourcingBanner"
         variant="standard"
         image-alt="Ilustrasi tangan memegang paket dan barang hasil sourcing China"
+        animated-cta
       />
     </UiContainer>
     <MarketingSectionsQuoteBanner
@@ -129,6 +131,7 @@ const sourcingBanner = illustratedCtaBanners.sourcing
       :email="sourcingBanner.email"
       :cta-label="sourcingBanner.ctaLabel"
       :cta-to="sourcingBanner.ctaTo"
+      animated-cta
       :show-image="false"
     />
   </div>

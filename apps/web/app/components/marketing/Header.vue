@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { Component } from 'vue'
-import { ArrowUpRight, Menu } from 'lucide-vue-next'
+import { Menu } from 'lucide-vue-next'
 import FeaturesMenu from './header-menus/FeaturesMenu.vue'
 import InformationMenu from './header-menus/InformationMenu.vue'
 import InsightsMenu from './header-menus/InsightsMenu.vue'
@@ -25,9 +25,6 @@ const menuComponents: Partial<Record<NavigationLabel, Component>> = {
 }
 
 const route = useRoute()
-const quoteTo = computed(() => route.path === '/calculator-transfer-rmb'
-  ? '/transfer-rmb#transfer-rmb-quote'
-  : quoteNavigation.to)
 
 const isLight = computed(() => props.variant === 'light')
 const isScrolled = ref(false)
@@ -270,20 +267,16 @@ onBeforeUnmount(() => {
         </ul>
       </nav>
 
-      <NuxtLink
-        :to="quoteTo"
-        class="hidden h-9 shrink-0 items-center gap-1 rounded-lg bg-primary-500 px-3 text-sm text-white shadow-lg shadow-black/10 transition-colors hover:bg-primary-600 focus-visible:outline-2 focus-visible:outline-offset-4 lg:flex"
+      <UiAnimatedArrowButton
+        :href="quoteNavigation.href"
+        target="_blank"
+        variant="plain"
+        :icon-size="20"
+        class="hidden h-9 shrink-0 items-center gap-1 rounded-lg bg-primary-500 px-3 text-sm text-white shadow-lg shadow-black/10 transition-[background-color,color,box-shadow] duration-200 hover:bg-primary-100 hover:text-primary-500 hover:ring-2 hover:ring-inset hover:ring-primary-500 focus-visible:bg-primary-100 focus-visible:text-primary-500 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-primary-500 lg:flex"
         :class="useLightStyle ? 'focus-visible:outline-primary-500' : 'focus-visible:outline-white'"
       >
-        <span>{{ quoteNavigation.label }}</span>
-
-        <ArrowUpRight
-          aria-hidden="true"
-          :size="20"
-          :stroke-width="2"
-          absolute-stroke-width
-        />
-      </NuxtLink>
+        {{ quoteNavigation.label }}
+      </UiAnimatedArrowButton>
 
       <button
         type="button"
@@ -311,7 +304,7 @@ onBeforeUnmount(() => {
           id="mobile-navigation"
           class="fixed inset-0 z-[100] overflow-y-auto bg-bg-0 lg:hidden"
         >
-          <MarketingMobileNavigation :quote-to="quoteTo" @close="closeMobileMenu" />
+          <MarketingMobileNavigation @close="closeMobileMenu" />
         </div>
       </Transition>
     </Teleport>

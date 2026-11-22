@@ -1,3 +1,5 @@
+import { whatsappConsultationUrl } from './whatsapp'
+
 export const marketingNavigation = [
   {
     label: 'Layanan',
@@ -23,5 +25,5 @@ export const marketingNavigation = [
 
 export const quoteNavigation = {
   label: 'Get a Quote',
-  to: '#quote'
+  href: whatsappConsultationUrl
 } as const

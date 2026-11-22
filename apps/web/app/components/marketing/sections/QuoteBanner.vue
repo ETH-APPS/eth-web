@@ -83,7 +83,7 @@ const isWhatsappCta = computed(() => props.ctaTo?.startsWith('https://wa.me/'))
           >
             {{ ctaLabel }}
             <template #trailing>
-              <img :src="whatsappUrl" alt="" aria-hidden="true" width="20" height="20" class="size-5 shrink-0 object-contain">
+              <UiWhatsappIcon class="size-5" />
             </template>
           </UiAnimatedArrowButton>
 

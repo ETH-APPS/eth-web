@@ -7,6 +7,7 @@ import lclCargoUrl from '~/assets/images/marketing/lcl-cargo.png'
 import cargoHeroUrl from '~/assets/images/marketing/cargo-china.png'
 import { faqContentByPath, homeFaqContent } from '~/constants/faq'
 import { illustratedCtaBanners } from '~/constants/illustratedCtaBanners'
+import { whatsappConsultationUrl } from '~/constants/whatsapp'
 
 definePageMeta({
   layout: 'marketing',
@@ -111,7 +112,9 @@ const cargoBanner = illustratedCtaBanners.chinaCargo
     service-label="Pilihan Layanan:"
     :services="heroServices"
     tracking-label="Lacak Pengiriman"
+    tracking-to="/live-tracking"
     quote-label="Konsultasi Tarif"
+    :quote-to="whatsappConsultationUrl"
     animated-quote-button
     :image="cargoHeroUrl"
     image-alt="Kapal cargo untuk pengiriman barang dari China ke Indonesia"
@@ -136,6 +139,7 @@ const cargoBanner = illustratedCtaBanners.chinaCargo
   <MarketingSectionsRateEstimator
     title="Hitung Estimasi Tarif"
     description="Dapatkan kalkulasi perkiraan biaya pengiriman All-In dari China ke Indonesia secara instan untuk perencanaan modal bisnis Anda."
+    animated-submit
   />
   <MarketingSectionsFaq :content="faqContent" />
   <div id="quote" class="pb-6 lg:pb-10">

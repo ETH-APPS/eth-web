@@ -22,10 +22,6 @@ import chinaFlagUrl from '~/assets/images/flag/china.png'
 import { quoteNavigation } from '~/constants/navigation'
 import { multinationalCountries, multinationalCountryPath } from '~/constants/multinationalCountries'
 
-withDefaults(defineProps<{ quoteTo?: string }>(), {
-  quoteTo: quoteNavigation.to,
-})
-
 const emit = defineEmits<{
   close: []
 }>()
@@ -595,14 +591,16 @@ async function submitTracking() {
       <p class="mx-auto max-w-72 text-sm font-medium leading-5 text-text-tertiary">
         Solusi logistik dan impor terintegrasi untuk kebutuhan bisnis Anda.
       </p>
-      <NuxtLink
-        :to="quoteTo"
-        class="mt-4 inline-flex h-10 items-center gap-1 rounded-xl bg-primary-500 px-4 text-sm font-medium text-white transition-colors hover:bg-primary-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500"
+      <UiAnimatedArrowButton
+        :href="quoteNavigation.href"
+        target="_blank"
+        variant="plain"
+        :icon-size="18"
+        class="mt-4 inline-flex h-10 items-center gap-1 rounded-xl bg-primary-500 px-4 text-sm font-medium text-white transition-[background-color,color,box-shadow] duration-200 hover:bg-primary-100 hover:text-primary-500 hover:ring-2 hover:ring-inset hover:ring-primary-500 focus-visible:bg-primary-100 focus-visible:text-primary-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500 focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-primary-500"
         @click="emit('close')"
       >
-        <span>{{ quoteNavigation.label }}</span>
-        <ArrowUpRight :size="18" aria-hidden="true" />
-      </NuxtLink>
+        {{ quoteNavigation.label }}
+      </UiAnimatedArrowButton>
     </div>
   </div>
 </template>

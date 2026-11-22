@@ -129,13 +129,16 @@ function resetEstimate() {
             </li>
           </ul>
 
-          <a
-            href="#rmb-transfer-workflow"
+          <UiAnimatedArrowButton
+            to="#rmb-transfer-workflow"
+            variant="plain"
             class="mx-auto mt-12 hidden w-fit items-center gap-2 text-[16px] font-medium text-text-disable transition-colors hover:text-primary-500 focus-visible:rounded focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500 lg:flex"
           >
-            <span>Pelajari Prosedur Transfer RMB</span>
-            <ChevronsDown :size="20" :stroke-width="1.8" aria-hidden="true" />
-          </a>
+            Pelajari Prosedur Transfer RMB
+            <template #trailing>
+              <ChevronsDown :size="20" :stroke-width="1.8" aria-hidden="true" />
+            </template>
+          </UiAnimatedArrowButton>
         </div>
 
         <form
@@ -217,32 +220,39 @@ function resetEstimate() {
             </div>
 
             <div class="mt-7 flex items-center justify-between gap-4 lg:justify-end lg:gap-7">
-              <button
+              <UiAnimatedArrowButton
                 type="button"
+                variant="plain"
+                :show-arrow="false"
                 class="text-[16px] font-medium text-primary-500 transition-colors hover:text-primary-700 focus-visible:rounded focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500"
                 @click="resetEstimate"
               >
                 <span class="lg:hidden">Reset</span>
                 <span class="hidden lg:inline">Atur Ulang</span>
-              </button>
-              <button
+              </UiAnimatedArrowButton>
+              <UiAnimatedArrowButton
                 type="submit"
-                class="h-11 min-w-[136px] rounded-lg bg-primary-500 px-5 text-[16px] font-medium text-bg-0 transition-[background-color,transform] hover:-translate-y-0.5 hover:bg-primary-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500 lg:min-w-0"
+                variant="plain"
+                :show-arrow="false"
+                class="inline-flex h-11 min-w-[136px] items-center justify-center rounded-lg bg-primary-500 px-5 text-[16px] font-medium text-bg-0 transition-[background-color,color,box-shadow] hover:bg-primary-100 hover:text-primary-500 hover:ring-2 hover:ring-inset hover:ring-primary-500 focus-visible:bg-primary-100 focus-visible:text-primary-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500 focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-primary-500 lg:min-w-0"
               >
                 <span class="lg:hidden">Hitung</span>
                 <span class="hidden lg:inline">Hitung Estimasi</span>
-              </button>
+              </UiAnimatedArrowButton>
             </div>
           </div>
         </form>
 
-        <a
-          href="#rmb-transfer-workflow"
+        <UiAnimatedArrowButton
+          to="#rmb-transfer-workflow"
+          variant="plain"
           class="mx-auto flex w-fit items-center gap-2 text-center text-[16px] font-medium italic text-text-disable transition-colors hover:text-primary-500 focus-visible:rounded focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500 lg:hidden"
         >
-          <span>Pelajari Prosedur Transfer RMB</span>
-          <ChevronsDown :size="20" :stroke-width="1.8" aria-hidden="true" />
-        </a>
+          Pelajari Prosedur Transfer RMB
+          <template #trailing>
+            <ChevronsDown :size="20" :stroke-width="1.8" aria-hidden="true" />
+          </template>
+        </UiAnimatedArrowButton>
       </div>
     </UiContainer>
   </section>

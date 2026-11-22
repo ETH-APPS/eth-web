@@ -73,7 +73,7 @@ const calculatorBanner = {
     :categories="cargoCategories"
     cta-prompt="Tidak menemukan kategori komoditas barang Anda di atas?"
     cta-label="Konsultasi Kategori Kargo"
-    cta-to="#quote"
+    :cta-to="whatsappConsultationUrl"
   />
   <MarketingSectionsLartasRestrictions />
   <MarketingSectionsFaq :content="faqContent">

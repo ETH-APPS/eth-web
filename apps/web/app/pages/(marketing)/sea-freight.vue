@@ -1,4 +1,4 @@
-cd<script setup lang="ts">
+<script setup lang="ts">
 import cargoSeaUrl from '~/assets/images/marketing/cargo-sea-landscape.png'
 import seaFreightVector from '~/assets/images/marketing/vector-sea-freight.png'
 import { faqContentByPath, homeFaqContent } from '~/constants/faq'
@@ -172,7 +172,7 @@ const freightBanner = {
     tracking-label="Lacak Pengiriman"
     tracking-to="/live-tracking"
     cta-label="Konsultasi FCL"
-    cta-to="#quote"
+    :cta-to="whatsappConsultationUrl"
     animated-cta
   />
   <MarketingSectionsFreightOverview
@@ -186,7 +186,7 @@ const freightBanner = {
     tracking-label="Lacak Pengiriman"
     tracking-to="/live-tracking"
     cta-label="Konsultasi LCL"
-    cta-to="#quote"
+    :cta-to="whatsappConsultationUrl"
     animated-cta
   />
   <MarketingSectionsShippingWorkflow
@@ -196,7 +196,7 @@ const freightBanner = {
     :steps="seaFreightWorkflowSteps"
     cta-prompt="Siap mengoptimalkan biaya pengiriman kargo laut bisnis Anda?"
     cta-label="Konsultasi Gratis"
-    cta-to="#quote"
+    :cta-to="whatsappConsultationUrl"
   />
   <MarketingSectionsRateEstimator
     section-id="sea-freight-rate-estimator"
@@ -204,7 +204,8 @@ const freightBanner = {
     description="Hitung perkiraan biaya pengiriman All-In kargo laut (LCL/FCL) dari China ke Indonesia secara otomatis untuk transparansi perencanaan biaya impor Anda."
     fixed-cargo-service="LCL CARGO"
     guide-prompt="Pelajari panduan pengkategorian produk"
-    guide-to="/calculator#import-cargo-categories"
+    guide-to="/artikel"
+    animated-submit
   />
   <MarketingSectionsFaq :content="faqContent" />
   <div id="quote" class="pb-6 lg:pb-10">

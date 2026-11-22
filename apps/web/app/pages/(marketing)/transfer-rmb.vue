@@ -107,6 +107,7 @@ const transferBanner = illustratedCtaBanners.transfer
       <MarketingIllustratedCtaBanner
         v-bind="transferBanner"
         variant="standard"
+        animated-cta
       />
     </UiContainer>
     <MarketingSectionsQuoteBanner
@@ -119,6 +120,7 @@ const transferBanner = illustratedCtaBanners.transfer
       :email="transferBanner.email"
       cta-label="Transfer Sekarang!"
       cta-to="#rmb-calculator"
+      animated-cta
       :show-image="false"
     />
   </div>

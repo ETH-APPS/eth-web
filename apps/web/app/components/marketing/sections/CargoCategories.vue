@@ -126,6 +126,7 @@ function categoryIcon(icon?: string) {
         </p>
         <UiAnimatedArrowButton
           :to="ctaTo"
+          :target="ctaTo.startsWith('https://') ? '_blank' : undefined"
           variant="plain"
           :icon-size="17"
           class="mt-3 inline-flex h-10 items-center gap-2 rounded-lg bg-primary-500 px-6 text-[14px] font-medium text-bg-0 transition-[background-color,color,box-shadow] duration-200 hover:bg-primary-100 hover:text-primary-500 hover:ring-2 hover:ring-inset hover:ring-primary-500 focus-visible:bg-primary-100 focus-visible:text-primary-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500 focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-primary-500"
