@@ -21,6 +21,10 @@ dibuka **dari VM ke Cloudflare**, sehingga pengunjung tidak perlu masuk langsung
 melalui router kantor. Alamat Quick Tunnel ini bisa berubah jika tunnel mulai
 ulang.
 
+Untuk section produk di Home, Nuxt juga menjalankan endpoint server yang
+menghubungi gateway Ducking dengan signature privat. Browser tidak mengirim
+secret ke Ducking. Detailnya ada di [alur produk Ducking](ducking-product-flow.md).
+
 | Bagian | Tugas sederhana |
 | --- | --- |
 | Cloudflare | Menerima pengunjung di internet dan menyediakan HTTPS pada alamat sementara. |

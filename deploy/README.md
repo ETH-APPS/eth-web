@@ -3,7 +3,7 @@
 Panduan alur dari kode di laptop sampai website bisa dibuka pengunjung.
 Untuk penjelasan yang lebih sederhana, baca [alur akses website](../docs/alur-akses-website.md).
 
-Terakhir diperbarui: **20 November 2026**.
+Terakhir diperbarui: **23 November 2026**.
 
 Implementasi dijelaskan berdasarkan file repository. Status VM berdasarkan output
 pengguna, bukan inspeksi langsung agent ke VM. Bagian **NEXT** adalah rencana,
@@ -26,6 +26,19 @@ pengguna, bukan inspeksi langsung agent ke VM. Bagian **NEXT** adalah rencana,
 | Akses publik | Cloudflare Quick Tunnel, URL sementara |
 | Gateway | Caddy, container `eth-web-gateway-1` |
 | Port host aplikasi | Hanya `127.0.0.1:8080` menuju Caddy |
+
+### Status 23 November: secret produk Ducking dan push
+
+Berdasarkan output terminal yang dibagikan operator, file
+`/etc/eth-web/ducking-signing-secret` sudah dibuat dengan owner `root:root` dan
+mode `600`. Salinan `deploy-web.sh` dan `web.compose.yaml` terbaru dipindahkan
+ke VM, diverifikasi checksum dan sintaks/Compose, lalu dipasang ke lokasi
+root-owned; operator melaporkan hasil `Helper dan Compose: terpasang`.
+Pengguna kemudian melaporkan sudah push `main`; checkout lokal menunjuk commit
+`20f7e36`. **Hasil GitHub Action, image aktif, dan smoke test produk di VM belum
+dibagikan**, sehingga status deploy fitur belum dinyatakan terverifikasi.
+Alur request dan pemeriksaan fitur ada di
+[alur produk Ducking](../docs/ducking-product-flow.md).
 
 ### Status 10 November: konfigurasi origin SEO di VM
 
@@ -198,18 +211,19 @@ sebenarnya.
 
 Implementasi: [`deploy-web.sh`](deploy-web.sh).
 
-1. Memastikan repo, deploy key, known hosts, spec Compose, file site URL, dan
-   jaringan tersedia. Mengambil lock agar helper tidak berjalan bersamaan.
+1. Memastikan repo, deploy key, known hosts, spec Compose, file site URL,
+   file secret Ducking, dan jaringan tersedia. Mengambil lock agar helper tidak
+   berjalan bersamaan.
 2. Memastikan tepat satu container berjalan untuk masing-masing service `web`,
    `gateway`, dan `cloudflared`. Web lama harus healthy dan gateway harus merespons.
 3. Mencatat image lama untuk rollback serta ID gateway/tunnel untuk pemeriksaan.
 4. Fetch `origin/main` sebagai user `ethapps` dengan deploy key read-only.
 5. Membuat worktree bersih di `/var/lib/eth-web-deploy/releases/<FULL_SHA>`.
-6. Jika tag image aktif, label revisi, dan site URL container sudah sesuai,
-   selesai: `already deployed`. Perubahan site URL tetap memicu recreate web
-   walaupun commit sama.
+6. Jika tag image aktif, label revisi, site URL, dan secret Ducking container
+   sudah sesuai, selesai: `already deployed`. Perubahan konfigurasi runtime
+   tetap memicu recreate web walaupun commit sama.
 7. Build image `eth-web-web:<SHORT_SHA>` dari worktree tersebut, atau gunakan
-   ulang image tervalidasi bila hanya konfigurasi site URL yang berubah. Web lama
+   ulang image tervalidasi bila hanya konfigurasi runtime yang berubah. Web lama
    tetap berjalan selama build.
 8. Menggunakan spec web-only untuk `up --detach --no-build --no-deps web`.
 9. Menunggu web healthy, menguji gateway, dan memastikan ID gateway/tunnel tetap.
@@ -293,13 +307,12 @@ file tersebut, lalu meneruskan secret sebagai environment privat container
 `NUXT_DUCKING_SIGNING_SECRET`. Akses Docker di VM tetap harus dibatasi karena
 administrator Docker dapat membaca environment container.
 
-Perubahan `deploy/web.compose.yaml` dan `deploy/deploy-web.sh` perlu dipasang
-ke lokasi root-owned seperti prosedur di bawah **sebelum** workflow deploy
-fitur ini dijalankan. Helper akan mengganti container web ketika secret
-berubah, meskipun image tidak berubah. Setelah deploy, uji
-`/api/products/search?source=1688&keyword=sepatu&page_no=1&page_size=20`
-melalui origin situs dan pastikan `success` produk terlihat di Home; jangan
-mencetak environment container untuk memeriksa secret.
+Salinan `deploy/web.compose.yaml` dan `deploy/deploy-web.sh` untuk fitur ini
+sudah dipasang root-owned menurut output operator 23 November. Untuk perubahan
+helper/spec berikutnya, pemasangan manual tetap diperlukan. Helper mengganti
+container web ketika secret berubah, meskipun image tidak berubah. Setelah
+deploy, ikuti [smoke test produk](../docs/ducking-product-flow.md#pemeriksaan-setelah-deploy);
+jangan mencetak environment container untuk memeriksa secret.
 
 ### Menyiapkan atau mengganti site URL schema
 

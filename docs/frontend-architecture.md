@@ -256,6 +256,11 @@ packages/
 - `server`: endpoint/BFF Nuxt bila memang diperlukan. REST API utama tetap berada
   di `apps/api`.
 
+Contoh BFF yang sudah digunakan ialah
+[`/api/products/search`](../apps/web/server/api/products/search.get.ts) untuk
+produk Ducking. Server Nuxt menandatangani request gateway dengan runtime
+config privat; lihat [alur produk Ducking](ducking-product-flow.md).
+
 ## Data dan State Management
 
 Padanan dari stack Next/React yang pernah digunakan:

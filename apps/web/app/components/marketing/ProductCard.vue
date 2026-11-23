@@ -31,6 +31,7 @@ const formattedPrice = computed(() => props.priceIdr === null
           width="320"
           height="320"
           loading="lazy"
+          referrerpolicy="no-referrer"
           class="size-full object-cover transition-transform duration-300 group-hover:scale-105 motion-reduce:transition-none"
           @error="imageFailed = true"
         >
