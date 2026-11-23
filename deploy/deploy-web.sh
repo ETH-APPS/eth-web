@@ -8,13 +8,14 @@ export PATH='/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin'
 export HOME='/root'
 unset BASH_ENV CDPATH COMPOSE_FILE COMPOSE_PROJECT_NAME DOCKER_CONTEXT DOCKER_HOST \
   ENV GIT_CONFIG_COUNT GIT_DIR GIT_INDEX_FILE GIT_WORK_TREE IMAGE_TAG \
-  NUXT_PUBLIC_SITE_URL
+  NUXT_PUBLIC_SITE_URL NUXT_DUCKING_SIGNING_SECRET
 
 readonly REPO_DIR='/opt/eth-web'
 readonly REPO_URL='git@github.com:ETH-APPS/eth-web.git'
 readonly RELEASE_ROOT='/var/lib/eth-web-deploy/releases'
 readonly COMPOSE_FILE='/etc/eth-web/web.compose.yaml'
 readonly SITE_URL_FILE='/etc/eth-web/site-url'
+readonly SIGNING_SECRET_FILE='/etc/eth-web/ducking-signing-secret'
 readonly DEPLOY_KEY='/home/ethapps/.ssh/eth-web-deploy'
 readonly KNOWN_HOSTS='/home/ethapps/.ssh/known_hosts'
 readonly PROJECT_NAME='eth-web'
@@ -49,6 +50,15 @@ readonly SITE_URL
 [[ "$SITE_URL" =~ ^https://[A-Za-z0-9.-]+(:[0-9]{1,5})?$ ]] \
   || fail 'site URL must be an HTTPS origin without a path, query, fragment, or trailing slash'
 
+[[ -f "$SIGNING_SECRET_FILE" && ! -L "$SIGNING_SECRET_FILE" ]] || fail 'Ducking signing secret file is missing or unsafe'
+[[ "$(stat -c '%U:%G' "$SIGNING_SECRET_FILE")" == 'root:root' ]] || fail 'Ducking signing secret file must be owned by root:root'
+[[ "$(stat -c '%a' "$SIGNING_SECRET_FILE")" == '600' ]] || fail 'Ducking signing secret file mode must be 600'
+mapfile -t SIGNING_SECRET_LINES < "$SIGNING_SECRET_FILE"
+[[ "${#SIGNING_SECRET_LINES[@]}" -eq 1 && -n "${SIGNING_SECRET_LINES[0]}" ]] || fail 'Ducking signing secret file must contain one nonempty line'
+SIGNING_SECRET="${SIGNING_SECRET_LINES[0]}"
+readonly SIGNING_SECRET
+unset SIGNING_SECRET_LINES
+
 [[ -f "$DEPLOY_KEY" ]] || fail "deploy key not found at ${DEPLOY_KEY}"
 [[ -f "$KNOWN_HOSTS" ]] || fail "SSH known_hosts not found at ${KNOWN_HOSTS}"
 docker network inspect "$NETWORK_NAME" >/dev/null
@@ -77,6 +87,7 @@ compose() {
     COMPOSE_IGNORE_ORPHANS='true' \
     IMAGE_TAG="$tag" \
     NUXT_PUBLIC_SITE_URL="$SITE_URL" \
+    NUXT_DUCKING_SIGNING_SECRET="$SIGNING_SECRET" \
     docker compose \
       --project-name "$PROJECT_NAME" \
       --env-file /dev/null \
@@ -158,6 +169,11 @@ CURRENT_SITE_URL="$(
     | sed -n 's/^NUXT_PUBLIC_SITE_URL=//p'
 )"
 readonly CURRENT_SITE_URL
+CURRENT_SIGNING_SECRET="$(
+  docker inspect --format '{{range .Config.Env}}{{println .}}{{end}}' "$OLD_WEB_ID" \
+    | sed -n 's/^NUXT_DUCKING_SIGNING_SECRET=//p'
+)"
+readonly CURRENT_SIGNING_SECRET
 readonly OLD_TAG="${OLD_IMAGE#${IMAGE_NAME}:}"
 [[ "$OLD_TAG" =~ ^[A-Za-z0-9_][A-Za-z0-9_.-]{0,127}$ ]] || fail "unsafe current web image tag: ${OLD_TAG}"
 docker image inspect "$OLD_IMAGE" >/dev/null
@@ -191,7 +207,8 @@ fi
 
 if [[ "$OLD_IMAGE" == "$TARGET_IMAGE" ]] && \
   [[ "$(docker image inspect --format '{{index .Config.Labels "org.opencontainers.image.revision"}}' "$TARGET_IMAGE")" == "$TARGET_SHA" ]] && \
-  [[ "$CURRENT_SITE_URL" == "$SITE_URL" ]]; then
+  [[ "$CURRENT_SITE_URL" == "$SITE_URL" ]] && \
+  [[ "$CURRENT_SIGNING_SECRET" == "$SIGNING_SECRET" ]]; then
   log "${TARGET_SHA} is already deployed"
   exit 0
 fi

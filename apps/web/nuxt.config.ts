@@ -6,6 +6,7 @@ export default defineNuxtConfig({
   devtools: { enabled: true },
   telemetry: false,
   runtimeConfig: {
+    duckingSigningSecret: '',
     public: {
       siteUrl: '',
     },

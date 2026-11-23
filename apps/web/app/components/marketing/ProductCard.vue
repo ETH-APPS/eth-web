@@ -1,50 +1,50 @@
 <script setup lang="ts">
-import { ArrowUpRight } from 'lucide-vue-next'
+import { ArrowUpRight, PackageSearch } from 'lucide-vue-next'
 
-defineProps<{
+const props = defineProps<{
   title: string
-  price: string
+  priceIdr: number | null
   image: string
-  imageAlt: string
-  mobilePlaceholderTitle?: string
+  detailUrl: string
 }>()
+
+const imageFailed = ref(false)
+const formattedPrice = computed(() => props.priceIdr === null
+  ? 'Harga tidak tersedia'
+  : new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(props.priceIdr))
 </script>
 
 <template>
-  <article>
-    <img
-      :src="image"
-      :alt="imageAlt"
-      width="253"
-      height="145"
-      loading="lazy"
-      class="h-[145px] w-full rounded-2xl object-cover object-center"
+  <article class="min-w-0">
+    <a
+      :href="detailUrl"
+      target="_blank"
+      rel="noopener noreferrer"
+      :aria-label="`Lihat ${title} di Ducking`"
+      class="group block rounded-2xl focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary-500"
     >
-
-    <h3 class="sr-only">
-      {{ title }}
-    </h3>
-
-    <p class="mt-3 px-2 text-[14px] leading-[1.4] text-text-tertiary">
-      <span v-if="mobilePlaceholderTitle" class="line-clamp-2 text-black lg:hidden">{{ mobilePlaceholderTitle }}</span>
-      <span :class="mobilePlaceholderTitle ? 'hidden lg:inline' : ''">{{ title }}</span>
-    </p>
-
-    <div class="mt-3 flex items-center justify-between gap-3 px-2 text-primary-500">
-      <p class="text-[15px] font-medium">
-        {{ price }}
-      </p>
-      <a
-        href="#quote"
-        :aria-label="`Lihat ${title}`"
-        class="rounded-md p-1 transition-colors hover:bg-primary-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500"
-      >
-        <ArrowUpRight
-          :size="20"
-          :stroke-width="2"
-          aria-hidden="true"
-        />
-      </a>
-    </div>
+      <div class="aspect-square overflow-hidden rounded-2xl bg-primary-50">
+        <img
+          v-if="!imageFailed"
+          :src="image"
+          :alt="title"
+          width="320"
+          height="320"
+          loading="lazy"
+          class="size-full object-cover transition-transform duration-300 group-hover:scale-105 motion-reduce:transition-none"
+          @error="imageFailed = true"
+        >
+        <div v-else class="flex size-full items-center justify-center text-primary-300">
+          <PackageSearch :size="44" aria-hidden="true" />
+        </div>
+      </div>
+      <h3 class="mt-3 line-clamp-2 min-h-[2.8em] px-1 text-[13px] leading-[1.4] text-text-secondary lg:text-[14px]">
+        {{ title }}
+      </h3>
+      <div class="mt-2 flex items-center justify-between gap-2 px-1 text-primary-500">
+        <p class="min-w-0 text-[13px] font-semibold lg:text-[15px]">{{ formattedPrice }}</p>
+        <ArrowUpRight :size="20" class="shrink-0" aria-hidden="true" />
+      </div>
+    </a>
   </article>
 </template>

@@ -236,6 +236,7 @@ cukup untuk mengetahui versi aplikasi yang sedang berjalan.
 | [`deploy/deploy-web.sh`](deploy-web.sh) | Helper, disalin root-owned ke `/usr/local/sbin/deploy-eth-web`. |
 | [`deploy/github-runner.sudoers`](github-runner.sudoers) | Disalin ke `/etc/sudoers.d/github-runner-deploy-eth-web`. |
 | `/etc/eth-web/site-url` | File root-owned di VM berisi satu origin HTTPS untuk `NUXT_PUBLIC_SITE_URL`; bukan file repository. |
+| `/etc/eth-web/ducking-signing-secret` | File root-owned mode 0600 di VM berisi signing secret Ducking satu baris; bukan file repository. |
 | [Workflow Actions](../.github/workflows/deploy-web.yml) | Trigger dan job deployment. |
 | [`.dockerignore`](../.dockerignore) | Mengecualikan dependency lokal, cache, output build, dan `.env` aktual dari build context. |
 
@@ -273,6 +274,32 @@ atau runtime, serta apakah boleh terlihat browser atau harus server-side. Tambah
 mekanisme deployment yang sesuai; jangan menganggap menambah `.env` lokal lalu
 push sudah memasang nilainya di VM. Pergantian URL pada insiden November belum
 membuktikan adanya error `.env`.
+
+### Menyiapkan pencarian produk Ducking
+
+Endpoint pencarian Home dijalankan di server Nuxt. Browser hanya memanggil
+`/api/products/search`; signing secret tidak boleh disimpan sebagai
+`NUXT_PUBLIC_*`, di source, atau di image. Untuk development, salin
+`apps/web/.env.example` ke `apps/web/.env` dan isi
+`NUXT_DUCKING_SIGNING_SECRET` dengan nilai yang benar. File `.env` aktual
+diabaikan Git. Tanpa secret, Home tetap terbuka tetapi section produk
+menampilkan pesan gagal dan tombol coba lagi.
+
+Di VM, operator memasang secret yang benar langsung ke file root-owned
+`/etc/eth-web/ducking-signing-secret`, satu baris, tanpa menampilkannya di
+terminal atau commit. Gunakan editor yang tidak mencatat nilainya dalam shell
+history; pastikan kepemilikan `root:root` dan mode `0600`. Helper memvalidasi
+file tersebut, lalu meneruskan secret sebagai environment privat container
+`NUXT_DUCKING_SIGNING_SECRET`. Akses Docker di VM tetap harus dibatasi karena
+administrator Docker dapat membaca environment container.
+
+Perubahan `deploy/web.compose.yaml` dan `deploy/deploy-web.sh` perlu dipasang
+ke lokasi root-owned seperti prosedur di bawah **sebelum** workflow deploy
+fitur ini dijalankan. Helper akan mengganti container web ketika secret
+berubah, meskipun image tidak berubah. Setelah deploy, uji
+`/api/products/search?source=1688&keyword=sepatu&page_no=1&page_size=20`
+melalui origin situs dan pastikan `success` produk terlihat di Home; jangan
+mencetak environment container untuk memeriksa secret.
 
 ### Menyiapkan atau mengganti site URL schema
 

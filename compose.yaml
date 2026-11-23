@@ -6,6 +6,7 @@ services:
     image: eth-web-web:${IMAGE_TAG:-local}
     environment:
       NUXT_PUBLIC_SITE_URL: ${NUXT_PUBLIC_SITE_URL:-}
+      NUXT_DUCKING_SIGNING_SECRET: ${NUXT_DUCKING_SIGNING_SECRET:-}
     restart: unless-stopped
     # Tidak ada "ports": web hanya bisa dijangkau dari dalam jaringan Docker.
     healthcheck:
