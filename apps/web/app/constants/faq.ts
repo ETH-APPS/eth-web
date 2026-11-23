@@ -304,43 +304,32 @@ export const faqContentByPath: Record<string, MarketingFaqContent> = {
     calculatorTo: '#sourcing-workflow',
   },
   '/complete-guide': {
-    subtitle: 'Frequently Asked Question',
-    description:
-      'Lorem ipsum dolor sit amet consectetur adipiscing elit. Quisque faucibus ex sapien vitae pellentesque sem placerat.',
+    subtitle: 'Panduan Import China',
+    description: 'Jawaban ringkas tentang cara memulai impor, dokumen, layanan All-In, estimasi pengiriman, dan keamanan kargo bersama ETH Cargo.',
     items: [
       {
-        question: 'Lorem Ipsum',
-        answer:
-          'Lorem ipsum dolor sit amet consectetur adipiscing elit. Quisque faucibus ex sapien vitae pellentesque sem placerat.',
+        question: 'Bagaimana cara memulai proses impor barang dari China melalui ETH Cargo?',
+        answer: 'Sangat mudah! Anda cukup berkonsultasi mengenai produk yang ingin diimpor, mengirimkan link produk atau detail supplier dari China, lalu tim kami akan membantu proses pengadaan, perhitungan estimasi tarif, hingga pengiriman barang langsung ke alamat Anda di Indonesia',
       },
       {
-        question: 'Quisque faucibus ex sapien vitae pellentesque sem placerat. In id cursus mi pretium tellus duis convallis. Tempus leo eu aenean sed diam urna tempor.',
-        answer:
-          'Lorem ipsum dolor sit amet consectetur adipiscing elit. Quisque faucibus ex sapien vitae pellentesque sem placerat. In id cursus mi pretium tellus duis convallis. Tempus leo eu aenean sed diam urna tempor. Pulvinar vivamus fringilla lacus nec metus bibendum egestas. Iaculis massa nisl malesuada lacinia integer nunc posuere. Ut hendrerit semper vel class aptent taciti sociosqu. Ad litora torquent per conubia nostra inceptos himenaeos.',
+        question: 'Dokumen apa saja yang saya butuhkan untuk mulai mengimpor?',
+        answer: 'Untuk layanan All-In Door-to-Door ETH Cargo, Anda tidak memerlukan izin impor yang rumit. Cukup sediakan informasi detail barang (nama produk, foto/link, dimensi, dan jumlah) serta alamat tujuan pengiriman di Indonesia.',
       },
       {
-        question: 'Lorem Ipsum',
-        answer:
-          'Pulvinar vivamus fringilla lacus nec metus bibendum egestas. Iaculis massa nisl malesuada lacinia integer nunc posuere.',
+        question: 'Apa keunggulan sistem pengiriman All-In Door-to-Door dibandingkan layanan reguler?',
+        answer: 'Sistem All-In berarti seluruh biaya pengiriman internasional, penanganan bea cukai (customs clearance), pajak impor, hingga ongkos kirim lokal ke alamat Anda sudah termasuk dalam satu harga transparan. Anda tidak perlu mengurus birokrasi kepabeanan yang rumit.',
       },
       {
-        question: 'Lorem Ipsum',
-        answer:
-          'Tempus leo eu aenean sed diam urna tempor. Pulvinar vivamus fringilla lacus nec metus bibendum egestas.',
+        question: 'Berapa lama estimasi waktu pengiriman dari China ke Indonesia?',
+        answer: 'Waktu transit bervariasi tergantung moda transportasi yang Anda pilih. Pengiriman via Kargo Laut (Sea Freight) memakan waktu sekitar 28–35 hari, sedangkan pengiriman via Kargo Udara (Air Freight) jauh lebih cepat yaitu sekitar 7–12 hari.',
       },
       {
-        question: 'Ut hendrerit semper vel class aptent taciti sociosqu. Ad litora torquent per conubia nostra inceptos himenaeos.',
-        answer:
-          'Quisque faucibus ex sapien vitae pellentesque sem placerat. In id cursus mi pretium tellus duis convallis.',
-      },
-      {
-        question: 'Lorem Ipsum',
-        answer:
-          'Lorem ipsum dolor sit amet consectetur adipiscing elit. Tempus leo eu aenean sed diam urna tempor.',
+        question: 'Apakah barang saya dijamin aman selama proses pengiriman?',
+        answer: 'Ya, setiap kargo ditangani secara profesional oleh tim berpengalaman dengan standar pengemasan (repacking) yang aman, serta dilengkapi opsi perlindungan asuransi pengiriman untuk memberikan ketenangan bagi bisnis Anda.',
       },
     ],
-    quoteTitle: 'Lorem Ipsum',
-    quoteDescription: 'Lorem ipsum dolor sit amet consectetur adipiscing elit.',
+    quoteTitle: 'Siap Mengimpor dari China?',
+    quoteDescription: 'Konsultasikan kebutuhan bisnis Anda bersama tim ETH Cargo.',
     calculatorTo: '/calculator',
   },
 }

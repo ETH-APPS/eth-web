@@ -90,8 +90,8 @@ const aboutBanner = illustratedCtaBanners.about
     aria-label="Statistik perusahaan ETH Cargo"
   />
   <MarketingSectionsAboutCargoService />
-  <MarketingSectionsAboutDigitalFeatures />
   <MarketingSectionsAboutImportSupport />
+  <MarketingSectionsAboutDigitalFeatures />
   <MarketingSectionsMultinationalRoutes :show-top-border="false" />
   <div id="quote" class="pb-8 lg:pb-16">
     <UiContainer id="about-quote" wide>

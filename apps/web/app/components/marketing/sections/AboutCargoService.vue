@@ -67,12 +67,11 @@ const mobileShippingMethods = [
           class="mt-1 text-[24px] font-bold leading-tight text-primary-500 lg:mt-2 lg:text-[48px]"
         >
           <span class="lg:hidden">Shipping Method</span>
-          <span class="hidden lg:inline">Pengiriman Kargo</span>
+          <span class="hidden lg:inline">Cargo China Indonesia</span>
         </h2>
 
         <p class="mx-auto mt-5 max-w-[980px] text-justify text-[16px] font-normal leading-[1.55] text-text-secondary lg:mt-7 lg:text-center lg:text-[20px]">
-          Kami menyediakan solusi pengiriman kargo internasional terpercaya untuk skala bisnis kecil hingga industri. Dengan sistem pengiriman All-In Door-to-Door, kami memastikan proses pengurusan bea cukai, kepabeanan, hingga pengantaran barang ke alamat tujuan berjalan lancar dan tepat waktu.
-        </p>
+          Kami menyediakan solusi pengiriman kargo China ke Indonesia terpercaya untuk skala bisnis kecil hingga industri. Dengan sistem pengiriman All-In Door-to-Door, kami memastikan proses pengurusan bea cukai, kepabeanan, hingga pengantaran barang ke alamat tujuan berjalan lancar dan tepat waktu.        </p>
       </div>
 
       <h3 class="mt-8 text-center text-[20px] font-semibold leading-tight text-primary-500 lg:mt-10 lg:text-[32px]">

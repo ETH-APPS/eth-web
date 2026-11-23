@@ -33,7 +33,7 @@ const props = defineProps<{
         </h1>
 
         <dl class="mt-3 space-y-0 text-[14px] lg:mt-7 lg:space-y-3 lg:text-[16px]">
-          <div class="grid grid-cols-[70px_18px_1fr] items-center gap-2">
+          <!-- <div class="grid grid-cols-[70px_18px_1fr] items-center gap-2">
             <dt class="text-white/90">
               Author
             </dt>
@@ -48,11 +48,11 @@ const props = defineProps<{
               </NuxtLink>
               <span v-else>{{ props.author }}</span>
             </dd>
-          </div>
+          </div> -->
 
-          <div class="grid grid-cols-[70px_18px_1fr] items-center gap-2">
-            <dt class="text-white/90">
-              Update
+          <div class="grid grid-cols-[max-content_18px_minmax(0,1fr)] items-center gap-2">
+            <dt class="whitespace-nowrap text-white/90">
+              Terakhir Diperbarui
             </dt>
             <span class="h-px bg-white/55" aria-hidden="true" />
             <dd class="font-medium">
@@ -60,9 +60,9 @@ const props = defineProps<{
             </dd>
           </div>
 
-          <div class="grid grid-cols-[70px_18px_1fr] items-center gap-2">
-            <dt class="text-white/90">
-              Released
+          <div class="grid grid-cols-[max-content_18px_minmax(0,1fr)] items-center gap-2">
+            <dt class="whitespace-nowrap text-white/90">
+              Diterbitkan
             </dt>
             <span class="h-px bg-white/55" aria-hidden="true" />
             <dd class="font-medium">

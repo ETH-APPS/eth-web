@@ -1,8 +1,5 @@
 <script setup lang="ts">
-import facebookDark from '~/assets/images/marketing/facebook-dark.png'
-import instagramDark from '~/assets/images/marketing/Instagram-dark.png'
-import tiktokDark from '~/assets/images/marketing/Tiktok-dark.png'
-import youtubeDark from '~/assets/images/marketing/youtube.png'
+import linkedinIcon from '~/assets/images/marketing/linkedin.png'
 import { blogAuthor } from '~/constants/blogAuthor'
 
 definePageMeta({
@@ -12,13 +9,6 @@ definePageMeta({
 const { allArticles } = useAllBlogArticles()
 const route = useRoute()
 const isAuthorSearchPage = computed(() => route.path === `${blogAuthor.to}/search`)
-
-const socialLinks = [
-  { label: 'Facebook ETH Cargo', href: 'https://www.facebook.com/', icon: facebookDark },
-  { label: 'Instagram ETH Cargo', href: 'https://www.instagram.com/', icon: instagramDark },
-  { label: 'TikTok ETH Cargo', href: 'https://www.tiktok.com/', icon: tiktokDark },
-  { label: 'YouTube ETH Cargo', href: 'https://www.youtube.com/', icon: youtubeDark },
-] as const
 
 useSeoMeta({
   title: `${blogAuthor.name} | ETH Cargo`,
@@ -54,25 +44,15 @@ useSeoMeta({
                 </p>
               </div>
 
-              <nav aria-label="Media sosial penulis" class="-ml-2 flex flex-wrap items-center lg:ml-0 lg:gap-1">
-                <a
-                  v-for="social in socialLinks"
-                  :key="social.label"
-                  :href="social.href"
-                  :aria-label="social.label"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  class="flex size-11 items-center justify-center rounded-md transition-opacity hover:opacity-70 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500 lg:size-9"
-                >
-                  <img
-                    :src="social.icon"
-                    alt=""
-                    aria-hidden="true"
-                    class="size-5 object-contain"
-                    :class="social.label === 'YouTube ETH Cargo' ? 'grayscale brightness-75' : ''"
-                  >
-                </a>
-              </nav>
+              <a
+                href="https://www.linkedin.com/company/ethcargoindonesia/"
+                aria-label="LinkedIn ETH Cargo Indonesia"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="-ml-2 flex size-11 items-center justify-center rounded-md transition-opacity hover:opacity-70 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500 lg:ml-0 lg:size-9"
+              >
+                <img :src="linkedinIcon" alt="" aria-hidden="true" class="size-8 object-contain">
+              </a>
             </div>
           </div>
 

@@ -43,9 +43,9 @@ const avatarFailed = ref(false)
             <h3 class="truncate text-[16px] font-medium leading-tight text-text-secondary">
               {{ name }}
             </h3>
-            <p class="mt-1 text-[12px] font-normal text-text-disable">
+            <!-- <p class="mt-1 text-[12px] font-normal text-text-disable">
               {{ reviewSource }}
-            </p>
+            </p> -->
           </div>
           <a :href="reviewUrl" target="_blank" rel="noopener noreferrer" :aria-label="`Baca ulasan ${name} di Google Maps`" class="shrink-0 rounded focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500">
             <img :src="googleLogo" alt="Google" width="24" height="24" loading="lazy" class="size-6 object-contain">

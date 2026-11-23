@@ -21,6 +21,7 @@ const props = withDefaults(
     ctaLabel?: string
     ctaTo?: string
     animatedCta?: boolean
+    compactLayout?: boolean
     sectionId?: string
   }>(),
   {
@@ -43,6 +44,7 @@ const hasCta = computed(() => props.ctaPrompt && props.ctaLabel && props.ctaTo)
     :id="sectionId"
     :aria-labelledby="titleId"
     class="bg-bg-0 py-16"
+    :class="compactLayout ? 'lg:pb-16 lg:pt-10' : ''"
   >
     <UiContainer>
       <img
@@ -60,18 +62,19 @@ const hasCta = computed(() => props.ctaPrompt && props.ctaLabel && props.ctaTo)
         class="text-center"
         :class="image ? 'mt-10' : ''"
       >
-        <p class="text-[16px] font-normal uppercase text-primary-700 lg:text-[20px] lg:font-medium">
+        <p class="text-[16px] font-normal text-primary-700" :class="compactLayout ? 'lg:text-[20px]' : 'uppercase lg:text-[20px] lg:font-medium'">
           {{ eyebrow }}
         </p>
 
         <h2
           :id="titleId"
-          class="mt-2 text-[32px] font-semibold uppercase leading-tight tracking-[0.01em] text-primary-500 lg:text-[48px]"
+          class="mt-2 text-[32px] font-semibold leading-tight tracking-[0.01em] text-primary-500"
+          :class="compactLayout ? 'lg:text-[48px]' : 'uppercase lg:text-[48px]'"
         >
           {{ title }}
         </h2>
 
-        <p class="mx-auto mt-5 max-w-[900px] text-justify text-[16px] leading-[1.5] text-text-secondary lg:text-center lg:text-[20px]">
+        <p class="mx-auto mt-5 max-w-[900px] text-justify text-[16px] leading-[1.5] text-text-secondary lg:text-center" :class="compactLayout ? 'lg:max-w-[950px] lg:text-[20px]' : 'lg:text-[20px]'">
           {{ description }}
         </p>
       </div>
@@ -128,15 +131,20 @@ const hasCta = computed(() => props.ctaPrompt && props.ctaLabel && props.ctaTo)
       <div
         v-if="hasCta"
         class="mt-10 text-center"
+        :class="compactLayout ? 'lg:mt-16' : ''"
       >
-        <p class="text-[16px] text-text-tertiary" :class="animatedCta ? '' : 'lg:text-[11px]'">
+        <p class="text-[16px] text-text-tertiary" :class="compactLayout ? 'lg:mx-auto lg:max-w-[950px]' : animatedCta ? '' : 'lg:text-[11px]'">
           {{ ctaPrompt }}
         </p>
 
         <UiAnimatedArrowButton
           v-if="animatedCta"
           :to="ctaTo"
+          :height="compactLayout ? 40 : undefined"
+          :icon-size="compactLayout ? 16 : 22"
           class="mt-3"
+          :class="compactLayout ? 'lg:rounded-xl lg:px-4 lg:shadow-none' : ''"
+          :style="compactLayout ? { fontSize: '14px' } : undefined"
         >
           {{ ctaLabel }}
         </UiAnimatedArrowButton>

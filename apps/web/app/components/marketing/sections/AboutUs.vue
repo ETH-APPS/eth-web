@@ -109,7 +109,7 @@ const serviceIcons: Record<AboutServiceIcon, Component> = {
         </p>
       </div>
 
-      <ul
+      <!-- <ul
         :id="servicesId"
         ref="servicesRef"
         class="mt-16 flex snap-x snap-mandatory overflow-x-auto overscroll-x-contain [scrollbar-width:none] lg:grid lg:grid-cols-3 lg:gap-14 lg:overflow-visible lg:snap-none [&::-webkit-scrollbar]:hidden"
@@ -134,7 +134,7 @@ const serviceIcons: Record<AboutServiceIcon, Component> = {
             {{ service.description }}
           </p>
         </li>
-      </ul>
+      </ul> -->
       <nav v-if="services.length > 1" class="mt-8 flex items-center justify-center lg:hidden" aria-label="Pilih layanan">
         <button
           v-for="(service, index) in services"

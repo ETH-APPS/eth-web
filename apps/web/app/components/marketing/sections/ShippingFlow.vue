@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { ChevronsDown, ChevronDown, ChevronUp, Plane, Ship } from 'lucide-vue-next'
+import { ChevronDown, ChevronUp, Plane, Ship } from 'lucide-vue-next'
+import packageSearchIcon from '~/assets/icons/package-search.png'
 
 const steps = [
   {
@@ -31,78 +32,66 @@ const steps = [
 
 const activeStep = ref(0)
 const cardRefs = ref<(HTMLElement | null)[]>([])
-const stepOffsets = ref<number[]>([])
-const flowRef = ref<HTMLElement | null>(null)
-const pinnedSectionRef = ref<HTMLElement | null>(null)
-const trackRef = ref<HTMLElement | null>(null)
-const stickyTop = ref<number | null>(null)
+const stepsViewportRef = ref<HTMLElement | null>(null)
+const bottomPadding = ref(0)
 let scrollAnimationFrame: number | undefined
-let sectionResizeObserver: ResizeObserver | undefined
+let stepsResizeObserver: ResizeObserver | undefined
 
 function setCardRef(el: unknown, index: number) {
   cardRefs.value[index] = (el as HTMLElement | null) ?? null
 }
 
-const trackStyle = computed(() => {
-  const offset = stepOffsets.value[activeStep.value] ?? 0
+function updateBottomPadding() {
+  const viewport = stepsViewportRef.value
+  const lastCard = cardRefs.value[steps.length - 1]
+  if (!viewport || !lastCard)
+    return
 
-  return {
-    '--step-offset': `-${offset}px`,
-  }
-})
-
-function updateStepOffsets() {
-  stepOffsets.value = cardRefs.value.map(card => card?.offsetTop ?? 0)
+  bottomPadding.value = Math.max(0, viewport.clientHeight - lastCard.offsetHeight)
 }
 
 function selectStep(index: number) {
-  const flow = flowRef.value
-  const pinnedSection = pinnedSectionRef.value
-  if (!flow || !pinnedSection)
+  const viewport = stepsViewportRef.value
+  if (!viewport)
     return
 
   const targetStep = Math.min(Math.max(index, 0), steps.length - 1)
-  const scrollDistance = flow.offsetHeight - pinnedSection.offsetHeight
-  const top = stickyTop.value ?? (Number.parseFloat(getComputedStyle(pinnedSection).top) || 0)
+  const card = cardRefs.value[targetStep]
+  if (!card)
+    return
 
-  window.scrollTo({
-    top: window.scrollY + flow.getBoundingClientRect().top - top
-      + (targetStep / (steps.length - 1)) * scrollDistance,
+  activeStep.value = targetStep
+  viewport.scrollTo({
+    top: card.offsetTop,
     behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth',
   })
 }
 
-function updateStickyTop() {
-  const pinnedSection = pinnedSectionRef.value
-  if (!pinnedSection)
+function updateStepFromLocalScroll() {
+  const viewport = stepsViewportRef.value
+  if (!viewport)
     return
 
-  const headerHeight = window.matchMedia('(min-width: 1024px)').matches ? 70 : 64
-  stickyTop.value = Math.min(headerHeight, window.innerHeight - pinnedSection.offsetHeight)
+  const nearestStep = cardRefs.value.reduce((nearest, card, index) => {
+    const nearestCard = cardRefs.value[nearest]
+    if (!card || !nearestCard)
+      return nearest
+
+    return Math.abs(card.offsetTop - viewport.scrollTop)
+      < Math.abs(nearestCard.offsetTop - viewport.scrollTop)
+      ? index
+      : nearest
+  }, 0)
+
+  activeStep.value = nearestStep
 }
 
-function updateStepFromPageScroll() {
-  const flow = flowRef.value
-  const pinnedSection = pinnedSectionRef.value
-  if (!flow || !pinnedSection)
-    return
-
-  const scrollDistance = flow.offsetHeight - pinnedSection.offsetHeight
-  const top = stickyTop.value ?? (Number.parseFloat(getComputedStyle(pinnedSection).top) || 0)
-  const progress = Math.min(Math.max(
-    (top - flow.getBoundingClientRect().top) / scrollDistance,
-    0,
-  ), 1)
-
-  activeStep.value = Math.round(progress * (steps.length - 1))
-}
-
-function handlePageScroll() {
+function handleStepsScroll() {
   if (scrollAnimationFrame !== undefined)
     return
 
   scrollAnimationFrame = requestAnimationFrame(() => {
-    updateStepFromPageScroll()
+    updateStepFromLocalScroll()
     scrollAnimationFrame = undefined
   })
 }
@@ -120,32 +109,18 @@ function handleNavigationKeydown(event: KeyboardEvent) {
 }
 
 onMounted(() => {
-  updateStepOffsets()
-  updateStickyTop()
-  updateStepFromPageScroll()
-  sectionResizeObserver = new ResizeObserver(() => {
-    updateStepOffsets()
-    updateStickyTop()
-    handlePageScroll()
-  })
-  if (pinnedSectionRef.value)
-    sectionResizeObserver.observe(pinnedSectionRef.value)
-  if (trackRef.value)
-    sectionResizeObserver.observe(trackRef.value)
-  window.addEventListener('scroll', handlePageScroll, { passive: true })
-  window.addEventListener('resize', handleResize)
+  updateBottomPadding()
+  stepsResizeObserver = new ResizeObserver(updateBottomPadding)
+  if (stepsViewportRef.value)
+    stepsResizeObserver.observe(stepsViewportRef.value)
+  for (const card of cardRefs.value) {
+    if (card)
+      stepsResizeObserver.observe(card)
+  }
 })
 
-function handleResize() {
-  updateStepOffsets()
-  updateStickyTop()
-  handlePageScroll()
-}
-
 onBeforeUnmount(() => {
-  window.removeEventListener('scroll', handlePageScroll)
-  window.removeEventListener('resize', handleResize)
-  sectionResizeObserver?.disconnect()
+  stepsResizeObserver?.disconnect()
   if (scrollAnimationFrame !== undefined)
     cancelAnimationFrame(scrollAnimationFrame)
 })
@@ -154,14 +129,11 @@ onBeforeUnmount(() => {
 <template>
   <div
     id="alur-pengiriman"
-    ref="flowRef"
     class="relative mt-8 bg-white"
   >
     <section
-      ref="pinnedSectionRef"
       aria-labelledby="shipping-flow-title"
-      class="sticky top-16 bg-white py-16 lg:top-[70px]"
-      :style="stickyTop === null ? undefined : { top: `${stickyTop}px` }"
+      class="bg-white py-16"
     >
     <UiContainer>
       <div class="text-center">
@@ -230,11 +202,7 @@ onBeforeUnmount(() => {
               class="inline-flex items-center gap-1 text-primary-500 transition-colors hover:text-primary-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500"
             >
               Lacak
-              <ChevronsDown
-                :size="16"
-                :stroke-width="2"
-                aria-hidden="true"
-              />
+              <img :src="packageSearchIcon" alt="" aria-hidden="true" width="16" height="16" class="size-4 object-contain">
             </NuxtLink>
           </p>
         </div>
@@ -286,16 +254,17 @@ onBeforeUnmount(() => {
         </div>
 
         <div
-          class="h-[260px] min-w-0 overflow-hidden [mask-image:linear-gradient(to_bottom,black_65%,transparent_100%)] lg:h-[296px]"
+          ref="stepsViewportRef"
+          class="shipping-flow-steps h-[260px] min-w-0 overflow-y-auto [mask-image:linear-gradient(to_bottom,black_65%,transparent_100%)] lg:h-[296px]"
           tabindex="0"
           role="region"
-          aria-label="Daftar langkah pengiriman. Gulir halaman atau gunakan tombol panah untuk berpindah langkah."
+          aria-label="Daftar langkah pengiriman. Gulir daftar ini atau gunakan tombol panah untuk berpindah langkah."
           @keydown="handleNavigationKeydown"
+          @scroll.passive="handleStepsScroll"
         >
           <div
-            ref="trackRef"
-            class="shipping-flow-track relative space-y-4 transition-transform duration-500 ease-out"
-            :style="trackStyle"
+            class="relative space-y-4"
+            :style="{ paddingBottom: `${bottomPadding}px` }"
           >
             <article
               v-for="(step, index) in steps"
@@ -325,18 +294,15 @@ onBeforeUnmount(() => {
       </div>
     </UiContainer>
     </section>
-    <div aria-hidden="true" class="h-[960px] lg:h-[1200px]" />
   </div>
 </template>
 
 <style scoped>
-.shipping-flow-track {
-  transform: translateY(var(--step-offset));
+.shipping-flow-steps {
+  scrollbar-width: none;
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .shipping-flow-track {
-    transition: none;
-  }
+.shipping-flow-steps::-webkit-scrollbar {
+  display: none;
 }
 </style>

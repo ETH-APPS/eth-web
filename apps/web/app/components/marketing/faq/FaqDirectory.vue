@@ -3,7 +3,7 @@ import {
   ChevronDown,
   Search,
 } from 'lucide-vue-next'
-import whatsappUrl from '~/assets/images/marketing/whatsapp.png'
+import { whatsappConsultationUrl } from '~/constants/whatsapp'
 
 interface FaqDirectoryItem {
   question: string
@@ -28,14 +28,14 @@ const props = withDefaults(defineProps<{
   contactLabel?: string
   contactTo?: string
 }>(), {
-  eyebrow: 'Frequently Asked Question',
-  title: 'FAQ',
+  eyebrow: 'Pusat Bantuan',
+  title: 'FAQ ETH Cargo',
   description:
     'Temukan informasi dan jawaban yang Anda butuhkan seputar layanan, pengiriman, dan fitur ETH Cargo.',
-  searchPlaceholder: 'Cari artikel',
-  contactPrompt: 'Belum menemukan jawaban yang Anda cari?',
-  contactLabel: 'Ingin Bertanya',
-  contactTo: '#footer',
+  searchPlaceholder: 'Cari topik, istilah, atau pertanyaan seputar impor...',
+  contactPrompt: 'Tidak menemukan jawaban yang Anda cari?',
+  contactLabel: 'Hubungi Tim Kami',
+  contactTo: whatsappConsultationUrl,
 })
 
 const searchQuery = ref('')
@@ -46,22 +46,30 @@ const initialOpenKey = initialGroup
   : ''
 const openItems = ref<string[]>(initialOpenKey ? [initialOpenKey] : [])
 
-const activeGroup = computed(() => (
-  props.groups.find(group => group.id === activeGroupId.value) ?? props.groups[0]
-))
-
-const filteredItems = computed(() => {
+const visibleGroups = computed(() => {
   const query = searchQuery.value.trim().toLocaleLowerCase('id-ID')
-  const group = activeGroup.value
 
-  if (!group) return []
-  if (!query) return group.items
+  return props.groups
+    .filter(group => query || group.id === activeGroupId.value)
+    .map((group) => {
+      const items = group.items
+        .map((item, index) => ({ item, index }))
+        .filter(({ item }) => !query || `${item.question} ${item.answer}`
+          .toLocaleLowerCase('id-ID')
+          .includes(query))
 
-  return group.items.filter(item => (
-    `${item.question} ${item.answer}`
-      .toLocaleLowerCase('id-ID')
-      .includes(query)
-  ))
+      if (query) {
+        items.sort((first, second) =>
+          Number(second.item.question.toLocaleLowerCase('id-ID').includes(query))
+          - Number(first.item.question.toLocaleLowerCase('id-ID').includes(query)))
+      }
+
+      return { group, items }
+    })
+    .filter(({ items }) => items.length > 0)
+    .sort((first, second) =>
+      Number(second.group.id === activeGroupId.value)
+      - Number(first.group.id === activeGroupId.value))
 })
 
 function itemKey(groupId: string, itemIndex: number) {
@@ -90,20 +98,20 @@ watch(activeGroupId, (groupId) => {
 </script>
 
 <template>
-  <section aria-labelledby="faq-directory-title" class="bg-bg-0 py-16 sm:py-20">
+  <section aria-labelledby="faq-directory-title" class="bg-bg-0 py-8 sm:py-10 lg:pb-20 lg:pt-5">
     <UiContainer>
       <header class="text-center">
-        <p class="text-[16px] font-medium text-text-disable lg:text-[24px]">
+        <p class="text-[16px] font-medium text-text-disable lg:text-[20px]">
           {{ eyebrow }}
         </p>
-        <h1 id="faq-directory-title" class="mt-2 text-[56px] font-bold leading-none text-primary-500 lg:text-[120px]">
+        <h1 id="faq-directory-title" class="mt-3 text-[40px] font-bold leading-[1.05] text-primary-500 sm:text-[56px] lg:text-[84px]">
           {{ title }}
         </h1>
-        <p class="mx-auto mt-7 max-w-[900px] text-[14px] font-normal leading-[1.55] text-text-tertiary lg:text-[20px]">
+        <p class="mx-auto mt-6 max-w-[860px] text-[14px] font-normal leading-[1.45] text-text-tertiary lg:text-[18px]">
           {{ description }}
         </p>
 
-        <label class="relative mx-auto mt-5 block max-w-[440px]">
+        <label class="relative mx-auto mt-5 block max-w-[410px]">
           <span class="sr-only">{{ searchPlaceholder }}</span>
           <Search
             :size="18"
@@ -115,7 +123,7 @@ watch(activeGroupId, (groupId) => {
             v-model="searchQuery"
             type="search"
             :placeholder="searchPlaceholder"
-            class="h-12 w-full rounded-full border border-border-300 bg-bg-0 pl-11 pr-4 text-[16px] font-normal text-text-secondary outline-none transition-colors placeholder:text-text-disable focus:border-primary-500"
+            class="h-11 w-full rounded-full border border-border-300 bg-bg-0 pl-10 pr-4 text-[14px] font-normal text-text-secondary outline-none transition-colors placeholder:text-text-disable focus:border-primary-500"
           >
         </label>
 
@@ -123,20 +131,17 @@ watch(activeGroupId, (groupId) => {
           <p class="text-[14px] text-text-tertiary">
             {{ contactPrompt }}
           </p>
-          <NuxtLink
-            :to="contactTo"
-            class="inline-flex h-11 items-center gap-2 rounded-full bg-green-500 px-5 text-[14px] font-medium text-bg-0 transition-[background-color,transform] hover:-translate-y-0.5 hover:bg-[#059669] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-500 lg:h-10 lg:text-[16px]"
+          <UiAnimatedArrowButton
+            :href="contactTo"
+            target="_blank"
+            variant="plain"
+            class="inline-flex min-h-12 items-center gap-2 rounded-full bg-green-500 px-5 text-[14px] font-medium text-bg-0 transition-[background-color,color,box-shadow] hover:bg-green-100 hover:text-green-700 hover:ring-2 hover:ring-inset hover:ring-green-700 focus-visible:bg-green-100 focus-visible:text-green-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-700 focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-green-700 lg:text-[16px]"
           >
-            <span>{{ contactLabel }}</span>
-            <img
-              :src="whatsappUrl"
-              alt=""
-              aria-hidden="true"
-              width="16"
-              height="16"
-              class="size-4 object-contain"
-            >
-          </NuxtLink>
+            {{ contactLabel }}
+            <template #trailing>
+              <UiWhatsappIcon class="size-5" />
+            </template>
+          </UiAnimatedArrowButton>
         </div>
       </header>
 
@@ -156,6 +161,7 @@ watch(activeGroupId, (groupId) => {
                 class="grid min-h-10 w-full grid-cols-[18px_minmax(0,1fr)] items-center gap-x-2 rounded-lg px-1.5 py-2 text-left transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500"
                 :class="activeGroupId === group.id ? 'bg-primary-50' : 'hover:bg-primary-50/60'"
                 :aria-current="activeGroupId === group.id ? 'page' : undefined"
+                @click="searchQuery = ''"
               >
                 <span class="text-[16px] leading-[1.45] text-text-secondary">
                   {{ groupIndex + 1 }}
@@ -168,47 +174,49 @@ watch(activeGroupId, (groupId) => {
           </ol>
         </nav>
 
-        <div v-if="activeGroup" class="min-w-0">
+        <div class="min-w-0">
           <p
-            v-if="filteredItems.length === 0"
+            v-if="visibleGroups.length === 0"
             class="rounded-2xl border border-border-200 px-6 py-10 text-center text-[14px] text-text-tertiary"
           >
-            Tidak ada artikel yang sesuai dengan pencarian Anda.
+            Tidak ada pertanyaan yang sesuai dengan pencarian Anda.
           </p>
 
           <section
-            v-else
-            :id="activeGroup.id"
-            :aria-labelledby="`${activeGroup.id}-title`"
+            v-for="({ group, items }, groupIndex) in visibleGroups"
+            :id="group.id"
+            :key="group.id"
+            :aria-labelledby="`${group.id}-title`"
+            :class="groupIndex > 0 ? 'mt-8' : undefined"
           >
-            <h2 :id="`${activeGroup.id}-title`" class="text-[22px] font-semibold text-text-secondary lg:text-[26px]">
-              {{ activeGroup.title }}
+            <h2 :id="`${group.id}-title`" class="text-[22px] font-semibold text-text-secondary lg:text-[26px]">
+              {{ group.title }}
             </h2>
             <p class="mt-1 text-[16px] text-text-tertiary lg:text-[20px]">
-              {{ activeGroup.description }}
+              {{ group.description }}
             </p>
 
             <div class="mt-4 space-y-2">
               <article
-                v-for="(item, itemIndex) in filteredItems"
-                :id="`${itemKey(activeGroup.id, itemIndex)}-question`"
-                :key="item.question"
+                v-for="{ item, index } in items"
+                :id="`${itemKey(group.id, index)}-question`"
+                :key="itemKey(group.id, index)"
                 class="scroll-mt-32 overflow-hidden rounded-2xl border border-border-200 shadow-md"
               >
                 <h3>
                   <button
                     type="button"
                     class="flex w-full items-start gap-2.5 px-4 py-3 text-left focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-primary-500"
-                    :aria-expanded="isOpen(itemKey(activeGroup.id, itemIndex))"
-                    :aria-controls="`${itemKey(activeGroup.id, itemIndex)}-answer`"
-                    @click="toggleItem(itemKey(activeGroup.id, itemIndex))"
+                    :aria-expanded="isOpen(itemKey(group.id, index))"
+                    :aria-controls="`${itemKey(group.id, index)}-answer`"
+                    @click="toggleItem(itemKey(group.id, index))"
                   >
                     <span aria-hidden="true" class="mt-0.5 flex size-4 shrink-0 items-center justify-center rounded-full bg-[#10b7a5] text-[9px] font-semibold text-bg-0">
                       Q
                     </span>
                     <span
                       class="flex-1 text-[16px] leading-[1.5] transition-colors"
-                      :class="isOpen(itemKey(activeGroup.id, itemIndex))
+                      :class="isOpen(itemKey(group.id, index))
                         ? 'font-medium text-primary-500'
                         : 'font-normal text-text-secondary'"
                     >
@@ -219,17 +227,17 @@ watch(activeGroupId, (groupId) => {
                       :stroke-width="1.8"
                       aria-hidden="true"
                       class="mt-0.5 shrink-0 text-text-disable transition-transform duration-200"
-                      :class="isOpen(itemKey(activeGroup.id, itemIndex)) ? 'rotate-180' : ''"
+                      :class="isOpen(itemKey(group.id, index)) ? 'rotate-180' : ''"
                     />
                   </button>
                 </h3>
 
                 <div
-                  :id="`${itemKey(activeGroup.id, itemIndex)}-answer`"
-                  :aria-hidden="!isOpen(itemKey(activeGroup.id, itemIndex))"
-                  :inert="!isOpen(itemKey(activeGroup.id, itemIndex))"
+                  :id="`${itemKey(group.id, index)}-answer`"
+                  :aria-hidden="!isOpen(itemKey(group.id, index))"
+                  :inert="!isOpen(itemKey(group.id, index))"
                   class="grid transition-[grid-template-rows] duration-250 ease-out"
-                  :class="isOpen(itemKey(activeGroup.id, itemIndex)) ? 'grid-rows-[1fr]' : 'grid-rows-[0fr]'"
+                  :class="isOpen(itemKey(group.id, index)) ? 'grid-rows-[1fr]' : 'grid-rows-[0fr]'"
                 >
                   <div class="overflow-hidden">
                     <div class="mx-4 flex gap-2.5 border-t border-border-200 pb-4 pt-3">

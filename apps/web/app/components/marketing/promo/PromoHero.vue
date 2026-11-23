@@ -9,7 +9,6 @@ export interface PromoItem {
   image: string
   imageAlt: string
   termsLabel?: string
-  termsTo?: string
 }
 
 withDefaults(defineProps<{
@@ -22,12 +21,16 @@ withDefaults(defineProps<{
   title: 'OUR PROMO',
   description: '',
 })
+
+const emit = defineEmits<{
+  select: [promo: PromoItem]
+}>()
 </script>
 
 <template>
   <section aria-labelledby="promo-page-title" class="bg-bg-0 py-6 sm:py-8 lg:py-20">
     <UiContainer>
-      <header class="sr-only lg:not-sr-only lg:mx-auto lg:max-w-[800px] lg:text-center lg:block">
+      <header class="sr-only lg:not-sr-only  lg:text-center lg:block">
         <p class="text-[20px] font-normal text-primary-700">
           {{ eyebrow }}
         </p>
@@ -36,7 +39,7 @@ withDefaults(defineProps<{
         </h1>
         <p
           v-if="description"
-          class="mt-5 text-[20px] font-normal leading-[1.4] text-text-secondary"
+          class="mt-5 text-[20px] font-normal lg:mx-auto lg:max-w-[800px] leading-[1.4] text-text-secondary"
         >
           {{ description }}
         </p>
@@ -71,13 +74,15 @@ withDefaults(defineProps<{
               {{ promo.description }}
             </p>
 
-            <NuxtLink
-              :to="promo.termsTo || '/terms-and-conditions'"
+            <button
+              type="button"
+              aria-haspopup="dialog"
               class="mt-6 inline-flex min-h-11 self-end items-center gap-2 rounded-md text-sm font-medium text-primary-500 transition-colors hover:text-primary-600 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary-500 lg:mt-10 lg:min-h-0"
+              @click="emit('select', promo)"
             >
               {{ promo.termsLabel || 'Terms & Conditions' }}
               <FileText :size="17" :stroke-width="1.8" aria-hidden="true" />
-            </NuxtLink>
+            </button>
           </div>
         </article>
       </div>

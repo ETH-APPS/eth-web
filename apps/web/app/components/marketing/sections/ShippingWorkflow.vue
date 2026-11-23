@@ -1,9 +1,11 @@
 <script setup lang="ts">
 import { Info, Layers3 } from 'lucide-vue-next'
+import type { Component } from 'vue'
 
 interface ShippingWorkflowStep {
   title: string
   description: string
+  icon?: string | Component
 }
 
 const props = withDefaults(
@@ -189,8 +191,17 @@ onBeforeUnmount(() => {
             "
           >
             <h3 class="flex items-center gap-2.5">
-              <Layers3
-                :size="21"
+              <img
+                v-if="typeof step.icon === 'string'"
+                :src="step.icon"
+                alt=""
+                aria-hidden="true"
+                class="size-8 shrink-0 object-contain"
+              >
+              <component
+                :is="step.icon ?? Layers3"
+                v-else
+                :size="step.icon ? 32 : 21"
                 :stroke-width="1.8"
                 aria-hidden="true"
                 class="shrink-0 text-primary-500"

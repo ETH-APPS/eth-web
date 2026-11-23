@@ -3,11 +3,7 @@ import {
   ChevronDown,
   ChevronUp,
 } from 'lucide-vue-next'
-import articleImage from '~/assets/images/marketing/article.png'
-import cargoAirLandscapeImage from '~/assets/images/marketing/cargo-air-landscape.png'
-import cargoSeaLandscapeImage from '~/assets/images/marketing/cargo-sea-landscape.png'
 import facebookDark from '~/assets/images/marketing/facebook-dark.png'
-import heroImage from '~/assets/images/marketing/hero.webp'
 import instagramDark from '~/assets/images/marketing/Instagram-dark.png'
 import linkDark from '~/assets/images/marketing/Link-dark.png'
 import importHeroImage from '~/assets/images/marketing/multinational-cargo-hero.png'
@@ -18,43 +14,50 @@ import xDark from '~/assets/images/marketing/X-dark.png'
 
 const tableOfContents = [
   {
-    id: 'persiapan-impor',
-    number: '1',
-    title: 'Persiapan proses impor',
+    id: 'persiapan-impor', number: '1', title: 'Apa yang Perlu Disiapkan Sebelum Import dari China?',
     children: [
-      {
-        id: 'data-dan-spesifikasi',
-        number: '1.1',
-        title: 'Menyiapkan data dan spesifikasi barang',
-      },
-      {
-        id: 'dokumen-pengiriman',
-        number: '1.2',
-        title: 'Memahami dokumen pengiriman',
-      },
+      { id: 'barang-boleh-diimpor', number: '1.1', title: 'Pastikan Barang Boleh Diimpor' },
+      { id: 'data-pesanan', number: '1.2', title: 'Siapkan Data Dasar Pesanan' },
+      { id: 'peran-tiap-pihak', number: '1.3', title: 'Pahami Peran Tiap Pihak' },
     ],
   },
   {
-    id: 'metode-pengiriman',
-    number: '2',
-    title: 'Memilih metode pengiriman',
+    id: 'langkah-impor', number: '2', title: '7 Langkah Cara Import Barang dari China',
     children: [
-      {
-        id: 'laut-atau-udara',
-        number: '2.1',
-        title: 'Menentukan jalur laut atau udara',
-      },
+      { id: 'tentukan-produk', number: '2.1', title: 'Tentukan Produk dan Cek Ketentuannya' },
+      { id: 'nilai-supplier', number: '2.2', title: 'Cari dan Nilai Supplier' },
+      { id: 'sepakat-supplier', number: '2.3', title: 'Sepakati Harga, MOQ, dan Syarat dengan Supplier' },
+      { id: 'bayar-supplier', number: '2.4', title: 'Bayar Supplier dalam RMB' },
+      { id: 'gudang-china', number: '2.5', title: 'Kirim Barang ke Gudang Transit di China' },
+      { id: 'pilih-moda', number: '2.6', title: 'Pilih Moda: Udara atau Laut' },
+      { id: 'dokumen-dan-terima', number: '2.7', title: 'Urus Dokumen Impor dan Terima Barang' },
     ],
   },
   {
-    id: 'pengiriman-dan-pemantauan',
-    number: '3',
-    title: 'Pengiriman dan pemantauan',
-    children: [],
+    id: 'pilih-kargo', number: '3', title: 'Kargo Udara atau Kargo Laut: Mana yang Cocok?',
+    children: [
+      { id: 'kargo-laut', number: '3.1', title: 'Kargo Laut untuk Volume Besar' },
+      { id: 'kargo-udara', number: '3.2', title: 'Kargo Udara untuk Barang Mendesak' },
+    ],
   },
+  {
+    id: 'biaya-impor', number: '4', title: 'Komponen Biaya Import dari China yang Perlu Dihitung',
+    children: [{ id: 'hitung-cbm', number: '4.1', title: 'Cara Menghitung Volume (CBM)' }],
+  },
+  { id: 'kesalahan-impor', number: '5', title: 'Kesalahan Umum Saat Import dari China', children: [] },
+  { id: 'jasa-forwarder', number: '6', title: 'Kapan Sebaiknya Memakai Jasa Forwarder?', children: [] },
+  { id: 'impor-satu-pintu', number: '7', title: 'Impor dari China Lebih Terkendali dengan Satu Pintu di ETH Cargo', children: [] },
 ] as const
 
-const expandedSections = ref<string[]>(['persiapan-impor', 'metode-pengiriman'])
+const keyPoints = [
+  'Cara import barang dari China terdiri dari menentukan produk, memilih supplier, menyepakati harga, mengirim ke gudang transit, memilih kargo udara atau laut, lalu mengurus dokumen impor sampai barang tiba.',
+  'Kargo udara dihitung berdasarkan berat (kg), sedangkan kargo laut berdasarkan volume (CBM = P × L × T dalam cm / 1.000.000). Estimasi waktu dapat berubah sesuai jadwal dan proses pengiriman.',
+  'Barang larangan atau pembatasan (lartas) perlu dicek izin dan ketentuan resminya sebelum dipesan, bukan setelah barang dikirim.',
+  'Biaya impor mencakup harga barang, ongkir lokal China, biaya transfer, ongkos kirim, serta pajak dan bea yang perlu diverifikasi ke sumber resmi.',
+  'Layanan forwarder dapat membantu mengurus pembelian, pembayaran RMB, pengiriman, dan dokumen dalam satu pintu.',
+]
+
+const expandedSections = ref<string[]>([])
 const activeSection = ref('persiapan-impor')
 const isMobileTocOpen = ref(false)
 const shareUrl = ref('')
@@ -250,11 +253,11 @@ onBeforeUnmount(() => {
         <p class="text-[16px] font-normal text-primary-700 lg:text-[20px] lg:uppercase">
           Dokumentasi Impor
         </p>
-        <h1 class="mt-1 text-[32px] font-semibold leading-tight text-primary-500 lg:mx-auto lg:mt-2 lg:max-w-[800px] lg:text-[48px]">
-          Panduan Lengkap Cara Import Barang dari China
+        <h1 class="mt-1 text-[32px] font-semibold leading-tight text-primary-500 lg:mx-auto lg:mt-2 lg:max-w-[850px] lg:text-[48px]">
+          Cara Import Barang dari China ke Indonesia untuk Bisnis
         </h1>
-        <p class="mt-5 text-[16px] font-normal leading-[1.55] text-text-secondary lg:mx-auto lg:mt-4 lg:max-w-[760px] lg:text-[20px] lg:leading-[1.4]">
-          Pelajari tahapan mudah dan transparan proses pengiriman cargo All-In Door-to-Door bersama ETH Cargo. Mulai dari pemilihan supplier, pengiriman gudang transit China, pengurusan bea cukai, hingga barang tiba di alamat Anda di Indonesia.
+        <p class="mt-5 text-[16px] font-normal leading-[1.55] text-text-secondary lg:mx-auto lg:mt-4 lg:max-w-[900px] lg:text-[20px] lg:leading-[1.4]">
+          Pelajari tahapan mudah dan transparan proses pengiriman kargo All-In Door-to-Door bersama ETH Cargo. Mulai dari pemilihan supplier, pengiriman gudang transit China, pengurusan bea cukai, hingga barang tiba di alamat Anda di Indonesia.
         </p>
         <div class="mt-4 flex justify-center lg:hidden">
           <NuxtLink
@@ -275,16 +278,16 @@ onBeforeUnmount(() => {
       </header>
 
       <div class="mt-8 grid grid-cols-1 items-start gap-6 lg:mt-14 lg:grid-cols-[300px_minmax(0,1fr)]">
-        <aside class="hidden lg:sticky lg:top-[90px] lg:block">
+        <aside class="hidden lg:sticky lg:top-[90px] lg:flex lg:max-h-[calc(100dvh-106px)] lg:flex-col">
           <nav
             aria-label="Table of Content"
-            class="rounded-2xl border border-border-200 bg-bg-0 p-4 shadow-md"
+            class="flex min-h-[178px] flex-col rounded-2xl border border-border-200 bg-bg-0 p-4 shadow-md"
           >
             <h2 class="text-[20px] font-medium text-primary-500">
-              Table of Content
+              Daftar isi
             </h2>
 
-            <ol class="mt-4 space-y-3">
+            <ol class="mt-4 min-h-0 space-y-3 overflow-y-auto pr-1">
               <li v-for="section in tableOfContents" :key="section.id">
                 <div class="flex items-start gap-2">
                   <button
@@ -338,124 +341,25 @@ onBeforeUnmount(() => {
             </ol>
           </nav>
 
-          <img
-            :src="heroImage"
-            alt="Kapal kargo membawa kontainer dalam perjalanan pengiriman internasional"
-            class="mt-4 aspect-[4/5] w-full rounded-2xl object-cover"
-          >
+          <div class="mt-4 shrink-0">
+            <MarketingBlogArticleCtaBanner class="max-h-[calc(100dvh-300px)] w-auto max-w-full" />
+          </div>
         </aside>
 
         <article class="min-w-0 text-[14px] font-normal leading-[1.65] text-text-secondary">
-          <section class="hidden overflow-hidden rounded-xl border border-border-200 lg:block">
+          <section class="overflow-hidden rounded-xl border border-border-200">
             <h2 class="bg-border-200 px-4 py-3 text-[14px] font-semibold text-primary-500">
               Key Points
             </h2>
-            <ul class="divide-y divide-border-200 text-[14px] font-normal">
-              <li class="flex gap-3 px-4 py-3">
+            <ul class="divide-y divide-border-200 text-[14px]">
+              <li v-for="(point, index) in keyPoints" :key="point" class="flex gap-3 px-4 py-3" :class="index % 2 ? 'bg-bg-100' : ''">
                 <span class="text-primary-500" aria-hidden="true">–</span>
-                <span>Siapkan spesifikasi barang dan dokumen pendukung sebelum memulai proses pengiriman.</span>
-              </li>
-              <li class="flex gap-3 bg-bg-100 px-4 py-3">
-                <span class="text-primary-500" aria-hidden="true">–</span>
-                <span>Pilih metode pengiriman berdasarkan volume, karakter barang, anggaran, dan target waktu.</span>
-              </li>
-              <li class="flex gap-3 px-4 py-3">
-                <span class="text-primary-500" aria-hidden="true">–</span>
-                <span>Pantau proses customs clearance hingga pengantaran akhir melalui layanan terintegrasi.</span>
+                <span>{{ point }}</span>
               </li>
             </ul>
           </section>
 
-          <section id="persiapan-impor" class="mt-0 scroll-mt-28 lg:mt-6">
-            <h2 class="text-[20px] font-medium text-primary-500">
-              1. Persiapan proses impor
-            </h2>
-            <p class="mt-4">
-              Proses impor yang lancar dimulai dari informasi barang yang lengkap. Tentukan jenis komoditas, jumlah, ukuran, berat, nilai barang, negara asal, serta lokasi tujuan sebelum meminta estimasi layanan.
-            </p>
-            <p class="mt-4">
-              Data yang akurat membantu tim logistik mengidentifikasi kebutuhan izin, memilih jalur pengiriman, dan menghitung estimasi biaya secara transparan sejak awal.
-            </p>
-
-            <img
-              :src="articleImage"
-              alt="Tumpukan kontainer sebagai bagian dari persiapan proses impor"
-              loading="lazy"
-              class="mx-auto my-7 aspect-[16/8] w-[78%] rounded-xl object-cover"
-            >
-
-            <section id="data-dan-spesifikasi" class="scroll-mt-28">
-              <h3 class="text-[14px] font-semibold text-primary-500">
-                1.1 Menyiapkan data dan spesifikasi barang
-              </h3>
-              <p class="mt-4">
-                Sertakan foto produk, material, fungsi, merek, dimensi kemasan, berat per koli, dan jumlah pesanan. Untuk barang sensitif seperti baterai, cairan, kosmetik, atau bahan kimia, siapkan pula dokumen SDS/MSDS dan izin terkait.
-              </p>
-              <ol class="mt-4 list-decimal space-y-1 pl-6">
-                <li>Foto dan deskripsi produk.</li>
-                <li>Ukuran, berat, serta jumlah koli.</li>
-                <li>Invoice dan packing list sementara.</li>
-                <li>Target waktu penerimaan barang.</li>
-              </ol>
-            </section>
-
-            <section id="dokumen-pengiriman" class="mt-7 scroll-mt-28">
-              <h3 class="text-[14px] font-semibold text-primary-500">
-                1.2 Memahami dokumen pengiriman
-              </h3>
-              <p class="mt-4">
-                Dokumen dasar biasanya mencakup commercial invoice, packing list, identitas importir, serta dokumen teknis sesuai kategori barang. Kelengkapan dokumen mempercepat verifikasi dan mengurangi risiko hambatan saat customs clearance.
-              </p>
-            </section>
-          </section>
-
-          <section id="metode-pengiriman" class="mt-9 scroll-mt-28">
-            <h2 class="text-[20px] font-medium text-primary-500">
-              2. Memilih metode pengiriman
-            </h2>
-            <p class="mt-4">
-              Setiap moda pengiriman memiliki struktur biaya dan estimasi waktu yang berbeda. Pemilihan yang tepat harus mempertimbangkan skala bisnis, urgensi, volume muatan, dan karakter produk.
-            </p>
-
-            <img
-              :src="cargoAirLandscapeImage"
-              alt="Pesawat kargo untuk metode pengiriman melalui jalur udara"
-              loading="lazy"
-              class="mx-auto my-7 aspect-[16/8] w-[78%] rounded-xl object-cover"
-            >
-
-            <section id="laut-atau-udara" class="scroll-mt-28">
-              <h3 class="text-[14px] font-semibold text-primary-500">
-                2.1 Menentukan jalur laut atau udara
-              </h3>
-              <p class="mt-4">
-                FCL cocok untuk muatan besar yang membutuhkan satu kontainer penuh. LCL lebih fleksibel untuk volume menengah karena biaya dihitung berdasarkan kubikasi, sedangkan Air Cargo ideal untuk sampel, barang bernilai tinggi, dan kebutuhan restok mendesak.
-              </p>
-              <p class="mt-4">
-                Bandingkan estimasi waktu, perhitungan berat aktual atau volume, jadwal keberangkatan, serta cakupan layanan Door-to-Door sebelum menentukan pilihan akhir.
-              </p>
-            </section>
-          </section>
-
-          <section id="pengiriman-dan-pemantauan" class="mt-9 scroll-mt-28">
-            <h2 class="text-[20px] font-medium text-primary-500">
-              3. Pengiriman dan pemantauan
-            </h2>
-            <p class="mt-4">
-              Setelah dokumen dan metode pengiriman dikonfirmasi, barang diterima di gudang asal untuk proses verifikasi, pengukuran, konsolidasi, dan persiapan keberangkatan. Status kargo kemudian diperbarui selama perjalanan hingga tiba di Indonesia.
-            </p>
-
-            <img
-              :src="cargoSeaLandscapeImage"
-              alt="Kapal kontainer di pelabuhan dalam proses pengiriman kargo"
-              loading="lazy"
-              class="my-7 aspect-[16/9] w-full rounded-xl object-cover"
-            >
-
-            <p>
-              Tim operasional membantu proses kepabeanan, pembongkaran, dan pengiriman akhir menuju lokasi tujuan. Simpan seluruh bukti transaksi serta dokumen pengiriman sebagai arsip operasional bisnis Anda.
-            </p>
-          </section>
+          <MarketingSectionsCompleteGuideArticleBody />
 
           <div class="mt-10 border-y border-border-200 py-5">
             <div class="flex items-center gap-3">

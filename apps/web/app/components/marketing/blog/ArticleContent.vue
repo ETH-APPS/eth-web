@@ -5,14 +5,12 @@ import {
   ChevronRight,
   ChevronUp,
 } from 'lucide-vue-next'
-import { PhFileText } from '@phosphor-icons/vue'
 import facebookDark from '~/assets/images/marketing/facebook-dark.png'
 import instagramDark from '~/assets/images/marketing/Instagram-dark.png'
 import linkDark from '~/assets/images/marketing/Link-dark.png'
 import threadsDark from '~/assets/images/marketing/Threads-dark.png'
 import tiktokDark from '~/assets/images/marketing/Tiktok-dark.png'
 import xDark from '~/assets/images/marketing/X-dark.png'
-import youtubeDark from '~/assets/images/marketing/youtube.png'
 import type { ArticleTocSection } from '~/content/articleCatalog'
 import { blogAuthor } from '~/constants/blogAuthor'
 import { illustratedCtaBanners } from '~/constants/illustratedCtaBanners'
@@ -37,7 +35,6 @@ const props = defineProps<{
 }>()
 
 const articleBanner = illustratedCtaBanners.transfer
-const { allArticles } = useAllBlogArticles()
 const tableOfContents = computed(() => props.tableOfContents)
 
 const expandedSections = ref<string[]>([])
@@ -156,13 +153,13 @@ onBeforeUnmount(() => {
       </nav>
 
       <div class="mx-auto mt-8 grid max-w-[1080px] grid-cols-1 items-start gap-6 lg:grid-cols-[300px_minmax(0,1fr)]">
-        <aside class="hidden lg:sticky lg:top-[90px] lg:block">
-          <nav aria-labelledby="article-toc-title" class="rounded-2xl border border-border-200 bg-white p-4 shadow-md">
+        <aside class="hidden lg:sticky lg:top-[90px] lg:flex lg:max-h-[calc(100dvh-106px)] lg:flex-col">
+          <nav aria-labelledby="article-toc-title" class="rounded-2xl border border-border-200 bg-white p-4 shadow-md lg:flex lg:min-h-[178px] lg:flex-col">
             <h2 id="article-toc-title" class="text-[20px] font-medium text-primary-500">
               Daftar isi
             </h2>
 
-            <ol class="mt-4 space-y-3">
+            <ol class="mt-4 space-y-3 lg:min-h-0 lg:overflow-y-auto lg:pr-1">
               <li v-for="section in tableOfContents" :key="section.id">
                 <div class="flex items-start gap-2">
                   <button
@@ -215,8 +212,8 @@ onBeforeUnmount(() => {
             </ol>
           </nav>
 
-          <div class="mt-4">
-            <MarketingBlogArticleCtaBanner />
+          <div class="mt-4 lg:shrink-0">
+            <MarketingBlogArticleCtaBanner class="lg:max-h-[calc(100dvh-300px)] lg:w-auto lg:max-w-full" />
           </div>
         </aside>
 
@@ -237,87 +234,46 @@ onBeforeUnmount(() => {
 
           <MarketingIllustratedCtaBanner
             v-bind="articleBanner"
-            class="mt-10"
+            class="mt-4"
             variant="compact"
+            :image-top-offset="0"
           />
 
           <div class="mt-10 hidden border-t border-border-200 pt-6 lg:block">
             <section
               aria-labelledby="article-author-title"
-              class="rounded-2xl border border-border-200 bg-bg-0 p-5 shadow-md"
+              class="rounded-[20px] border border-border-200 bg-bg-0 p-6 shadow-[0_2px_5px_rgba(15,23,42,0.08)]"
             >
-              <div class="flex flex-wrap items-start gap-4 lg:flex-nowrap">
+              <div class="grid grid-cols-[76px_minmax(0,1fr)] gap-6">
                 <div
-                  class="size-16 shrink-0 rounded-full bg-border-200"
+                  class="size-[76px] rounded-full bg-[#d9d9d9]"
                   role="img"
                   :aria-label="`Foto profil ${props.author}`"
                 />
 
-                <div class="min-w-0 flex-1">
-                  <h2 id="article-author-title" class="text-[24px] font-semibold leading-tight text-text-secondary">
-                    <NuxtLink :to="blogAuthor.to" class="rounded-sm hover:text-primary-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500">
-                      {{ props.author }}
+                <div class="min-w-0">
+                  <div class="flex flex-wrap items-start justify-between gap-x-4 gap-y-2">
+                    <div class="min-w-0">
+                      <h2 id="article-author-title" class="text-[24px] font-semibold leading-tight text-text-secondary">
+                        {{ props.author }}
+                      </h2>
+                      <p class="mt-1 text-[16px] font-medium text-text-tertiary">
+                        {{ blogAuthor.jobTitle }}
+                      </p>
+                    </div>
+
+                    <NuxtLink
+                      :to="blogAuthor.to"
+                      class="inline-flex min-h-11 shrink-0 items-center gap-2 text-[14px] font-medium text-primary-500 transition-colors hover:text-primary-600 focus-visible:rounded focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500"
+                    >
+                      <span>Lihat Profil</span>
+                      <ArrowUpRight :size="16" :stroke-width="2" aria-hidden="true" />
                     </NuxtLink>
-                  </h2>
-                  <p class="mt-1 text-[16px] font-medium text-text-secondary">
-                    Penulis ETH Cargo
+                  </div>
+
+                  <p class="mt-5 text-[16px] leading-[1.4] text-text-secondary">
+                    {{ blogAuthor.description }}
                   </p>
-                </div>
-
-                <NuxtLink
-                  :to="blogAuthor.to"
-                  class="ml-auto inline-flex w-full shrink-0 items-center justify-end gap-2 text-[14px] font-medium text-primary-500 transition-colors hover:text-primary-600 focus-visible:rounded focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500 lg:ml-0 lg:mt-2 lg:w-auto lg:justify-start"
-                >
-                  <span>Lihat Profil</span>
-                  <ArrowUpRight :size="16" :stroke-width="2" aria-hidden="true" />
-                </NuxtLink>
-
-              </div>
-
-              <div class="mt-5 flex flex-wrap items-center justify-between gap-x-8 gap-y-4 lg:pl-20">
-                <div class="inline-flex h-10 items-center gap-2 rounded-full bg-primary-50 px-4 text-[14px] font-normal tracking-wide text-primary-500">
-                  <PhFileText :size="18" weight="fill" aria-hidden="true" />
-                  <span>{{ allArticles.length }} Articles</span>
-                </div>
-
-                <div class="flex flex-wrap items-center gap-4 lg:flex-nowrap lg:gap-6">
-                  <span class="text-[14px] text-text-tertiary">Social</span>
-                  <a
-                    href="https://www.facebook.com/"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    aria-label="Facebook ETH Cargo"
-                    class="transition-opacity hover:opacity-70"
-                  >
-                    <img :src="facebookDark" alt="" aria-hidden="true" class="size-6 object-contain">
-                  </a>
-                  <a
-                    href="https://www.instagram.com/"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    aria-label="Instagram ETH Cargo"
-                    class="transition-opacity hover:opacity-70"
-                  >
-                    <img :src="instagramDark" alt="" aria-hidden="true" class="size-6 object-contain">
-                  </a>
-                  <a
-                    href="https://www.tiktok.com/"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    aria-label="TikTok ETH Cargo"
-                    class="transition-opacity hover:opacity-70"
-                  >
-                    <img :src="tiktokDark" alt="" aria-hidden="true" class="size-6 object-contain">
-                  </a>
-                  <a
-                    href="https://www.youtube.com/"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    aria-label="YouTube ETH Cargo"
-                    class="transition-opacity hover:opacity-70"
-                  >
-                    <img :src="youtubeDark" alt="" aria-hidden="true" class="size-6 object-contain grayscale brightness-75">
-                  </a>
                 </div>
               </div>
             </section>

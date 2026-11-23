@@ -26,7 +26,7 @@ const props = defineProps<{
         class="aspect-[1080/444] w-full rounded-[20px] object-cover object-center lg:rounded-none"
       >
 
-      <div class="mx-auto mt-12 max-w-[900px] text-center sm:mt-14">
+      <div class="mx-auto mt-12 text-center sm:mt-14">
         <p class="text-[16px] leading-relaxed text-primary-700 lg:text-[20px]">
           {{ eyebrow }}
         </p>

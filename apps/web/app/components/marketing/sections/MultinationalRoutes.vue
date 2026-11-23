@@ -8,13 +8,17 @@ withDefaults(defineProps<{
   showTopBorder: true,
 })
 
-const countries = [
+const route = useRoute()
+
+const allCountries = [
   { name: 'China', navigationName: 'China', routeLabel: 'CHINA', flag: chinaFlagUrl, to: '/china-cargo' },
   ...multinationalCountries.map(country => ({
     ...country,
     to: multinationalCountryPath(country.slug),
   })),
 ]
+
+const countries = computed(() => allCountries.filter(country => country.to !== route.path))
 </script>
 
 <template>
@@ -40,11 +44,15 @@ const countries = [
         </p>
       </div>
 
-      <ul class="mx-auto mt-8 grid max-w-[500px] grid-cols-2 items-start gap-x-5 gap-y-8 lg:mt-10 lg:max-w-[1080px] lg:grid-cols-8">
+      <ul
+        class="mx-auto mt-8 grid max-w-[500px] grid-cols-2 items-start gap-x-5 gap-y-8 lg:mt-10 lg:max-w-[1080px]"
+        :class="countries.length === 7 ? 'lg:grid-cols-7' : 'lg:grid-cols-8'"
+      >
         <li
-          v-for="country in countries"
+          v-for="(country, index) in countries"
           :key="country.name"
           class="flex justify-center"
+          :class="countries.length === 7 && index === countries.length - 1 ? 'col-span-2 lg:col-span-1' : ''"
         >
           <NuxtLink
             :to="country.to"

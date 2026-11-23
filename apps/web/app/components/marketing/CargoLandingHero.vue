@@ -35,8 +35,10 @@ defineProps<{
     class="flex flex-col"
   >
     <div class="bg-bg-0 py-12 sm:py-16 lg:py-20">
-      <UiContainer>
-        <div class="grid grid-cols-1 items-center gap-10 lg:grid-cols-[1fr_520px]" :class="countryVariant ? 'lg:gap-8' : ''">
+      <UiContainer class="lg:max-w-[1120px]">
+        <div
+          class="grid grid-cols-1 items-center gap-10 lg:grid-cols-[minmax(0,1fr)_400px] lg:gap-8 xl:grid-cols-[minmax(0,1fr)_520px]"
+        >
           <div>
             <h1 v-if="includeEyebrowInTitle" :id="titleId">
               <span class="block text-[15px] font-normal uppercase text-primary-700 lg:text-[20px]">
@@ -60,7 +62,7 @@ defineProps<{
               </h1>
             </template>
 
-            <p class="mt-6 max-w-[500px] text-[16px] leading-[1.55] text-text-secondary">
+            <p class="mt-6 max-w-[500px] text-[16px] leading-[1.55] text-text-secondary lg:max-w-none">
               {{ description }}
             </p>
 

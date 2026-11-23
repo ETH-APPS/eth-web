@@ -11,8 +11,6 @@ interface PromoItem {
   status: string
   description: string
   inactive?: boolean
-  termsLabel?: string
-  termsTo?: string
 }
 
 withDefaults(defineProps<{
@@ -68,14 +66,14 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <section :aria-labelledby="titleId" class="bg-bg-0 py-12">
+  <section :aria-labelledby="titleId" class="bg-bg-0 py-6">
     <UiContainer>
       <div class="flex flex-col items-center gap-1 text-center lg:flex-row lg:justify-between lg:gap-6 lg:text-left">
         <h2 :id="titleId" class="text-[22px] font-bold text-primary-500 lg:text-[32px] lg:font-semibold">
-          {{ year }} PROMOS
+          Promo &amp; Penawaran {{ year }}
         </h2>
-        <p class="text-[16px] font-normal text-text-tertiary lg:text-[20px]">
-          Total {{ activeTotal ?? activePromos.length }} Promos
+        <p v-if="activePromos.length" class="text-[16px] font-normal text-text-tertiary lg:text-[20px]">
+          Total {{ activeTotal ?? activePromos.length }} Promo Aktif
         </p>
       </div>
 
@@ -124,17 +122,17 @@ onBeforeUnmount(() => {
           :class="activePromos.length ? 'mt-10 sm:mt-12' : 'mt-5'"
         >
           <h3 class="text-[20px] font-medium text-text-tertiary lg:text-lg">
-            Inactive
+            Promo Berakhir
           </h3>
           <p class="text-[16px] text-text-tertiary">
-            Total {{ inactiveTotal ?? inactivePromos.length }} Inactive Promos
+            Total {{ inactiveTotal ?? inactivePromos.length }} Promo Berakhir
           </p>
         </div>
 
         <ul
           ref="inactivePromoListRef"
           class="-mx-4 mt-5 flex gap-4 overflow-x-auto overscroll-x-contain px-4 pb-3 snap-x snap-mandatory [scrollbar-width:none] lg:mx-0 lg:grid lg:grid-cols-3 lg:gap-x-5 lg:gap-y-7 lg:overflow-visible lg:px-16 lg:pb-0 lg:snap-none [&::-webkit-scrollbar]:hidden"
-          aria-label="Promo tidak aktif, geser untuk melihat promo lainnya"
+          aria-label="Promo berakhir, geser untuk melihat promo lainnya"
           @scroll.passive="handleInactivePromoScroll"
         >
           <li
@@ -146,7 +144,7 @@ onBeforeUnmount(() => {
               type="button"
               class="group block w-full rounded-[14px] text-left focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary-500"
               :aria-label="`Lihat detail ${promo.title}`"
-            aria-haspopup="dialog"
+              aria-haspopup="dialog"
               @click="emit('select', promo)"
             >
               <div class="mx-2 aspect-[1.06/1] overflow-hidden rounded-[14px] bg-bg-100 lg:mx-0">

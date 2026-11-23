@@ -33,7 +33,7 @@ const digitalFeatures = [
   <section
     id="digital-features"
     aria-labelledby="digital-features-title"
-    class="bg-bg-100 py-16 sm:py-20"
+    class="bg-bg-0 py-16 sm:py-20"
   >
     <UiContainer>
       <div class="text-center">

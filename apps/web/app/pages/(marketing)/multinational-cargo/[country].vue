@@ -1,6 +1,10 @@
 <script setup lang="ts">
-import { Blocks, Clock3, Headset, PackageCheck, ShieldCheck } from 'lucide-vue-next'
+import { Blocks, Clock3, Headset, Package, PackageCheck, ShieldCheck } from 'lucide-vue-next'
 import CargoLandingHero from '~/components/marketing/CargoLandingHero.vue'
+import calculatorIcon from '~/assets/icons/Сalculator.png'
+import containerIcon from '~/assets/icons/container.png'
+import deliveryTruckIcon from '~/assets/icons/delivery-truck.png'
+import warehouseIcon from '~/assets/icons/warehouse.png'
 import cargoAirUrl from '~/assets/images/marketing/cargo-air-landscape.png'
 import cargoSeaUrl from '~/assets/images/marketing/cargo-sea-landscape.png'
 import multinationalVectorUrl from '~/assets/images/marketing/vector-multinational.png'
@@ -14,6 +18,18 @@ definePageMeta({
 
 const route = useRoute()
 const country = computed(() => multinationalCountries.find(item => item.slug === route.params.country)!)
+const isThailand = computed(() => country.value.slug === 'thailand')
+const isAmerica = computed(() => country.value.slug === 'amerika')
+const isSingapore = computed(() => country.value.slug === 'singapura')
+const isTaiwan = computed(() => country.value.slug === 'taiwan')
+const isMalaysia = computed(() => country.value.slug === 'malaysia')
+const isAustralia = computed(() => country.value.slug === 'australia')
+const isSouthKorea = computed(() => country.value.slug === 'korea-selatan')
+const hasFeaturedFreightContent = computed(() => isThailand.value || isAmerica.value || isSingapore.value || isTaiwan.value || isMalaysia.value || isAustralia.value || isSouthKorea.value)
+const featuredCountryName = computed(() => isAmerica.value ? 'Amerika Serikat' : isSingapore.value ? 'Singapura' : isTaiwan.value ? 'Taiwan' : isMalaysia.value ? 'Malaysia' : isAustralia.value ? 'Australia' : isSouthKorea.value ? 'Korea Selatan' : 'Thailand')
+const featuredSeaDescription = computed(() => `Mengirim barang dalam volume besar? Layanan Kargo Laut (LCL & FCL) kami memberikan keandalan operasional dengan biaya yang jauh lebih efisien untuk rute ${featuredCountryName.value} - Indonesia. Dengan jaminan ketersediaan ruang kontainer dan transparansi harga, ETH Cargo siap membantu Anda merencanakan rantai pasok dengan lebih cerdas dan hemat.`)
+const featuredAirDescription = computed(() => `Butuh pengiriman kilat untuk barang bernilai tinggi atau komoditas prioritas? Layanan Kargo Udara kami menawarkan waktu transit tercepat dari ${featuredCountryName.value} ke Indonesia. Dengan jadwal penerbangan yang teratur dan penanganan khusus, kami memastikan rantai pasok Anda berjalan tanpa hambatan.`)
+const featuredEstimatorDescription = computed(() => `Dapatkan kalkulasi perkiraan biaya pengiriman All-In dari ${isAmerica.value ? 'Amerika' : isSingapore.value ? 'Singapura' : isTaiwan.value ? 'Taiwan' : isMalaysia.value ? 'Malaysia' : isAustralia.value ? 'Australia' : isSouthKorea.value ? 'Korea Selatan' : 'Thailand'} ke Indonesia secara instan untuk perencanaan modal bisnis Anda.`)
 const serviceDescription = computed(() => country.value.hero.description)
 const countrySeoMeta: Record<string, { title: string, description: string, keywords: string }> = {
   thailand: {
@@ -122,6 +138,42 @@ const shippingWorkflowSteps = Array.from({ length: 5 }, () => ({
     'Lorem ipsum dolor sit amet consectetur adipiscing elit. Quisque faucibus ex sapien vitae pellentesque sem placerat.',
 }))
 
+const thailandWorkflowSteps = [
+  {
+    title: 'Konsultasi & Hitung Estimasi',
+    description: 'Kirim detail kargo (volume/CBM atau berat) dan jenis layanan yang diinginkan. Tim kami akan memberikan penawaran biaya All-In yang transparan.',
+    icon: calculatorIcon,
+  },
+  {
+    title: 'Pengiriman ke Gudang Thailand',
+    description: 'Supplier Anda mengirimkan barang ke gudang konsolidasi ETH Cargo di Thailand lengkap dengan Kode Marking Anda.',
+    icon: deliveryTruckIcon,
+  },
+  {
+    title: 'Pengiriman Kargo & Clearance',
+    description: 'Kami melakukan verifikasi barang, pemuatan ke kontainer/pesawat, dan pengurusan seluruh proses bea cukai serta dokumen kepabeanan.',
+    icon: containerIcon,
+  },
+  {
+    title: 'Tiba di Gudang Indonesia',
+    description: 'Kargo tiba di gudang penyortiran ETH Cargo di Indonesia. Tim logistik melakukan pemeriksaan kondisi barang, pengukuran ulang, dan penimbangan akhir demi kepastian data.',
+    icon: warehouseIcon,
+  },
+  {
+    title: 'Pengiriman Akhir ke Alamat Anda',
+    description: 'Barang langsung didistribusikan ke alamat gudang, pabrik, atau toko Anda secara aman dan tepat waktu.',
+    icon: Package,
+  },
+]
+
+const featuredWorkflowSteps = computed(() => thailandWorkflowSteps.map((step, index) => index === 1 && (isAmerica.value || isSingapore.value || isTaiwan.value || isMalaysia.value || isAustralia.value || isSouthKorea.value)
+  ? {
+      ...step,
+      title: `Pengiriman ke Gudang ${isAmerica.value ? 'USA' : isTaiwan.value ? 'Taiwan' : isMalaysia.value ? 'Malaysia' : isAustralia.value ? 'Australia' : isSouthKorea.value ? 'Korea Selatan' : 'Singapura'}`,
+      description: `Supplier Anda mengirimkan barang ke gudang konsolidasi ETH Cargo di ${isAmerica.value ? 'Amerika' : isTaiwan.value ? 'Taiwan' : isMalaysia.value ? 'Malaysia' : isAustralia.value ? 'Australia' : isSouthKorea.value ? 'Korea Selatan' : 'Singapura'} lengkap dengan Kode Marking Anda.`,
+    }
+  : step))
+
 const faqContent = computed(() => country.value.faq)
 const cargoBanner = computed(() => ({
   title: `Siap Kirim Kargo Impor dari ${country.value.name}?`,
@@ -153,15 +205,20 @@ const cargoBanner = computed(() => ({
     country-variant
   />
   <MarketingSectionsFreightService
-    eyebrow="Our Service"
-    title="Sea Freight"
-    description="Kirim barang bervolume besar melalui layanan Full Container Load (FCL) yang aman dan andal. Dengan kepastian alokasi kontainer serta penguncian tarif hingga 45 hari, perencanaan logistik bisnis menjadi lebih efisien dan terukur."
-    :image="cargoSeaUrl"
+    :eyebrow="hasFeaturedFreightContent ? 'Layanan Kami' : 'Our Service'"
+    :title="hasFeaturedFreightContent ? 'Cargo Laut (Sea Freight)' : 'Sea Freight'"
+    :description="hasFeaturedFreightContent
+      ? featuredSeaDescription
+      : 'Kirim barang bervolume besar melalui layanan Full Container Load (FCL) yang aman dan andal. Dengan kepastian alokasi kontainer serta penguncian tarif hingga 45 hari, perencanaan logistik bisnis menjadi lebih efisien dan terukur.'"
+    :image="hasFeaturedFreightContent ? undefined : cargoSeaUrl"
     image-alt="Kapal kontainer untuk layanan sea freight multinational ETH Cargo"
-    cta-prompt="Pelajari layanan pengiriman laut untuk kebutuhan bisnis internasional Anda"
-    cta-label="Learn more"
+    :cta-prompt="hasFeaturedFreightContent
+      ? 'Solusi logistik All-In Door-to-Door yang aman, terpercaya, dan bebas pusing urusan kepabeanan.'
+      : 'Pelajari layanan pengiriman laut untuk kebutuhan bisnis internasional Anda'"
+    :cta-label="hasFeaturedFreightContent ? 'Pelajari Selengkapnya' : 'Learn more'"
     cta-to="/sea-freight"
     animated-cta
+    :compact-layout="hasFeaturedFreightContent"
   />
   <MarketingSectionsStats
     :stats="serviceStats"
@@ -169,27 +226,36 @@ const cargoBanner = computed(() => ({
   />
   <MarketingSectionsFreightService
     section-id="air-freight"
-    eyebrow="Our Service"
-    title="Air Freight"
-    description="Butuh pengiriman internasional yang lebih cepat? Layanan Air Freight kami memberikan waktu transit singkat, jadwal penerbangan yang terukur, serta penanganan kargo yang aman dari titik keberangkatan hingga tiba di negara tujuan."
-    :image="cargoAirUrl"
+    :eyebrow="hasFeaturedFreightContent ? 'Layanan Kami' : 'Our Service'"
+    :title="hasFeaturedFreightContent ? 'Cargo Udara (Air Freight)' : 'Air Freight'"
+    :description="hasFeaturedFreightContent
+      ? featuredAirDescription
+      : 'Butuh pengiriman internasional yang lebih cepat? Layanan Air Freight kami memberikan waktu transit singkat, jadwal penerbangan yang terukur, serta penanganan kargo yang aman dari titik keberangkatan hingga tiba di negara tujuan.'"
+    :image="hasFeaturedFreightContent ? undefined : cargoAirUrl"
     image-alt="Pesawat cargo untuk layanan air freight multinational ETH Cargo"
-    cta-prompt="Pelajari layanan pengiriman udara untuk kebutuhan bisnis internasional Anda"
+    :cta-prompt="hasFeaturedFreightContent
+      ? 'Nikmati layanan All-In Door-to-Door yang praktis. Seluruh proses kepabeanan dan pengantaran akhir kami tangani sepenuhnya untuk ketenangan bisnis Anda.'
+      : 'Pelajari layanan pengiriman udara untuk kebutuhan bisnis internasional Anda'"
     cta-label="Learn more"
     cta-to="/air-freight"
     animated-cta
+    :compact-layout="hasFeaturedFreightContent"
   />
   <MarketingSectionsShippingWorkflow
-    title="HOW IT WORKS"
-    description="Lorem ipsum dolor sit amet consectetur adipiscing elit. Quisque faucibus ex sapien vitae pellentesque sem placerat. In id cursus mi pretium tellus duis convallis. Tempus leo eu aenean sed diam urna tempor."
-    :steps="shippingWorkflowSteps"
-    cta-prompt="Lorem ipsum dolor sit amet consectetur adipiscing elit"
-    cta-label="Get a Quote"
+    :title="hasFeaturedFreightContent ? 'Cara Kerja Layanan Kargo' : 'HOW IT WORKS'"
+    :description="hasFeaturedFreightContent
+      ? 'Proses pengiriman kargo yang simpel, transparan, dan terukur dari awal hingga barang tiba di gudang Anda.'
+      : 'Lorem ipsum dolor sit amet consectetur adipiscing elit. Quisque faucibus ex sapien vitae pellentesque sem placerat. In id cursus mi pretium tellus duis convallis. Tempus leo eu aenean sed diam urna tempor.'"
+    :steps="hasFeaturedFreightContent ? featuredWorkflowSteps : shippingWorkflowSteps"
+    :cta-prompt="hasFeaturedFreightContent ? 'Siap memulai pengiriman kargo bisnis Anda hari ini?' : 'Lorem ipsum dolor sit amet consectetur adipiscing elit'"
+    :cta-label="hasFeaturedFreightContent ? 'Konsultasi Gratis' : 'Get a Quote'"
     :cta-to="whatsappConsultationUrl"
   />
   <MarketingSectionsRateEstimator
     title="Hitung Estimasi Tarif Multinasional"
-    description="Dapatkan kalkulasi perkiraan biaya pengiriman internasional secara instan untuk membantu perencanaan logistik dan anggaran bisnis Anda."
+    :description="hasFeaturedFreightContent
+      ? featuredEstimatorDescription
+      : 'Dapatkan kalkulasi perkiraan biaya pengiriman internasional secara instan untuk membantu perencanaan logistik dan anggaran bisnis Anda.'"
     animated-submit
   />
   <MarketingSectionsFaq :content="faqContent" />
