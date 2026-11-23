@@ -1,43 +1,26 @@
 <script setup lang="ts">
-import deaMaharaniAvatar from '~/assets/images/marketing/testimonials/dea-maharani.jpg'
-import helsaAvatar from '~/assets/images/marketing/testimonials/helsa.jpg'
-import raraRiriAvatar from '~/assets/images/marketing/testimonials/rara-riri.jpg'
-import sehunOohAvatar from '~/assets/images/marketing/testimonials/sehun-ooh.jpg'
 import { whatsappConsultationUrl } from '~/constants/whatsapp'
+import { googleReviews } from '~/data/googleReviews'
 
-const topTestimonials = [
-  {
-    name: 'Helsa',
-    reviewSource: 'Jasa Pembelian & Pengiriman',
-    reviewDate: 'Google Review',
-    content: 'Cargo yang menurutku gaada minimum pengiriman sama sekali jadi lebih bebas, terbaik pake cargo ini, gass terpercaya juga buat dipake terusan apalagi bonusnya barang import china langsung dianter ke alamat rumah kalian',
-    avatar: helsaAvatar,
-  },
-  {
-    name: 'Sehun ooh',
-    reviewSource: 'Jasa Pembelian & Pengiriman',
-    reviewDate: 'Google Review',
-    content: 'ETH Cargo amanah bgt, rekomendasi bgt buat yg mau beli barang barang impor dari china. customer service nya responsif, dan ternyata adabonus member gratis lagi. puas dengan pelayanannya',
-    avatar: sehunOohAvatar,
-  },
-]
-
-const bottomTestimonials = [
-  {
-    name: 'Rara Riri',
-    reviewSource: 'Jasa Pembelian & Pengiriman',
-    reviewDate: 'Google Review',
-    content: 'amanah bgttt, aku kalau mau beli barang-barang dari china ke sinii. pelayanan cepat, dan CSnya ramah syekali',
-    avatar: raraRiriAvatar,
-  },
-  {
-    name: 'Dea Maharani',
-    reviewSource: 'Jasa Pembelian & Pengiriman',
-    reviewDate: 'Google Review',
-    content: 'jasa import barang dari china terbaikk, bisa bantu order dari marketplace china, biaya juga all in pokoknya terbaikk',
-    avatar: deaMaharaniAvatar,
-  },
-]
+const dateFormatter = new Intl.DateTimeFormat('id-ID', {
+  day: 'numeric', month: 'short', year: 'numeric', timeZone: 'UTC',
+})
+// Ulasan 5 bintang ini hanya berisi petunjuk alamat, bukan pengalaman layanan.
+const addressOnlyReviewId = 'ChZDSUhNMG9nS0VJQ0FnTURBZ3NEZlNBEAE'
+const testimonials = googleReviews
+  .filter(review => review.stars === 5 && review.reviewId !== addressOnlyReviewId)
+  .map(review => ({
+    name: review.reviewerName,
+    reviewSource: 'Google Maps',
+    reviewDate: dateFormatter.format(new Date(review.publishedAtDate)),
+    content: review.text,
+    avatar: review.reviewerPhotoUrl,
+    stars: review.stars,
+    reviewUrl: review.reviewUrl,
+  }))
+const rowSplit = Math.ceil(testimonials.length / 2)
+const topTestimonials = testimonials.slice(0, rowSplit)
+const bottomTestimonials = testimonials.slice(rowSplit)
 </script>
 
 <template>
@@ -76,6 +59,7 @@ const bottomTestimonials = [
             <div
               class="marquee-group"
               aria-hidden="true"
+              inert
             >
               <MarketingTestimonialCard
                 v-for="testimonial in topTestimonials"
@@ -86,6 +70,7 @@ const bottomTestimonials = [
             <div
               class="marquee-group"
               aria-hidden="true"
+              inert
             >
               <MarketingTestimonialCard
                 v-for="testimonial in topTestimonials"
@@ -110,6 +95,7 @@ const bottomTestimonials = [
             <div
               class="marquee-group"
               aria-hidden="true"
+              inert
             >
               <MarketingTestimonialCard
                 v-for="testimonial in bottomTestimonials"
@@ -120,6 +106,7 @@ const bottomTestimonials = [
             <div
               class="marquee-group"
               aria-hidden="true"
+              inert
             >
               <MarketingTestimonialCard
                 v-for="testimonial in bottomTestimonials"
