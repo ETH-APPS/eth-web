@@ -25,6 +25,7 @@ const props = withDefaults(
     calculatorEnabled?: boolean
     animatedSubmit?: boolean
     showShippingPriceField?: boolean
+    deliveryEstimates?: Readonly<Record<string, string>>
   }>(),
   {
     title: 'Hitung Estimasi Tarif',
@@ -250,13 +251,12 @@ watch(
             @input="handleShippingPriceInput"
           >
           <p class="mt-2 text-[13px] leading-relaxed text-text-tertiary">
-            Bingung menentukan harga pengiriman?
             <a
               :href="shippingPriceWhatsappUrl(cargoService)"
               target="_blank"
               rel="noopener noreferrer"
               class="font-semibold text-primary-500 underline underline-offset-2 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500"
-            >Hubungi Customer Service</a>
+            >Hubungi CS</a> untuk mengetahui tarif yang berlaku saat ini
           </p>
         </div>
 
@@ -414,7 +414,7 @@ watch(
           </div>
           <div class="min-w-0">
             <dt class="text-[13px] text-text-tertiary sm:text-[15px]">Estimasi Waktu Sampai</dt>
-            <dd class="mt-2 text-[16px] font-medium text-text-secondary">{{ CARGO_DELIVERY_ESTIMATES[cargoService] ?? '-' }}</dd>
+            <dd class="mt-2 text-[16px] font-medium text-text-secondary">{{ deliveryEstimates?.[cargoService] ?? CARGO_DELIVERY_ESTIMATES[cargoService] ?? '-' }}</dd>
           </div>
         </dl>
 

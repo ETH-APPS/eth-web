@@ -24,6 +24,6 @@ export const marketingNavigation = [
 ] as const
 
 export const quoteNavigation = {
-  label: 'Get a Quote',
+  label: 'Konsultasi Impor',
   href: whatsappConsultationUrl
 } as const

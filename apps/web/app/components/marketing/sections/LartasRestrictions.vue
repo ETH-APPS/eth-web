@@ -3,6 +3,7 @@ import {
   TriangleAlert,
   X,
 } from 'lucide-vue-next'
+import { whatsappConsultationUrl } from '~/constants/whatsapp'
 
 const prohibitedGroups = [
   {
@@ -69,7 +70,7 @@ const restrictedGroups = [
   <section
     id="restricted-cargo-categories"
     aria-labelledby="restricted-cargo-categories-title"
-    class="bg-bg-0 py-16 sm:py-20"
+    class="bg-bg-0 py-10 sm:py-12"
   >
     <UiContainer>
       <header class="text-center">
@@ -80,10 +81,7 @@ const restrictedGroups = [
           Ketentuan Barang Dilarang & Pembatasan (Lartas)
         </h2>
         <p class="mx-auto mt-6 max-w-[850px] text-[20px] leading-[1.45] text-text-tertiary">
-          Demi menjamin keamanan, kepatuhan hukum, dan kelancaran proses customs<br class="hidden lg:inline">
-          clearance di pelabuhan/bandara, ETH Cargo memberlakukan regulasi ketat terkait jenis<br class="hidden lg:inline">
-          komoditas yang dapat dikirimkan. Pastikan barang Anda tidak termasuk dalam kategori<br class="hidden lg:inline">
-          di bawah ini sebelum menghitung estimasi biaya.
+          Demi menjamin keamanan, kepatuhan hukum, dan kelancaran proses customs clearance di pelabuhan/bandara, ETH Cargo memberlakukan regulasi ketat terkait jenis komoditas yang dapat dikirimkan, sehingga Anda perlu memastikan barang tidak termasuk dalam kategori di bawah ini sebelum menghitung estimasi biaya.
         </p>
       </header>
 
@@ -143,15 +141,16 @@ const restrictedGroups = [
 
       <footer class="mt-12 text-center">
         <p class="text-[16px] text-text-tertiary">
-          Butuh Daftar Lengkap Komoditas Lartas? Unduh Dokumen Di Sini!
+          Ingin memastikan ketentuan impor komoditas spesifik bisnis Anda?
         </p>
         <UiAnimatedArrowButton
-          type="button"
+          :href="whatsappConsultationUrl"
+          target="_blank"
           variant="plain"
           :icon-size="16"
           class="relative mt-4 inline-flex h-10 items-center gap-2 rounded-lg bg-primary-500 px-5 text-[14px] font-medium text-bg-0 transition-[background-color,color,box-shadow] before:absolute before:-inset-y-0.5 before:inset-x-0 before:content-[''] hover:bg-primary-100 hover:text-primary-500 hover:ring-2 hover:ring-inset hover:ring-primary-500 focus-visible:bg-primary-100 focus-visible:text-primary-500 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary-500 focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-primary-500"
         >
-          Download Full Document
+          Konsultasi via WhatsApp
         </UiAnimatedArrowButton>
       </footer>
     </UiContainer>

@@ -30,6 +30,16 @@ const featuredCountryName = computed(() => isAmerica.value ? 'Amerika Serikat' :
 const featuredSeaDescription = computed(() => `Mengirim barang dalam volume besar? Layanan Kargo Laut (LCL & FCL) kami memberikan keandalan operasional dengan biaya yang jauh lebih efisien untuk rute ${featuredCountryName.value} - Indonesia. Dengan jaminan ketersediaan ruang kontainer dan transparansi harga, ETH Cargo siap membantu Anda merencanakan rantai pasok dengan lebih cerdas dan hemat.`)
 const featuredAirDescription = computed(() => `Butuh pengiriman kilat untuk barang bernilai tinggi atau komoditas prioritas? Layanan Kargo Udara kami menawarkan waktu transit tercepat dari ${featuredCountryName.value} ke Indonesia. Dengan jadwal penerbangan yang teratur dan penanganan khusus, kami memastikan rantai pasok Anda berjalan tanpa hambatan.`)
 const featuredEstimatorDescription = computed(() => `Dapatkan kalkulasi perkiraan biaya pengiriman All-In dari ${isAmerica.value ? 'Amerika' : isSingapore.value ? 'Singapura' : isTaiwan.value ? 'Taiwan' : isMalaysia.value ? 'Malaysia' : isAustralia.value ? 'Australia' : isSouthKorea.value ? 'Korea Selatan' : 'Thailand'} ke Indonesia secara instan untuk perencanaan modal bisnis Anda.`)
+const countryDeliveryEstimates = computed(() => {
+  const seaEstimate = isThailand.value ? '2 ~ 4 Minggu' : '4 ~ 8 Minggu'
+  const airEstimate = isThailand.value ? '1 ~ 5 Hari' : '3 ~ 7 Hari'
+
+  return {
+    'FCL Cargo': seaEstimate,
+    'LCL Cargo': seaEstimate,
+    'Air Cargo': airEstimate,
+  }
+})
 const serviceDescription = computed(() => country.value.hero.description)
 const countrySeoMeta: Record<string, { title: string, description: string, keywords: string }> = {
   thailand: {
@@ -215,7 +225,7 @@ const cargoBanner = computed(() => ({
     :cta-prompt="hasFeaturedFreightContent
       ? 'Solusi logistik All-In Door-to-Door yang aman, terpercaya, dan bebas pusing urusan kepabeanan.'
       : 'Pelajari layanan pengiriman laut untuk kebutuhan bisnis internasional Anda'"
-    :cta-label="hasFeaturedFreightContent ? 'Pelajari Selengkapnya' : 'Learn more'"
+    cta-label="Pelajari Selengkapnya"
     cta-to="/sea-freight"
     animated-cta
     :compact-layout="hasFeaturedFreightContent"
@@ -236,7 +246,7 @@ const cargoBanner = computed(() => ({
     :cta-prompt="hasFeaturedFreightContent
       ? 'Nikmati layanan All-In Door-to-Door yang praktis. Seluruh proses kepabeanan dan pengantaran akhir kami tangani sepenuhnya untuk ketenangan bisnis Anda.'
       : 'Pelajari layanan pengiriman udara untuk kebutuhan bisnis internasional Anda'"
-    cta-label="Learn more"
+    cta-label="Pelajari Selengkapnya"
     cta-to="/air-freight"
     animated-cta
     :compact-layout="hasFeaturedFreightContent"
@@ -256,7 +266,10 @@ const cargoBanner = computed(() => ({
     :description="hasFeaturedFreightContent
       ? featuredEstimatorDescription
       : 'Dapatkan kalkulasi perkiraan biaya pengiriman internasional secara instan untuk membantu perencanaan logistik dan anggaran bisnis Anda.'"
+    :delivery-estimates="countryDeliveryEstimates"
+    calculator-enabled
     animated-submit
+    show-shipping-price-field
   />
   <MarketingSectionsFaq :content="faqContent" />
   <div id="quote" class="pb-6 lg:pb-10">

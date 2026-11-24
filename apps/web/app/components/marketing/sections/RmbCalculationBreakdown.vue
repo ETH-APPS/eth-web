@@ -4,11 +4,16 @@ import {
   Plus,
   X,
 } from 'lucide-vue-next'
+import {
+  RMB_TRANSFER_ADMIN_FEE_RMB,
+  RMB_TRANSFER_RATE,
+  calculateRmbTransferTotal,
+} from '~/utils/rmbTransfer'
 
 const nominalRmb = 1_000
-const adminFeeRmb = 50
-const exchangeRate = 2_700
-const totalPayment = (nominalRmb + adminFeeRmb) * exchangeRate
+const adminFeeRmb = RMB_TRANSFER_ADMIN_FEE_RMB
+const exchangeRate = RMB_TRANSFER_RATE
+const totalPayment = calculateRmbTransferTotal(nominalRmb)
 const numberFormatter = new Intl.NumberFormat('id-ID')
 </script>
 

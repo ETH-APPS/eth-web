@@ -47,7 +47,7 @@ useSeoMeta({
 
 const transferStats = [
   { value: '+10.000', label: 'Transaksi\nTransfer Selesai' },
-  { value: '<2 Jam', label: 'Proses Kilat\nTanpa Delay' },
+  { value: '+10', label: 'Tahun\nPengalaman' },
   { value: '98%', label: 'Tingkat Keberhasilan\nTransaksi' },
 ] as const
 

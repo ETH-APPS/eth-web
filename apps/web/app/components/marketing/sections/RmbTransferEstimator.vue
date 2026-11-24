@@ -9,14 +9,19 @@ import logoAlipay from '~/assets/images/brand/alipay.png'
 import logoBankOfChina from '~/assets/images/brand/bank-of-china.png'
 import logoTaobao from '~/assets/images/brand/taobao.png'
 import logoWechatPay from '~/assets/images/brand/wechat-pay.png'
+import {
+  RMB_TRANSFER_ADMIN_FEE_RMB,
+  RMB_TRANSFER_RATE,
+  calculateRmbTransferTotal,
+} from '~/utils/rmbTransfer'
 
 const accountOptions = [
-  { label: 'Alipay', adminFee: 50_000 },
-  { label: 'Bank of China', adminFee: 75_000 },
-  { label: 'WeChat Pay', adminFee: 50_000 },
-  { label: '1688', adminFee: 50_000 },
-  { label: 'Taobao', adminFee: 50_000 },
-  { label: 'Alibaba', adminFee: 50_000 },
+  { label: 'Alipay' },
+  { label: 'Bank of China' },
+  { label: 'WeChat Pay' },
+  { label: '1688' },
+  { label: 'Taobao' },
+  { label: 'Alibaba' },
 ] as const
 
 const brandLogos = [
@@ -28,16 +33,19 @@ const brandLogos = [
   { name: 'Alibaba.com', src: logoAlibaba, widthClass: 'w-[160px]' },
 ]
 
-const exchangeRate = 2_600
-const amountInput = ref(10_000)
+const exchangeRate = RMB_TRANSFER_RATE
+const adminFeeRmb = RMB_TRANSFER_ADMIN_FEE_RMB
+const amountInput = ref<number | ''>('')
 const selectedAccount = ref<(typeof accountOptions)[number]['label']>('Alipay')
-const calculatedAmount = ref(10_000)
-const calculatedAccount = ref<(typeof accountOptions)[number]['label']>('Alipay')
-
-const adminFee = computed(() => (
-  accountOptions.find(option => option.label === calculatedAccount.value)?.adminFee ?? 50_000
+const calculatedAmount = ref<number | null>(null)
+const displayedAmount = computed(() => (
+  calculatedAmount.value !== null && amountInput.value === calculatedAmount.value
+    ? calculatedAmount.value
+    : null
 ))
-const totalPayment = computed(() => (calculatedAmount.value * exchangeRate) + adminFee.value)
+const totalPayment = computed(() => (
+  displayedAmount.value === null ? null : calculateRmbTransferTotal(displayedAmount.value)
+))
 
 function formatRmb(value: number) {
   return new Intl.NumberFormat('en-US', {
@@ -51,15 +59,15 @@ function formatRupiah(value: number) {
 }
 
 function calculateEstimate() {
-  calculatedAmount.value = Math.max(0, Number(amountInput.value) || 0)
-  calculatedAccount.value = selectedAccount.value
+  const amount = Number(amountInput.value)
+  if (!Number.isFinite(amount) || amount <= 0) return
+  calculatedAmount.value = amount
 }
 
 function resetEstimate() {
-  amountInput.value = 10_000
+  amountInput.value = ''
   selectedAccount.value = 'Alipay'
-  calculatedAmount.value = 10_000
-  calculatedAccount.value = 'Alipay'
+  calculatedAmount.value = null
 }
 </script>
 
@@ -86,7 +94,7 @@ function resetEstimate() {
               Kurs RMB Hari Ini
             </p>
             <p class="mt-1 text-[22px] font-medium text-text-secondary">
-              ¥ 1&nbsp; = &nbsp;Rp 2.600,00
+              ¥ 1&nbsp; = &nbsp;{{ formatRupiah(exchangeRate) }},00
             </p>
             <p class="mt-1 text-[10px] font-normal text-text-tertiary">
               Update real-time. Bebas biaya tersembunyi.
@@ -191,7 +199,7 @@ function resetEstimate() {
             <dl class="mt-4 border-y border-border-200 py-4 text-[16px] font-normal text-text-secondary">
               <div class="flex items-center justify-between">
                 <dt>Jumlah RMB</dt>
-                <dd>¥ {{ formatRmb(calculatedAmount) }}</dd>
+                <dd>{{ displayedAmount === null ? '—' : `¥ ${formatRmb(displayedAmount)}` }}</dd>
               </div>
               <div class="mt-3 flex items-start justify-between">
                 <dt>
@@ -202,7 +210,7 @@ function resetEstimate() {
               </div>
               <div class="mt-3 flex items-center justify-between">
                 <dt>Biaya Admin</dt>
-                <dd>{{ formatRupiah(adminFee) }}</dd>
+                <dd>¥ {{ formatRmb(adminFeeRmb) }}</dd>
               </div>
             </dl>
 
@@ -215,7 +223,7 @@ function resetEstimate() {
                 aria-labelledby="rmb-total-label"
                 class="text-[24px] font-semibold text-primary-500 lg:text-[22px]"
               >
-                {{ formatRupiah(totalPayment) }}
+                {{ totalPayment === null ? '—' : formatRupiah(totalPayment) }}
               </output>
             </div>
 

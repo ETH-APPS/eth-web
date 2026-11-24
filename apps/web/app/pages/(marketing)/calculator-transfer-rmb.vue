@@ -49,14 +49,14 @@ const cargoShippingTypes = [
   {
     mode: 'sea',
     title: 'Sea Freight',
-    description: 'Lorem ipsum dolor sit amet consectetur adipiscing elit. Quisque faucibus ex sapien vitae pellentesque sem placerat.',
+    description: 'Solusi paling ekonomis untuk pengiriman barang impor skala besar (grosir) atau berdimensi berat. Tersedia layanan LCL dan FCL untuk mengefisienkan biaya operasional logistik Anda.',
     eta: '4~8 minggu',
     to: '/sea-freight',
   },
   {
     mode: 'air',
     title: 'Air Freight',
-    description: 'Lorem ipsum dolor sit amet consectetur adipiscing elit. Quisque faucibus ex sapien vitae pellentesque sem placerat.',
+    description: 'Solusi pengiriman kilat untuk barang bernilai tinggi, produk sampel, atau komoditas prioritas yang mendesak. Memastikan rantai pasok Anda tetap berjalan cepat tanpa hambatan.',
     eta: '1~7 hari',
     to: '/air-freight',
   },
@@ -76,7 +76,7 @@ const transferBanner = illustratedCtaBanners.transfer
     <MarketingSectionsCargoShippingTypes
       section-id="calculator-transfer-rmb-shipping-types"
       title="Tipe Pengiriman Kargo"
-      description="Quisque faucibus ex sapien vitae pellentesque sem placerat. In id cursus mi pretium tellus duis convallis."
+      description="Sesuaikan dengan kebutuhan waktu dan anggaran bisnis Anda. Kami menyediakan opsi pengiriman via laut dan udara dengan sistem All-In Door-to-Door yang aman dan transparan."
       surface="muted"
       plain-header
       :services="cargoShippingTypes"
