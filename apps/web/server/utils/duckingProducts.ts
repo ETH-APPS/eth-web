@@ -2,6 +2,7 @@ import { createHash, createHmac, randomUUID } from 'node:crypto'
 import type { Product, ProductSearchResult, ProductSource } from '../../shared/types/products'
 
 export const SEARCH_PATH = '/api/v2/products/search'
+export const TOPLIST_PATH = '/api/v2/products/toplist/all'
 export const PAGE_SIZE = 20
 const EMPTY_BODY_HASH = createHash('sha256').update('').digest('hex')
 
@@ -36,17 +37,21 @@ export function parseSearchParams(query: Record<string, unknown>): SearchParams 
 }
 
 export function signSearchRequest(secret: string, timestamp: string, nonce: string): string {
-  const payload = `GET:${SEARCH_PATH}:${timestamp}:${nonce}:${EMPTY_BODY_HASH}`
+  return signDuckingRequest(secret, timestamp, nonce, SEARCH_PATH)
+}
+
+export function signDuckingRequest(secret: string, timestamp: string, nonce: string, path: string): string {
+  const payload = `GET:${path}:${timestamp}:${nonce}:${EMPTY_BODY_HASH}`
   return createHmac('sha256', secret).update(payload).digest('hex')
 }
 
-export function createSigningHeaders(secret: string): Record<string, string> {
+export function createSigningHeaders(secret: string, path = SEARCH_PATH): Record<string, string> {
   const timestamp = Math.floor(Date.now() / 1000).toString()
   const nonce = randomUUID()
   return {
     'X-Timestamp': timestamp,
     'X-Nonce': nonce,
-    'X-Signature': signSearchRequest(secret, timestamp, nonce),
+    'X-Signature': signDuckingRequest(secret, timestamp, nonce, path),
   }
 }
 
@@ -97,4 +102,42 @@ export function normalizeProducts(raw: unknown, params: SearchParams): ProductSe
     pageSize: params.pageSize,
     hasMore: data.products.length >= params.pageSize,
   }
+}
+
+export function normalizeToplistProducts(raw: unknown): ProductSearchResult | null {
+  const envelope = record(raw)
+  const hot = record(record(envelope?.data)?.hot)
+  if (envelope?.success !== true || !Array.isArray(hot?.products))
+    return null
+
+  const products: Product[] = []
+  for (const item of hot.products) {
+    const product = record(item)
+    if (!product)
+      continue
+
+    const rawId = product.item_id
+    const id = typeof rawId === 'string' || typeof rawId === 'number' ? String(rawId) : ''
+    const translated = typeof product.translate_title === 'string' ? product.translate_title.trim() : ''
+    const original = typeof product.title === 'string' ? product.title.trim() : ''
+    const image = typeof product.img_url === 'string' ? product.img_url : ''
+    if (!/^\d+$/.test(id) || !(translated || original) || !/^https:\/\//.test(image))
+      continue
+
+    const detail = new URL('/products/detail', 'https://www.ducking.id')
+    detail.searchParams.set('offer_id', id)
+    const soldOut = product.sold_out
+    products.push({
+      id,
+      title: translated || original,
+      image,
+      priceIdr: null,
+      soldCount: typeof soldOut === 'number' && Number.isSafeInteger(soldOut) && soldOut >= 0 ? soldOut : null,
+      detailUrl: detail.href,
+    })
+    if (products.length === 6)
+      break
+  }
+
+  return { products, pageNo: 1, pageSize: 6, hasMore: false }
 }

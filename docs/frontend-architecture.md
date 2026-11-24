@@ -257,7 +257,8 @@ packages/
   di `apps/api`.
 
 Contoh BFF yang sudah digunakan ialah
-[`/api/products/search`](../apps/web/server/api/products/search.get.ts) untuk
+[`/api/products/search`](../apps/web/server/api/products/search.get.ts) dan
+[`/api/products/toplist`](../apps/web/server/api/products/toplist.get.ts) untuk
 produk Ducking. Server Nuxt menandatangani request gateway dengan runtime
 config privat; lihat [alur produk Ducking](ducking-product-flow.md).
 

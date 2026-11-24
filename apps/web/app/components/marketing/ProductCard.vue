@@ -6,6 +6,7 @@ import type { ProductSource } from '../../../shared/types/products'
 const props = defineProps<{
   title: string
   priceIdr: number | null
+  soldCount?: number | null
   image: string
   detailUrl: string
   source: ProductSource
@@ -15,6 +16,9 @@ const imageFailed = ref(false)
 const formattedPrice = computed(() => props.priceIdr === null
   ? 'Harga tidak tersedia'
   : new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(props.priceIdr))
+const formattedSoldCount = computed(() => props.soldCount == null
+  ? 'Jumlah terjual belum tersedia'
+  : `Terjual ${new Intl.NumberFormat('id-ID').format(props.soldCount)}`)
 const consultationUrl = computed(() => productWhatsappUrl(props))
 </script>
 
@@ -47,7 +51,7 @@ const consultationUrl = computed(() => productWhatsappUrl(props))
         {{ title }}
       </h3>
       <div class="mt-2 flex items-center justify-between gap-2 px-1 text-primary-500">
-        <p class="min-w-0 text-[13px] font-semibold lg:text-[15px]">{{ formattedPrice }}</p>
+        <p class="min-w-0 text-[13px] font-semibold lg:text-[15px]">{{ soldCount === undefined ? formattedPrice : formattedSoldCount }}</p>
         <ArrowUpRight :size="20" class="shrink-0" aria-hidden="true" />
       </div>
     </a>

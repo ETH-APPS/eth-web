@@ -24,18 +24,22 @@ interface ProductInquiry {
   title: string
   source: ProductSource
   priceIdr: number | null
+  soldCount?: number | null
   detailUrl: string
 }
 
-export function productWhatsappUrl({ title, source, priceIdr, detailUrl }: ProductInquiry): string {
+export function productWhatsappUrl({ title, source, priceIdr, soldCount, detailUrl }: ProductInquiry): string {
   const price = priceIdr === null
     ? 'belum tersedia'
     : new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(priceIdr)
+  const productInfo = soldCount === undefined
+    ? `Harga referensi: ${price}`
+    : soldCount === null ? 'Jumlah terjual: belum tersedia' : `Terjual: ${new Intl.NumberFormat('id-ID').format(soldCount)}`
   const message = [
     'Halo tim ETH Cargo, saya ingin konsultasi impor produk ini:',
     `Produk: ${title}`,
     `Marketplace: ${source === 'taobao' ? 'Taobao' : '1688'}`,
-    `Harga referensi: ${price}`,
+    productInfo,
     `Link referensi: ${detailUrl}`,
     '',
     'Mohon bantu cek ketersediaan serta estimasi biaya total dan waktu pengiriman ke Indonesia. Terima kasih.',

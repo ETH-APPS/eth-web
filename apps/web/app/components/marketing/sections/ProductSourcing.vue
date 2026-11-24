@@ -7,6 +7,7 @@ import logoTmall from '~/assets/images/brand/tmall.png'
 import logoAliexpress from '~/assets/images/brand/aliexpress.png'
 import { illustratedCtaBanners } from '~/constants/illustratedCtaBanners'
 import { productCategories } from '~/constants/productCategories'
+import { productMarketplaceSources, type ProductMarketplace } from '~/constants/productMarketplaces'
 import type { Product, ProductSearchResult, ProductSource } from '../../../../shared/types/products'
 
 const marketplaces = [
@@ -18,16 +19,22 @@ const marketplaces = [
 ]
 const productSourcingBanner = illustratedCtaBanners.productSourcing
 const MAX_PRODUCTS = 6
+const marketplaceOptions = Object.keys(productMarketplaceSources) as ProductMarketplace[]
 const searchQuery = ref('')
-const selectedSource = ref<ProductSource>('1688')
+const selectedMarketplace = ref<ProductMarketplace>('1688')
+const selectedSource = computed<ProductSource>(() => productMarketplaceSources[selectedMarketplace.value])
+const displayedSource = ref<ProductSource>('1688')
+const marketplaceOpen = ref(false)
+const marketplaceTransitioning = ref(false)
+const marketplaceContainer = ref<HTMLElement | null>(null)
+const marketplaceButton = ref<HTMLButtonElement | null>(null)
 const selectedCategory = ref<string | null>(null)
 const activeCategory = computed(() => productCategories.find(category => category.name === selectedCategory.value))
 const displayedKeyword = ref('')
 const showAdditionalProducts = ref(false)
 
-const { data: initialData, error: initialError, pending: initialPending } = await useFetch<ProductSearchResult>('/api/products/search', {
-  query: { source: '1688', page_no: 1, page_size: MAX_PRODUCTS },
-  key: 'home-products-default-1688-six',
+const { data: initialData, error: initialError, pending: initialPending } = await useFetch<ProductSearchResult>('/api/products/toplist', {
+  key: 'home-products-toplist-hot-six',
   retry: 0,
 })
 
@@ -36,6 +43,7 @@ const hasSearched = ref(false)
 const loading = ref(false)
 const errorMessage = ref(initialError.value ? 'Produk belum dapat dimuat. Coba lagi.' : '')
 let activeController: AbortController | null = null
+let marketplaceTransitionTimer: ReturnType<typeof setTimeout> | null = null
 
 function showCategoryOnHover(name: string, event: PointerEvent) {
   if (event.pointerType !== 'touch') selectedCategory.value = name
@@ -62,14 +70,74 @@ function selectKeyword(keyword: string) {
   void runSearch(keyword)
 }
 
+function selectMarketplace(marketplace: ProductMarketplace) {
+  if (selectedMarketplace.value === marketplace) {
+    marketplaceOpen.value = false
+    marketplaceButton.value?.focus()
+    return
+  }
+
+  const previousSource = selectedSource.value
+  selectedMarketplace.value = marketplace
+  marketplaceOpen.value = false
+  marketplaceButton.value?.focus()
+
+  if (searchQuery.value.trim() ? previousSource !== selectedSource.value : hasSearched.value)
+    void runSearch()
+  else
+    showMarketplaceTransition()
+}
+
+function showMarketplaceTransition() {
+  if (marketplaceTransitionTimer || loading.value || initialPending.value || errorMessage.value || products.value.length === 0) return
+
+  marketplaceTransitioning.value = true
+  marketplaceTransitionTimer = setTimeout(() => {
+    marketplaceTransitioning.value = false
+    marketplaceTransitionTimer = null
+  }, 450)
+}
+
+function openMarketplaceOnHover(event: PointerEvent) {
+  if (event.pointerType === 'mouse') marketplaceOpen.value = true
+}
+
+function closeMarketplaceOnHover(event: PointerEvent) {
+  if (event.pointerType === 'mouse') marketplaceOpen.value = false
+}
+
+function toggleMarketplace(event: MouseEvent) {
+  marketplaceOpen.value = (event as PointerEvent).pointerType === 'mouse' ? true : !marketplaceOpen.value
+}
+
+function closeMarketplace() {
+  if (!marketplaceOpen.value) return
+  marketplaceOpen.value = false
+  marketplaceButton.value?.focus()
+}
+
+function closeMarketplaceOnBlur(event: FocusEvent) {
+  if (!marketplaceContainer.value?.contains(event.relatedTarget as Node | null))
+    marketplaceOpen.value = false
+}
+
+function closeMarketplaceOnPointerDown(event: PointerEvent) {
+  if (!marketplaceContainer.value?.contains(event.target as Node))
+    marketplaceOpen.value = false
+}
+
 async function runSearch(keyword = searchQuery.value) {
   const term = keyword.trim()
 
+  if (marketplaceTransitionTimer) clearTimeout(marketplaceTransitionTimer)
+  marketplaceTransitionTimer = null
+  marketplaceTransitioning.value = false
   activeController?.abort()
   const controller = new AbortController()
   activeController = controller
   searchQuery.value = term
   displayedKeyword.value = term
+  displayedSource.value = term ? selectedSource.value : '1688'
   hasSearched.value = Boolean(term)
   products.value = []
   showAdditionalProducts.value = false
@@ -77,11 +145,16 @@ async function runSearch(keyword = searchQuery.value) {
   loading.value = true
 
   try {
-    const result = await $fetch<ProductSearchResult>('/api/products/search', {
-      query: { source: selectedSource.value, ...(term ? { keyword: term } : {}), page_no: 1, page_size: MAX_PRODUCTS },
-      signal: controller.signal,
-      retry: 0,
-    })
+    const result = term
+      ? await $fetch<ProductSearchResult>('/api/products/search', {
+          query: { source: selectedSource.value, keyword: term, page_no: 1, page_size: MAX_PRODUCTS },
+          signal: controller.signal,
+          retry: 0,
+        })
+      : await $fetch<ProductSearchResult>('/api/products/toplist', {
+          signal: controller.signal,
+          retry: 0,
+        })
     if (controller !== activeController) return
     products.value = result.products.slice(0, MAX_PRODUCTS)
   }
@@ -97,7 +170,11 @@ async function runSearch(keyword = searchQuery.value) {
   }
 }
 
+onMounted(() => document.addEventListener('pointerdown', closeMarketplaceOnPointerDown))
+
 onBeforeUnmount(() => {
+  document.removeEventListener('pointerdown', closeMarketplaceOnPointerDown)
+  if (marketplaceTransitionTimer) clearTimeout(marketplaceTransitionTimer)
   activeController?.abort()
   activeController = null
 })
@@ -149,13 +226,35 @@ onBeforeUnmount(() => {
           </div>
 
           <form class="grid grid-cols-[auto_minmax(0,1fr)_44px] items-center gap-2" @submit.prevent="runSearch()">
-            <label for="product-marketplace" class="sr-only">Pilih marketplace</label>
-            <div class="relative flex min-h-11 items-center text-primary-500">
-              <select id="product-marketplace" v-model="selectedSource" name="marketplace" class="h-11 max-w-[84px] cursor-pointer appearance-none bg-transparent pr-4 text-[14px] font-medium outline-none focus-visible:outline-2 focus-visible:outline-primary-500 md:max-w-none md:text-[16px]" @change="runSearch()">
-                <option value="1688">1688</option>
-                <option value="taobao">Taobao</option>
-              </select>
-              <ChevronDown :size="15" class="pointer-events-none absolute right-0" aria-hidden="true" />
+            <div ref="marketplaceContainer" class="relative min-w-0 text-primary-500" @pointerenter="openMarketplaceOnHover" @pointerleave="closeMarketplaceOnHover" @focusout="closeMarketplaceOnBlur" @keydown.esc.stop.prevent="closeMarketplace">
+              <button
+                id="product-marketplace"
+                ref="marketplaceButton"
+                type="button"
+                aria-label="Pilih marketplace"
+                aria-controls="product-marketplace-options"
+                :aria-expanded="marketplaceOpen"
+                class="flex min-h-11 max-w-[120px] items-center gap-1 rounded-lg px-1 text-[14px] font-medium focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500 md:text-[16px]"
+                @click="toggleMarketplace"
+              >
+                <span class="min-w-0 truncate">{{ selectedMarketplace }}</span>
+                <ChevronDown :size="15" class="shrink-0 transition-transform duration-200 motion-reduce:transition-none" :class="marketplaceOpen ? 'rotate-180' : ''" aria-hidden="true" />
+              </button>
+              <div v-show="marketplaceOpen" id="product-marketplace-options" class="absolute left-0 top-full z-30 w-44 pt-2">
+                <ul aria-label="Marketplace" class="rounded-2xl border border-border-200 bg-white p-2 shadow-lg">
+                  <li v-for="marketplace in marketplaceOptions" :key="marketplace">
+                    <button
+                      type="button"
+                      :aria-pressed="selectedMarketplace === marketplace"
+                      class="flex min-h-11 w-full items-center rounded-xl px-4 text-left text-[14px] font-medium transition-colors hover:text-[#b93630] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500 motion-reduce:transition-none"
+                      :class="selectedMarketplace === marketplace ? 'bg-primary-50 text-[#b93630]' : 'text-text-secondary'"
+                      @click="selectMarketplace(marketplace)"
+                    >
+                      {{ marketplace }}
+                    </button>
+                  </li>
+                </ul>
+              </div>
             </div>
             <label for="product-search" class="sr-only">Cari nama produk</label>
             <input
@@ -175,7 +274,8 @@ onBeforeUnmount(() => {
           <p class="mt-3 text-[12px] leading-5 text-text-secondary">
             *Anda bisa menempelkan link produk dari <span class="font-semibold text-[#ff4b14]">1688</span>, <span class="font-semibold text-[#ff4b14]">TaoBao</span>, <span class="font-semibold text-black">Aliexpress</span>, <span class="font-semibold text-[#ff4b14]">Alibaba</span> dan <span class="font-semibold text-primary-500">Tmall</span>.
           </p>
-          <p v-if="hasSearched" class="mt-2 text-[12px] text-text-secondary" aria-live="polite">Pencarian Anda: <strong>“{{ displayedKeyword }}”</strong> di {{ selectedSource === '1688' ? '1688' : 'Taobao' }}</p>
+          <p v-if="hasSearched" class="mt-2 text-[12px] text-text-secondary" aria-live="polite">Pencarian Anda: <strong>“{{ displayedKeyword }}”</strong> di {{ displayedSource === '1688' ? '1688' : 'Taobao' }}</p>
+          <p v-else-if="products.length > 0" class="mt-2 text-[12px] text-text-secondary">Produk Terlaris di 1688</p>
 
           <div v-if="loading || initialPending" class="mt-5 grid grid-cols-2 gap-4 lg:grid-cols-3" aria-live="polite" aria-label="Sedang memuat produk">
             <div v-for="index in 3" :key="index" class="animate-pulse" :class="index === 3 ? 'hidden lg:block' : ''">
@@ -188,17 +288,18 @@ onBeforeUnmount(() => {
             <p class="text-[14px] text-text-secondary" role="alert">{{ errorMessage }}</p>
             <button type="button" class="mt-3 min-h-11 rounded-xl px-4 font-medium text-primary-500 hover:bg-primary-50 focus-visible:outline-2 focus-visible:outline-primary-500" @click="runSearch()">Coba lagi</button>
           </div>
-          <p v-else-if="hasSearched && products.length === 0" class="mt-5 rounded-2xl border border-border-200 p-6 text-center text-[14px] text-text-secondary">Belum ada produk untuk pencarian ini. Coba kata lain.</p>
+          <p v-else-if="products.length === 0" class="mt-5 rounded-2xl border border-border-200 p-6 text-center text-[14px] text-text-secondary">{{ hasSearched ? 'Belum ada produk untuk pencarian ini. Coba kata lain.' : 'Produk terlaris belum tersedia. Coba lagi nanti.' }}</p>
           <template v-else-if="products.length > 0">
-            <div id="sourcing-products" class="mt-5 grid grid-cols-2 gap-x-3 gap-y-7 md:gap-x-4 lg:grid-cols-3">
+            <div id="sourcing-products" class="mt-5 grid grid-cols-2 gap-x-3 gap-y-7 transition-opacity duration-200 md:gap-x-4 lg:grid-cols-3 motion-reduce:transition-none" :class="marketplaceTransitioning ? 'opacity-50 motion-reduce:opacity-100' : 'opacity-100'">
               <MarketingProductCard
                 v-for="(product, index) in products.slice(0, 3)"
-                :key="`${selectedSource}-${product.id}`"
+                :key="`${displayedSource}-${product.id}`"
                 :title="product.title"
                 :price-idr="product.priceIdr"
+                :sold-count="product.soldCount"
                 :image="product.image"
                 :detail-url="product.detailUrl"
-                :source="selectedSource"
+                :source="displayedSource"
                 :class="index === 2 ? 'hidden lg:block' : ''"
               />
             </div>
@@ -210,15 +311,16 @@ onBeforeUnmount(() => {
               :inert="!showAdditionalProducts"
             >
               <div class="min-h-0 overflow-hidden">
-                <div class="mt-7 grid grid-cols-2 gap-x-3 gap-y-7 md:gap-x-4 lg:grid-cols-3">
+                <div class="mt-7 grid grid-cols-2 gap-x-3 gap-y-7 transition-opacity duration-200 md:gap-x-4 lg:grid-cols-3 motion-reduce:transition-none" :class="marketplaceTransitioning ? 'opacity-50 motion-reduce:opacity-100' : 'opacity-100'">
                   <MarketingProductCard
                     v-for="(product, index) in products.slice(2, MAX_PRODUCTS)"
-                    :key="`${selectedSource}-more-${product.id}`"
+                    :key="`${displayedSource}-more-${product.id}`"
                     :title="product.title"
                     :price-idr="product.priceIdr"
+                    :sold-count="product.soldCount"
                     :image="product.image"
                     :detail-url="product.detailUrl"
-                    :source="selectedSource"
+                    :source="displayedSource"
                     :class="index === 0 ? 'lg:hidden' : ''"
                   />
                 </div>

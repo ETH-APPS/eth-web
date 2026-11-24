@@ -5,6 +5,7 @@ export interface Product {
   title: string
   image: string
   priceIdr: number | null
+  soldCount?: number | null
   detailUrl: string
 }
 

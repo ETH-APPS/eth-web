@@ -307,11 +307,12 @@ mekanisme deployment yang sesuai; jangan menganggap menambah `.env` lokal lalu
 push sudah memasang nilainya di VM. Pergantian URL pada insiden November belum
 membuktikan adanya error `.env`.
 
-### Menyiapkan pencarian produk Ducking
+### Menyiapkan produk Ducking
 
-Endpoint pencarian Home dijalankan di server Nuxt. Browser hanya memanggil
-`/api/products/search`; signing secret tidak boleh disimpan sebagai
-`NUXT_PUBLIC_*`, di source, atau di image. Untuk development, salin
+Top List saat Home idle dan pencarian keyword dijalankan di server Nuxt.
+Browser hanya memanggil `/api/products/toplist` atau `/api/products/search`;
+signing secret tidak boleh disimpan sebagai `NUXT_PUBLIC_*`, di source, atau
+di image. Untuk development, salin
 `apps/web/.env.example` ke `apps/web/.env` dan isi
 `NUXT_DUCKING_SIGNING_SECRET` dengan nilai yang benar. File `.env` aktual
 diabaikan Git. Tanpa secret, Home tetap terbuka tetapi section produk
