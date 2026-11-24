@@ -58,7 +58,7 @@ const completeGuideBanner = illustratedCtaBanners.completeGuide
     section-id="complete-guide-faq"
     :default-open-index="1"
   />
-  <div id="complete-guide-quote" class="pb-8 lg:pb-16">
+  <!-- <div id="complete-guide-quote" class="pb-8 lg:pb-16">
     <UiContainer wide>
       <MarketingIllustratedCtaBanner
         v-bind="completeGuideBanner"
@@ -78,5 +78,5 @@ const completeGuideBanner = illustratedCtaBanners.completeGuide
       :cta-to="completeGuideBanner.ctaTo"
       :show-image="false"
     />
-  </div>
+  </div> -->
 </template>

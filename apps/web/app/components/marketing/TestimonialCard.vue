@@ -47,7 +47,14 @@ const avatarFailed = ref(false)
               {{ reviewSource }}
             </p> -->
           </div>
-          <a :href="reviewUrl" target="_blank" rel="noopener noreferrer" :aria-label="`Baca ulasan ${name} di Google Maps`" class="shrink-0 rounded focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500">
+          <a
+            :href="reviewUrl"
+            target="_blank"
+            rel="noopener noreferrer"
+            title="Lihat di Google Maps"
+            :aria-label="`Baca ulasan ${name} di Google Maps`"
+            class="shrink-0 rounded focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500"
+          >
             <img :src="googleLogo" alt="Google" width="24" height="24" loading="lazy" class="size-6 object-contain">
           </a>
         </div>
@@ -72,9 +79,9 @@ const avatarFailed = ref(false)
           </p>
         </div>
 
-        <a :href="reviewUrl" target="_blank" rel="noopener noreferrer" :aria-label="`Baca ulasan lengkap ${name} di Google Maps`" class="mt-3 line-clamp-4 rounded text-[13px] font-normal leading-[1.45] whitespace-pre-line text-text-tertiary hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500">
+        <p class="mt-3 line-clamp-4 text-[13px] font-normal leading-[1.45] whitespace-pre-line text-text-tertiary">
           {{ content }}
-        </a>
+        </p>
       </div>
     </div>
 

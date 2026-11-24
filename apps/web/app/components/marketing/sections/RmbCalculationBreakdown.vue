@@ -34,7 +34,7 @@ import {
             Nominal RMB
           </dt>
           <dd class="mt-3 whitespace-nowrap text-[18px] font-medium text-text-secondary">
-            ¥ 999,990.99
+            ¥ 50.000
           </dd>
         </dl>
 
@@ -82,7 +82,7 @@ import {
             Total Pembayaran
           </dt>
           <dd class="mt-3 whitespace-nowrap text-[20px] font-semibold text-primary-500">
-            Rp 999,999,999.00
+            Rp 11,050,000
           </dd>
         </dl>
       </div>

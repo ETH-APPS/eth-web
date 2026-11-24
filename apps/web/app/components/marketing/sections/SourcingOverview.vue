@@ -122,7 +122,7 @@ const shippingMethods = [
         </div>
       </div>
 
-      <div class="mt-10 text-center lg:mt-11">
+      <div class="mt-16 text-center lg:mt-24">
         <h3 class="mx-auto max-w-[320px] text-[24px] font-semibold leading-tight text-primary-500 lg:max-w-none lg:text-[32px]">
           Metode Pengiriman Hasil Sourcing
         </h3>

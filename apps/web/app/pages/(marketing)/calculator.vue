@@ -78,18 +78,17 @@ const calculatorBanner = {
     :cta-to="whatsappConsultationUrl"
   />
   <MarketingSectionsLartasRestrictions />
-  <MarketingSectionsFaq :content="faqContent">
-    <MarketingSectionsCargoShippingTypes
-      section-id="calculator-shipping-types"
-      variant="compact"
-      surface="muted"
-      prominent-header
-      description="Pilih metode pengiriman kargo yang sesuai dengan skala bisnis, volume muatan, dan urgensi estimasi waktu tiba Anda dari China ke Indonesia."
-      :services="calculatorShippingTypes"
-      animated-links
-    />
-  </MarketingSectionsFaq>
-  <div id="quote" class="bg-bg-100 pb-6 lg:pb-10">
+  <MarketingSectionsCargoShippingTypes
+    section-id="calculator-shipping-types"
+    variant="compact"
+    surface="muted"
+    prominent-header
+    description="Pilih metode pengiriman kargo yang sesuai dengan skala bisnis, volume muatan, dan urgensi estimasi waktu tiba Anda dari China ke Indonesia."
+    :services="calculatorShippingTypes"
+    animated-links
+  />
+  <MarketingSectionsFaq :content="faqContent" />
+  <div id="quote" class="bg-bg-0 pb-6 lg:pb-10">
     <UiContainer wide>
       <MarketingCargoCtaBanner
         v-bind="calculatorBanner"

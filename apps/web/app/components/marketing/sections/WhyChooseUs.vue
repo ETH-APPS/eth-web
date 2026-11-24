@@ -43,7 +43,11 @@ const benefits = [
 ]
 
 const mediaOutlets = [
-  { name: 'Tribunnews.com', image: tribunnewsLogo },
+  {
+    name: 'Tribunnews.com',
+    image: tribunnewsLogo,
+    url: 'https://www.tribunnews.com/bisnis/2024/05/29/membongkar-peluang-emas-jelajahi-bisnis-import-barang-dari-china-jadi-lebih-mudah',
+  },
 ]
 
 const isPressMarquee = mediaOutlets.length > 4
@@ -213,43 +217,68 @@ onBeforeUnmount(() => {
 
         <div
           class="mt-7"
-          role="img"
-          :aria-label="`Media yang meliput ETH Cargo: ${mediaOutlets.map(outlet => outlet.name).join(', ')}`"
+          role="group"
+          aria-label="Media yang meliput ETH Cargo"
         >
+          <!-- Marquee: hanya grup pertama yang bisa diakses keyboard/screen reader, sisanya duplikat visual -->
           <div v-if="isPressMarquee" class="press-marquee overflow-hidden">
-            <div class="press-track" :style="pressTrackStyle" aria-hidden="true">
-              <div v-for="group in 3" :key="group" class="press-group">
+            <div class="press-track" :style="pressTrackStyle">
+              <div
+                v-for="group in 3"
+                :key="group"
+                class="press-group"
+                :aria-hidden="group > 1 ? 'true' : undefined"
+              >
                 <div
-                  v-for="(outlet, index) in mediaOutlets"
-                  :key="`${group}-${index}`"
+                  v-for="outlet in mediaOutlets"
+                  :key="`${group}-${outlet.name}`"
                   class="press-tile flex min-w-0 items-center justify-center px-2 lg:px-3"
                 >
-                  <img
-                    :src="outlet.image"
-                    alt=""
-                    width="512"
-                    height="125"
-                    loading="lazy"
-                    class="h-auto w-full max-w-[230px] object-contain"
+                  <a
+                    :href="outlet.url"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    :tabindex="group > 1 ? -1 : undefined"
+                    :aria-label="`Baca liputan ETH Cargo di ${outlet.name}`"
+                    class="block w-full max-w-[230px] rounded transition-opacity hover:opacity-80 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500"
                   >
+                    <img
+                      :src="outlet.image"
+                      alt=""
+                      width="512"
+                      height="125"
+                      loading="lazy"
+                      class="h-auto w-full object-contain"
+                    >
+                  </a>
                 </div>
               </div>
             </div>
           </div>
-          <div v-else class="flex flex-wrap justify-center gap-y-6" aria-hidden="true">
+
+          <!-- Static: dipakai kalau outlet <= 4 -->
+          <div v-else class="flex flex-wrap justify-center gap-y-6">
             <div
               v-for="outlet in mediaOutlets"
               :key="outlet.name"
               class="flex w-1/2 min-w-0 items-center justify-center px-2 lg:w-1/4 lg:px-3"
             >
-              <img
-                :src="outlet.image"
-                alt=""
-                width="512"
-                height="125"
-                loading="lazy"
-                class="h-auto w-full max-w-[230px] object-contain"
+              <a
+                :href="outlet.url"
+                target="_blank"
+                rel="noopener noreferrer"
+                :aria-label="`Baca liputan ETH Cargo di ${outlet.name}`"
+                class="block w-full max-w-[230px] rounded transition-opacity hover:opacity-80 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500"
               >
+                <img
+                  :src="outlet.image"
+                  alt=""
+                  width="512"
+                  height="125"
+                  loading="lazy"
+                  class="h-auto w-full object-contain"
+                >
+              </a>
             </div>
           </div>
         </div>
