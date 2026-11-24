@@ -139,7 +139,9 @@ const cargoBanner = illustratedCtaBanners.chinaCargo
   <MarketingSectionsRateEstimator
     title="Hitung Estimasi Tarif"
     description="Dapatkan kalkulasi perkiraan biaya pengiriman All-In dari China ke Indonesia secara instan untuk perencanaan modal bisnis Anda."
+    calculator-enabled
     animated-submit
+    show-shipping-price-field
   />
   <MarketingSectionsFaq :content="faqContent" />
   <div id="quote" class="pb-6 lg:pb-10">

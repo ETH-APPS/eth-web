@@ -98,7 +98,7 @@ watch(activeGroupId, (groupId) => {
 </script>
 
 <template>
-  <section aria-labelledby="faq-directory-title" class="bg-bg-0 py-8 sm:py-10 lg:pb-20 lg:pt-5">
+  <section aria-labelledby="faq-directory-title" class="bg-bg-0 py-8 sm:py-10 lg:pb-20 lg:pt-16">
     <UiContainer>
       <header class="text-center">
         <p class="text-[16px] font-medium text-text-disable lg:text-[20px]">

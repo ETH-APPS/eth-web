@@ -24,12 +24,20 @@ export interface SeaCargoEstimate {
 
 export type CargoEstimate = AirCargoEstimate | SeaCargoEstimate
 
-export function calculateAirCargoEstimate(totalWeightKg: number): AirCargoEstimate {
+export function formatShippingPriceInput(value: string): string {
+  const digits = value.replace(/\D/g, '').replace(/^0+(?=\d)/, '').slice(0, 15)
+  return digits.replace(/\B(?=(\d{3})+(?!\d))/g, '.')
+}
+
+export function calculateAirCargoEstimate(
+  totalWeightKg: number,
+  ratePerKg = CARGO_ESTIMATE_RATES.airPerKg,
+): AirCargoEstimate {
   return {
     mode: 'air',
     totalWeightKg,
-    ratePerKg: CARGO_ESTIMATE_RATES.airPerKg,
-    totalPrice: totalWeightKg * CARGO_ESTIMATE_RATES.airPerKg,
+    ratePerKg,
+    totalPrice: totalWeightKg * ratePerKg,
   }
 }
 
@@ -38,7 +46,7 @@ export function calculateSeaCargoEstimate(input: {
   widthCm: number
   heightCm: number
   boxCount: number
-}): SeaCargoEstimate {
+}, ratePerCbm = CARGO_ESTIMATE_RATES.seaPerCbm): SeaCargoEstimate {
   const volumePerBoxCbm = (input.lengthCm * input.widthCm * input.heightCm) / 1_000_000
   const totalVolumeCbm = volumePerBoxCbm * input.boxCount
 
@@ -47,7 +55,7 @@ export function calculateSeaCargoEstimate(input: {
     ...input,
     volumePerBoxCbm,
     totalVolumeCbm,
-    ratePerCbm: CARGO_ESTIMATE_RATES.seaPerCbm,
-    totalPrice: totalVolumeCbm * CARGO_ESTIMATE_RATES.seaPerCbm,
+    ratePerCbm,
+    totalPrice: totalVolumeCbm * ratePerCbm,
   }
 }

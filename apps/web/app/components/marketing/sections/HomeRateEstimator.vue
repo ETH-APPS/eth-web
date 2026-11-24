@@ -10,6 +10,7 @@ import connectedWorldUrl from '~/assets/images/marketing/connected-world.png'
     description="Dapatkan kalkulasi perkiraan biaya pengiriman All-In dari China ke Indonesia secara instan untuk perencanaan modal bisnis Anda."
     calculator-enabled
     animated-submit
+    show-shipping-price-field
   >
     <template #aside>
       <div class="mx-auto w-[250px] max-w-full">

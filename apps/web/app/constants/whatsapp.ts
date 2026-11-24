@@ -9,6 +9,17 @@ function whatsappUrl(message: string): string {
 
 export const whatsappConsultationUrl = whatsappUrl(consultationMessage)
 
+export function shippingPriceWhatsappUrl(service?: string): string {
+  const message = [
+    'Halo Customer Service ETH Cargo, saya ingin bertanya tentang harga pengiriman kargo dari China ke Indonesia.',
+    ...(service ? [`Jenis layanan: ${service}`] : []),
+    'Mohon bantu informasikan tarif pengirimannya. Terima kasih.',
+    'ETH-WB',
+  ].join('\n')
+
+  return whatsappUrl(message)
+}
+
 interface ProductInquiry {
   title: string
   source: ProductSource

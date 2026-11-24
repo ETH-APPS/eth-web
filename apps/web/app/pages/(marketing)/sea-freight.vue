@@ -202,10 +202,12 @@ const freightBanner = {
     section-id="sea-freight-rate-estimator"
     title="Hitung Estimasi Tarif Kargo Laut"
     description="Hitung perkiraan biaya pengiriman All-In kargo laut (LCL/FCL) dari China ke Indonesia secara otomatis untuk transparansi perencanaan biaya impor Anda."
-    fixed-cargo-service="LCL CARGO"
+    default-cargo-service="LCL Cargo"
     guide-prompt="Pelajari panduan pengkategorian produk"
     guide-to="/artikel"
+    calculator-enabled
     animated-submit
+    show-shipping-price-field
   />
   <MarketingSectionsFaq :content="faqContent" />
   <div id="quote" class="pb-6 lg:pb-10">

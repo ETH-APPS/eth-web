@@ -160,11 +160,13 @@ const freightBanner = {
     section-id="air-freight-rate-estimator"
     title="Hitung Estimasi Tarif Kargo Udara"
     description="Hitung estimasi biaya pengiriman All-In kargo udara dari China ke Indonesia berdasarkan berat aktual atau berat volume secara akurat dan transparan."
-    fixed-cargo-service="Air Cargo"
+    default-cargo-service="Air Cargo"
     guide-prompt="Pelajari panduan perhitungan berat volume"
     guide-label="Selengkapnya"
     guide-to="/artikel"
+    calculator-enabled
     animated-submit
+    show-shipping-price-field
   />
   <MarketingSectionsFaq :content="faqContent" />
   <div id="quote" class="pb-6 lg:pb-10">

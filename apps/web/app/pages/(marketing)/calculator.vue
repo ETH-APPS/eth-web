@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import cargoCategories from '~/data/cargo-categories.json'
+import { CARGO_DELIVERY_ESTIMATES } from '~/constants/cargoDelivery'
 import { faqContentByPath, homeFaqContent } from '~/constants/faq'
 import { whatsappConsultationUrl } from '~/constants/whatsapp'
 
@@ -24,7 +25,7 @@ const calculatorShippingTypes = [
     title: 'FCL Cargo',
     description:
       'Sewa kontainer utuh untuk pengiriman muatan besar dengan kepastian kapasitas dan efisiensi biaya tertinggi.',
-    eta: '3~4 minggu',
+    eta: CARGO_DELIVERY_ESTIMATES['FCL Cargo'],
     to: '/sea-freight#fcl-overview',
   },
   {
@@ -32,7 +33,7 @@ const calculatorShippingTypes = [
     title: 'LCL Cargo',
     description:
       'Solusi kargo laut hemat untuk impor skala menengah tanpa harus menyewa satu kontainer penuh.',
-    eta: '3~4 minggu',
+    eta: CARGO_DELIVERY_ESTIMATES['LCL Cargo'],
     to: '/sea-freight#lcl-overview',
   },
   {
@@ -40,7 +41,7 @@ const calculatorShippingTypes = [
     title: 'Air Cargo',
     description:
       'Pengiriman super cepat jalur udara untuk produk sensitif, sampel barang, atau kebutuhan restok mendesak.',
-    eta: '3~7 Hari',
+    eta: CARGO_DELIVERY_ESTIMATES['Air Cargo'],
     to: '/air-freight',
   },
 ] as const
@@ -60,11 +61,12 @@ const calculatorBanner = {
     section-id="calculator-estimator"
     variant="page-hero"
     title="Kalkulator Impor All-In"
-    description="Hitung perkiraan biaya pengiriman kargo Anda dari China ke Indonesia secara cepat dan transparan. Masukkan rincian jenis barang, dimensi, serta jumlah koli untuk mendapatkan estimasi tarif pengiriman All-In."
+    description="Hitung perkiraan biaya pengiriman kargo Anda dari China ke Indonesia secara cepat dan transparan. Pilih layanan, isi harga pengiriman, lalu masukkan berat atau dimensi serta jumlah koli untuk mendapatkan estimasi tarif pengiriman All-In."
     guide-prompt="Hasil perhitungan merupakan estimasi awal berbasis volume (CBM) dan berat kargo. Biaya final All-In akan dikonfirmasi ulang oleh tim profesional ETH Cargo saat barang ditimbang di gudang China."
     :show-guide-action="false"
     calculator-enabled
     animated-submit
+    show-shipping-price-field
   />
   <MarketingSectionsCargoCategories
     section-id="import-cargo-categories"
