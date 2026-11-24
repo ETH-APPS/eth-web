@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict'
 import test from 'node:test'
+import { productWhatsappUrl, whatsappConsultationUrl } from '../app/constants/whatsapp.ts'
 import { normalizeProducts, parseSearchParams, signSearchRequest } from '../server/utils/duckingProducts.ts'
 
 test('signature uses the canonical path without query parameters', () => {
@@ -56,4 +57,40 @@ test('Taobao products fall back to original name and do not invent an exchange r
 
 test('invalid upstream envelope is rejected', () => {
   assert.equal(normalizeProducts({ success: false }, { source: '1688', keyword: 'x', pageNo: 1, pageSize: 20 }), null)
+})
+
+test('product inquiry opens ETH WhatsApp with product context and tracking code', () => {
+  const url = new URL(productWhatsappUrl({
+    title: 'Mouse Gaming',
+    source: '1688',
+    priceIdr: 155907,
+    detailUrl: 'https://www.ducking.id/products/detail?offer_id=12345',
+  }))
+
+  assert.equal(url.origin, 'https://wa.me')
+  assert.equal(url.pathname, new URL(whatsappConsultationUrl).pathname)
+  assert.equal(url.searchParams.get('text'), [
+    'Halo tim ETH Cargo, saya ingin konsultasi impor produk ini:',
+    'Produk: Mouse Gaming',
+    'Marketplace: 1688',
+    `Harga referensi: ${new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(155907)}`,
+    'Link referensi: https://www.ducking.id/products/detail?offer_id=12345',
+    '',
+    'Mohon bantu cek ketersediaan serta estimasi biaya total dan waktu pengiriman ke Indonesia. Terima kasih.',
+    'ETH-WB',
+  ].join('\n'))
+})
+
+test('product inquiry handles Taobao products without an available price', () => {
+  const message = new URL(productWhatsappUrl({
+    title: 'Sepatu',
+    source: 'taobao',
+    priceIdr: null,
+    detailUrl: 'https://www.ducking.id/products/detail?item_id=12345',
+  })).searchParams.get('text')
+
+  assert.ok(message)
+  assert.match(message, /Marketplace: Taobao/)
+  assert.match(message, /Harga referensi: belum tersedia/)
+  assert.ok(message.endsWith('ETH-WB'))
 })

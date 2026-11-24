@@ -141,7 +141,7 @@ gateway_ok() {
 
   for attempt in {1..15}; do
     if curl --fail --silent --show-error --max-time 10 \
-      http://127.0.0.1:8080/ >/dev/null; then
+      http://127.0.0.1:8080/favicon-eth.png >/dev/null; then
       return 0
     fi
     sleep 2

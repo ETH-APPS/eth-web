@@ -46,14 +46,11 @@ const mediaOutlets = [
   { name: 'Tribunnews.com', image: tribunnewsLogo },
 ]
 
-// Fill the visible row with the supplied logo until more media assets are available.
-const pressTiles = Array.from({ length: Math.max(5, mediaOutlets.length) }, (_, index) =>
-  mediaOutlets[index % mediaOutlets.length]!,
-)
+const isPressMarquee = mediaOutlets.length > 4
 const pressTrackStyle = {
-  '--press-mobile-width': `${pressTiles.length * 150}%`,
-  '--press-desktop-width': `${pressTiles.length * 75}%`,
-  '--press-tile-width': `${100 / pressTiles.length}%`,
+  '--press-mobile-width': `${mediaOutlets.length * 150}%`,
+  '--press-desktop-width': `${mediaOutlets.length * 75}%`,
+  '--press-tile-width': `${100 / mediaOutlets.length}%`,
 }
 
 const carouselRef = ref<HTMLElement | null>(null)
@@ -215,26 +212,44 @@ onBeforeUnmount(() => {
         </p>
 
         <div
-          class="press-marquee mt-7 overflow-hidden"
+          class="mt-7"
           role="img"
           :aria-label="`Media yang meliput ETH Cargo: ${mediaOutlets.map(outlet => outlet.name).join(', ')}`"
         >
-          <div class="press-track" :style="pressTrackStyle" aria-hidden="true">
-            <div v-for="group in 3" :key="group" class="press-group">
-              <div
-                v-for="(outlet, index) in pressTiles"
-                :key="`${group}-${index}`"
-                class="press-tile flex min-w-0 items-center justify-center px-2 lg:px-3"
-              >
-                <img
-                  :src="outlet.image"
-                  alt=""
-                  width="512"
-                  height="125"
-                  loading="lazy"
-                  class="h-auto w-full max-w-[230px] object-contain"
+          <div v-if="isPressMarquee" class="press-marquee overflow-hidden">
+            <div class="press-track" :style="pressTrackStyle" aria-hidden="true">
+              <div v-for="group in 3" :key="group" class="press-group">
+                <div
+                  v-for="(outlet, index) in mediaOutlets"
+                  :key="`${group}-${index}`"
+                  class="press-tile flex min-w-0 items-center justify-center px-2 lg:px-3"
                 >
+                  <img
+                    :src="outlet.image"
+                    alt=""
+                    width="512"
+                    height="125"
+                    loading="lazy"
+                    class="h-auto w-full max-w-[230px] object-contain"
+                  >
+                </div>
               </div>
+            </div>
+          </div>
+          <div v-else class="flex flex-wrap justify-center gap-y-6" aria-hidden="true">
+            <div
+              v-for="outlet in mediaOutlets"
+              :key="outlet.name"
+              class="flex w-1/2 min-w-0 items-center justify-center px-2 lg:w-1/4 lg:px-3"
+            >
+              <img
+                :src="outlet.image"
+                alt=""
+                width="512"
+                height="125"
+                loading="lazy"
+                class="h-auto w-full max-w-[230px] object-contain"
+              >
             </div>
           </div>
         </div>

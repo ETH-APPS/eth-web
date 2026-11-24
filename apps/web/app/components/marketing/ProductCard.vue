@@ -1,26 +1,30 @@
 <script setup lang="ts">
 import { ArrowUpRight, PackageSearch } from 'lucide-vue-next'
+import { productWhatsappUrl } from '~/constants/whatsapp'
+import type { ProductSource } from '../../../shared/types/products'
 
 const props = defineProps<{
   title: string
   priceIdr: number | null
   image: string
   detailUrl: string
+  source: ProductSource
 }>()
 
 const imageFailed = ref(false)
 const formattedPrice = computed(() => props.priceIdr === null
   ? 'Harga tidak tersedia'
   : new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(props.priceIdr))
+const consultationUrl = computed(() => productWhatsappUrl(props))
 </script>
 
 <template>
   <article class="min-w-0">
     <a
-      :href="detailUrl"
+      :href="consultationUrl"
       target="_blank"
       rel="noopener noreferrer"
-      :aria-label="`Lihat ${title} di Ducking`"
+      :aria-label="`Konsultasi impor ${title} via WhatsApp ETH Cargo`"
       class="group block rounded-2xl focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary-500"
     >
       <div class="aspect-square overflow-hidden rounded-2xl bg-primary-50">

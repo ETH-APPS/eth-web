@@ -189,7 +189,7 @@ untuk memeriksa perubahan sebelum dirilis.
 **Saat ini belum ada job CI terpisah untuk lint, typecheck, test, atau pemeriksaan
 pull request.** Repository memiliki satu workflow deployment. Instalasi dependency
 dengan lockfile dan build Nuxt dilakukan di dalam proses deployment itu. Build
-sukses dan healthcheck `/` bukan bukti bahwa semua fitur aplikasi benar.
+sukses dan healthcheck `/api/health` bukan bukti bahwa semua fitur aplikasi benar.
 
 ### CD: memasang release ke VM
 
@@ -269,6 +269,24 @@ karena kode yang di-push akan dibangun dan dijalankan di VM.
 Perubahan script/spec/sudoers di repository **tidak otomatis memperbarui salinan
 root-owned di VM**. Perlu pemasangan terpisah oleh operator setelah memeriksa diff
 serta memvalidasi sudoers. Push frontend biasa tidak memerlukan langkah itu.
+
+### Healthcheck tanpa pencarian produk
+
+Compose repository mengarahkan healthcheck `web` ke `/api/health` dan
+healthcheck `gateway` ke aset statis `/favicon-eth.png`. Keduanya tidak merender
+Home atau memanggil Ducking. Aset statis itu tersedia pada image lama dan baru.
+Helper deploy juga memeriksa aset tersebut saat preflight dan sesudah
+penggantian web.
+
+Perubahan `deploy/web.compose.yaml` dan `deploy/deploy-web.sh` perlu dipasang
+ke salinan root-owned di VM sebelum deploy berikutnya. Jika tidak, helper lama
+masih memeriksa Home dan healthcheck container `web` baru tetap memakai jalur
+lama. Perubahan healthcheck `gateway` dalam `compose.yaml` **tidak** diterapkan
+oleh deploy web-only; container gateway yang sudah berjalan tetap memakai
+konfigurasi lama sampai diperbarui dalam operasi terencana. Jangan menjalankan
+`docker compose up` untuk seluruh stack atau me-restart `cloudflared` hanya demi
+healthcheck ini. Verifikasi kedua konfigurasi aktif sebelum menyimpulkan bahwa
+request latar belakang ke Home sudah berhenti.
 
 ### Apakah `.env` lokal otomatis ikut?
 

@@ -28,13 +28,13 @@ const showAdditionalProducts = ref(false)
 const { data: initialData, error: initialError, pending: initialPending } = await useFetch<ProductSearchResult>('/api/products/search', {
   query: { source: '1688', page_no: 1, page_size: MAX_PRODUCTS },
   key: 'home-products-default-1688-six',
+  retry: 0,
 })
 
 const products = ref<Product[]>(initialData.value?.products.slice(0, MAX_PRODUCTS) ?? [])
 const hasSearched = ref(false)
 const loading = ref(false)
 const errorMessage = ref(initialError.value ? 'Produk belum dapat dimuat. Coba lagi.' : '')
-let requestSequence = 0
 let activeController: AbortController | null = null
 
 function showCategoryOnHover(name: string, event: PointerEvent) {
@@ -68,7 +68,6 @@ async function runSearch(keyword = searchQuery.value) {
   activeController?.abort()
   const controller = new AbortController()
   activeController = controller
-  const sequence = ++requestSequence
   searchQuery.value = term
   displayedKeyword.value = term
   hasSearched.value = Boolean(term)
@@ -81,20 +80,27 @@ async function runSearch(keyword = searchQuery.value) {
     const result = await $fetch<ProductSearchResult>('/api/products/search', {
       query: { source: selectedSource.value, ...(term ? { keyword: term } : {}), page_no: 1, page_size: MAX_PRODUCTS },
       signal: controller.signal,
+      retry: 0,
     })
-    if (sequence !== requestSequence) return
+    if (controller !== activeController) return
     products.value = result.products.slice(0, MAX_PRODUCTS)
   }
   catch {
-    if (sequence === requestSequence)
+    if (controller === activeController)
       errorMessage.value = 'Produk belum dapat dimuat. Coba lagi.'
   }
   finally {
-    if (sequence === requestSequence) loading.value = false
+    if (controller === activeController) {
+      activeController = null
+      loading.value = false
+    }
   }
 }
 
-onBeforeUnmount(() => activeController?.abort())
+onBeforeUnmount(() => {
+  activeController?.abort()
+  activeController = null
+})
 </script>
 
 <template>
@@ -192,6 +198,7 @@ onBeforeUnmount(() => activeController?.abort())
                 :price-idr="product.priceIdr"
                 :image="product.image"
                 :detail-url="product.detailUrl"
+                :source="selectedSource"
                 :class="index === 2 ? 'hidden lg:block' : ''"
               />
             </div>
@@ -211,6 +218,7 @@ onBeforeUnmount(() => activeController?.abort())
                     :price-idr="product.priceIdr"
                     :image="product.image"
                     :detail-url="product.detailUrl"
+                    :source="selectedSource"
                     :class="index === 0 ? 'lg:hidden' : ''"
                   />
                 </div>
