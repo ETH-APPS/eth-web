@@ -13,7 +13,7 @@ const benefits = [
   },
   {
     icon: Headset,
-    title: 'Proses Kilat (< 2 Jam)',
+    title: 'Proses Kilat',
     description: 'Dana diteruskan dan diterima oleh supplier di China pada hari yang sama untuk menjaga kecepatan produksi barang Anda.',
   },
   {

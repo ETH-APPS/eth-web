@@ -150,19 +150,19 @@ watch(
         </component>
 
         <p
-          class="mx-auto max-w-[900px] font-normal leading-[1.5] text-text-tertiary"
+          class="mx-auto font-normal leading-[1.5] text-text-tertiary"
           :class="variant === 'split'
-            ? 'mt-4 text-[14px] lg:text-[16px]'
+            ? 'mt-4 max-w-[760px] text-[14px] lg:text-[16px]'
             : variant === 'page-hero'
-              ? 'mt-6 text-[16px] lg:text-[20px]'
-              : 'mt-6 text-[14px] lg:text-[20px]'"
+              ? 'mt-6 max-w-[900px] text-[16px] lg:text-[20px]'
+              : 'mt-6 max-w-[900px] text-[14px] lg:text-[20px]'"
         >
           {{ description }}
         </p>
       </div>
 
-      <div :class="variant === 'split' ? 'mx-auto mt-3 grid max-w-[840px] items-start gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,435px)] lg:gap-12' : 'contents'">
-        <div v-if="variant === 'split'" class="mx-auto w-full max-w-[380px] min-w-0 lg:pt-4">
+      <div :class="variant === 'split' ? 'mx-auto mt-3 grid max-w-[960px] items-start gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,435px)] lg:gap-12' : 'contents'">
+        <div v-if="variant === 'split'" class="mx-auto w-full max-w-[380px] min-w-0 lg:max-w-[440px] lg:pt-4">
           <slot name="aside" />
         </div>
 

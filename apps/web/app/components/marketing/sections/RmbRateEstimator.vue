@@ -1,5 +1,10 @@
 <script setup lang="ts">
 import { ChevronDown } from 'lucide-vue-next'
+import {
+  RMB_TRANSFER_ADMIN_FEE_RMB,
+  RMB_TRANSFER_RATE,
+  calculateRmbTransferTotal,
+} from '~/utils/rmbTransfer'
 
 const transferTargets = [
   'Alipay',
@@ -10,8 +15,40 @@ const transferTargets = [
   'Alibaba',
 ] as const
 
-const transferAmount = ref<number | null>(null)
+const transferAmount = ref<number | ''>('')
 const selectedTarget = ref<(typeof transferTargets)[number]>('Alipay')
+const calculatedAmount = ref<number | null>(null)
+const displayedAmount = computed(() => (
+  calculatedAmount.value !== null && transferAmount.value === calculatedAmount.value
+    ? calculatedAmount.value
+    : null
+))
+const totalPayment = computed(() => (
+  displayedAmount.value === null ? null : calculateRmbTransferTotal(displayedAmount.value)
+))
+
+function formatRmb(value: number) {
+  return new Intl.NumberFormat('en-US', {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  }).format(value)
+}
+
+function formatRupiah(value: number) {
+  return `Rp ${new Intl.NumberFormat('id-ID').format(value)}`
+}
+
+function calculateEstimate() {
+  const amount = Number(transferAmount.value)
+  if (!Number.isFinite(amount) || amount <= 0) return
+  calculatedAmount.value = amount
+}
+
+function resetEstimate() {
+  transferAmount.value = ''
+  selectedTarget.value = 'Alipay'
+  calculatedAmount.value = null
+}
 </script>
 
 <template>
@@ -37,7 +74,7 @@ const selectedTarget = ref<(typeof transferTargets)[number]>('Alipay')
       <form
         aria-labelledby="rmb-rate-estimator-title"
         class="mx-auto mt-8 max-w-[360px] rounded-[20px] border border-border-200 bg-bg-0 p-5 shadow-md sm:p-6"
-        @submit.prevent
+        @submit.prevent="calculateEstimate"
       >
         <label
           for="rmb-transfer-amount"
@@ -98,11 +135,44 @@ const selectedTarget = ref<(typeof transferTargets)[number]>('Alipay')
             </p>
           </dt>
           <dd class="shrink-0 text-[14px] font-medium">
-            Rp 2,300
+            {{ formatRupiah(RMB_TRANSFER_RATE) }}
           </dd>
         </dl>
 
-        <div class="mt-5 flex justify-end">
+        <div v-if="displayedAmount !== null" class="mt-4 border-t border-border-200 pt-4 text-[14px] text-text-secondary">
+          <dl class="space-y-3">
+            <div class="flex items-center justify-between gap-4">
+              <dt>Jumlah RMB</dt>
+              <dd>¥ {{ formatRmb(displayedAmount) }}</dd>
+            </div>
+            <div class="flex items-center justify-between gap-4">
+              <dt>Biaya Admin</dt>
+              <dd>¥ {{ formatRmb(RMB_TRANSFER_ADMIN_FEE_RMB) }}</dd>
+            </div>
+          </dl>
+          <div class="mt-4 flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1 border-t border-border-200 pt-4">
+            <p id="rmb-rate-total-label">Total Pembayaran</p>
+            <output
+              for="rmb-transfer-amount rmb-transfer-target"
+              aria-labelledby="rmb-rate-total-label"
+              class="break-words text-[20px] font-semibold text-primary-500"
+            >
+              {{ totalPayment === null ? '—' : formatRupiah(totalPayment) }}
+            </output>
+          </div>
+        </div>
+
+        <div class="mt-5 flex items-center justify-end gap-4">
+          <UiAnimatedArrowButton
+            v-if="transferAmount !== '' || calculatedAmount !== null"
+            type="button"
+            variant="plain"
+            :show-arrow="false"
+            class="text-[14px] font-medium text-primary-500 transition-colors hover:text-primary-700 focus-visible:rounded focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500"
+            @click="resetEstimate"
+          >
+            Atur Ulang
+          </UiAnimatedArrowButton>
           <UiAnimatedArrowButton
             type="submit"
             variant="plain"
