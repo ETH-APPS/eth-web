@@ -41,6 +41,7 @@ readonly SIGNING_SECRET_FILE='/etc/eth-web/ducking-signing-secret'
 readonly DEPLOY_KEY='/home/ethapps/.ssh/eth-web-deploy'
 readonly KNOWN_HOSTS='/home/ethapps/.ssh/known_hosts'
 readonly PROJECT_NAME='eth-web'
+readonly TUNNEL_PROJECT_NAME='eth-web-named-tunnel'
 readonly NETWORK_NAME='eth-web_default'
 readonly IMAGE_NAME='eth-web-web'
 readonly LOCK_FILE='/run/lock/eth-web-deploy.lock'
@@ -130,21 +131,21 @@ compose() {
       "$@"
 }
 
-# Print the ID of the single running container for a service; fail if there
-# are zero or several.
+# Print the ID of one running service container in the requested Compose project.
 single_container_id() {
   local service="$1"
+  local project="${2:-$PROJECT_NAME}"
   local -a ids=()
 
   mapfile -t ids < <(
     docker ps \
       --no-trunc \
       --quiet \
-      --filter "label=com.docker.compose.project=${PROJECT_NAME}" \
+      --filter "label=com.docker.compose.project=${project}" \
       --filter "label=com.docker.compose.service=${service}"
   )
 
-  [[ "${#ids[@]}" -eq 1 ]] || fail "expected exactly one running ${service} container, found ${#ids[@]}"
+  [[ "${#ids[@]}" -eq 1 ]] || fail "expected exactly one running ${service} container in ${project}, found ${#ids[@]}"
   printf '%s\n' "${ids[0]}"
 }
 
@@ -200,8 +201,8 @@ OLD_WEB_ID="$(single_container_id web)"
 readonly OLD_WEB_ID
 GATEWAY_ID="$(single_container_id gateway)"
 readonly GATEWAY_ID
-CLOUDFLARED_ID="$(single_container_id cloudflared)"
-readonly CLOUDFLARED_ID
+NAMED_TUNNEL_ID="$(single_container_id cloudflared "$TUNNEL_PROJECT_NAME")"
+readonly NAMED_TUNNEL_ID
 
 [[ "$(docker inspect --format '{{if .State.Health}}{{.State.Health.Status}}{{else}}missing{{end}}' "$OLD_WEB_ID")" == 'healthy' ]] \
   || fail 'the current web container is not healthy'
@@ -292,7 +293,7 @@ rollback_on_exit() {
       rollback_id="$(single_container_id web)"
       if wait_healthy "$rollback_id" 150 && gateway_ok && \
         [[ "$(single_container_id gateway)" == "$GATEWAY_ID" ]] && \
-        [[ "$(single_container_id cloudflared)" == "$CLOUDFLARED_ID" ]]; then
+        [[ "$(single_container_id cloudflared "$TUNNEL_PROJECT_NAME")" == "$NAMED_TUNNEL_ID" ]]; then
         rollback_ok=true
       fi
     fi
@@ -343,7 +344,7 @@ compose "$TARGET_TAG" config --quiet
 
 # From this point on, any failure triggers the rollback handler above.
 swap_started=true
-log 'replacing only web; gateway and cloudflared remain running'
+log 'replacing only web; gateway and named tunnel remain running'
 
 # The compose() helper reads /etc/eth-web/web.compose.yaml on the VM.
 # It validates that configuration before replacing the web container.
@@ -356,9 +357,9 @@ gateway_ok || fail 'new web container is not reachable through Caddy'
 
 # Make sure the other services were not recreated during the deployment.
 [[ "$(single_container_id gateway)" == "$GATEWAY_ID" ]] || fail 'gateway container changed during deployment'
-[[ "$(single_container_id cloudflared)" == "$CLOUDFLARED_ID" ]] || fail 'cloudflared container changed during deployment'
+[[ "$(single_container_id cloudflared "$TUNNEL_PROJECT_NAME")" == "$NAMED_TUNNEL_ID" ]] || fail 'named tunnel container changed during deployment'
 
 # Success: disarm the rollback.
 swap_started=false
-log "successfully deployed ${TARGET_SHA} as ${TARGET_IMAGE}; gateway and cloudflared are unchanged"
+log "successfully deployed ${TARGET_SHA} as ${TARGET_IMAGE}; gateway and named tunnel are unchanged"
 

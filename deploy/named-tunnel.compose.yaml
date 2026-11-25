@@ -1,0 +1,21 @@
+# Production named tunnel; managed separately from the web and gateway stack.
+# The token stays in a root-managed file on the VM, outside the repository.
+services:
+  cloudflared:
+    image: cloudflare/cloudflared:latest
+    command: tunnel --no-autoupdate run --token-file /run/secrets/ethcargo-tunnel-token
+    restart: unless-stopped
+    volumes:
+      - /etc/eth-web/ethcargo-tunnel-token:/run/secrets/ethcargo-tunnel-token:ro
+    networks:
+      - web
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+networks:
+  web:
+    external: true
+    name: eth-web_default

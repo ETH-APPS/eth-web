@@ -3,11 +3,11 @@
 Panduan alur dari kode di laptop sampai website bisa dibuka pengunjung.
 Untuk penjelasan yang lebih sederhana, baca [alur akses website](../docs/alur-akses-website.md).
 
-Terakhir diperbarui: **23 November 2026**.
+Terakhir diperbarui: **25 November 2026**.
 
 Implementasi dijelaskan berdasarkan file repository. Status VM berdasarkan output
-pengguna, bukan inspeksi langsung agent ke VM. Bagian **NEXT** adalah rencana,
-**belum diterapkan**.
+pengguna, bukan inspeksi langsung agent ke VM. Perubahan helper untuk melepas
+Quick Tunnel di repository **belum dipasang di VM**.
 
 ## 1. Kondisi sekarang
 
@@ -23,9 +23,25 @@ pengguna, bukan inspeksi langsung agent ke VM. Bagian **NEXT** adalah rencana,
 | Auto-deploy | GitHub Actions, self-hosted runner di VM |
 | Runner | `eth-apps-production`, label `eth-web-production` |
 | User runner | `github-runner`, home `/opt/actions-runner` |
-| Akses publik | Cloudflare Quick Tunnel, URL sementara |
+| Akses publik | `ethcargoindo.com` dan `www` melalui Named Tunnel `ethcargo` |
 | Gateway | Caddy, container `eth-web-gateway-1` |
 | Port host aplikasi | Hanya `127.0.0.1:8080` menuju Caddy |
+
+### Status 25 November: cutover domain
+
+Operator menjalankan Named Tunnel sebagai proyek Compose terpisah
+`eth-web-named-tunnel`. Route `ethcargoindo.com`, `www.ethcargoindo.com`, dan
+`revamp-preview.ethcargoindo.com` menuju `http://gateway:80`. Record DNS apex
+diubah dari A `128.199.180.74` menjadi CNAME ke tunnel `ethcargo`; `www`
+tetap CNAME ke apex dan redirect ke apex. Record `api`, `member`, dan `cdn`
+tidak diubah. Kedua hostname utama mengembalikan `{"status":"ok"}` dari
+`/api/health`, dan operator melihat web revamp di browser.
+
+`/etc/eth-web/site-url` sekarang berisi `https://ethcargoindo.com`. Web aktif
+memakai image `eth-web-web:a6afd5038350` dan healthy menurut output operator.
+Quick Tunnel lama masih berjalan karena helper root-owned yang terpasang di VM
+masih memeriksanya. Jangan hentikan Quick Tunnel sebelum helper baru dipasang
+dan diuji.
 
 ### Status 23 November: secret produk Ducking dan push
 
@@ -117,8 +133,8 @@ push setelah commit tersebut sudah ter-deploy; tetap periksa run masing-masing.
 
 ```mermaid
 flowchart TD
-    visitor[Browser pengunjung] -->|HTTPS: URL trycloudflare.com| edge[Cloudflare]
-    edge -->|Koneksi tunnel| tunnel[cloudflared di VM]
+    visitor[Browser pengunjung] -->|HTTPS: ethcargoindo.com| edge[Cloudflare]
+    edge -->|Named Tunnel ethcargo| tunnel[cloudflared di VM]
     tunnel -->|HTTP: gateway:80| gateway[Caddy / gateway]
     gateway -->|HTTP: web:3000| web[Nuxt / Nitro]
     operator[Operator di VM] -->|HTTP: 127.0.0.1:8080| gateway
@@ -145,20 +161,12 @@ Nama `gateway` dan `web` dikenali melalui jaringan Docker `eth-web_default`.
 Port 3000 tidak dipublikasikan ke host. Mapping `127.0.0.1:8080:80` membuat Caddy
 bisa diperiksa dari VM, tetapi tidak langsung dari internet.
 
-### Kenapa URL berubah walaupun hanya push?
-
-Quick Tunnel menyediakan hostname acak sementara. Saat proses tunnel dijalankan
-ulang dan membuat tunnel baru, alamat bisa berubah tanpa pengguna mengedit URL.
-Contohnya setelah VM atau proses container mulai ulang.
-
-Auto-deploy kita hanya mengganti `web`, sehingga secara normal tidak membuat
-tunnel baru. Namun proses tunnel tetap dapat restart karena sebab lain.
-Pemeriksaan ID container di script juga tidak membuktikan proses di dalam
-container tidak pernah restart.
-
-Jangan restart `cloudflared`, menjalankan `docker compose down`, atau recreate
-seluruh stack untuk update frontend rutin. URL lama tidak dapat dipilih kembali
-melalui konfigurasi Quick Tunnel kita. Domain tetap dibahas di bagian NEXT.
+Named Tunnel mempertahankan hostname saat proses `cloudflared` mulai ulang.
+Auto-deploy hanya mengganti `web`; pemeriksaan ID container di helper memastikan
+gateway dan container Named Tunnel tidak dibuat ulang selama deploy. Pemeriksaan
+itu tidak membuktikan koneksi tunnel ke Cloudflare selalu sehat. Untuk update
+frontend rutin, jangan jalankan `docker compose down` atau recreate seluruh
+stack.
 
 ## 3. Flow kode: laptop, CI, dan CD
 
@@ -214,8 +222,9 @@ Implementasi: [`deploy-web.sh`](deploy-web.sh).
 1. Memastikan repo, deploy key, known hosts, spec Compose, file site URL,
    file secret Ducking, dan jaringan tersedia. Mengambil lock agar helper tidak
    berjalan bersamaan.
-2. Memastikan tepat satu container berjalan untuk masing-masing service `web`,
-   `gateway`, dan `cloudflared`. Web lama harus healthy dan gateway harus merespons.
+2. Memastikan tepat satu container `web` dan `gateway` di proyek `eth-web`, serta
+   `cloudflared` di proyek `eth-web-named-tunnel`. Web lama harus healthy dan
+   gateway harus merespons.
 3. Mencatat image lama untuk rollback serta ID gateway/tunnel untuk pemeriksaan.
 4. Fetch `origin/main` sebagai user `ethapps` dengan deploy key read-only.
 5. Membuat worktree bersih di `/var/lib/eth-web-deploy/releases/<FULL_SHA>`.
@@ -244,13 +253,15 @@ cukup untuk mengetahui versi aplikasi yang sedang berjalan.
 | File sumber | Kegunaan / lokasi operasional |
 | --- | --- |
 | [`apps/web/Dockerfile`](../apps/web/Dockerfile) | Build Node 24 + pnpm; runtime hanya membawa `.output` dan berjalan sebagai user `node`. |
-| [`compose.yaml`](../compose.yaml) | Stack lengkap untuk bootstrap: web, gateway, cloudflared. Bukan jalur update frontend rutin. |
+| [`compose.yaml`](../compose.yaml) | Stack web dan gateway untuk bootstrap. Bukan jalur update frontend rutin. |
+| [`deploy/named-tunnel.compose.yaml`](named-tunnel.compose.yaml) | Named Tunnel dalam proyek Compose terpisah; salinan root-owned di `/etc/eth-web/named-tunnel.compose.yaml`. |
 | [`deploy/Caddyfile`](Caddyfile) | Dipasang dari `/opt/eth-web/deploy/Caddyfile` ke `/etc/caddy/Caddyfile` di container. |
 | [`deploy/web.compose.yaml`](web.compose.yaml) | Spec web-only, disalin root-owned ke `/etc/eth-web/web.compose.yaml`. |
 | [`deploy/deploy-web.sh`](deploy-web.sh) | Helper, disalin root-owned ke `/usr/local/sbin/deploy-eth-web`. |
 | [`deploy/github-runner.sudoers`](github-runner.sudoers) | Disalin ke `/etc/sudoers.d/github-runner-deploy-eth-web`. |
 | `/etc/eth-web/site-url` | File root-owned di VM berisi satu origin HTTPS untuk `NUXT_PUBLIC_SITE_URL`; bukan file repository. |
 | `/etc/eth-web/ducking-signing-secret` | File root-owned mode 0600 di VM berisi signing secret Ducking satu baris; bukan file repository. |
+| `/etc/eth-web/ethcargo-tunnel-token` | Token Named Tunnel di VM saja, owner `root:65532`, mode `0440`; jangan tampilkan atau masukkan Git. |
 | [Workflow Actions](../.github/workflows/deploy-web.yml) | Trigger dan job deployment. |
 | [`.dockerignore`](../.dockerignore) | Mengecualikan dependency lokal, cache, output build, dan `.env` aktual dari build context. |
 
@@ -278,15 +289,10 @@ Home atau memanggil Ducking. Aset statis itu tersedia pada image lama dan baru.
 Helper deploy juga memeriksa aset tersebut saat preflight dan sesudah
 penggantian web.
 
-Perubahan `deploy/web.compose.yaml` dan `deploy/deploy-web.sh` perlu dipasang
-ke salinan root-owned di VM sebelum deploy berikutnya. Jika tidak, helper lama
-masih memeriksa Home dan healthcheck container `web` baru tetap memakai jalur
-lama. Perubahan healthcheck `gateway` dalam `compose.yaml` **tidak** diterapkan
-oleh deploy web-only; container gateway yang sudah berjalan tetap memakai
-konfigurasi lama sampai diperbarui dalam operasi terencana. Jangan menjalankan
-`docker compose up` untuk seluruh stack atau me-restart `cloudflared` hanya demi
-healthcheck ini. Verifikasi kedua konfigurasi aktif sebelum menyimpulkan bahwa
-request latar belakang ke Home sudah berhenti.
+Menurut output operator 25 November, healthcheck aktif `web` memakai
+`/api/health` dan `gateway` memakai `/favicon-eth.png`. Perubahan healthcheck
+`gateway` dalam `compose.yaml` tidak diterapkan oleh deploy web-only. Jangan
+menjalankan `docker compose up` untuk seluruh stack hanya demi healthcheck.
 
 ### Apakah `.env` lokal otomatis ikut?
 
@@ -336,49 +342,33 @@ jangan mencetak environment container untuk memeriksa secret.
 ### Menyiapkan atau mengganti site URL schema
 
 Gunakan **origin saja**: skema, hostname, dan port opsional. Jangan menyertakan
-path, query, fragment, atau slash penutup. Untuk Quick Tunnel aktif saat dokumen
-ini diperbarui, nilainya:
+path, query, fragment, atau slash penutup. Nilai produksi saat ini:
 
 ```text
-https://runtime-keith-plaza-naval.trycloudflare.com
+https://ethcargoindo.com
 ```
 
-Operator memasang nilai tersebut di VM, bukan memasukkannya ke Git:
+Operator sudah memasang nilai tersebut di VM, bukan memasukkannya ke Git.
+Untuk penggantian berikutnya, gunakan pola:
 
 ```bash
-printf '%s\n' 'https://runtime-keith-plaza-naval.trycloudflare.com' | sudo tee /etc/eth-web/site-url >/dev/null
+printf '%s\n' 'https://ethcargoindo.com' | sudo tee /etc/eth-web/site-url >/dev/null
 sudo chown root:root /etc/eth-web/site-url
 sudo chmod 0644 /etc/eth-web/site-url
 ```
 
-Sebelum menjalankan helper versi baru pertama kali, pasang juga salinan spec dan
-helper root-owned setelah memeriksa diff. Gunakan worktree release commit yang
-ingin dipasang; checkout `/opt/eth-web` tidak selalu mengikuti `origin/main`.
-Contoh sumber untuk release `c02c78c` yang diverifikasi pada 10 November:
-
-```bash
-release_dir=/var/lib/eth-web-deploy/releases/c02c78ce3aa720331abcb6c72d8f7da62b34538e
-sudo install -o root -g root -m 0644 "$release_dir/deploy/web.compose.yaml" /etc/eth-web/web.compose.yaml
-sudo install -o root -g root -m 0755 "$release_dir/deploy/deploy-web.sh" /usr/local/sbin/deploy-eth-web
-sudo bash -n /usr/local/sbin/deploy-eth-web
-```
-
-Menjalankan helper atau workflow berikutnya akan meneruskan nilai itu ke
-container web. Jika hanya
-site URL yang berubah dan commit sama, helper menggunakan ulang image yang sudah
-ada lalu mengganti **hanya** container web. Gateway dan cloudflared tidak
-direstart atau dibuat ulang.
+Perubahan site URL saja membuat helper menggunakan ulang image yang sudah ada
+lalu mengganti hanya container web. Gateway dan Named Tunnel tidak dibuat ulang.
+Pemasangan helper yang baru untuk melepas Quick Tunnel dijelaskan di bagian 7.
 
 Untuk bootstrap stack dari repository, berikan variabel secara eksplisit:
 
 ```bash
-NUXT_PUBLIC_SITE_URL='https://runtime-keith-plaza-naval.trycloudflare.com' docker compose up --detach
+NUXT_PUBLIC_SITE_URL='https://ethcargoindo.com' docker compose up --detach
 ```
 
-Quick Tunnel dapat berganti setelah proses tunnel restart. Ketika URL berubah,
-perbarui `/etc/eth-web/site-url` dan jalankan ulang workflow. Setelah domain final
-tersedia, ganti file dengan origin final. Jangan hardcode URL sementara ke source
-aplikasi atau Compose.
+Domain utama sekarang tetap meskipun Named Tunnel restart. Jika domain produksi
+kelak berubah, perbarui `/etc/eth-web/site-url` dan jalankan ulang workflow.
 
 Setelah deploy, verifikasi bahwa konfigurasi dan schema benar-benar aktif:
 
@@ -414,10 +404,11 @@ mengambil main terbaru, bukan cara memilih release lama untuk rollback.
 Perintah berikut hanya membaca status/log; tidak me-restart container. Jalankan
 sebagai `ethapps` di VM, bukan terminal laptop yang belum terhubung SSH.
 
-Status semua service tanpa perlu menebak tag image:
+Status web/gateway dan Named Tunnel tanpa perlu menebak tag image:
 
 ```bash
 sudo docker ps --all --filter label=com.docker.compose.project=eth-web --format 'table {{.Names}}\t{{.Image}}\t{{.Status}}\t{{.Ports}}'
+sudo docker ps --all --filter label=com.docker.compose.project=eth-web-named-tunnel --format 'table {{.Names}}\t{{.Image}}\t{{.Status}}'
 ```
 
 Uji gateway lokal:
@@ -426,22 +417,17 @@ Uji gateway lokal:
 curl -I --max-time 20 http://127.0.0.1:8080/
 ```
 
-Cari pengumuman URL tunnel; pola ini menghindari URL pada log request error:
+Uji domain utama dan `www`:
 
 ```bash
-sudo docker logs eth-web-cloudflared-1 2>&1 | grep -E 'INF.*https://[a-z0-9-]+\.trycloudflare\.com' | tail -n 5
-```
-
-Uji URL terbaru yang ditemukan. Contoh sesuai snapshot 6 November:
-
-```bash
-curl -I --max-time 20 https://runtime-keith-plaza-naval.trycloudflare.com/
+curl --fail --silent --show-error --location --max-time 20 https://ethcargoindo.com/api/health
+curl --fail --silent --show-error --location --max-time 20 https://www.ethcargoindo.com/api/health
 ```
 
 Image aktif, waktu mulai, dan jumlah restart container:
 
 ```bash
-sudo docker inspect --format '{{.Name}} image={{.Config.Image}} started={{.State.StartedAt}} restarts={{.RestartCount}}' eth-web-web-1 eth-web-gateway-1 eth-web-cloudflared-1
+sudo docker inspect --format '{{.Name}} image={{.Config.Image}} started={{.State.StartedAt}} restarts={{.RestartCount}}' eth-web-web-1 eth-web-gateway-1 eth-web-named-tunnel-cloudflared-1
 ```
 
 Data restart adalah petunjuk, bukan bukti lengkap penyebabnya. Recreate container
@@ -458,15 +444,14 @@ Ambil log terbatas sesuai service yang bermasalah:
 ```bash
 sudo docker logs --tail 100 eth-web-web-1
 sudo docker logs --tail 100 eth-web-gateway-1
-sudo docker logs --tail 100 eth-web-cloudflared-1
+sudo docker logs --tail 100 eth-web-named-tunnel-cloudflared-1
 ```
 
 Periksa dan redaksi secret sebelum membagikan log. Jangan kirim isi `.env`.
 
 | Gejala | Pemeriksaan berikutnya |
 | --- | --- |
-| URL lama gagal, gateway lokal berhasil | Cari dan uji URL tunnel terbaru. |
-| URL terbaru gagal, gateway lokal berhasil | Periksa log dan koneksi cloudflared. |
+| Domain publik gagal, gateway lokal berhasil | Periksa DNS, route hostname di tunnel `ethcargo`, dan log Named Tunnel. |
 | Gateway lokal gagal | Periksa health/status web dan log web/gateway. |
 | Push belum terlihat | Periksa run Actions dan image aktif. |
 | Actions antre | Periksa runner di GitHub dan service runner di VM. |
@@ -476,101 +461,44 @@ Periksa dan redaksi secret sebelum membagikan log. Jangan kirim isi `.env`.
 Respons `200` hanya membuktikan endpoint yang diuji merespons. Tetap periksa fitur
 di browser, terutama setelah perubahan konfigurasi atau integrasi API.
 
-## 7. NEXT — domain sendiri (belum diterapkan)
+## 7. Named Tunnel dan pelepasan Quick Tunnel
 
-**Ini rencana. Pembaruan dokumentasi tidak mengubah DNS, port, Caddy, atau tunnel.**
-
-Domain adalah alamat pengunjung. Tunnel adalah salah satu jalur menuju VM.
-Domain sendiri dapat dipakai dengan ataupun tanpa tunnel.
-
-### Pemeriksaan jaringan 20 November 2026
-
-Pemeriksaan ini hanya membaca kondisi VM. Belum ada perubahan DNS, router,
-firewall, Caddy, atau tunnel.
-
-- Container web dan Caddy sehat. Caddy merespons `HTTP 200` melalui
-  `http://127.0.0.1:8080/` di VM.
-- SSH ke `103.118.175.181:58811` berhasil dari luar. Di dalam sesi itu,
-  `SSH_CONNECTION` menunjukkan koneksi dari router `192.168.10.1` ke
-  `192.168.10.95:22`. Ini membuktikan jalur SSH sampai ke VM, belum membuktikan
-  jalur website pada port 80/443 siap.
-- IP yang dilaporkan VM saat keluar ke internet adalah `36.77.235.25`, berbeda
-  dari IP tujuan SSH. Penyebabnya belum dipastikan; periksa konfigurasi jaringan
-  sebelum memilih IP untuk DNS.
-- Di VM, hanya `127.0.0.1:8080` yang mendengarkan untuk web. Firewall UFW aktif,
-  menolak koneksi masuk secara default, dan hanya mengizinkan SSH port 22.
-
-Jika memakai domain langsung tanpa tunnel, alurnya:
+Jalur produksi sekarang:
 
 ```text
-Domain → IP publik → router kantor → firewall VM → Caddy → Nuxt
+Browser → ethcargoindo.com → Cloudflare → Named Tunnel ethcargo
+        → cloudflared di proyek eth-web-named-tunnel → gateway:80 → web:3000
 ```
 
-DNS hanya memilih alamat. Router harus meneruskan port website 80/443 ke VM;
-firewall VM harus mengizinkan port itu; Caddy harus mendengarkan dan melayani
-HTTPS. Mengubah DNS saja tidak membuka ketiga pintu tersebut. Port SSH `58811`
-bukan port website.
+`deploy/named-tunnel.compose.yaml` hanya berisi `cloudflared` Named Tunnel.
+File itu terpasang root-owned di `/etc/eth-web/named-tunnel.compose.yaml`.
+Token dibaca dari `/etc/eth-web/ethcargo-tunnel-token` di VM, tidak ada dalam
+repository. Tunnel memakai jaringan Docker eksternal `eth-web_default` agar
+dapat menjangkau `gateway:80`. Port masuk publik pada VM tetap tidak diperlukan.
 
-Langkah berikutnya: periksa IP WAN dan aturan port forwarding pada router kantor,
-termasuk apakah IP tujuan SSH tetap. Setelah jalur masuk jelas, siapkan Caddy,
-Compose, firewall, dan helper deploy; uji dari luar sebelum mengalihkan DNS.
-Jangan hentikan Quick Tunnel selama jalur baru belum terverifikasi.
+Helper di repository memeriksa container `cloudflared` dalam proyek
+`eth-web-named-tunnel`. Salinan helper di VM harus dipasang dan diuji sebelum
+Quick Tunnel lama dihentikan. Urutan operasional:
 
-### Pilihan A: domain langsung ke Caddy, tanpa tunnel
+1. Pastikan perubahan repository tersedia di VM; salin helper yang sudah
+   ditinjau ke `/usr/local/sbin/deploy-eth-web` dengan owner `root:root` dan
+   mode `0755`. Simpan salinan helper lama untuk pemulihan.
+2. Jalankan `sudo bash -n /usr/local/sbin/deploy-eth-web` dan pastikan tepat
+   satu container Named Tunnel berjalan. Uji domain utama dan `www` melalui
+   `/api/health`.
+3. Jalankan `sudo /usr/local/sbin/deploy-eth-web` untuk memeriksa preflight
+   helper baru. `already deployed` adalah hasil sukses bila image dan runtime
+   config masih sama.
+4. Baru setelah itu, hentikan **hanya** `eth-web-cloudflared-1` (Quick Tunnel).
+   Jangan hentikan `eth-web-named-tunnel-cloudflared-1`, gateway, atau web.
+   Ulangi uji domain dan helper. Jika ada masalah, Quick Tunnel dapat dimulai
+   lagi sementara diagnosis dilakukan.
 
-```text
-Browser → HTTPS domain sendiri → IP publik/router → Caddy → Nuxt
-```
-
-Sesuai jika jaringan dapat menerima koneksi masuk dari internet dan operator
-memiliki kendali atas konfigurasi jaringan. Rencana langkahnya:
-
-1. Konfirmasi IP publik, NAT/CGNAT, kendali router, serta akses port 80/443.
-2. Arahkan DNS ke IP publik. Jika VM di belakang router, atur port forwarding
-   dan firewall menuju VM.
-3. Sesuaikan port Compose gateway serta Caddyfile untuk domain dan automatic HTTPS.
-   Konfigurasi sekarang (`127.0.0.1:8080`, `:80`, `auto_https off`) belum siap.
-4. Tambahkan penyimpanan persisten Caddy, umumnya `/data` dan `/config`, agar
-   data sertifikat/konfigurasi tetap ada saat container dibuat ulang.
-5. **Sesuaikan helper deployment sebelum menghapus tunnel.** Saat ini helper
-   mewajibkan cloudflared berjalan dan memeriksa gateway melalui
-   `http://127.0.0.1:8080/`. Tentukan pemeriksaan baru yang sesuai arsitektur domain.
-6. Uji HTTPS, renewal sertifikat, akses publik, dan auto-deploy. Hentikan tunnel
-   lama setelah jalur domain terverifikasi.
-
-Caddy dapat mengurus penerbitan dan perpanjangan sertifikat otomatis. Tidak perlu
-beralih ke Nginx hanya untuk domain. `sites-available`/`sites-enabled` adalah pola
-konfigurasi Nginx pada Ubuntu, bukan syarat menggunakan domain.
-
-### Pilihan B: domain sendiri melalui Named Cloudflare Tunnel
-
-```text
-Browser → HTTPS domain sendiri → Cloudflare → Named Tunnel → Caddy → Nuxt
-```
-
-Sesuai jika VM berada di jaringan lokal tanpa akses masuk publik. Rencananya:
-
-1. Siapkan domain pada Cloudflare dan buat named tunnel yang dikelola tetap.
-2. Simpan kredensial/token tunnel di VM melalui mekanisme secret yang sesuai,
-   bukan Git atau dokumentasi.
-3. Hubungkan hostname domain ke service `http://gateway:80`.
-4. Ganti Quick Tunnel dengan named tunnel dalam perubahan terencana.
-5. Pertahankan kontrak service `cloudflared` atau sesuaikan helper bila nama/topologi
-   berubah. Uji domain, restart terencana, dan auto-deploy setelah migrasi.
-
-Hostname domain tetap dikonfigurasi meskipun proses tunnel restart. Akses masih
-bisa terputus selama restart; alamat tetap bukan jaminan server selalu online.
-Caddy dapat tetap menggunakan HTTP internal pada pilihan ini.
-
-**Belum diputuskan:** pengelola DNS, IP publik yang tepat untuk website, dan
-aturan router untuk port 80/443. IP lokal `192.168.10.95` tidak bisa langsung
-dijadikan alamat tujuan website publik dari internet.
-
-Referensi resmi:
-
-- [Caddy: HTTPS quick-start](https://caddyserver.com/docs/quick-starts/https)
-- [Cloudflare: setup tunnel](https://developers.cloudflare.com/tunnel/get-started/)
-- [Ubuntu: konfigurasi Nginx](https://ubuntu.com/server/docs/how-to/web-services/configure-nginx/)
+`compose.yaml` repository tidak lagi mendefinisikan Quick Tunnel. Checkout
+`/opt/eth-web` di VM tidak otomatis mengikuti `main`, jadi file di sana mungkin
+masih berisi definisi lama sampai diperbarui secara terpisah. Jangan jalankan
+full-stack `docker compose up` dari checkout lama; itu dapat membuat ulang
+Quick Tunnel dan service lain.
 
 ## 8. NEXT — CI/CD dan operasional (belum diterapkan)
 

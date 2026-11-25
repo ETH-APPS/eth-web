@@ -1,25 +1,25 @@
 # Alur akses website dari internet ke VM
 
 Dokumen ini menjelaskan jalur yang dilewati pengunjung saat membuka frontend ETH
-Cargo. **Bagian "Saat ini" adalah kondisi yang sudah berjalan.** Jalur domain
-sendiri di bawahnya masih pilihan untuk tahap berikutnya.
+Cargo. Domain utama dan `www` sekarang memakai Named Cloudflare Tunnel.
 
-## Saat ini: memakai alamat Cloudflare sementara
+## Saat ini: domain sendiri melalui Named Tunnel
 
 ```text
 Pengunjung
-  → alamat sementara *.trycloudflare.com
+  → ethcargoindo.com atau www.ethcargoindo.com
   → Cloudflare (HTTPS untuk pengunjung)
-  → Cloudflare Tunnel
-  → cloudflared di VM kantor
+  → Named Tunnel ethcargo
+  → cloudflared di VM kantor (proyek eth-web-named-tunnel)
   → Caddy di jaringan Docker
   → frontend Nuxt di jaringan Docker
 ```
 
 Respons halaman kembali lewat jalur yang sama, dari Nuxt ke pengunjung. Tunnel
 dibuka **dari VM ke Cloudflare**, sehingga pengunjung tidak perlu masuk langsung
-melalui router kantor. Alamat Quick Tunnel ini bisa berubah jika tunnel mulai
-ulang.
+melalui router kantor. Hostname domain tetap sama jika proses tunnel mulai ulang.
+`www` diarahkan ke domain utama. Record `api`, `member`, dan `cdn` masih menuju
+layanan sebelumnya.
 
 Untuk section produk di Home, Nuxt juga menjalankan endpoint server yang
 menghubungi gateway Ducking dengan signature privat. Browser tidak mengirim
@@ -27,7 +27,7 @@ secret ke Ducking. Detailnya ada di [alur produk Ducking](ducking-product-flow.m
 
 | Bagian | Tugas sederhana |
 | --- | --- |
-| Cloudflare | Menerima pengunjung di internet dan menyediakan HTTPS pada alamat sementara. |
+| Cloudflare | Menerima pengunjung di domain dan menyediakan HTTPS. |
 | `cloudflared` | Menjaga sambungan tunnel dari VM ke Cloudflare dan meneruskan request ke Caddy. |
 | Caddy | Menerima request dari tunnel lalu meneruskannya ke frontend. |
 | Nuxt (`web`) | Membuat dan mengirim halaman website. |
@@ -39,21 +39,10 @@ langsung ke internet. Caddy bisa diperiksa dari VM melalui
 Saat ini HTTPS publik ditangani Cloudflare, sedangkan Caddy menerima HTTP di
 dalam jaringan Docker.
 
-## Domain sendiri nanti: dua pilihan jalur
+## Alternatif masa depan: akses langsung melalui IP publik
 
-**Pilihan 1 — tetap memakai tunnel:**
-
-```text
-Pengunjung → ethcargoindo.com → Cloudflare → Named Tunnel
-           → cloudflared di VM → Caddy → Nuxt
-```
-
-Domain menjadi alamat tetap, sementara tunnel tetap menjadi jalan ke VM. Jalur
-ini tidak membutuhkan port website dibuka pada router atau firewall VM. Quick
-Tunnel perlu diganti dengan Named Tunnel dan domain perlu dikonfigurasi di
-Cloudflare. **Punya domain sendiri tidak berarti tunnel harus dilepas.**
-
-**Pilihan 2 — langsung melalui IP publik kantor:**
+Jalur sekarang tidak membutuhkan port website dibuka pada router atau firewall
+VM. Jika kelak tunnel diganti dengan jalur langsung, alurnya menjadi:
 
 ```text
 Pengunjung → ethcargoindo.com → IP publik kantor → router kantor
@@ -79,8 +68,8 @@ saja belum membuka jalur website.** Port SSH bukan port website.
   SSH port `22`. Belum ada aturan website yang diubah.
 - Web dan Caddy sehat; permintaan ke Caddy lokal menghasilkan HTTP `200`.
 
-Pemeriksaan di atas **hanya membaca kondisi**. DNS, router, firewall, Caddy, dan
-tunnel yang sedang berjalan belum diubah.
+Pemeriksaan jaringan di atas hanya membaca kondisi VM saat itu. Setelahnya,
+DNS domain utama telah dialihkan ke tunnel tanpa mengubah router atau firewall.
 
 ## Istilah yang sering tertukar
 
@@ -95,6 +84,8 @@ tunnel yang sedang berjalan belum diubah.
 - **Firewall:** menentukan port masuk yang diizinkan. Router dan firewall VM
   adalah dua pemeriksaan yang berbeda.
 
-Rincian operasional dan rencana perpindahan domain ada di
+Rincian operasional ada di
 [panduan deployment](../deploy/README.md). Konfigurasi aktif di repository dapat
-dilihat pada [Compose](../compose.yaml) dan [Caddyfile](../deploy/Caddyfile).
+dilihat pada [Compose web/gateway](../compose.yaml),
+[Compose Named Tunnel](../deploy/named-tunnel.compose.yaml), dan
+[Caddyfile](../deploy/Caddyfile).
