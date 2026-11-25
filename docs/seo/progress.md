@@ -85,16 +85,17 @@ konten dan domain final siap. Perubahan ini baru dilakukan di workspace lokal.
 **Sitemap** adalah daftar URL penting yang kita sarankan untuk ditemukan mesin
 pencari. Jumlahnya saat ini 16 karena dari 23 jenis route marketing, tujuh
 jenis route dikecualikan: blog root/detail, search/tag blog, dan glossary
-root/huruf/detail. Blog dan glossary masih berisi data placeholder; search/tag
-memang memakai `noindex`. Route dinamis dapat mewakili banyak URL, jadi 23 file
-route bukan berarti hanya ada 23 URL. Tidak masuk sitemap juga tidak otomatis
-mencegah suatu halaman terindeks.
+root/huruf/detail. Blog masih berisi data placeholder, sedangkan semua route
+glossary sementara merespons 404; search/tag memakai `noindex`. Route dinamis
+dapat mewakili banyak URL, jadi 23 file route bukan berarti hanya ada 23 URL.
+Tidak masuk sitemap juga tidak otomatis mencegah suatu halaman terindeks.
 
 **Robots.txt** mengatur pintu yang boleh dimasuki crawler. **Noindex** meminta
 agar halaman yang sudah dibaca tidak ditampilkan dalam indeks. Search/tag
 tetap boleh dirayapi supaya crawler dapat membaca instruksi `noindex` di
-dalamnya. Blog/glossary placeholder belum diberi `noindex`; kebijakannya harus
-diputuskan sebelum domain final diluncurkan.
+dalamnya. Blog placeholder belum diberi `noindex`; kebijakannya harus
+diputuskan sebelum domain final diluncurkan. Glossary dinonaktifkan dengan
+404 dan tautan footer-nya dihapus sampai konten final siap.
 
 **Masukan tim SEO (10 November):** `noindex` diprioritaskan untuk halaman yang
 muncul setelah login dan membutuhkan autentikasi. Web saat ini belum memiliki
@@ -116,9 +117,9 @@ dan performa masih perlu diperiksa bersama data final dan pengukuran browser.
 2. Pada domain final, cek HTML publik, canonical, schema, `/sitemap.xml`, dan
    `/robots.txt` memakai domain yang sama. Schema dan canonical homepage di
    Quick Tunnel sudah diperiksa; endpoint lain belum diperiksa setelah deploy.
-3. Tentukan nasib halaman placeholder, terutama blog, glossary, dan halaman
-   statis yang belum memiliki konten final. Validasi slug artikel agar URL yang
-   tidak ada merespons 404.
+3. Tentukan nasib halaman placeholder, terutama blog dan halaman statis yang
+   belum memiliki konten final. Aktifkan kembali glossary hanya setelah konten
+   final siap. Validasi slug artikel agar URL yang tidak ada merespons 404.
 4. Verifikasi Domain property di Google Search Console melalui DNS Cloudflare,
    kemudian kirim sitemap. Langkah ini tidak memerlukan kode Nuxt khusus.
 5. Uji preview berbagi, performa gambar, Core Web Vitals, dan browser/perangkat

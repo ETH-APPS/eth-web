@@ -69,7 +69,6 @@ const navigationGroups = [
     links: [
       { label: 'Promosi', to: '/promo' },
       { label: 'Blog', to: '/artikel' },
-      { label: 'Glosarium', to: '/glossary' },
       { label: 'Cara Import Barang dari China', to: '/complete-guide', narrow: true },
     ],
   },

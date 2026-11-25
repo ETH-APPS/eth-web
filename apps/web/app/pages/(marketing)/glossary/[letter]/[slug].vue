@@ -10,6 +10,7 @@ import {
 
 definePageMeta({
   layout: 'marketing',
+  middleware: 'glossary-unavailable',
   validate: route => {
     const letter = String(route.params.letter ?? '').toLowerCase()
     const slug = String(route.params.slug ?? '').toLowerCase()

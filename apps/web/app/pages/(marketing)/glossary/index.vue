@@ -8,6 +8,7 @@ import {
 
 definePageMeta({
   layout: 'marketing',
+  middleware: 'glossary-unavailable',
 })
 
 useSeoMeta({

@@ -7,6 +7,7 @@ import {
 
 definePageMeta({
   layout: 'marketing',
+  middleware: 'glossary-unavailable',
   validate: route => {
     const letter = String(route.params.letter ?? '').toLowerCase()
     return Boolean(getGlossaryGroup(letter))
