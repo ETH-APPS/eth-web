@@ -188,7 +188,7 @@ const faqContent = computed(() => country.value.faq)
 const cargoBanner = computed(() => ({
   title: `Siap Kirim Kargo Impor dari ${country.value.name}?`,
   description: 'Hitung estimasi pengiriman dengan kalkulator kargo kami, atau konsultasikan kebutuhan impor bisnis Anda langsung bersama tim ahli ETH Cargo.',
-  email: 'email@ethcargo.co.id',
+  email: 'ethcargo@hotmail.com',
   ctaLabel: 'Konsultasi Gratis',
   ctaTo: whatsappConsultationUrl,
 }))

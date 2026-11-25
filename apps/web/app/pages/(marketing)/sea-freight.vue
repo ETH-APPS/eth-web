@@ -141,7 +141,7 @@ const faqContent = faqContentByPath['/sea-freight'] ?? homeFaqContent
 const freightBanner = {
   title: 'Siap Kirim Kargo Import Skala Besar via Laut',
   description: 'Solusi pengiriman kargo laut All-In Door-to-Door yang aman dan ekonomis untuk bisnis Anda, Dapatkan penawaran terbaik hari ini!',
-  email: 'email@ethcargo.co.id',
+  email: 'ethcargo@hotmail.com',
   ctaLabel: 'Konsultasi Gratis',
   ctaTo: whatsappConsultationUrl,
 }

@@ -36,7 +36,9 @@ import { whatsappConsultationUrl } from '~/constants/whatsapp'
       </p>
       <div class="mt-4 text-center">
         <UiAnimatedArrowButton
-          :to="whatsappConsultationUrl"
+          :href="whatsappConsultationUrl"
+          target="_blank"
+          rel="noopener noreferrer"
           variant="plain"
           :icon-size="18"
           class="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl bg-primary-50 px-4 py-2 text-[14px] font-medium text-primary-500 transition-colors hover:bg-primary-500 hover:text-white focus-visible:bg-primary-500 focus-visible:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500"

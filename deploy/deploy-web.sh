@@ -1,15 +1,37 @@
 #!/usr/bin/env bash
 
+# ==============================================================================
+# deploy-web
+#
+# Invoked by GitHub Actions through /usr/local/sbin/deploy-eth-web on the VM.
+#
+# Flow:
+#   STAGE 1  Prepare the environment and check VM prerequisites
+#   STAGE 2  Verify the running services are healthy and record the version
+#            we can restore
+#   STAGE 3  Fetch the latest main and prepare an isolated release directory
+#   STAGE 4  Build the new image (or reuse the image for the same commit)
+#   STAGE 5  Replace only the web service and verify the new one is reachable
+# ==============================================================================
+
+
+# ==============================================================================
+# STAGE 1: Prepare the environment and check VM prerequisites
+# ==============================================================================
+
 set -Eeuo pipefail
 
 IFS=$' \t\n'
 umask 027
 export PATH='/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin'
 export HOME='/root'
+
+# Drop any inherited variables that could change how git/docker/compose behave.
 unset BASH_ENV CDPATH COMPOSE_FILE COMPOSE_PROJECT_NAME DOCKER_CONTEXT DOCKER_HOST \
   ENV GIT_CONFIG_COUNT GIT_DIR GIT_INDEX_FILE GIT_WORK_TREE IMAGE_TAG \
   NUXT_PUBLIC_SITE_URL NUXT_DUCKING_SIGNING_SECRET
 
+# --- Fixed paths and names ----------------------------------------------------
 readonly REPO_DIR='/opt/eth-web'
 readonly REPO_URL='git@github.com:ETH-APPS/eth-web.git'
 readonly RELEASE_ROOT='/var/lib/eth-web-deploy/releases'
@@ -23,6 +45,7 @@ readonly NETWORK_NAME='eth-web_default'
 readonly IMAGE_NAME='eth-web-web'
 readonly LOCK_FILE='/run/lock/eth-web-deploy.lock'
 
+# --- Logging helpers ----------------------------------------------------------
 log() {
   printf '[deploy-web] %s\n' "$*"
 }
@@ -32,10 +55,13 @@ fail() {
   exit 1
 }
 
+# --- Basic sanity checks ------------------------------------------------------
 [[ "$EUID" -eq 0 ]] || fail 'this helper must run as root'
 [[ $# -eq 0 ]] || fail 'this helper does not accept arguments'
 [[ -d "$REPO_DIR/.git" ]] || fail "repository not found at ${REPO_DIR}"
 [[ -f "$COMPOSE_FILE" && ! -L "$COMPOSE_FILE" ]] || fail "fixed Compose file is missing or unsafe: ${COMPOSE_FILE}"
+
+# --- Validate the site URL file ----------------------------------------------
 [[ -f "$SITE_URL_FILE" && ! -L "$SITE_URL_FILE" ]] || fail "site URL file is missing or unsafe: ${SITE_URL_FILE}"
 [[ "$(stat -c '%U:%G' "$SITE_URL_FILE")" == 'root:root' ]] || fail "site URL file must be owned by root:root: ${SITE_URL_FILE}"
 SITE_URL_MODE="$(stat -c '%a' "$SITE_URL_FILE")"
@@ -50,6 +76,7 @@ readonly SITE_URL
 [[ "$SITE_URL" =~ ^https://[A-Za-z0-9.-]+(:[0-9]{1,5})?$ ]] \
   || fail 'site URL must be an HTTPS origin without a path, query, fragment, or trailing slash'
 
+# --- Validate the signing secret file ----------------------------------------
 [[ -f "$SIGNING_SECRET_FILE" && ! -L "$SIGNING_SECRET_FILE" ]] || fail 'Ducking signing secret file is missing or unsafe'
 [[ "$(stat -c '%U:%G' "$SIGNING_SECRET_FILE")" == 'root:root' ]] || fail 'Ducking signing secret file must be owned by root:root'
 [[ "$(stat -c '%a' "$SIGNING_SECRET_FILE")" == '600' ]] || fail 'Ducking signing secret file mode must be 600'
@@ -59,13 +86,19 @@ SIGNING_SECRET="${SIGNING_SECRET_LINES[0]}"
 readonly SIGNING_SECRET
 unset SIGNING_SECRET_LINES
 
+# --- Validate SSH material and the Docker network ----------------------------
 [[ -f "$DEPLOY_KEY" ]] || fail "deploy key not found at ${DEPLOY_KEY}"
 [[ -f "$KNOWN_HOSTS" ]] || fail "SSH known_hosts not found at ${KNOWN_HOSTS}"
 docker network inspect "$NETWORK_NAME" >/dev/null
 
+# --- Prevent concurrent deployments ------------------------------------------
 exec 9>"$LOCK_FILE"
 flock -n 9 || fail 'another web deployment is already running'
 
+# --- Helper functions ---------------------------------------------------------
+
+# Run git as the unprivileged "ethapps" user with a clean environment and a
+# strict, key-only SSH configuration (SSH over port 443 via ssh.github.com).
 git_as_ethapps() {
   local workdir="$1"
   shift
@@ -77,6 +110,8 @@ git_as_ethapps() {
     git -C "$workdir" "$@"
 }
 
+# Run docker compose with a clean environment; the image tag, site URL and
+# signing secret are passed explicitly instead of being inherited.
 compose() {
   local tag="$1"
   shift
@@ -95,6 +130,8 @@ compose() {
       "$@"
 }
 
+# Print the ID of the single running container for a service; fail if there
+# are zero or several.
 single_container_id() {
   local service="$1"
   local -a ids=()
@@ -111,6 +148,8 @@ single_container_id() {
   printf '%s\n' "${ids[0]}"
 }
 
+# Wait until a container is running and its healthcheck reports "healthy".
+# Returns 1 on timeout or if the container is exited/dead/unhealthy/has no healthcheck.
 wait_healthy() {
   local container_id="$1"
   local timeout="$2"
@@ -136,6 +175,7 @@ wait_healthy() {
   return 1
 }
 
+# Check that the site is reachable through the Caddy gateway (up to 15 tries).
 gateway_ok() {
   local attempt
 
@@ -150,6 +190,12 @@ gateway_ok() {
   return 1
 }
 
+
+# ==============================================================================
+# STAGE 2: Verify the current services are healthy and record the version
+#          that can be restored (used for rollback)
+# ==============================================================================
+
 OLD_WEB_ID="$(single_container_id web)"
 readonly OLD_WEB_ID
 GATEWAY_ID="$(single_container_id gateway)"
@@ -161,6 +207,7 @@ readonly CLOUDFLARED_ID
   || fail 'the current web container is not healthy'
 gateway_ok || fail 'the existing site is not reachable through Caddy'
 
+# Record the image and runtime config currently running.
 OLD_IMAGE="$(docker inspect --format '{{.Config.Image}}' "$OLD_WEB_ID")"
 readonly OLD_IMAGE
 [[ "$OLD_IMAGE" == "${IMAGE_NAME}:"* ]] || fail "unexpected current web image: ${OLD_IMAGE}"
@@ -178,11 +225,17 @@ readonly OLD_TAG="${OLD_IMAGE#${IMAGE_NAME}:}"
 [[ "$OLD_TAG" =~ ^[A-Za-z0-9_][A-Za-z0-9_.-]{0,127}$ ]] || fail "unsafe current web image tag: ${OLD_TAG}"
 docker image inspect "$OLD_IMAGE" >/dev/null
 
+
+# ==============================================================================
+# STAGE 3: Fetch the latest main and prepare an isolated release directory
+# ==============================================================================
+
 log 'fetching the latest origin/main with the read-only deploy key'
 git_as_ethapps "$REPO_DIR" fetch --force --no-tags \
   "$REPO_URL" \
   '+refs/heads/main:refs/remotes/origin/main'
 
+# Resolve the target commit and derive a short, safe image tag from it.
 TARGET_SHA="$(git_as_ethapps "$REPO_DIR" rev-parse --verify 'refs/remotes/origin/main^{commit}')"
 readonly TARGET_SHA
 [[ "$TARGET_SHA" =~ ^[0-9a-f]{40}$ ]] || fail 'origin/main did not resolve to a 40-character commit SHA'
@@ -194,6 +247,8 @@ readonly RELEASE_DIR="${RELEASE_ROOT}/${TARGET_SHA}"
 
 install -d -o ethapps -g ethapps -m 0750 "$RELEASE_ROOT"
 
+# Reuse the release worktree if it already exists and is clean;
+# otherwise create a fresh detached worktree for this commit.
 if [[ -e "$RELEASE_DIR" ]]; then
   [[ -d "$RELEASE_DIR" && -f "$RELEASE_DIR/.git" ]] || fail "unsafe release path: ${RELEASE_DIR}"
   [[ "$(git_as_ethapps "$RELEASE_DIR" rev-parse --verify HEAD)" == "$TARGET_SHA" ]] \
@@ -205,6 +260,7 @@ else
   git_as_ethapps "$REPO_DIR" worktree add --detach "$RELEASE_DIR" "$TARGET_SHA"
 fi
 
+# Stop early if the same code and the same runtime config are already live.
 if [[ "$OLD_IMAGE" == "$TARGET_IMAGE" ]] && \
   [[ "$(docker image inspect --format '{{index .Config.Labels "org.opencontainers.image.revision"}}' "$TARGET_IMAGE")" == "$TARGET_SHA" ]] && \
   [[ "$CURRENT_SITE_URL" == "$SITE_URL" ]] && \
@@ -213,6 +269,12 @@ if [[ "$OLD_IMAGE" == "$TARGET_IMAGE" ]] && \
   exit 0
 fi
 
+
+# ------------------------------------------------------------------------------
+# ROLLBACK SETUP: arm the rollback handler BEFORE the web container is replaced.
+# If anything fails after swap_started=true, attempt to restore the previous
+# web image; the rollback itself can also fail.
+# ------------------------------------------------------------------------------
 swap_started=false
 
 rollback_on_exit() {
@@ -249,6 +311,11 @@ trap 'rollback_on_exit $?' EXIT
 trap 'exit 130' INT
 trap 'exit 143' TERM
 
+
+# ==============================================================================
+# STAGE 4: Build the new image, or reuse the existing image for the same commit
+# ==============================================================================
+
 if docker image inspect "$TARGET_IMAGE" >/dev/null 2>&1 && \
   [[ "$(docker image inspect --format '{{index .Config.Labels "org.opencontainers.image.revision"}}' "$TARGET_IMAGE")" == "$TARGET_SHA" ]]; then
   log "reusing existing image ${TARGET_IMAGE}"
@@ -261,14 +328,25 @@ else
     "$RELEASE_DIR"
 fi
 
+# Confirm the image revision label matches the commit we intend to deploy.
 BUILT_REVISION="$(docker image inspect --format '{{index .Config.Labels "org.opencontainers.image.revision"}}' "$TARGET_IMAGE")"
 readonly BUILT_REVISION
 [[ "$BUILT_REVISION" == "$TARGET_SHA" ]] || fail 'built image revision label does not match origin/main'
 
+
+# ==============================================================================
+# STAGE 5: Replace only the web service and verify the new one is reachable
+# ==============================================================================
+
+# Validate the Compose configuration before touching anything that is running.
 compose "$TARGET_TAG" config --quiet
 
+# From this point on, any failure triggers the rollback handler above.
 swap_started=true
 log 'replacing only web; gateway and cloudflared remain running'
+
+# The compose() helper reads /etc/eth-web/web.compose.yaml on the VM.
+# It validates that configuration before replacing the web container.
 compose "$TARGET_TAG" up --detach --no-build --no-deps web
 
 NEW_WEB_ID="$(single_container_id web)"
@@ -276,9 +354,11 @@ readonly NEW_WEB_ID
 wait_healthy "$NEW_WEB_ID" 150 || fail 'new web container did not become healthy'
 gateway_ok || fail 'new web container is not reachable through Caddy'
 
+# Make sure the other services were not recreated during the deployment.
 [[ "$(single_container_id gateway)" == "$GATEWAY_ID" ]] || fail 'gateway container changed during deployment'
 [[ "$(single_container_id cloudflared)" == "$CLOUDFLARED_ID" ]] || fail 'cloudflared container changed during deployment'
 
+# Success: disarm the rollback.
 swap_started=false
 log "successfully deployed ${TARGET_SHA} as ${TARGET_IMAGE}; gateway and cloudflared are unchanged"
 

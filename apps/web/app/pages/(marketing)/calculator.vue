@@ -50,7 +50,7 @@ const faqContent = faqContentByPath['/calculator'] ?? homeFaqContent
 const calculatorBanner = {
   title: faqContent.quoteTitle,
   description: faqContent.quoteDescription,
-  email: 'email@ethcargo.co.id',
+  email: 'ethcargo@hotmail.com',
   ctaLabel: 'Konsultasi Gratis',
   ctaTo: whatsappConsultationUrl,
 }

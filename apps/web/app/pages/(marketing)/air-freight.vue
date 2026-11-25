@@ -114,7 +114,7 @@ const faqContent = faqContentByPath['/air-freight'] ?? homeFaqContent
 const freightBanner = {
   title: 'Butuh Pengiriman Cepat dari China? Kirim via Kargo Udara!',
   description: 'Solusi pengiriman ekspres All-In Door-to-Door yang aman untuk produk prioritas dan mendesak. Tiba lebih cepat langsung ke alamat Anda.',
-  email: 'email@ethcargo.co.id',
+  email: 'ethcargo@hotmail.com',
   ctaLabel: 'Konsultasi Gratis',
   ctaTo: whatsappConsultationUrl,
 }

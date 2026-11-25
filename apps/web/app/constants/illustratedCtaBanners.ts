@@ -9,21 +9,21 @@ export const illustratedCtaBanners = {
   cargo: {
     title: 'Siap Kirim Barang dari China?',
     description: 'Hitung estimasi biaya pengiriman atau konsultasikan pilihan jalur kargo China-Indonesia yang paling sesuai untuk kebutuhan bisnis Anda.',
-    email: 'email@ethcargo.co.id',
+    email: 'ethcargo@hotmail.com',
     ctaLabel: 'Konsultasi Gratis',
     ctaTo: whatsappConsultationUrl,
   },
   chinaCargo: {
     title: 'Siap Kirim Kargo Impor Anda?',
     description: 'Hitung estimasi pengiriman dengan kalkulator kargo kami, atau konsultasikan kebutuhan impor bisnis Anda langsung bersama tim ahli ETH Cargo.',
-    email: 'email@ethcargo.co.id',
+    email: 'ethcargo@hotmail.com',
     ctaLabel: 'Konsultasi Gratis',
     ctaTo: whatsappConsultationUrl,
   },
   transfer: {
     title: 'Siap untuk Transfer RMB?',
     description: 'Proses pembayaran ke supplier China kini lebih praktis, aman, dan tanpa kendala. Konsultasikan nominal serta tujuan transfer bisnis Anda langsung bersama tim spesialis kami.',
-    email: 'testing-mail@gmail.co.id',
+    email: 'ethcargo@hotmail.com',
     ctaLabel: 'Konsultasi Gratis',
     ctaTo: whatsappConsultationUrl,
     image: transferVector,
@@ -36,7 +36,7 @@ export const illustratedCtaBanners = {
   sourcing: {
     title: 'Siap Temukan Supplier Tangan Pertama di China?',
     description: 'Dapatkan penawaran harga modal grosir terbaik, jaminan kualitas produk, serta pengiriman kargo terintegrasi tanpa kendala bahasa. Konsultasikan kebutuhan barang bisnis Anda sekarang!',
-    email: 'testing-mail@gmail.co.id',
+    email: 'ethcargo@hotmail.com',
     ctaLabel: 'Konsultasi Gratis',
     ctaTo: whatsappConsultationUrl,
     image: handPackageVector,
@@ -46,7 +46,7 @@ export const illustratedCtaBanners = {
   about: {
     title: 'Siap Mengoptimalkan Rantai Pasok Impor Anda?',
     description: 'Percayakan kebutuhan logistik, pengadaan produk, dan pembayaran supplier China Anda kepada ETH Cargo. Tim profesional kami siap memberikan solusi All-In Door-to-Door yang efisien dan terpercaya.',
-    email: 'testing-mail@gmail.co.id',
+    email: 'ethcargo@hotmail.com',
     ctaLabel: 'Konsultasi Gratis',
     ctaTo: whatsappConsultationUrl,
     image: aboutUsVector,
@@ -56,7 +56,7 @@ export const illustratedCtaBanners = {
   completeGuide: {
     title: 'Kuasai Strategi Import B2B dari China untuk Skala Bisnis Anda!',
     description: 'Kuasai alur pengiriman All-In Door-to-Door dari awal hingga akhir. Kami pandu setiap langkah secara transparan tanpa khawatir kendala bea cukai.',
-    email: 'testing-mail@gmail.co.id',
+    email: 'ethcargo@hotmail.com',
     ctaLabel: 'Konsultasi Gratis',
     ctaTo: whatsappConsultationUrl,
     image: completeGuideVector,
@@ -68,7 +68,7 @@ export const illustratedCtaBanners = {
   productSourcing: {
     title: 'Ingin Import Produk dari China Tanpa Repot? Biar ETH Cargo yang Urus!',
     description: 'Nikmati layanan sourcing terpercaya dari pabrik tangan pertama di China. Transparan, aman, dan langsung sampai ke gudang Anda.',
-    email: 'testing-mail@gmail.co.id',
+    email: 'ethcargo@hotmail.com',
     ctaLabel: 'Konsultasi Gratis',
     ctaTo: whatsappConsultationUrl,
     image: importVector,
