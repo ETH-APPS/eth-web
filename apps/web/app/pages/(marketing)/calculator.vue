@@ -8,8 +8,13 @@ definePageMeta({
   layout: 'marketing',
 })
 
+useHead({
+  meta: [
+    { name: 'keywords', content: 'kalkulator biaya impor china' }
+  ]
+})
+
 useSeoMeta({
-  keywords: 'kalkulator biaya impor china',
   title: 'Kalkulator Estimasi Biaya Impor dari China | ETH Cargo',
   description:
     'Hitung estimasi biaya impor dari China: jasa beli, kargo laut, dan kargo udara. Hasil berupa estimasi; hubungi tim ETH Cargo untuk penawaran resmi.',

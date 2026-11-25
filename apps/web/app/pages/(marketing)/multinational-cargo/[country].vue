@@ -112,10 +112,15 @@ if (siteUrl) {
   })
 }
 
+useHead({
+  meta: [
+    { name: 'keywords', content: seoKeywords }
+  ]
+})
+
 useSeoMeta({
   title: seoTitle,
   description: seoDescription,
-  keywords: seoKeywords,
   ogTitle: seoTitle,
   ogDescription: seoDescription,
   ogType: 'website',
@@ -220,7 +225,7 @@ const cargoBanner = computed(() => ({
     :description="hasFeaturedFreightContent
       ? featuredSeaDescription
       : 'Kirim barang bervolume besar melalui layanan Full Container Load (FCL) yang aman dan andal. Dengan kepastian alokasi kontainer serta penguncian tarif hingga 45 hari, perencanaan logistik bisnis menjadi lebih efisien dan terukur.'"
-    :image="hasFeaturedFreightContent ? undefined : cargoSeaUrl"
+    :image="cargoSeaUrl"
     image-alt="Kapal kontainer untuk layanan sea freight multinational ETH Cargo"
     :cta-prompt="hasFeaturedFreightContent
       ? 'Solusi logistik All-In Door-to-Door yang aman, terpercaya, dan bebas pusing urusan kepabeanan.'
@@ -241,7 +246,7 @@ const cargoBanner = computed(() => ({
     :description="hasFeaturedFreightContent
       ? featuredAirDescription
       : 'Butuh pengiriman internasional yang lebih cepat? Layanan Air Freight kami memberikan waktu transit singkat, jadwal penerbangan yang terukur, serta penanganan kargo yang aman dari titik keberangkatan hingga tiba di negara tujuan.'"
-    :image="hasFeaturedFreightContent ? undefined : cargoAirUrl"
+    :image="cargoAirUrl"
     image-alt="Pesawat cargo untuk layanan air freight multinational ETH Cargo"
     :cta-prompt="hasFeaturedFreightContent
       ? 'Nikmati layanan All-In Door-to-Door yang praktis. Seluruh proses kepabeanan dan pengantaran akhir kami tangani sepenuhnya untuk ketenangan bisnis Anda.'

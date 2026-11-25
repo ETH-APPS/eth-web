@@ -39,8 +39,13 @@ if (siteUrl) {
   })
 }
 
+useHead({
+  meta: [
+    { name: 'keywords', content: 'cargo air china' }
+  ]
+})
+
 useSeoMeta({
-  keywords: 'cargo air china',
   title: 'Kargo Udara China ke Jakarta per Kg | ETH Cargo',
   description: 'Kargo udara China ke Jakarta dari gudang Guangzhou, dihitung per kg. Estimasi 7–12 hari kerja (dapat berubah). Hubungi marketing untuk tarif terbaru.',
   ogTitle: 'Kargo Udara China ke Jakarta per Kg | ETH Cargo',

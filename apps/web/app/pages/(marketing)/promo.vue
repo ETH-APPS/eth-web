@@ -5,8 +5,13 @@ definePageMeta({
   layout: 'marketing',
 })
 
+useHead({
+  meta: [
+    { name: 'keywords', content: 'promo eth cargo' }
+  ]
+})
+
 useSeoMeta({
-  keywords: 'promo eth cargo',
   title: 'Promo ETH Cargo untuk Jasa Beli & Kargo | Syarat Berlaku',
   description: 'Lihat promo dan kode promo ETH Cargo untuk jasa beli barang, transfer RMB, dan kargo. Syarat berlaku; cek periode promo terbaru.',
   ogTitle: 'Promo ETH Cargo untuk Jasa Beli & Kargo | Syarat Berlaku',

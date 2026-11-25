@@ -3,8 +3,13 @@ definePageMeta({
   layout: 'marketing',
 })
 
+useHead({
+  meta: [
+    { name: 'keywords', content: 'syarat dan ketentuan eth cargo' }
+  ]
+})
+
 useSeoMeta({
-  keywords: 'syarat dan ketentuan eth cargo',
   title: 'Syarat & Ketentuan Layanan | ETH Cargo',
   description: 'Syarat dan ketentuan layanan ETH Cargo: jasa beli barang, transfer RMB, kargo, refund, dan batas tanggung jawab. Baca sebelum order.',
   ogTitle: 'Syarat & Ketentuan Layanan | ETH Cargo',

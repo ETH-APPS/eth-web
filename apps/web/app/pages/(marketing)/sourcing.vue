@@ -39,8 +39,13 @@ if (siteUrl) {
   })
 }
 
+useHead({
+  meta: [
+    { name: 'keywords', content: 'jasa beli barang china' }
+  ]
+})
+
 useSeoMeta({
-  keywords: 'jasa beli barang china',
   title: 'Jasa Titip Aliexpress, 1688, Taobao, Tmall, Alibaba | ETH Cargo',
   description: 'ETH Cargo menyediakan jasa impor barang dari China melalui e-commerce China seperti 1688, Aliexpress, Alibaba, Taobao, serta Tmall. Kami juga melayani pengiriman barang dari Hongkong, Singapura, Thailand, Korea, dan USA.',
   ogTitle: 'Jasa Titip Aliexpress, 1688, Taobao, Tmall, Alibaba | ETH Cargo',

@@ -8,8 +8,13 @@ definePageMeta({
   layout: 'marketing',
 })
 
+useHead({
+  meta: [
+    { name: 'keywords', content: 'cek status pengiriman impor' }
+  ]
+})
+
 useSeoMeta({
-  keywords: 'cek status pengiriman impor',
   title: 'Cek Status Pengiriman Impor (Live Tracking) | ETH Cargo',
   description:
     'Pantau status pesanan dan pengiriman barang impor Anda dari akun ETH Cargo. Butuh bantuan? Hubungi tim kami di jam operasional.',

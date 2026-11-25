@@ -40,8 +40,13 @@ if (siteUrl) {
   })
 }
 
+useHead({
+  meta: [
+    { name: 'keywords', content: 'ETH Cargo' }
+  ]
+})
+
 useSeoMeta({
-  keywords: 'ETH Cargo',
   title: 'Tentang ETH Cargo | Forwarder China Indonesia',
   description: 'ETH Cargo (PT Express Trade Handling) adalah forwarder China–Indonesia untuk bisnis dengan gudang di Guangzhou dan kantor pusat di Jakarta.',
   ogTitle: 'Tentang ETH Cargo | Forwarder China Indonesia',

@@ -42,8 +42,13 @@ if (siteUrl) {
   })
 }
 
+useHead({
+  meta: [
+    { name: 'keywords', content: 'forwarder china Indonesia' }
+  ]
+})
+
 useSeoMeta({
-  keywords: 'forwarder china Indonesia',
   title: 'Forwarder China Indonesia untuk Bisnis | ETH Cargo',
   description: 'Forwarder China Indonesia untuk bisnis: beli barang, transfer RMB, kargo udara & laut, hingga dokumen impor diurus satu pintu. Konsultasi gratis.',
   ogTitle: 'Forwarder China Indonesia untuk Bisnis | ETH Cargo',

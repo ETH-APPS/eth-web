@@ -38,8 +38,13 @@ if (siteUrl) {
   })
 }
 
+useHead({
+  meta: [
+    { name: 'keywords', content: 'cara import barang dari china' }
+  ]
+})
+
 useSeoMeta({
-  keywords: 'cara import barang dari china',
   title: 'Cara Import Barang dari China: Langkah Lengkap | ETH Cargo',
   description: 'Langkah impor barang dari China ke Indonesia: pilih supplier, kode marking, kirim ke gudang, kargo, hingga dokumen impor. Baca panduannya.',
   ogTitle: 'Cara Import Barang dari China: Langkah Lengkap | ETH Cargo',

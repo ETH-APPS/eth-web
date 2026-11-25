@@ -6,8 +6,13 @@ definePageMeta({
   layout: 'marketing',
 })
 
+useHead({
+  meta: [
+    { name: 'keywords', content: 'kalkulator transfer rmb' }
+  ]
+})
+
 useSeoMeta({
-  keywords: 'kalkulator transfer rmb',
   title: 'Kalkulator Transfer RMB ke Rupiah | ETH Cargo',
   description: 'Hitung estimasi transfer RMB ke supplier China: (nominal + fee) × kurs. Hasil hanya estimasi, hubungi tim ETH Cargo untuk kurs harian.',
   ogTitle: 'Kalkulator Transfer RMB ke Rupiah | ETH Cargo',

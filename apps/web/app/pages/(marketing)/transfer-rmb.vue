@@ -36,8 +36,13 @@ if (siteUrl) {
   })
 }
 
+useHead({
+  meta: [
+    { name: 'keywords', content: 'jasa transfer rmb' }
+  ]
+})
+
 useSeoMeta({
-  keywords: 'jasa transfer rmb',
   title: 'Jasa Transfer RMB ke Supplier China | ETH Cargo',
   description: 'Bayar supplier di China tanpa rekening RMB. Transfer dari Rupiah ke Yuan lewat ETH Cargo dengan rumus fee yang jelas. Hubungi tim untuk kurs hari ini.',
   ogTitle: 'Jasa Transfer RMB ke Supplier China | ETH Cargo',

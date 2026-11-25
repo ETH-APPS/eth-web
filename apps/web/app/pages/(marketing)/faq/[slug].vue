@@ -16,9 +16,18 @@ const pageDescription = computed(() => group.value?.id === 'pertanyaan-umum'
   ? 'Jawaban seputar jasa sourcing, transfer RMB, kargo udara & laut ETH Cargo: estimasi waktu, biaya, refund, dan syarat. Konsultasi bila butuh bantuan.'
   : group.value?.description ?? '')
 
+// Keywords only apply to the general FAQ group. useSeoMeta has no `keywords`
+// key, so it goes through useHead; the tag is omitted entirely when empty.
+const pageKeywords = computed(() => group.value?.id === 'pertanyaan-umum' ? 'faq impor china' : '')
+
+useHead({
+  meta: computed(() => pageKeywords.value
+    ? [{ name: 'keywords', content: pageKeywords.value }]
+    : []),
+})
+
 useSeoMeta({
   title: pageTitle,
-  keywords: () => group.value?.id === 'pertanyaan-umum' ? 'faq impor china' : undefined,
   description: pageDescription,
   ogTitle: pageTitle,
   ogDescription: pageDescription,
