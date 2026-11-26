@@ -77,7 +77,7 @@ tetap menjadi bahan peninjauan editorial.
 | 18 | Aplikasi (Coming Soon) | Belum ada route padanan | Title/description kosong; keyword ada, tetapi belum dipasang tanpa route |
 | 19 | Promosi | `/promo` | URL sheet `/promosi` |
 | 20 | Blog | `/blog` | URL sheet `/insight`; kolom Keyword berisi `-` |
-| 21 | Proses Impor | `/complete-guide` | Metadata terpasang; isi perlu ditinjau |
+| 21 | Proses Impor | `/cara-import-barang-dari-china` | Metadata terpasang; isi perlu ditinjau. URL lama `/complete-guide` redirect 301. |
 | 22 | Glosarium | `/glossary` | Cek cakupan istilah yang benar-benar tersedia |
 | 23 | FAQ | `/faq/pertanyaan-umum` | Metadata terpasang pada tujuan redirect; varian FAQ lain tetap dinamis |
 | 24 | Tentang Kami | `/about-us` | Ada |

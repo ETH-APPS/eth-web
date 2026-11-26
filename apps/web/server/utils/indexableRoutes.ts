@@ -18,7 +18,7 @@ const staticRoutes = [
   '/terms-and-conditions',
   '/legalities',
   '/promo',
-  '/complete-guide',
+  '/cara-import-barang-dari-china',
   '/artikel',
 ] as const
 

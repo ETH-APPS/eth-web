@@ -303,7 +303,7 @@ export const faqContentByPath: Record<string, MarketingFaqContent> = {
       'Konsultasikan kebutuhan produk Anda dan mulai proses sourcing bersama tim ETH Cargo.',
     calculatorTo: '#sourcing-workflow',
   },
-  '/complete-guide': {
+  '/cara-import-barang-dari-china': {
     subtitle: 'Panduan Import China',
     description: 'Jawaban ringkas tentang cara memulai impor, dokumen, layanan All-In, estimasi pengiriman, dan keamanan kargo bersama ETH Cargo.',
     items: [

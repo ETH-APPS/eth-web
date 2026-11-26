@@ -3,11 +3,10 @@
 Panduan alur dari kode di laptop sampai website bisa dibuka pengunjung.
 Untuk penjelasan yang lebih sederhana, baca [alur akses website](../docs/alur-akses-website.md).
 
-Terakhir diperbarui: **25 November 2026**.
+Terakhir diperbarui: **26 November 2026**.
 
 Implementasi dijelaskan berdasarkan file repository. Status VM berdasarkan output
-pengguna, bukan inspeksi langsung agent ke VM. Perubahan helper untuk melepas
-Quick Tunnel di repository **belum dipasang di VM**.
+pengguna, bukan inspeksi langsung agent ke VM.
 
 ## 1. Kondisi sekarang
 
@@ -27,6 +26,17 @@ Quick Tunnel di repository **belum dipasang di VM**.
 | Gateway | Caddy, container `eth-web-gateway-1` |
 | Port host aplikasi | Hanya `127.0.0.1:8080` menuju Caddy |
 
+### Status 26 November: Named Tunnel menjadi satu-satunya tunnel aktif
+
+Operator memasang helper dari release `2dd3d64988c0a7edebeda76bbee54a14ab000028`
+ke `/usr/local/sbin/deploy-eth-web` setelah menyimpan backup helper lama.
+`sudo bash -n` lolos. Quick Tunnel `eth-web-cloudflared-1` dihentikan;
+`ethcargoindo.com` dan `www` tetap mengembalikan `{"status":"ok"}`.
+Container web aktif memakai image `eth-web-web:2dd3d64988c0`, berlabel revisi
+yang sama dan berstatus healthy. Helper baru dijalankan tanpa Quick Tunnel dan
+menghasilkan `already deployed` untuk commit tersebut. Jalur build dan swap
+pada push berikutnya belum diuji dengan helper baru.
+
 ### Status 25 November: cutover domain
 
 Operator menjalankan Named Tunnel sebagai proyek Compose terpisah
@@ -39,9 +49,8 @@ tidak diubah. Kedua hostname utama mengembalikan `{"status":"ok"}` dari
 
 `/etc/eth-web/site-url` sekarang berisi `https://ethcargoindo.com`. Web aktif
 memakai image `eth-web-web:a6afd5038350` dan healthy menurut output operator.
-Quick Tunnel lama masih berjalan karena helper root-owned yang terpasang di VM
-masih memeriksanya. Jangan hentikan Quick Tunnel sebelum helper baru dipasang
-dan diuji.
+Saat cutover, Quick Tunnel lama masih berjalan karena helper root-owned saat
+itu memeriksanya. Status terbaru tercatat di atas.
 
 ### Status 23 November: secret produk Ducking dan push
 
@@ -476,9 +485,8 @@ Token dibaca dari `/etc/eth-web/ethcargo-tunnel-token` di VM, tidak ada dalam
 repository. Tunnel memakai jaringan Docker eksternal `eth-web_default` agar
 dapat menjangkau `gateway:80`. Port masuk publik pada VM tetap tidak diperlukan.
 
-Helper di repository memeriksa container `cloudflared` dalam proyek
-`eth-web-named-tunnel`. Salinan helper di VM harus dipasang dan diuji sebelum
-Quick Tunnel lama dihentikan. Urutan operasional:
+Helper di repository dan salinan aktif di VM memeriksa container `cloudflared`
+dalam proyek `eth-web-named-tunnel`. Urutan migrasi yang sudah dilakukan:
 
 1. Pastikan perubahan repository tersedia di VM; salin helper yang sudah
    ditinjau ke `/usr/local/sbin/deploy-eth-web` dengan owner `root:root` dan
@@ -489,7 +497,7 @@ Quick Tunnel lama dihentikan. Urutan operasional:
 3. Jalankan `sudo /usr/local/sbin/deploy-eth-web` untuk memeriksa preflight
    helper baru. `already deployed` adalah hasil sukses bila image dan runtime
    config masih sama.
-4. Baru setelah itu, hentikan **hanya** `eth-web-cloudflared-1` (Quick Tunnel).
+4. Setelah pemeriksaan, hentikan **hanya** `eth-web-cloudflared-1` (Quick Tunnel).
    Jangan hentikan `eth-web-named-tunnel-cloudflared-1`, gateway, atau web.
    Ulangi uji domain dan helper. Jika ada masalah, Quick Tunnel dapat dimulai
    lagi sementara diagnosis dilakukan.

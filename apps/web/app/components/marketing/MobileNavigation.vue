@@ -62,7 +62,7 @@ const insightSections = [
       //   icon: Notebook,
       // },
       {
-        to: '/complete-guide',
+        to: '/cara-import-barang-dari-china',
         label: 'Cara Import Barang dari China',
         description: 'Panduan langkah demi langkah proses pengiriman kargo All-In Door-to-Door dari supplier China hingga tiba di alamat Anda.',
         icon: Route,

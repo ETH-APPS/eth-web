@@ -48,7 +48,7 @@ selaras. Klaim layanan dan isi halaman masih menunggu peninjauan editorial.
   metadata yang dipasang sampai route dibuat.
 - [x] 19 — Promosi → `/promo`
 - [x] 20 — Blog → `/blog`; keyword di sheet berupa `-`.
-- [x] 21 — Proses Impor → `/complete-guide` (padanan metadata; isi perlu ditinjau).
+- [x] 21 — Proses Impor → `/cara-import-barang-dari-china` (padanan metadata; isi perlu ditinjau).
 - [x] 22 — Glosarium → `/glossary`
 - [x] 23 — FAQ → `/faq/pertanyaan-umum`; `/faq` redirect 301.
 - [x] 24 — Tentang Kami → `/about-us`

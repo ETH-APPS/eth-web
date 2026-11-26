@@ -14,7 +14,7 @@ const headerVariant = computed(() => {
 })
 
 const showMultinationalRoutes = computed(() => (
-  route.path !== '/' && route.path !== '/about-us' && !route.path.startsWith('/artikel') && route.path !== '/calculator' && route.path !== '/calculator-transfer-rmb' && !route.path.startsWith('/faq') && !route.path.startsWith('/glossary') && route.path !== '/promo' && route.path !== '/transfer-rmb' && route.path !== '/sourcing' && route.path !== '/complete-guide' && !isPolicyPage.value
+  route.path !== '/' && route.path !== '/about-us' && !route.path.startsWith('/artikel') && route.path !== '/calculator' && route.path !== '/calculator-transfer-rmb' && !route.path.startsWith('/faq') && !route.path.startsWith('/glossary') && route.path !== '/promo' && route.path !== '/transfer-rmb' && route.path !== '/sourcing' && route.path !== '/cara-import-barang-dari-china' && !isPolicyPage.value
 ))
 </script>
 
