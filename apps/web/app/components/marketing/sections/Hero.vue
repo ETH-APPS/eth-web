@@ -1,6 +1,25 @@
 <script setup lang="ts">
 import { ChevronLeft, ChevronRight } from 'lucide-vue-next'
-import heroUrl from '~/assets/images/marketing/hero.webp'
+import heroMobileUrl from '~/assets/images/marketing/hero-1080.webp'
+import heroDesktopUrl from '~/assets/images/marketing/hero-1920.webp'
+
+// Browser memilih file sesuai lebar layar x DPR: HP -> 1080w, layar besar -> 1920w
+const heroSrcset = `${heroMobileUrl} 1080w, ${heroDesktopUrl} 1920w`
+
+// Preload gambar LCP: browser menemukannya dari <head>, tanpa menunggu markup hero selesai dibaca.
+// `imagesrcset` dan `imagesizes` harus sama dengan <img> di bawah supaya tidak terunduh dua kali.
+useHead({
+  link: [
+    {
+      rel: 'preload',
+      as: 'image',
+      href: heroMobileUrl,
+      imagesrcset: heroSrcset,
+      imagesizes: '100vw',
+      fetchpriority: 'high'
+    }
+  ]
+})
 
 const services = [
   {
@@ -143,22 +162,29 @@ function handleTabKeydown(event: KeyboardEvent) {
     aria-labelledby="hero-title"
     class="relative isolate h-[346px] overflow-hidden bg-[#075474] md:h-[420px] lg:h-[100svh] lg:min-h-[720px]"
   >
+    <!-- Gambar latar (semua ukuran layar) -->
     <img
-      :src="heroUrl"
+      :src="heroMobileUrl"
+      :srcset="heroSrcset"
+      sizes="100vw"
       alt=""
-      width="2560"
-      height="1440"
+      width="1920"
+      height="1080"
       loading="eager"
       decoding="async"
       fetchpriority="high"
       aria-hidden="true"
       class="absolute inset-0 size-full object-cover object-center"
     >
+    <!-- Gambar overlay khusus mobile (md:hidden). `sizes` sengaja SAMA dengan gambar latar
+         supaya browser selalu memilih file yang sama dan tidak mengunduh dua kali -->
     <img
-      :src="heroUrl"
+      :src="heroMobileUrl"
+      :srcset="heroSrcset"
+      sizes="100vw"
       alt=""
-      width="2560"
-      height="1440"
+      width="1920"
+      height="1080"
       aria-hidden="true"
       class="absolute left-1/2 top-4 h-auto w-[128%] max-w-none -translate-x-1/2 [mask-image:linear-gradient(to_bottom,transparent_0%,black_12%,black_88%,transparent_100%)] [-webkit-mask-image:linear-gradient(to_bottom,transparent_0%,black_12%,black_88%,transparent_100%)] md:hidden"
     >

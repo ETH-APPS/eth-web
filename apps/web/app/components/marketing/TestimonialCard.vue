@@ -2,7 +2,7 @@
 import { Star } from 'lucide-vue-next'
 import googleLogo from '~/assets/images/marketing/google.png'
 
-withDefaults(defineProps<{
+const props = withDefaults(defineProps<{
   name: string
   reviewSource: string
   reviewDate: string
@@ -16,6 +16,17 @@ withDefaults(defineProps<{
 })
 
 const avatarFailed = ref(false)
+
+// Foto profil Google (lh3.googleusercontent.com): "-rp" = PNG, "-rw" = WebP.
+// Avatar tampil 40px, jadi s80 sudah cukup tajam untuk layar retina.
+// Kalau pola URL-nya tidak cocok, URL dipakai apa adanya (aman).
+const optimizedAvatar = computed(() => {
+  if (!props.avatar.includes('googleusercontent.com')) {
+    return props.avatar
+  }
+
+  return props.avatar.replace(/=s\d+-c-rp-/, '=s80-c-rw-')
+})
 </script>
 
 <template>
@@ -26,10 +37,12 @@ const avatarFailed = ref(false)
     <div class="flex items-start gap-3">
       <img
         v-if="!avatarFailed"
-        :src="avatar"
+        :src="optimizedAvatar"
         alt=""
         width="40"
         height="40"
+        loading="lazy"
+        decoding="async"
         class="size-10 shrink-0 rounded-xl object-cover"
         @error="avatarFailed = true"
       >

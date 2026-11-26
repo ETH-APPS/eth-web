@@ -6,7 +6,7 @@ import InformationMenu from './header-menus/InformationMenu.vue'
 import InsightsMenu from './header-menus/InsightsMenu.vue'
 import ServicesMenu from './header-menus/ServicesMenu.vue'
 import logoUrl from '~/assets/images/brand/logo.png'
-import logoWhiteUrl from '~/assets/images/brand/logo-white.png'
+import logoWhiteUrl from '~/assets/images/brand/logo-white.webp'
 import { marketingNavigation, quoteNavigation } from '~/constants/navigation'
 
 const props = withDefaults(defineProps<{

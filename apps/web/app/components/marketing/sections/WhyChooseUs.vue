@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ChevronLeft, ChevronRight, Cuboid } from 'lucide-vue-next'
-import tribunnewsLogo from '~/assets/images/marketing/Tribunnews.png'
+import tribunnewsLogo from '~/assets/images/marketing/Tribunnews.webp'
 
 const stats = [
   { value: '+10.000', label: 'Pengiriman\nSelesai' },

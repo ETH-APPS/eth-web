@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { ArrowUpRight, PackageSearch, ReceiptText, Search } from 'lucide-vue-next'
 import { whatsappConsultationUrl } from '~/constants/whatsapp'
-import cargoAirUrl from '~/assets/images/marketing/cargo-air.png'
-import cargoSeaUrl from '~/assets/images/marketing/cargo-sea.png'
-import transferUrl from '~/assets/images/marketing/transfer.png'
+import cargoAirUrl from '~/assets/images/marketing/cargo-air.webp'
+import cargoSeaUrl from '~/assets/images/marketing/cargo-sea.webp'
+import transferUrl from '~/assets/images/marketing/transfer.webp'
 
 const trackingCode = ref('')
 const trackingPin = ref('')
@@ -30,6 +30,7 @@ const services = [
     description: 'Proses pembayaran ke supplier di China cepat, transparan, dan tanpa limit. Menggunakan kurs realtime yang kompetitif lengkap dengan bukti kuitansi resmi untuk pembukuan bisnis.',
     eyebrow: 'Proses Cepat & Legal',
     image: transferUrl,
+    imageAlt: 'Pembayaran transfer RMB berhasil melalui ponsel dan kartu kredit',
     to: '/transfer-rmb'
   }
 ] as const
