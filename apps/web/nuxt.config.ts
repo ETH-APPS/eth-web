@@ -26,6 +26,16 @@ export default defineNuxtConfig({
     },
   },
   css: ['~/assets/css/main.css'],
+  hooks: {
+    'build:manifest'(manifest) {
+      // Let <img> loading rules control downloads instead of prefetching every image.
+      for (const resource of Object.values(manifest)) {
+        if (resource.resourceType === 'image') {
+          resource.prefetch = false
+        }
+      }
+    },
+  },
   vite: {
     plugins: [tailwindcss()]
   }
