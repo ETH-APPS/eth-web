@@ -60,6 +60,14 @@ publikasi yang sama sebelum membuat UI.
    lokal tanpa menaruh credential di repo. Simpan aset lokal di prefix khusus
    development. Tes memakai database berakhiran `_test` dan object storage fake;
    koneksi bucket development asli tetap memerlukan credential lokal.
+
+   Verifikasi schema lokal 26 November 2026: migration
+   `20261126000000_article_cms_create_flow` sudah diterapkan ke
+   `localhost:5432/eth_apps`, schema `public`; seluruh 4 migration berstatus
+   terpasang. Tabel artikel, taksonomi, banner, media, profil penulis, serta izin
+   tersedia. Sebelumnya migration CMS hanya terpasang di `eth_apps_test`.
+   Tabel `Article` lokal masih kosong; migrasi isi tujuh artikel lama belum
+   dikerjakan. Profil/izin user disimpan di tabel relasi, bukan kolom baru `User`.
 - [ ] Catat baseline halaman artikel publik sebelum mengubah UI. Screenshot CMS
    yang diberikan hanya referensi konsep desktop; belum ada frame Figma mobile
    390px dan desktop 1440px untuk halaman create.

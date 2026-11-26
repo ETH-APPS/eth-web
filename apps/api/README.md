@@ -13,9 +13,29 @@ Dari root repository:
 
 ```sh
 pnpm --filter api db:validate
-pnpm --filter api db:migrate:dev
+pnpm --filter api exec prisma migrate status
+pnpm --filter api db:migrate:deploy
 pnpm --filter api db:generate
 ```
+
+Perintah di atas mengecek dan menerapkan migration yang sudah ada ke database
+pada `DATABASE_URL` dari environment shell atau `apps/api/.env`. Gunakan
+`pnpm --filter api db:migrate:dev` ketika membuat migration baru setelah mengubah
+schema. `db:generate` dan `build` hanya menghasilkan Prisma Client; keduanya
+tidak memasang tabel ke database.
+
+Tes API memakai `apps/api/.env.test` dan database terpisah berakhiran `_test`.
+Migration yang sudah terpasang di database tes belum tentu terpasang di database
+pengembangan. Jika pgAdmin menampilkan `relation "Article" does not exist`, cek
+status migration dan pastikan host, port, database, serta schema sama dengan
+konfigurasi API. Untuk konfigurasi lokal saat ini: `localhost:5432`, database
+`eth_apps`, schema `public`; refresh daftar tabel di pgAdmin setelah migration.
+
+Profil penulis disimpan di tabel `AuthorProfile`, sedangkan izin CMS/CRM di
+`UserPermissionGrant`, keduanya terhubung melalui `userId`. Field relasi Prisma
+`User.authorProfile` dan `User.permissionGrants` tidak menjadi kolom langsung
+pada tabel PostgreSQL `User`. Record profil dan izin tetap diprovisi manual.
+Pemasangan schema juga terpisah dari migrasi isi tujuh artikel lama.
 
 Migration tersimpan di `apps/api/prisma/migrations`. Saat deployment, gunakan
 `pnpm --filter api db:migrate:deploy` untuk menerapkan migration yang sudah
