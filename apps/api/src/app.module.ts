@@ -5,6 +5,7 @@ import { AppController } from './app.controller.js';
 import { AppService } from './app.service.js';
 import { AuthModule } from './auth/auth.module.js';
 import { CargoRequestModule } from './cargo-requests/cargo-request.module.js';
+import { CmsModule } from './cms/cms.module.js';
 import { apiLogging } from './logging/logger.js';
 import { ApiResponseInterceptor } from './http/api-response.interceptor.js';
 import { validationException } from './http/validation-exception.js';
@@ -13,6 +14,7 @@ import { validationException } from './http/validation-exception.js';
   imports: [
     AuthModule,
     CargoRequestModule,
+    CmsModule,
     LoggerModule.forRoot({
       pinoHttp: { logger: apiLogging.logger },
       // HTTP logging and request context are installed before the body parser.

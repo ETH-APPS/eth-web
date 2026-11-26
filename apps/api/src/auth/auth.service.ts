@@ -8,7 +8,7 @@ import {
 import { JwtService } from '@nestjs/jwt';
 import argon2 from 'argon2';
 import { createHash, randomBytes } from 'node:crypto';
-import { Prisma, UserRole, type User } from '../generated/prisma/client.js';
+import { Prisma, UserRole } from '../generated/prisma/client.js';
 import { PrismaService } from '../database/prisma.service.js';
 import type { LoginDto } from './dto/login.dto.js';
 import type { GoogleAuthDto } from './dto/google-auth.dto.js';
@@ -25,13 +25,34 @@ function tokenHash(token: string): string {
   return createHash('sha256').update(token).digest('hex');
 }
 
-function publicUser(user: User): AuthUser {
+const authUserInclude = {
+  permissionGrants: {
+    select: { permission: true },
+    orderBy: { permission: 'asc' as const },
+  },
+  authorProfile: true,
+} satisfies Prisma.UserInclude;
+
+type UserWithAuthContext = Prisma.UserGetPayload<{
+  include: typeof authUserInclude;
+}>;
+
+function publicUser(user: UserWithAuthContext): AuthUser {
   return {
     id: user.id,
     email: user.email,
     firstName: user.firstName,
     lastName: user.lastName,
     role: user.role,
+    permissions: user.permissionGrants.map((grant) => grant.permission),
+    authorProfile: user.authorProfile
+      ? {
+          slug: user.authorProfile.slug,
+          jobTitle: user.authorProfile.jobTitle,
+          bio: user.authorProfile.bio,
+          linkedinUrl: user.authorProfile.linkedinUrl,
+        }
+      : null,
   };
 }
 
@@ -59,7 +80,7 @@ export class AuthService {
       timeCost: 2,
       parallelism: 1,
     });
-    let user: User;
+    let user: UserWithAuthContext;
     try {
       user = await this.prisma.user.create({
         data: {
@@ -69,6 +90,7 @@ export class AuthService {
           whatsapp: input.whatsapp?.trim() || null,
           passwordHash,
         },
+        include: authUserInclude,
       });
     } catch (error) {
       if (
@@ -84,7 +106,10 @@ export class AuthService {
 
   async login(input: LoginDto) {
     const email = input.email.trim().toLowerCase();
-    const user = await this.prisma.user.findUnique({ where: { email } });
+    const user = await this.prisma.user.findUnique({
+      where: { email },
+      include: authUserInclude,
+    });
     if (
       !user?.passwordHash ||
       !(await argon2.verify(user.passwordHash, input.password))
@@ -98,6 +123,7 @@ export class AuthService {
     const identity = await this.google.verify(input.idToken);
     const linked = await this.prisma.user.findUnique({
       where: { googleSub: identity.sub },
+      include: authUserInclude,
     });
     if (linked) return this.issueTokens(linked);
 
@@ -125,6 +151,7 @@ export class AuthService {
           lastName: identity.lastName,
           googleSub: identity.sub,
         },
+        include: authUserInclude,
       });
       return this.issueTokens(user);
     } catch (error) {
@@ -134,6 +161,7 @@ export class AuthService {
       ) {
         const linkedAfterRace = await this.prisma.user.findUnique({
           where: { googleSub: identity.sub },
+          include: authUserInclude,
         });
         if (linkedAfterRace) return this.issueTokens(linkedAfterRace);
         throw new ConflictException({
@@ -188,7 +216,7 @@ export class AuthService {
     const user = await this.prisma.$transaction(async (transaction) => {
       const session = await transaction.refreshSession.findUnique({
         where: { tokenHash: tokenHash(refreshToken) },
-        include: { user: true },
+        include: { user: { include: authUserInclude } },
       });
       if (!session || session.revokedAt || session.expiresAt <= now) {
         throw new UnauthorizedException('Invalid refresh token');
@@ -237,6 +265,7 @@ export class AuthService {
     }
     const user = await this.prisma.user.findUnique({
       where: { id: payload.sub },
+      include: authUserInclude,
     });
     if (!user) {
       throw new UnauthorizedException('Invalid access token');
@@ -244,7 +273,7 @@ export class AuthService {
     return publicUser(user);
   }
 
-  private async issueTokens(user: User) {
+  private async issueTokens(user: UserWithAuthContext) {
     const refreshToken = randomBytes(48).toString('base64url');
     await this.prisma.refreshSession.create({
       data: {
@@ -258,7 +287,10 @@ export class AuthService {
     return this.tokenResponse(user, refreshToken);
   }
 
-  private async tokenResponse(user: User, refreshToken: string) {
+  private async tokenResponse(
+    user: UserWithAuthContext,
+    refreshToken: string,
+  ) {
     const accessToken = await this.jwt.signAsync(
       { sub: user.id, role: user.role },
       {

@@ -12,6 +12,17 @@ enum UserRole {
   STAFF
 }
 
+enum UserPermission {
+  CMS_ACCESS
+  CRM_ACCESS
+}
+
+enum MediaKind {
+  ARTICLE_COVER
+  ARTICLE_BODY
+  BANNER_ILLUSTRATION
+}
+
 enum ShippingMethod {
   FCL
   LCL
@@ -43,8 +54,127 @@ model User {
   cargoRequests   CargoRequest[]
   reviews         CargoRequestReview[]
   refreshSessions RefreshSession[]
+  permissionGrants UserPermissionGrant[]
+  authorProfile    AuthorProfile?
+  mediaAssets      MediaAsset[]          @relation("MediaUploader")
+  articleBanners   ArticleBanner[]       @relation("BannerCreator")
+  articles         Article[]             @relation("ArticleAuthor")
   createdAt       DateTime             @default(now()) @db.Timestamptz(6)
   updatedAt       DateTime             @updatedAt @db.Timestamptz(6)
+}
+
+model UserPermissionGrant {
+  userId     String         @db.Uuid
+  user       User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  permission UserPermission
+  createdAt  DateTime       @default(now()) @db.Timestamptz(6)
+
+  @@id([userId, permission])
+  @@index([permission])
+}
+
+model AuthorProfile {
+  userId      String   @id @db.Uuid
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  slug        String   @unique
+  jobTitle    String
+  bio         String   @db.Text
+  linkedinUrl String
+  createdAt   DateTime @default(now()) @db.Timestamptz(6)
+  updatedAt   DateTime @updatedAt @db.Timestamptz(6)
+}
+
+model MediaAsset {
+  id          String          @id @default(uuid()) @db.Uuid
+  kind        MediaKind
+  objectKey   String          @unique
+  publicUrl   String
+  mimeType    String
+  sizeBytes   Int
+  width       Int
+  height      Int
+  uploadedById String         @db.Uuid
+  uploadedBy  User            @relation("MediaUploader", fields: [uploadedById], references: [id])
+  articleCovers Article[]      @relation("ArticleCover")
+  banner      ArticleBanner?  @relation("BannerImage")
+  createdAt   DateTime        @default(now()) @db.Timestamptz(6)
+
+  @@index([uploadedById, createdAt])
+  @@index([kind, createdAt])
+}
+
+model ArticleCategory {
+  id             String    @id @default(uuid()) @db.Uuid
+  name           String
+  normalizedName String    @unique
+  slug           String    @unique
+  articles       Article[]
+  createdAt      DateTime  @default(now()) @db.Timestamptz(6)
+
+  @@index([name])
+}
+
+model ArticleTag {
+  id             String                 @id @default(uuid()) @db.Uuid
+  name           String
+  normalizedName String                 @unique
+  slug           String                 @unique
+  articles       ArticleTagAssignment[]
+  createdAt      DateTime               @default(now()) @db.Timestamptz(6)
+
+  @@index([name])
+}
+
+model ArticleBanner {
+  id           String       @id @default(uuid()) @db.Uuid
+  title        String
+  description  String       @db.Text
+  imageMediaId String       @unique @db.Uuid
+  image        MediaAsset   @relation("BannerImage", fields: [imageMediaId], references: [id])
+  isDefault    Boolean      @default(false)
+  createdById  String       @db.Uuid
+  createdBy    User         @relation("BannerCreator", fields: [createdById], references: [id])
+  articles     Article[]
+  createdAt    DateTime     @default(now()) @db.Timestamptz(6)
+  updatedAt    DateTime     @updatedAt @db.Timestamptz(6)
+
+  @@index([createdAt])
+}
+
+model Article {
+  id               String                 @id @default(uuid()) @db.Uuid
+  slug             String                 @unique
+  title            String
+  metaDescription  String
+  coverMediaId     String                 @db.Uuid
+  coverMedia        MediaAsset             @relation("ArticleCover", fields: [coverMediaId], references: [id])
+  coverImageAlt    String
+  bodyHtml         String                 @db.Text
+  keyPoints        String[]
+  categoryId       String                 @db.Uuid
+  category         ArticleCategory        @relation(fields: [categoryId], references: [id])
+  bannerId         String                 @db.Uuid
+  banner           ArticleBanner          @relation(fields: [bannerId], references: [id])
+  authorId         String                 @db.Uuid
+  author           User                   @relation("ArticleAuthor", fields: [authorId], references: [id])
+  tags             ArticleTagAssignment[]
+  publishedAt      DateTime               @default(now()) @db.Timestamptz(6)
+  createdAt        DateTime               @default(now()) @db.Timestamptz(6)
+  updatedAt        DateTime               @updatedAt @db.Timestamptz(6)
+
+  @@index([publishedAt])
+  @@index([categoryId, publishedAt])
+  @@index([authorId, publishedAt])
+}
+
+model ArticleTagAssignment {
+  articleId String     @db.Uuid
+  article   Article    @relation(fields: [articleId], references: [id], onDelete: Cascade)
+  tagId     String     @db.Uuid
+  tag       ArticleTag @relation(fields: [tagId], references: [id])
+
+  @@id([articleId, tagId])
+  @@index([tagId])
 }
 
 model CargoRequest {

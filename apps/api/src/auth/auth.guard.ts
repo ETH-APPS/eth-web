@@ -7,10 +7,14 @@ import {
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import type { Request } from 'express';
-import type { UserRole } from '../generated/prisma/client.js';
+import type {
+  UserPermission,
+  UserRole,
+} from '../generated/prisma/client.js';
 import { AuthService } from './auth.service.js';
 import type { AuthUser } from './auth-user.js';
 import { ROLES_KEY } from './roles.decorator.js';
+import { PERMISSIONS_KEY } from './permissions.decorator.js';
 
 export type AuthenticatedRequest = Request & { authUser: AuthUser };
 
@@ -34,6 +38,16 @@ export class AccessGuard implements CanActivate {
       context.getClass(),
     ]);
     if (roles && !roles.includes(user.role)) {
+      throw new ForbiddenException('Insufficient access');
+    }
+    const permissions = this.reflector.getAllAndOverride<UserPermission[]>(
+      PERMISSIONS_KEY,
+      [context.getHandler(), context.getClass()],
+    );
+    if (
+      permissions &&
+      !permissions.every((permission) => user.permissions.includes(permission))
+    ) {
       throw new ForbiddenException('Insufficient access');
     }
     request.authUser = user;

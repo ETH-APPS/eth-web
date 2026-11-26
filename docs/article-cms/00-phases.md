@@ -1,0 +1,186 @@
+# Rencana bertahap artikel berbasis database
+
+Dokumen ini adalah urutan kerja utama. Rincian tugas ada di [plan API](01-api-plan.md)
+dan [plan frontend](02-frontend-plan.md). Kerjakan satu fase sampai kriteria selesai
+terpenuhi sebelum menganggap fase berikutnya siap. Agent API dan frontend boleh
+bekerja paralel setelah kontrak respons API pada Fase 0 disepakati.
+
+## Status keseluruhan
+
+Centang task setelah implementasi dan verifikasinya selesai. Centang status fase
+hanya ketika seluruh task dan kriteria selesai pada fase tersebut sudah terpenuhi.
+
+- [ ] Fase 0 — Kontrak dan lingkungan lokal siap
+- [ ] Fase 1 — Fondasi API dan data pendukung siap
+- [ ] Fase 2 — Artikel create dan read API siap
+- [ ] Fase 3 — CMS minimal siap
+- [ ] Fase 4 — Pembaca publik dan migrasi siap
+- [ ] Fase 5 — Staging dan production selesai
+
+## Sasaran rilis pertama
+
+Tim SEO login ke CMS, membuat kategori/tag/banner bila perlu, mengunggah media,
+menulis artikel, lalu menerbitkannya. Artikel langsung terbaca di halaman publik,
+pencarian, dan sitemap tanpa build ulang. Tujuh artikel lama dipindahkan manual
+dengan URL dan tanggal aslinya. Rilis pertama belum menyediakan edit, hapus,
+draft, penjadwalan, pengaturan akun, atau pengaturan profil melalui CMS.
+
+## Aturan branch dan rilis
+
+- Kerjakan fitur di branch pengembangan terpisah dari `main`. Branch plan saat ini:
+  `codex/article-cms-plan`; buat branch implementasi dari basis yang sudah
+  ditinjau saat mulai coding. Jangan membawa perubahan lain ke rilis artikel.
+- `staging` menjadi branch yang dideploy ke lingkungan staging di VM yang sama.
+  `main` tetap branch production. Promosikan perubahan yang sudah diuji dari
+  branch fitur ke `staging`, lalu perubahan yang sama ke `main` setelah lulus
+  pemeriksaan staging. Catat commit SHA yang diuji dan yang dirilis.
+- Workflow yang ada hanya mendeploy web dari `main`; ia belum mendeploy API atau
+  staging. Jangan menganggap push ke `staging` atau perubahan `apps/api` sudah
+  terpasang di VM.
+- Setiap lingkungan memakai proses API, konfigurasi, dan database sendiri.
+  Staging memakai subdomain baru dan hanya dapat diakses tim internal. Untuk
+  sementara staging dan production boleh memakai bucket DigitalOcean Spaces
+  `cargoindo` yang sama, tetapi key objek harus memakai prefix berbeda dan unik.
+  File staging di bucket publik tetap bisa dibuka lewat URL langsung; hanya
+  konten uji yang tidak rahasia boleh diunggah. Pisahkan bucket dan kredensial
+  staging pada pengembangan berikutnya.
+
+## Fase 0 — Kunci kontrak dan lingkungan lokal
+
+**Hasil:** agent API dan frontend memakai nama field, respons, serta aturan
+publikasi yang sama sebelum membuat UI.
+
+- [ ] Agent API menuliskan kontrak OpenAPI untuk create/read artikel, kategori,
+   tag, banner, media, dan autentikasi CMS sesuai [plan API](01-api-plan.md).
+- [ ] Agent frontend memetakan field form dan semua pembaca `articleCatalog.ts`
+   terhadap kontrak tersebut sesuai [plan frontend](02-frontend-plan.md).
+- [ ] Siapkan database lokal terpisah dari production serta konfigurasi Spaces
+   lokal tanpa menaruh credential di repo. Simpan aset lokal di prefix khusus
+   development.
+- [ ] Catat baseline halaman artikel publik sebelum mengubah UI. Screenshot CMS
+   yang diberikan hanya referensi konsep desktop; belum ada frame Figma mobile
+   390px dan desktop 1440px untuk halaman create.
+
+- [ ] **Fase 0 selesai:** kontrak contoh request/response disepakati, konfigurasi lokal
+  berfungsi, dan tidak ada kebutuhan form yang bergantung pada field API yang
+  belum ditentukan.
+
+## Fase 1 — Fondasi API dan data pendukung
+
+**Hasil:** akun CMS yang diisi manual bisa login; kategori, tag, banner, serta
+media bisa dibuat dan dibaca tanpa artikel.
+
+- [ ] Tambah izin CMS yang terpisah dari role operasional saat ini sehingga satu
+   akun kelak dapat mempunyai akses CMS dan CRM sekaligus. Akun dan profil
+   penulis diisi langsung ke database untuk sekarang; tidak ada UI manajemen
+   akun/profil.
+- [ ] Tambah tabel kategori, tag, banner CTA, media, dan profil penulis yang
+   dibutuhkan tampilan publik. Banner berisi judul, deskripsi, dan ilustrasi;
+   WhatsApp serta email tetap berasal dari konfigurasi frontend.
+- [ ] Tambah endpoint CMS terproteksi untuk upload dan create/list data pendukung.
+   Gunakan Spaces untuk berkas, database untuk referensi dan metadata.
+- [ ] Siapkan satu banner bawaan. Jangan menambahkan edit/hapus data pendukung
+   pada fase ini.
+
+- [ ] **Fase 1 selesai:** tes API membuktikan akun CMS bisa membuat data pendukung,
+  akun tanpa izin ditolak, file tidak valid ditolak, dan objek media dapat
+  dibaca melalui URL yang dikembalikan.
+
+## Fase 2 — Artikel create dan read API
+
+**Hasil:** artikel dapat diterbitkan lewat API dan langsung tersedia pada
+endpoint publik tanpa deploy ulang.
+
+- [ ] Tambah model artikel dengan satu kategori, banyak tag, key points berjumlah
+   bebas, satu banner bawaan/pilihan, penulis dari akun login, dan tanggal
+   publikasi. Slug unik; isi HTML semantik disaring oleh API.
+- [ ] Tambah endpoint CMS untuk create sekali jalan serta endpoint publik untuk
+   daftar, detail slug, pencarian, filter, dan data yang diperlukan sitemap.
+- [ ] Buat respons daftar yang ringan dan respons detail yang lengkap. Hanya
+   artikel terbit yang keluar dari endpoint publik.
+- [ ] Siapkan cara migrasi manual tujuh artikel lama ke database, termasuk tanggal,
+   slug, cover, isi, tag, dan key points; jangan mengubah sumber publik dahulu.
+
+- [ ] **Fase 2 selesai:** tes API mencakup publikasi, slug duplikat, referensi tidak
+  valid, izin akses, daftar/filter/detail, dan konten berbahaya; tujuh artikel
+  lama dapat dimasukkan ke database lokal tanpa mengubah URL.
+
+## Fase 3 — CMS minimal
+
+**Hasil:** tim SEO dapat login dan menerbitkan artikel melalui satu halaman
+create, termasuk membuat kategori, tag, atau banner dari form yang sama.
+
+- [ ] Buat halaman login CMS dan penjagaan route.
+- [ ] Buat form create dengan judul, slug yang dapat dikoreksi sebelum terbit,
+   meta description, cover/alt, isi, key points dinamis, kategori, tag, dan
+   banner. Pilihan editor hanya paragraf, H2, H3, bold, italic, dan gambar;
+   styling berasal dari frontend.
+- [ ] Form menampilkan pilihan data yang ada dan aksi membuat kategori/tag/banner
+   baru tanpa halaman manajemen terpisah. Upload cover, gambar isi, dan
+   ilustrasi banner memakai API media.
+- [ ] Tangani validasi, konflik slug, kegagalan upload/publish, serta cegah klik
+   publish ganda. Setelah sukses, tampilkan URL artikel publik.
+
+- [ ] **Fase 3 selesai:** editor CMS dapat menerbitkan artikel lengkap dari browser
+  lokal dengan akun hasil provisioning manual, tanpa menyentuh database untuk
+  setiap artikel baru.
+
+## Fase 4 — Alihkan pembaca publik dan migrasi
+
+**Hasil:** frontend publik sepenuhnya membaca database; tujuh URL lama dan
+konten baru sama-sama berfungsi.
+
+- [ ] Migrasikan tujuh artikel lama secara manual, verifikasi setiap slug, konten,
+   tanggal asli, cover, penulis, tag, dan key points terhadap versi saat ini.
+- [ ] Ganti pembacaan `articleCatalog.ts` pada daftar, detail, pencarian, tag,
+   rekomendasi, dan sitemap dengan API. Jangan menonaktifkan sumber lokal
+   sebelum hasil migrasi diverifikasi.
+- [ ] Render banner CTA dari data artikel. Hanya WhatsApp yang menjadi tautan;
+   informasi WhatsApp dan email tetap statis. Render kartu penulis dari akun
+   artikel. Halaman Baariq yang ada tetap berfungsi.
+- [ ] Pertahankan SSR, canonical, metadata, structured data, status 404, dan URL
+   publik. Artikel baru harus muncul tanpa build ulang; sitemap harus ikut
+   berubah tanpa daftar slug statis.
+
+- [ ] **Fase 4 selesai:** semua tujuh URL lama dan satu artikel baru lolos pemeriksaan
+  konten/SEO; daftar, pencarian, tag, dan sitemap menampilkan artikel baru tanpa
+  deploy ulang. Jalankan matriks viewport wajib di `docs/responsive-guidelines.md`
+  dan periksa overflow.
+
+## Fase 5 — Staging lalu production
+
+**Hasil:** alur create → read yang sudah selesai secara lokal teruji di staging
+sebelum dirilis ke production.
+
+- [ ] Siapkan API dan PostgreSQL staging di VM yang sama tetapi dengan service,
+   volume/database, environment, dan subdomain terpisah. Pasang migrasi schema,
+   healthcheck, backup, dan credential khusus lingkungan. Siapkan deploy
+   `staging` yang tidak memanggil helper production dari `main`.
+- [ ] Siapkan web staging yang memakai API staging. Batasi akses ke tim internal,
+   beri `noindex`, dan pastikan sitemap/canonical staging tidak mengarah ke
+   production. Media staging memakai prefix sendiri pada bucket sementara.
+- [ ] Uji login, upload, create, hasil SSR publik, tujuh artikel lama, sitemap,
+   rollback, serta jalur kegagalan. Jangan gunakan data atau secret production
+   untuk pengujian.
+- [ ] Setelah staging lulus, siapkan deployment API dan PostgreSQL production
+   (belum ada saat ini), backup serta migrasi sebelum cutover web. Migrasikan
+   tujuh artikel di production, verifikasi jumlah/slug, lalu deploy web dari
+   `main`. Lakukan smoke test publik dan catat SHA serta hasilnya.
+
+- [ ] **Fase 5 selesai:** staging dan production menjalankan commit yang dimaksud;
+  artikel baru muncul tanpa deploy ulang; layanan web lama tetap sehat; tersedia
+  langkah pemulihan jika migrasi atau cutover gagal.
+
+## Fase lanjutan setelah rilis pertama
+
+- [ ] Edit/hapus dan prosedur koreksi tanpa suntik database.
+- [ ] Draft serta jadwal terbit.
+- [ ] API dan halaman profil penulis dinamis.
+- [ ] Manajemen akun/profil CMS.
+- [ ] Hak akses CRM dan CMS pada satu akun.
+- [ ] Dashboard daftar artikel seperti mockup.
+- [ ] Bucket dan kredensial Spaces staging terpisah.
+
+Koreksi mendesak sebelum fitur edit tersedia dilakukan langsung di database
+dengan backup dan catatan perubahan.
+

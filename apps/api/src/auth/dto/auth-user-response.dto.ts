@@ -1,5 +1,22 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { UserRole } from '../../generated/prisma/client.js';
+import {
+  UserPermission,
+  UserRole,
+} from '../../generated/prisma/client.js';
+
+export class AuthAuthorProfileResponseDto {
+  @ApiProperty()
+  slug!: string;
+
+  @ApiProperty()
+  jobTitle!: string;
+
+  @ApiProperty()
+  bio!: string;
+
+  @ApiProperty({ format: 'uri' })
+  linkedinUrl!: string;
+}
 
 export class AuthUserResponseDto {
   @ApiProperty({ format: 'uuid' })
@@ -16,4 +33,17 @@ export class AuthUserResponseDto {
 
   @ApiProperty({ enum: UserRole, enumName: 'UserRole' })
   role!: UserRole;
+
+  @ApiProperty({
+    enum: UserPermission,
+    enumName: 'UserPermission',
+    isArray: true,
+  })
+  permissions!: UserPermission[];
+
+  @ApiProperty({
+    type: () => AuthAuthorProfileResponseDto,
+    nullable: true,
+  })
+  authorProfile!: AuthAuthorProfileResponseDto | null;
 }
