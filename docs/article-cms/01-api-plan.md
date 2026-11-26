@@ -28,15 +28,16 @@ memakai kontrak endpoint yang ada.
   normalisasi nama dan pembentukan slug tetap dilakukan di create taksonomi
   untuk menjaga perilaku unik kategori/tag.
 
-Verifikasi standardisasi: seluruh 33 tes API pada 5 suite lulus, termasuk tes
+Verifikasi standardisasi: seluruh 57 tes API pada 6 suite lulus, termasuk tes
 regresi gambar banner, validasi DTO login, publikasi dengan profil tersimpan,
 normalisasi taksonomi, serta field respons publik; lint, build, dan type-check
 backend juga lulus. Tes memakai database khusus `_test` dan object storage fake.
 
 ## Keputusan produk yang harus dipertahankan
 
-- Delivery API saat ini hanya mencakup create flow CMS. Endpoint pembaca publik,
-  edit, hapus, draft, jadwal terbit, dan panel manajemen akun belum dibuat.
+- Delivery API mencakup create flow CMS, daftar/detail artikel publik, serta
+  kategori dan tag publik.
+  Edit, hapus, draft, jadwal terbit, dan panel manajemen akun belum dibuat.
 - Satu artikel memiliki tepat satu kategori, nol atau lebih tag, key points
   berjumlah bebas, satu banner (default bila tidak memilih), dan penulis dari
   akun CMS yang login. `publishedAt` diisi saat create; migrasi tujuh artikel
@@ -60,12 +61,15 @@ backend juga lulus. Tes memakai database khusus `_test` dan object storage fake.
   dengan prefix objek berbeda. Credential tidak ditulis di source, log,
   respons API, atau plan. Pemisahan bucket/credential adalah fase lanjutan.
 - Struktur backend memakai satu `ArticleModule` untuk artikel, kategori, tag,
-  banner, dan media artikel. Prefix route `/cms` hanya menandai akses CMS.
+  banner, dan media artikel, dengan satu `ArticleController` untuk route publik
+  dan CMS. `@CmsAccess()` hanya dipasang pada method CMS. Prefix route `/cms`
+  menandai akses CMS.
 
 ## Fase 0 — Kontrak dan konfigurasi lokal
 
 - [x] Dokumentasikan request/response OpenAPI untuk seluruh endpoint CMS create
-   flow dan multipart upload. Respons tetap memakai envelope API existing.
+   flow, multipart upload, serta daftar/detail publik. Respons tetap memakai
+   envelope API existing.
 - [x] Tetapkan batas 5 MiB serta validasi MIME, format, dan dimensi dari isi
    file. JPEG, PNG, dan WebP diterima; SVG ditolak pada MVP. `vector` pada UI
    adalah ilustrasi yang diekspor menjadi PNG/WebP.
@@ -146,20 +150,96 @@ backend juga lulus. Tes memakai database khusus `_test` dan object storage fake.
 - [x] Tambah tes publish artikel, duplicate slug, referensi salah, default
   banner, permission, sanitasi HTML, dan kompensasi object storage.
 - [x] **Fase 2A API selesai:** artikel dibuat atomik dan langsung memiliki
-  `publishedAt`; belum ada endpoint publik untuk membacanya.
+  `publishedAt`; endpoint pembacanya dikerjakan di Fase 2B.
 
 ## Fase 2B — Public read API
 
-- [ ] Tambah `GET /articles` dengan pagination stabil, pencarian, serta filter
+- [x] Tambah `GET /articles` dengan pagination stabil, pencarian, serta filter
   kategori, tag, dan penulis. Respons daftar hanya membawa data kartu.
-- [ ] Tambah `GET /articles/:slug` dengan body HTML, key points, kategori/tag,
+- [x] Tambah `GET /articles/:slug` dengan body HTML, key points, kategori/tag,
   banner, media, dan profil penulis. Slug tidak ada menghasilkan 404.
-- [ ] Tambah pembacaan kategori/tag publik dan sumber slug dinamis untuk sitemap
-  bila dibutuhkan frontend.
-- [ ] Tambah tes pagination, filter, pencarian, detail, 404, dan memastikan hanya
+- [x] Tambah `GET /categories` dan `GET /tags` publik; sumber slug dinamis untuk
+  sitemap memakai pagination `GET /articles`.
+- [x] Tambah tes pagination, filter, pencarian, detail, 404, dan memastikan hanya
   artikel terbit yang keluar.
-- [ ] **Fase 2B API selesai:** artikel baru dapat dibaca frontend tanpa build
+- [x] **Fase 2B API selesai:** artikel baru dapat dibaca frontend tanpa build
   ulang dan kontraknya tercatat di OpenAPI.
+
+Endpoint daftar/detail, kategori, dan tag publik tersedia dalam satu
+`ArticleController`, termasuk artikel baru yang langsung terbaca setelah create.
+Migrasi tujuh artikel lama dan integrasi frontend/sitemap dikerjakan terpisah.
+
+Verifikasi akhir Fase 2B API: 57 tes pada 6 suite lulus melalui
+`pnpm --filter api exec vitest run --config ./vitest.config.e2e.ts --no-file-parallelism`;
+lint, build, type-check, dan `git diff --check` juga lulus. Eksekusi paralel sempat
+melewati batas waktu pada dua tes Auth; pengulangan suite berurutan lulus.
+
+### Kontrak GET /articles dan GET /articles/:slug
+
+Kedua endpoint publik tanpa Bearer token. Endpoint `/cms/*` tetap membutuhkan
+login dan permission `CMS_ACCESS`, walaupun berada dalam controller yang sama.
+
+| Query daftar | Aturan |
+| --- | --- |
+| `page` | Integer 1–1.000.000, default 1 |
+| `limit` | Integer 1–100, default 12 |
+| `q` | Maksimal 200 karakter; substring judul atau nama tag, tanpa membedakan kapital, spasi awal/akhir diabaikan; `%`, `_`, dan backslash dicari sebagai karakter biasa |
+| `category` | Slug kategori, bukan ID atau nama tampilan |
+| `tag` | Slug tag, bukan ID atau nama tampilan |
+| `author` | Slug profil penulis, bukan user ID |
+
+Filter slug menggunakan huruf kecil, angka, dan tanda hubung, maksimal 180
+karakter. Filter yang diisi digabung dengan AND; pencarian judul/tag memakai OR
+di dalam kondisi tersebut. Filter valid yang tidak cocok menghasilkan daftar
+kosong. Query tidak valid atau field query tak dikenal menghasilkan 400 dengan
+`error.code=VALIDATION_ERROR` dan rincian `fields`.
+
+Daftar diurutkan `publishedAt DESC, id DESC`. ID memecahkan urutan ketika tanggal
+sama. Pagination nomor halaman tidak menjamin posisi tetap bila ada artikel
+baru/dihapus di antara request. Item dan total satu respons dibaca dengan snapshot
+database yang sama.
+
+Respons daftar memakai envelope existing:
+
+```json
+{
+  "request_id": "example-request-id",
+  "data": {
+    "items": [],
+    "pagination": { "page": 1, "limit": 12, "total": 0, "totalPages": 0 }
+  }
+}
+```
+
+Setiap item memuat `id`, `slug`, `title`, `metaDescription`, `publishedAt`,
+`updatedAt`, `cover`, `coverImageAlt`, `category`, `tags`, dan ringkasan `author`
+(`id`, `name`, `slug`). Tidak ada `bodyHtml`, `keyPoints`, banner, atau bio penulis
+pada kartu. Detail memakai respons create artikel yang sama, ditambah `bodyHtml`
+tersanitasi beserta referensi gambar isi dan `updatedAt`; profil penulis serta
+banner/ilustrasinya lengkap. DTO OpenAPI menyatakan semua field tersebut.
+
+Model belum mempunyai draft/status. Artikel publik adalah record dengan
+`publishedAt <= waktu request`; tanggal masa depan tidak keluar dari daftar atau
+detail. Slug yang tidak ada maupun belum terbit sama-sama menghasilkan 404
+`NOT_FOUND`. Ini filter pembacaan, bukan implementasi penjadwalan penerbitan.
+
+Untuk sumber slug dinamis sitemap, baca `GET /articles?page=1&limit=100` sampai
+`pagination.totalPages`, lalu gunakan `slug`, `publishedAt`, dan `updatedAt` pada
+kartu. Integrasi sitemap frontend serta migrasi tujuh artikel lama tetap
+pekerjaan terpisah.
+
+### Kontrak GET /categories dan GET /tags
+
+Keduanya publik tanpa Bearer token dan berada dalam `ArticleController` yang sama.
+Respons menggunakan envelope existing dengan array `data` berisi `id`, `name`,
+dan `slug`. Semua kategori/tag dikembalikan, termasuk yang belum dipakai artikel,
+dengan urutan `name ASC, id ASC`. Daftar tidak dipaginasi; bila belum ada data,
+hasilnya `data: []`.
+
+Endpoint ini memakai fungsi list service yang sama dengan CMS. Field internal
+seperti `normalizedName` dan `createdAt` tidak dikirim. Slug hasil daftar langsung
+dipakai pada filter `category`/`tag` di `GET /articles`. Pembuatan kategori/tag
+tetap melalui `POST /cms/categories` atau `POST /cms/tags` dengan izin CMS.
 
 ### Migrasi manual tujuh artikel
 

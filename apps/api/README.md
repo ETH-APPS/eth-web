@@ -97,14 +97,47 @@ Alasan `reason` wajib untuk keputusan revisi atau penolakan. Access token berlak
 15 menit; refresh token berlaku 30 hari dan disimpan sebagai hash. PIN mobile
 belum menjadi bagian dari auth server.
 
-## CMS artikel: create flow
+## Artikel: CMS dan pembaca publik
 
 Endpoint CMS memerlukan Bearer token dari `POST /auth/login` dan permission
 `CMS_ACCESS`. Akun, permission, profil penulis, dan banner default untuk tahap
 awal diprovisi langsung di database. `GET /auth/me` mengembalikan
 `permissions` serta `authorProfile` di samping data akun existing.
 Implementasi kategori, tag, banner, media, dan publikasi berada dalam satu
-`ArticleModule`; prefix `/cms` menunjukkan akses endpoint, bukan modul terpisah.
+`ArticleModule` dan satu `ArticleController`; `@CmsAccess()` melindungi method
+CMS. Prefix `/cms` menunjukkan akses endpoint, bukan modul terpisah.
+
+Endpoint publik tanpa autentikasi:
+
+| Method | Path | Fungsi |
+| --- | --- | --- |
+| GET | `/articles` | Daftar kartu artikel, pagination, pencarian, dan filter |
+| GET | `/articles/:slug` | Detail artikel, HTML, gambar, banner, dan profil penulis |
+| GET | `/categories` | Semua kategori artikel, diurutkan berdasarkan nama |
+| GET | `/tags` | Semua tag artikel, diurutkan berdasarkan nama |
+
+Contoh: `GET /articles?page=1&limit=12&q=ekspor&tag=dokumen-pengiriman`.
+Filter `category`, `tag`, dan `author` memakai slug dan digabung dengan AND;
+`q` mencari substring judul atau nama tag tanpa membedakan kapital. Pagination
+mengembalikan `data.items` dan `data.pagination` (`page`, `limit`, `total`,
+`totalPages`), dengan urutan terbaru lalu ID sebagai pemecah tanggal yang sama.
+Hanya record dengan `publishedAt <= sekarang` yang keluar. Slug tidak ada atau
+belum terbit menghasilkan 404. Rincian query, batas, dan contoh respons ada di
+[kontrak public read API](../../docs/article-cms/01-api-plan.md#kontrak-get-articles-dan-get-articlesslug)
+dan OpenAPI `/docs-json`.
+
+`GET /categories` dan `GET /tags` mengembalikan array pada `data`, berisi `id`,
+`name`, dan `slug`, dengan urutan `name ASC, id ASC`. Keduanya memakai list
+taksonomi yang sama dengan CMS, termasuk kategori/tag yang belum dipakai artikel.
+Gunakan slug hasilnya sebagai filter `category` atau `tag` pada `GET /articles`.
+Pembuatan kategori/tag tetap melalui endpoint CMS yang memerlukan izin.
+
+Untuk sumber sitemap, baca `GET /articles?page=1&limit=100`, lanjutkan sampai
+`pagination.totalPages`, lalu gunakan `slug`, `publishedAt`, dan `updatedAt` dari
+setiap kartu. Integrasi sitemap frontend dan migrasi artikel lama dikerjakan
+terpisah.
+
+Endpoint CMS:
 
 | Method | Path | Fungsi |
 | --- | --- | --- |

@@ -17,6 +17,55 @@ type ArticleWithRelations = Prisma.ArticleGetPayload<{
   include: typeof articleInclude;
 }>;
 
+export const articleCardSelect = {
+  id: true,
+  slug: true,
+  title: true,
+  metaDescription: true,
+  publishedAt: true,
+  updatedAt: true,
+  coverMedia: true,
+  coverImageAlt: true,
+  category: true,
+  tags: { include: { tag: true } },
+  author: {
+    select: {
+      id: true,
+      firstName: true,
+      lastName: true,
+      authorProfile: { select: { slug: true } },
+    },
+  },
+} satisfies Prisma.ArticleSelect;
+
+type ArticleCard = Prisma.ArticleGetPayload<{
+  select: typeof articleCardSelect;
+}>;
+
+export function toArticleCardResponse(article: ArticleCard) {
+  return {
+    id: article.id,
+    slug: article.slug,
+    title: article.title,
+    metaDescription: article.metaDescription,
+    publishedAt: article.publishedAt,
+    updatedAt: article.updatedAt,
+    cover: toMediaResponse(article.coverMedia),
+    coverImageAlt: article.coverImageAlt,
+    category: toTaxonomyResponse(article.category),
+    tags: article.tags
+      .map(({ tag }) => toTaxonomyResponse(tag))
+      .sort((first, second) => first.name.localeCompare(second.name, 'id-ID')),
+    author: {
+      id: article.author.id,
+      name: [article.author.firstName, article.author.lastName]
+        .filter(Boolean)
+        .join(' '),
+      slug: article.author.authorProfile!.slug,
+    },
+  };
+}
+
 export function toMediaResponse(media: MediaAsset) {
   return {
     id: media.id,

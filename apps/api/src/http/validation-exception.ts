@@ -10,7 +10,9 @@ const constraintCodes: Record<string, string> = {
   isPositive: 'MIN_VALUE',
   isString: 'INVALID_TYPE',
   matches: 'INVALID_FORMAT',
+  max: 'MAX_VALUE',
   maxLength: 'MAX_LENGTH',
+  min: 'MIN_VALUE',
   minLength: 'MIN_LENGTH',
   whitelistValidation: 'UNKNOWN_FIELD',
 };

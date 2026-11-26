@@ -1,4 +1,8 @@
-import { ConflictException, Injectable } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import sanitizeHtml from 'sanitize-html';
 import { MediaKind, Prisma } from '../generated/prisma/client.js';
 import { PrismaService } from '../database/prisma.service.js';
@@ -6,6 +10,8 @@ import { fieldValidationException } from '../http/validation-exception.js';
 import { ArticleMediaService } from './article-media.service.js';
 import {
   articleInclude,
+  articleCardSelect,
+  toArticleCardResponse,
   toArticleResponse,
   toBannerResponse,
   toTaxonomyResponse,
@@ -13,6 +19,7 @@ import {
 import type { CreateArticleDto } from './dto/create-article.dto.js';
 import type { CreateBannerDto } from './dto/create-banner.dto.js';
 import type { CreateTaxonomyDto } from './dto/create-taxonomy.dto.js';
+import type { ArticleQueryDto } from './dto/article-query.dto.js';
 
 const allowedBodyTags = ['p', 'h2', 'h3', 'strong', 'em', 'br', 'img'] as const;
 
@@ -22,6 +29,65 @@ export class ArticleService {
     private readonly prisma: PrismaService,
     private readonly media: ArticleMediaService,
   ) {}
+
+  async listPublishedArticles(query: ArticleQueryDto) {
+    const search = query.q?.trim().replace(/[\\%_]/g, '\\$&');
+    const where: Prisma.ArticleWhereInput = {
+      publishedAt: { lte: new Date() },
+      category: query.category ? { slug: query.category } : undefined,
+      tags: query.tag ? { some: { tag: { slug: query.tag } } } : undefined,
+      author: query.author
+        ? { authorProfile: { slug: query.author } }
+        : undefined,
+      OR: search
+        ? [
+            { title: { contains: search, mode: 'insensitive' } },
+            {
+              tags: {
+                some: {
+                  tag: { name: { contains: search, mode: 'insensitive' } },
+                },
+              },
+            },
+          ]
+        : undefined,
+    };
+    const [articles, total] = await this.prisma.$transaction(
+      [
+        this.prisma.article.findMany({
+          where,
+          select: articleCardSelect,
+          orderBy: [{ publishedAt: 'desc' }, { id: 'desc' }],
+          skip: (query.page - 1) * query.limit,
+          take: query.limit,
+        }),
+        this.prisma.article.count({ where }),
+      ],
+      { isolationLevel: Prisma.TransactionIsolationLevel.RepeatableRead },
+    );
+    return {
+      items: articles.map(toArticleCardResponse),
+      pagination: {
+        page: query.page,
+        limit: query.limit,
+        total,
+        totalPages: Math.ceil(total / query.limit),
+      },
+    };
+  }
+
+  async getPublishedArticle(slug: string) {
+    const article = await this.prisma.article.findFirst({
+      where: { slug, publishedAt: { lte: new Date() } },
+      include: articleInclude,
+    });
+    if (!article) throw new NotFoundException('Article not found');
+    return {
+      ...toArticleResponse(article),
+      bodyHtml: article.bodyHtml,
+      updatedAt: article.updatedAt,
+    };
+  }
 
   async uploadArticleAsset(
     uploadedById: string,

@@ -19,6 +19,12 @@ and the user's instructions for the current task.
 
 - Use standard Nest modules, controllers, and services. Group related files by
   feature when adding a feature; create folders and providers only when needed.
+- Keep routes for the same feature in one controller by default. Public and CMS
+  prefixes alone do not require separate controllers. In a controller with mixed
+  access, apply guards and role/permission metadata to protected methods; use
+  controller-level guards only when every method has the same access policy.
+  Compose repeated access metadata and Swagger security with `applyDecorators()`
+  when it removes real duplication, as in Article's `@CmsAccess()` decorator.
 - Controllers handle the HTTP boundary: routing, inputs, status codes, and
   delegation. Services own business behavior and can be reused independently of
   a particular controller.
@@ -167,6 +173,27 @@ The shared field error response remains:
 Keep this a small shared helper; no base service, custom exception hierarchy, or
 new validation dependency is needed. See Nest's [validation documentation](https://docs.nestjs.com/techniques/validation)
 and [file upload documentation](https://docs.nestjs.com/techniques/file-upload).
+
+### Paginated list endpoints
+
+- Define query defaults, numeric conversion, and bounds in a feature query DTO.
+  Use the existing `ValidationPipe`, `class-transformer`, and `class-validator`;
+  invalid or unknown query fields return the existing field validation errors.
+- For lists with numbered pages, use `page` (default 1, range 1–1,000,000) and
+  `limit` (default 12, range 1–100). Keep pagination inside the existing envelope:
+  `data: { items, pagination: { page, limit, total, totalPages } }`. Count and
+  items must use the same filters; read them in one consistent database snapshot
+  when both are returned, as with Prisma's `RepeatableRead` transaction.
+- Order by a documented field and a unique tie-breaker; articles use
+  `publishedAt DESC, id DESC`. Numbered pagination is deterministic for unchanged
+  data, but inserts/deletes can shift later pages. Use a separately agreed cursor
+  contract if traversal must remain stable across such changes.
+- An empty result has `items: []`, `total: 0`, and `totalPages: 0`. A page beyond
+  the results returns an empty list with the requested page; do not silently clamp
+  it. Select card fields rather than loading body HTML or banner data for lists.
+- Document search fields, filter identifiers, combination rules, and publication
+  visibility in the feature contract and OpenAPI. Reuse response DTO fields with
+  Nest Swagger's mapped types when they describe the same public fields.
 
 ## Integration and API testing
 

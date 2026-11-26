@@ -13,7 +13,7 @@ hanya ketika seluruh task dan kriteria selesai pada fase tersebut sudah terpenuh
 - [ ] Fase 0 — Kontrak API siap; pemetaan frontend belum dikerjakan
 - [x] Fase 1 — Fondasi API dan data pendukung siap
 - [x] Fase 2A — Create artikel CMS API siap
-- [ ] Fase 2B — Read artikel publik API belum dikerjakan
+- [ ] Fase 2B — API artikel/kategori/tag publik selesai; migrasi tujuh artikel belum dikerjakan
 - [ ] Fase 3 — CMS minimal siap
 - [ ] Fase 4 — Pembaca publik dan migrasi siap
 - [ ] Fase 5 — Staging dan production selesai
@@ -52,8 +52,8 @@ draft, penjadwalan, pengaturan akun, atau pengaturan profil melalui CMS.
 publikasi yang sama sebelum membuat UI.
 
 - [x] Agent API menuliskan kontrak OpenAPI untuk create artikel CMS, kategori,
-   tag, banner, upload media, dan autentikasi CMS sesuai
-   [plan API](01-api-plan.md). Kontrak read publik sengaja ditunda.
+   tag, banner, upload media, autentikasi CMS, serta daftar/detail artikel publik
+   sesuai [plan API](01-api-plan.md).
 - [ ] Agent frontend memetakan field form dan semua pembaca `articleCatalog.ts`
    terhadap kontrak tersebut sesuai [plan frontend](02-frontend-plan.md).
 - [x] Siapkan database lokal terpisah dari production serta konfigurasi Spaces
@@ -109,13 +109,21 @@ Endpoint pembaca publik dikerjakan pada fase berikutnya.
 
 **Hasil:** artikel terbit tersedia pada endpoint publik tanpa deploy ulang.
 
-- [ ] Tambah endpoint publik untuk daftar, detail slug, pencarian, filter, dan
+- [x] Tambah endpoint publik untuk daftar, detail slug, pencarian, filter, dan
    data yang diperlukan sitemap.
-- [ ] Buat respons daftar yang ringan dan respons detail yang lengkap. Hanya
+- [x] Buat respons daftar yang ringan dan respons detail yang lengkap. Hanya
    artikel terbit yang keluar dari endpoint publik.
+- [x] Tambah kategori/tag publik untuk pilihan filter. Sumber slug dan tanggal
+   sitemap tersedia melalui pagination `GET /articles`.
 - [ ] Siapkan cara migrasi manual tujuh artikel lama ke database, termasuk tanggal,
    slug, cover, isi, tag, dan key points; jangan mengubah sumber publik dahulu.
-- [ ] Tambah tes daftar/filter/detail, pagination, pencarian, dan 404.
+- [x] Tambah tes daftar/filter/detail, pagination, pencarian, dan 404.
+
+API Fase 2B selesai: daftar/detail artikel serta kategori/tag publik tersedia
+melalui satu `ArticleController`, bersama route CMS yang tetap dilindungi per
+method. Verifikasi: 57 tes API pada 6 suite lulus dengan eksekusi berurutan;
+lint, build, type-check, dan `git diff --check` lulus. Tujuh artikel lama belum
+dimigrasikan; pembaca frontend dan sitemap belum dialihkan ke API.
 
 - [ ] **Fase 2B selesai:** tujuh artikel lama tersedia di endpoint publik dengan
   URL lama dan artikel baru dapat dibaca tanpa build frontend.

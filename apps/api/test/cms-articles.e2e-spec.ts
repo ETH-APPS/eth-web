@@ -258,7 +258,7 @@ describe('CMS article create API', () => {
     expect(document.paths['/cms/categories'].post.tags).toEqual([
       'Article taxonomy',
     ]);
-    expect(document.paths['/articles']).toBeUndefined();
+    expect(document.paths['/articles'].get.security ?? []).toEqual([]);
   });
 
   it('returns CMS permissions and author profile from the existing auth API', async () => {
@@ -276,13 +276,25 @@ describe('CMS article create API', () => {
     });
   });
 
-  it('requires authentication and CMS permission', async () => {
-    await request(app.getHttpServer()).get('/cms/categories').expect(401);
-    await request(app.getHttpServer())
-      .get('/cms/categories')
-      .set('Authorization', `Bearer ${staffToken}`)
-      .expect(403);
-  });
+  it.each([
+    ['get', '/cms/categories'],
+    ['post', '/cms/categories'],
+    ['get', '/cms/tags'],
+    ['post', '/cms/tags'],
+    ['get', '/cms/banners'],
+    ['post', '/cms/banners'],
+    ['post', '/cms/articles/assets'],
+    ['post', '/cms/articles'],
+  ] as const)(
+    'protects %s %s with authentication and CMS permission',
+    async (method, path) => {
+      await request(app.getHttpServer())[method](path).expect(401);
+      await request(app.getHttpServer())
+        [method](path)
+        .set('Authorization', `Bearer ${staffToken}`)
+        .expect(403);
+    },
+  );
 
   it('requires an author profile before publishing', async () => {
     await request(app.getHttpServer())
@@ -590,6 +602,23 @@ describe('CMS article create API', () => {
     expect(stored.bannerId).toBe(banner.id);
     expect(stored.bodyHtml).toContain(body.url);
     expect(stored.bodyHtml).toContain('loading="lazy"');
+
+    await request(app.getHttpServer())
+      .get('/articles')
+      .query({ category: category.slug })
+      .expect(200)
+      .expect((listed) => {
+        expect(listed.body.data.items).toEqual([
+          expect.objectContaining({ id: stored.id, slug }),
+        ]);
+      });
+    await request(app.getHttpServer())
+      .get(`/articles/${slug}`)
+      .expect(200)
+      .expect((published) => {
+        expect(published.body.data.bodyHtml).toBe(stored.bodyHtml);
+        expect(published.body.data.id).toBe(stored.id);
+      });
 
     await request(app.getHttpServer())
       .post('/cms/articles')

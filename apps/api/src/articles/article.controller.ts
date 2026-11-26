@@ -2,38 +2,39 @@ import {
   Body,
   Controller,
   Get,
+  Param,
   Post,
+  Query,
   UploadedFile,
-  UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import {
   ApiBadRequestResponse,
-  ApiBearerAuth,
   ApiBody,
   ApiConflictResponse,
   ApiConsumes,
-  ApiForbiddenResponse,
+  ApiNotFoundResponse,
   ApiOperation,
   ApiPayloadTooLargeResponse,
   ApiTags,
-  ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
-import { AccessGuard } from '../auth/auth.guard.js';
 import type { AuthUser } from '../auth/auth-user.js';
 import { CurrentUser } from '../auth/current-user.decorator.js';
-import { Permissions } from '../auth/permissions.decorator.js';
-import { MediaKind, UserPermission } from '../generated/prisma/client.js';
+import { MediaKind } from '../generated/prisma/client.js';
 import { ApiErrorResponseDto } from '../openapi/api-error-response.dto.js';
 import { ApiDataResponse } from '../openapi/api-data-response.decorator.js';
 import { ArticleService } from './article.service.js';
+import { CmsAccess } from './cms-access.decorator.js';
 import { ArticleAssetUploadDto } from './dto/article-asset-upload.dto.js';
+import { ArticleQueryDto } from './dto/article-query.dto.js';
 import { CreateArticleDto } from './dto/create-article.dto.js';
 import { CreateBannerDto } from './dto/create-banner.dto.js';
 import { CreateTaxonomyDto } from './dto/create-taxonomy.dto.js';
 import {
   ArticleBannerResponseDto,
+  ArticleDetailResponseDto,
+  ArticleListResponseDto,
   CreatedArticleResponseDto,
   MediaAssetResponseDto,
   TaxonomyResponseDto,
@@ -41,22 +42,46 @@ import {
 
 const uploadOptions = { limits: { fileSize: 5 * 1024 * 1024, files: 1 } };
 
-@Controller('cms')
-@UseGuards(AccessGuard)
-@Permissions(UserPermission.CMS_ACCESS)
-@ApiBearerAuth()
-@ApiUnauthorizedResponse({
-  type: ApiErrorResponseDto,
-  description: 'Missing or invalid access token',
-})
-@ApiForbiddenResponse({
-  type: ApiErrorResponseDto,
-  description: 'CMS access required',
-})
+@Controller()
 export class ArticleController {
   constructor(private readonly articles: ArticleService) {}
 
-  @Post('articles/assets')
+  @Get('articles')
+  @ApiTags('Articles')
+  @ApiOperation({ summary: 'List published articles' })
+  @ApiDataResponse(200, ArticleListResponseDto)
+  @ApiBadRequestResponse({ type: ApiErrorResponseDto })
+  list(@Query() query: ArticleQueryDto) {
+    return this.articles.listPublishedArticles(query);
+  }
+
+  @Get('articles/:slug')
+  @ApiTags('Articles')
+  @ApiOperation({ summary: 'Read a published article by slug' })
+  @ApiDataResponse(200, ArticleDetailResponseDto)
+  @ApiNotFoundResponse({ type: ApiErrorResponseDto })
+  get(@Param('slug') slug: string) {
+    return this.articles.getPublishedArticle(slug);
+  }
+
+  @Get('categories')
+  @ApiTags('Article taxonomy')
+  @ApiOperation({ summary: 'List all article categories' })
+  @ApiDataResponse(200, TaxonomyResponseDto, true)
+  listPublicCategories() {
+    return this.articles.listCategories();
+  }
+
+  @Get('tags')
+  @ApiTags('Article taxonomy')
+  @ApiOperation({ summary: 'List all article tags' })
+  @ApiDataResponse(200, TaxonomyResponseDto, true)
+  listPublicTags() {
+    return this.articles.listTags();
+  }
+
+  @Post('cms/articles/assets')
+  @CmsAccess()
   @ApiTags('Articles')
   @UseInterceptors(FileInterceptor('file', uploadOptions))
   @ApiConsumes('multipart/form-data')
@@ -85,7 +110,8 @@ export class ArticleController {
     return this.articles.uploadArticleAsset(user.id, input.kind, file);
   }
 
-  @Get('categories')
+  @Get('cms/categories')
+  @CmsAccess()
   @ApiTags('Article taxonomy')
   @ApiOperation({ summary: 'List article categories for the CMS form' })
   @ApiDataResponse(200, TaxonomyResponseDto, true)
@@ -93,7 +119,8 @@ export class ArticleController {
     return this.articles.listCategories();
   }
 
-  @Post('categories')
+  @Post('cms/categories')
+  @CmsAccess()
   @ApiTags('Article taxonomy')
   @ApiOperation({ summary: 'Create an article category' })
   @ApiDataResponse(201, TaxonomyResponseDto)
@@ -103,7 +130,8 @@ export class ArticleController {
     return this.articles.createCategory(input);
   }
 
-  @Get('tags')
+  @Get('cms/tags')
+  @CmsAccess()
   @ApiTags('Article taxonomy')
   @ApiOperation({ summary: 'List article tags for the CMS form' })
   @ApiDataResponse(200, TaxonomyResponseDto, true)
@@ -111,7 +139,8 @@ export class ArticleController {
     return this.articles.listTags();
   }
 
-  @Post('tags')
+  @Post('cms/tags')
+  @CmsAccess()
   @ApiTags('Article taxonomy')
   @ApiOperation({ summary: 'Create an article tag' })
   @ApiDataResponse(201, TaxonomyResponseDto)
@@ -121,7 +150,8 @@ export class ArticleController {
     return this.articles.createTag(input);
   }
 
-  @Get('banners')
+  @Get('cms/banners')
+  @CmsAccess()
   @ApiTags('Article banners')
   @ApiOperation({ summary: 'List reusable article banners' })
   @ApiDataResponse(200, ArticleBannerResponseDto, true)
@@ -129,7 +159,8 @@ export class ArticleController {
     return this.articles.listBanners();
   }
 
-  @Post('banners')
+  @Post('cms/banners')
+  @CmsAccess()
   @ApiTags('Article banners')
   @UseInterceptors(FileInterceptor('image', uploadOptions))
   @ApiConsumes('multipart/form-data')
@@ -156,7 +187,8 @@ export class ArticleController {
     return this.articles.createBanner(user.id, input, image);
   }
 
-  @Post('articles')
+  @Post('cms/articles')
+  @CmsAccess()
   @ApiTags('Articles')
   @ApiOperation({ summary: 'Create and immediately publish an article' })
   @ApiDataResponse(201, CreatedArticleResponseDto)

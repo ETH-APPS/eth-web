@@ -1,4 +1,4 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, PickType } from '@nestjs/swagger';
 import { MediaKind } from '../../generated/prisma/client.js';
 
 export class MediaAssetResponseDto {
@@ -108,4 +108,62 @@ export class CreatedArticleResponseDto {
 
   @ApiProperty({ type: () => ArticleAuthorResponseDto })
   author!: ArticleAuthorResponseDto;
+}
+
+export class ArticleCardAuthorResponseDto extends PickType(
+  ArticleAuthorResponseDto,
+  ['id', 'name', 'slug'] as const,
+) {}
+
+export class ArticleCardResponseDto extends PickType(
+  CreatedArticleResponseDto,
+  [
+    'id',
+    'slug',
+    'title',
+    'metaDescription',
+    'publishedAt',
+    'cover',
+    'coverImageAlt',
+    'category',
+    'tags',
+  ] as const,
+) {
+  @ApiProperty({ format: 'date-time' })
+  updatedAt!: string;
+
+  @ApiProperty({ type: () => ArticleCardAuthorResponseDto })
+  author!: ArticleCardAuthorResponseDto;
+}
+
+export class ArticlePaginationResponseDto {
+  @ApiProperty({ minimum: 1, example: 1 })
+  page!: number;
+
+  @ApiProperty({ minimum: 1, maximum: 100, example: 12 })
+  limit!: number;
+
+  @ApiProperty({ minimum: 0, example: 20 })
+  total!: number;
+
+  @ApiProperty({ minimum: 0, example: 2 })
+  totalPages!: number;
+}
+
+export class ArticleListResponseDto {
+  @ApiProperty({ type: () => ArticleCardResponseDto, isArray: true })
+  items!: ArticleCardResponseDto[];
+
+  @ApiProperty({ type: () => ArticlePaginationResponseDto })
+  pagination!: ArticlePaginationResponseDto;
+}
+
+export class ArticleDetailResponseDto extends CreatedArticleResponseDto {
+  @ApiProperty({
+    description: 'Sanitized semantic HTML, including body images',
+  })
+  bodyHtml!: string;
+
+  @ApiProperty({ format: 'date-time' })
+  updatedAt!: string;
 }
