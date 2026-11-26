@@ -1,10 +1,10 @@
 import { randomUUID } from 'node:crypto';
 import { INestApplication } from '@nestjs/common';
 import { Test } from '@nestjs/testing';
-import argon2 from 'argon2';
 import request from 'supertest';
 import type { App } from 'supertest/types.js';
 import { AppModule } from '../src/app.module.js';
+import { hashPassword } from '../src/auth/password.js';
 import { PrismaService } from '../src/database/prisma.service.js';
 import { configureLogging } from '../src/logging/configure-logging.js';
 import { setupApiDocs } from '../src/openapi/setup-api-docs.js';
@@ -127,7 +127,29 @@ describe('Auth and cargo request API', () => {
     ).toMatchObject({ $ref: '#/components/schemas/ApiErrorResponseDto' });
   });
 
+  it('returns field validation errors before attempting login', async () => {
+    const response = await request(app.getHttpServer())
+      .post('/auth/login')
+      .send({ email: 'invalid-email', password: '', unexpected: true })
+      .expect(400);
+    expect(response.body.request_id).toBe(response.headers['x-request-id']);
+    expect(response.body.error).toEqual({
+      code: 'VALIDATION_ERROR',
+      message: 'Payload Validation Failed',
+      fields: {
+        email: ['INVALID_FORMAT'],
+        password: ['REQUIRED'],
+        unexpected: ['UNKNOWN_FIELD'],
+      },
+    });
+  });
+
   it('registers, logs in, rotates refresh tokens, and logs out', async () => {
+    await request(app.getHttpServer()).get('/auth/me').expect(401);
+    await request(app.getHttpServer())
+      .get('/auth/me')
+      .set('Authorization', 'Bearer invalid-token')
+      .expect(401);
     const user = await register();
     expect(user.user).toMatchObject({ email: user.email, role: 'CUSTOMER' });
     expect(user.accessToken).toEqual(expect.any(String));
@@ -197,7 +219,7 @@ describe('Auth and cargo request API', () => {
       data: {
         email: `staff-${randomUUID()}@example.test`,
         firstName: 'Staff',
-        passwordHash: await argon2.hash('staff-password-123'),
+        passwordHash: await hashPassword('staff-password-123'),
         role: 'STAFF',
       },
     });

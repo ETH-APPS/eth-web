@@ -15,6 +15,14 @@ const constraintCodes: Record<string, string> = {
   whitelistValidation: 'UNKNOWN_FIELD',
 };
 
+export function fieldValidationException(fields: Record<string, string[]>) {
+  return new BadRequestException({
+    code: 'VALIDATION_ERROR',
+    message: 'Payload Validation Failed',
+    fields,
+  });
+}
+
 export function validationException(errors: ValidationError[]) {
   const fields: Record<string, string[]> = {};
   for (const error of errors) {
@@ -26,9 +34,5 @@ export function validationException(errors: ValidationError[]) {
           );
     fields[error.property] = [...new Set(codes)];
   }
-  return new BadRequestException({
-    code: 'VALIDATION_ERROR',
-    message: 'Payload Validation Failed',
-    fields,
-  });
+  return fieldValidationException(fields);
 }

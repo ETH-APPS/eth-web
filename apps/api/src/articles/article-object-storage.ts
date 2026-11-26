@@ -16,7 +16,11 @@ export class ArticleObjectStorage {
   private client?: S3Client;
   private config?: SpacesConfig;
 
-  async put(objectKey: string, body: Buffer, contentType: string): Promise<void> {
+  async put(
+    objectKey: string,
+    body: Buffer,
+    contentType: string,
+  ): Promise<void> {
     const { bucket } = this.getConfig();
     await this.getClient().send(
       new PutObjectCommand({

@@ -27,6 +27,34 @@ and the user's instructions for the current task.
   validation approach where available and discuss a new dependency when needed.
 - Extract shared code when there is a concrete shared responsibility. Prefer a
   small local helper when it makes the current code easier to understand.
+- Use plain functions for self-contained operations with no injected dependencies,
+  such as mapping or password hashing. Use Nest injectable providers for operations
+  that need injected services or clients; use decorators, pipes, and guards for
+  HTTP parameter extraction, validation, and access checks respectively.
+- Keep helpers in the owning feature folder with descriptive filenames. Move a
+  helper to a shared folder when several features actually need it; avoid a
+  catch-all `utils.ts`. Password creation uses `hashPassword()` from
+  [`auth/password.ts`](../apps/api/src/auth/password.ts) in both registration and
+  staff provisioning, so Argon2 options are defined once. Keep password verification
+  with `argon2.verify()`; an extra wrapper is unnecessary for its single caller.
+- Choose response mapping placement based on its actual use:
+  - Return a short object inline when it is used once. Simple database projections
+    can use Prisma `select`.
+  - Use a local function when the same mapping is reused within one service.
+  - Extract substantial mapping that obscures the operation, or mapping shared by
+    several services, into one `<feature>-response.mapper.ts` file with plain
+    functions and existing model types.
+
+  Auth's `publicUser()` and `tokenResponse()` remain local; Article shares its
+  media mapping between article and media services. A mapper file is optional;
+  do not create one for every feature just to match the folder structure.
+- Keep the documented public fields explicit rather than returning full database
+  records. Response DTOs describe the API contract; they do not serialize results
+  automatically. The existing global handlers add the response envelope.
+- Inline one-off transformations; do not create helpers for a single `trim()` or
+  one short expression. Apply only the normalization required by the feature,
+  such as case-insensitive category uniqueness or slug generation. Preserve text
+  formatting unless the field's contract requires normalization.
 - Do not introduce generic base classes, repository layers, factories, wrappers,
   empty modules, or new packages solely for possible future requirements.
 - Keep refactors tied to the requested change. Record unrelated improvement ideas
@@ -68,6 +96,77 @@ and the user's instructions for the current task.
   personal data indiscriminately. Redaction does not make arbitrary payloads safe.
 - Add application logs when they explain a meaningful event or failure; avoid
   tracing every function call. Preserve current logging defaults.
+
+### Validation and error conventions
+
+Use the existing NestJS tools and response contract across features:
+
+| Responsibility | Place | Example |
+| --- | --- | --- |
+| Input type, format, length, and required fields | DTO decorators with the global `ValidationPipe` | Email format, UUID format, title length |
+| Authentication and route permissions | Existing guards | Access token and CMS permission |
+| Database checks and business rules | Feature service | Cover exists and belongs to the author; password matches |
+| Response formatting | Existing global interceptor and exception filter | Success envelope, error envelope, request ID |
+
+- Keep controllers focused on receiving input and delegating. Do not repeat DTO
+  validation in every service. Validate normalized values when normalization can
+  make otherwise valid input empty or invalid.
+- Use [`@CurrentUser()`](../apps/api/src/auth/current-user.decorator.ts) with the
+  existing `AuthUser` type when a controller only needs the authenticated user.
+  Protect the route with `AccessGuard` and the appropriate role/permission metadata
+  at method or controller level. The decorator reads the user attached by the
+  guard; it does not authenticate requests. Use `@Req()` when the full request is
+  actually needed.
+- Validate each feature's data when it is created or updated. For example, profile
+  URL rules belong to profile input/provisioning; article publishing checks that
+  the author has a profile without revalidating its fields. Keep operation-specific
+  checks such as media ownership and HTML sanitization in the article flow.
+- Use `fieldValidationException(fields)` from
+  [`src/http/validation-exception.ts`](../apps/api/src/http/validation-exception.ts)
+  to construct field validation exceptions.
+  Both the global DTO validation adapter and service checks should use it to
+  return `BadRequestException` with `code: 'VALIDATION_ERROR'`,
+  `message: 'Payload Validation Failed'`, and `fields: Record<string, string[]>`.
+  Keep feature-specific checks in their feature; share the response construction.
+- Field errors identify the request field and a stable uppercase code, such as
+  `coverMediaId: ['INVALID_REFERENCE']` or `bodyHtml: ['UNSUPPORTED_HTML']`.
+  Use the actual multipart field name for file errors (`file` or `image`). A UUID
+  decorator validates format; the service still checks the referenced record and
+  ownership. A missing reference in submitted input can be a field error; a
+  requested resource that does not exist returns 404.
+- Use built-in Nest exceptions for expected failures: 400 for invalid input,
+  401 for missing/invalid credentials, 403 for insufficient permission, 404 for a
+  missing resource, and 409 for conflicts with current state. A failed login is
+  an authentication failure, so it does not need a field validation helper.
+- Use `new ConflictException('...')` or another built-in exception with a message
+  when the generic status code is enough. Supply `{ code, message }` when clients
+  need a distinct action, for example `ACCOUNT_LINK_REQUIRED` or
+  `ARTICLE_SLUG_CONFLICT`. Clients should branch on codes, not message text.
+  Preserve existing codes and statuses; changing them is an API contract change.
+- Validate uploaded files at the upload boundary using Nest file pipes or the
+  existing image validation service. Checks of image contents and dimensions
+  still belong in the image validation logic. Reuse the same field error format.
+- Return plain result data from services and throw exceptions for failures. The
+  existing global handlers add the response envelope. Translate known database
+  failures near the relevant operation; rethrow unexpected failures so the
+  global filter returns a safe 500 response.
+
+The shared field error response remains:
+
+```json
+{
+  "request_id": "example-request-id",
+  "error": {
+    "code": "VALIDATION_ERROR",
+    "message": "Payload Validation Failed",
+    "fields": { "coverMediaId": ["INVALID_REFERENCE"] }
+  }
+}
+```
+
+Keep this a small shared helper; no base service, custom exception hierarchy, or
+new validation dependency is needed. See Nest's [validation documentation](https://docs.nestjs.com/techniques/validation)
+and [file upload documentation](https://docs.nestjs.com/techniques/file-upload).
 
 ## Integration and API testing
 

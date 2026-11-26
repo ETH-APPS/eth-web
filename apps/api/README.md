@@ -97,6 +97,37 @@ Alasan `reason` wajib untuk keputusan revisi atau penolakan. Access token berlak
 15 menit; refresh token berlaku 30 hari dan disimpan sebagai hash. PIN mobile
 belum menjadi bagian dari auth server.
 
+## CMS artikel: create flow
+
+Endpoint CMS memerlukan Bearer token dari `POST /auth/login` dan permission
+`CMS_ACCESS`. Akun, permission, profil penulis, dan banner default untuk tahap
+awal diprovisi langsung di database. `GET /auth/me` mengembalikan
+`permissions` serta `authorProfile` di samping data akun existing.
+Implementasi kategori, tag, banner, media, dan publikasi berada dalam satu
+`ArticleModule`; prefix `/cms` menunjukkan akses endpoint, bukan modul terpisah.
+
+| Method | Path | Fungsi |
+| --- | --- | --- |
+| POST | `/cms/articles/assets` | Upload cover atau gambar isi artikel |
+| GET, POST | `/cms/categories` | Baca atau buat kategori |
+| GET, POST | `/cms/tags` | Baca atau buat tag |
+| GET | `/cms/banners` | Baca banner reusable |
+| POST | `/cms/banners` | Buat banner sekaligus upload gambar |
+| POST | `/cms/articles` | Buat dan langsung terbitkan artikel |
+
+Upload memakai `multipart/form-data`. Asset artikel memakai field `file` dan
+`kind` (`ARTICLE_COVER` atau `ARTICLE_BODY`); banner memakai `title`,
+`description`, dan field file `image`. JPEG, PNG, serta WebP diterima sampai
+5 MiB. SVG tidak diterima. API membaca format dan dimensi dari isi file sebelum
+mengunggahnya ke DigitalOcean Spaces.
+
+Isi konfigurasi `SPACES_*` pada `.env`. `SPACES_ARTICLE_PREFIX` lokal disarankan
+`articles/development`; staging dan production memakai prefix masing-masing.
+URL CDN disimpan di `MediaAsset`, banner mereferensikan `imageMediaId`, dan
+artikel mereferensikan `bannerId`. Secret Spaces tidak boleh dicatat di log atau
+repository. Tes API mengganti storage dengan fake sehingga tidak menghubungi
+bucket sebenarnya.
+
 ### Google Sign-In untuk mobile
 
 Isi `GOOGLE_WEB_CLIENT_ID` dari OAuth Client bertipe **Web application** di

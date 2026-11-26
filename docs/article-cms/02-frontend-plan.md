@@ -53,10 +53,11 @@ konsep daftar artikel desktop, bukan desain form create atau frame mobile.
    “buat baru” dalam form. Banner baru hanya meminta title, description,
    ilustrasi; WhatsApp dan email tidak menjadi field. Satu banner yang dibuat
    dapat dipakai lagi pada artikel berikutnya.
-- [ ] Upload gambar sampul, gambar isi, dan ilustrasi banner melalui API media.
-   Tampilkan progress/error yang berguna; gunakan URL/ID yang dikembalikan API,
-   bukan URL yang diketik manual. Batasi file sesuai kontrak API, termasuk
-   penanganan aman untuk SVG bila didukung.
+- [ ] Upload gambar sampul dan gambar isi melalui API media saat alur publish;
+   banner baru memakai endpoint create banner yang sekaligus mengunggah
+   ilustrasinya. Tampilkan progress/error yang berguna; gunakan URL/ID yang
+   dikembalikan API, bukan URL yang diketik manual. Batasi file sesuai kontrak
+   API: JPEG, PNG, atau WebP maksimal 5 MiB; SVG belum didukung.
 - [ ] Pastikan editor mengeluarkan HTML semantik sesuai daftar kontrol yang disetujui.
    Preview memakai renderer/CSS artikel publik yang sama agar penulis melihat
    hasil mendekati publikasi. Buat daftar isi dari H2/H3 seperti sekarang;
@@ -68,6 +69,37 @@ konsep daftar artikel desktop, bukan desain form create atau frame mobile.
 - [ ] **Fase 3 frontend selesai:** akun CMS hasil provisioning manual dapat login,
   membuat kategori/tag/banner baru dari form, upload media, lalu menerbitkan satu
   artikel yang dibaca oleh API. Akun biasa tidak dapat mengakses alur create.
+
+### Alur gambar dan satu klik Terbitkan
+
+Penulis hanya melihat satu form dan satu tombol **Terbitkan**. Memilih cover atau
+menyisipkan gambar di editor belum memanggil API: FE menyimpan `File` dan
+menampilkan preview lokal. Setiap gambar isi perlu identitas sementara di editor
+agar posisinya tetap terhubung ke file yang dipilih.
+
+Saat **Terbitkan** diklik, FE menjalankan langkah berikut secara berurutan:
+
+1. Validasi seluruh field dan file di sisi FE; cegah klik ganda dan tampilkan
+   status proses.
+2. Upload cover ke `POST /cms/articles/assets` dengan `kind=ARTICLE_COVER`, lalu
+   upload setiap gambar isi ke endpoint yang sama dengan `kind=ARTICLE_BODY`.
+   Simpan `id` dan `url` dari respons tiap upload. Tampilkan progres serta error
+   per gambar.
+3. Bentuk `bodyHtml` dari editor. Ganti identitas sementara tiap gambar dengan
+   `<img data-media-id="ID_DARI_API" alt="...">`; jangan kirim URL preview lokal.
+   API akan memvalidasi media dan mengisi `src` dari URL yang tersimpan.
+4. Kirim `POST /cms/articles` dengan field artikel, `coverMediaId` dari langkah
+   upload, dan `bodyHtml` tersebut. Ini satu-satunya langkah yang menerbitkan
+   artikel. Setelah berhasil, tampilkan URL publiknya.
+
+Jika kategori, tag, atau banner baru diperlukan, buat melalui endpoint CMS
+masing-masing sebelum request artikel terakhir; banner baru dibuat dengan
+gambar ilustrasinya melalui `POST /cms/banners`. Jika satu langkah gagal, jangan
+kirim request artikel. Pertahankan isi form dan ID upload yang sudah berhasil
+agar percobaan ulang tidak mengunggah file yang sama lagi. Backend saat ini belum
+menyediakan pembersihan untuk media yang berhasil diunggah tetapi artikelnya
+tidak jadi diterbitkan; rencanakan penanganan aset tak terpakai sebelum rilis
+production.
 
 ## Fase 4 — Pembaca publik dari API
 

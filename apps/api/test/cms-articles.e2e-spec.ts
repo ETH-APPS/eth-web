@@ -6,12 +6,9 @@ import sharp from 'sharp';
 import request from 'supertest';
 import type { App } from 'supertest/types.js';
 import { AppModule } from '../src/app.module.js';
-import { ArticleObjectStorage } from '../src/cms/article-object-storage.js';
+import { ArticleObjectStorage } from '../src/articles/article-object-storage.js';
 import { PrismaService } from '../src/database/prisma.service.js';
-import {
-  MediaKind,
-  UserPermission,
-} from '../src/generated/prisma/client.js';
+import { MediaKind, UserPermission } from '../src/generated/prisma/client.js';
 import { configureLogging } from '../src/logging/configure-logging.js';
 import { setupApiDocs } from '../src/openapi/setup-api-docs.js';
 
@@ -50,6 +47,7 @@ describe('CMS article create API', () => {
   let cmsToken: string;
   let cmsUserId: string;
   let staffToken: string;
+  let incompleteAuthorToken: string;
   const userIds: string[] = [];
   const categoryIds: string[] = [];
   const tagIds: string[] = [];
@@ -116,6 +114,23 @@ describe('CMS article create API', () => {
     });
     userIds.push(staff.id);
     staffToken = await login(staff.email, 'cms-password-123');
+
+    const incompleteAuthor = await prisma.user.create({
+      data: {
+        email: `cms-no-profile-${randomUUID()}@example.test`,
+        firstName: 'Incomplete',
+        role: 'STAFF',
+        passwordHash,
+        permissionGrants: {
+          create: { permission: UserPermission.CMS_ACCESS },
+        },
+      },
+    });
+    userIds.push(incompleteAuthor.id);
+    incompleteAuthorToken = await login(
+      incompleteAuthor.email,
+      'cms-password-123',
+    );
   });
 
   afterAll(async () => {
@@ -165,7 +180,10 @@ describe('CMS article create API', () => {
       .post('/cms/articles/assets')
       .set('Authorization', `Bearer ${cmsToken}`)
       .field('kind', kind)
-      .attach('file', image, { filename: `${kind}.webp`, contentType: 'image/webp' })
+      .attach('file', image, {
+        filename: `${kind}.webp`,
+        contentType: 'image/webp',
+      })
       .expect(201);
     return response.body.data as {
       id: string;
@@ -202,7 +220,10 @@ describe('CMS article create API', () => {
       .set('Authorization', `Bearer ${cmsToken}`)
       .field('title', 'Konsultasikan Kebutuhan Impor Anda')
       .field('description', 'Tim ETH Cargo siap membantu proses impor Anda.')
-      .attach('image', image, { filename: 'banner.webp', contentType: 'image/webp' })
+      .attach('image', image, {
+        filename: 'banner.webp',
+        contentType: 'image/webp',
+      })
       .expect(201);
     return response.body.data as {
       id: string;
@@ -230,6 +251,13 @@ describe('CMS article create API', () => {
       ].schema.properties.image,
     ).toMatchObject({ type: 'string', format: 'binary' });
     expect(document.paths['/cms/articles'].post).toBeDefined();
+    expect(document.paths['/cms/articles'].post.tags).toEqual(['Articles']);
+    expect(document.paths['/cms/banners'].post.tags).toEqual([
+      'Article banners',
+    ]);
+    expect(document.paths['/cms/categories'].post.tags).toEqual([
+      'Article taxonomy',
+    ]);
     expect(document.paths['/articles']).toBeUndefined();
   });
 
@@ -256,10 +284,36 @@ describe('CMS article create API', () => {
       .expect(403);
   });
 
+  it('requires an author profile before publishing', async () => {
+    await request(app.getHttpServer())
+      .post('/cms/articles')
+      .set('Authorization', `Bearer ${incompleteAuthorToken}`)
+      .send({
+        title: 'Artikel tanpa profil',
+        slug: `missing-profile-${randomUUID()}`,
+        metaDescription: 'Artikel ini tidak boleh diterbitkan.',
+        coverMediaId: randomUUID(),
+        coverImageAlt: 'Cover',
+        bodyHtml: '<p>Isi artikel.</p>',
+        keyPoints: ['Poin'],
+        categoryId: randomUUID(),
+        tagIds: [],
+        bannerId: randomUUID(),
+      })
+      .expect(409)
+      .expect((response) => {
+        expect(response.body.error.code).toBe('AUTHOR_PROFILE_REQUIRED');
+      });
+  });
+
   it('uploads cover and body images into article-specific object keys', async () => {
     const cover = await uploadAsset('ARTICLE_COVER');
     const body = await uploadAsset('ARTICLE_BODY');
-    expect(cover).toMatchObject({ kind: 'ARTICLE_COVER', width: 32, height: 24 });
+    expect(cover).toMatchObject({
+      kind: 'ARTICLE_COVER',
+      width: 32,
+      height: 24,
+    });
     expect(body).toMatchObject({ kind: 'ARTICLE_BODY', width: 32, height: 24 });
     expect(cover.url).toMatch(
       /^https:\/\/cdn\.example\.test\/articles\/test\/covers\/[\w-]+\.webp$/,
@@ -290,6 +344,30 @@ describe('CMS article create API', () => {
       .post('/cms/articles/assets')
       .set('Authorization', `Bearer ${cmsToken}`)
       .field('kind', 'ARTICLE_COVER')
+      .attach('file', Buffer.from('not-a-valid-png'), {
+        filename: 'broken.png',
+        contentType: 'image/png',
+      })
+      .expect(400)
+      .expect((response) => {
+        expect(response.body.error.fields.file).toEqual(['INVALID_IMAGE']);
+      });
+    await request(app.getHttpServer())
+      .post('/cms/articles/assets')
+      .set('Authorization', `Bearer ${cmsToken}`)
+      .field('kind', 'ARTICLE_COVER')
+      .attach('file', image, {
+        filename: 'fake.png',
+        contentType: 'image/png',
+      })
+      .expect(400)
+      .expect((response) => {
+        expect(response.body.error.fields.file).toEqual(['UNSUPPORTED_FORMAT']);
+      });
+    await request(app.getHttpServer())
+      .post('/cms/articles/assets')
+      .set('Authorization', `Bearer ${cmsToken}`)
+      .field('kind', 'ARTICLE_COVER')
       .attach('file', Buffer.alloc(5 * 1024 * 1024 + 1), {
         filename: 'too-large.webp',
         contentType: 'image/webp',
@@ -298,6 +376,63 @@ describe('CMS article create API', () => {
     expect(
       await prisma.mediaAsset.count({ where: { uploadedById: cmsUserId } }),
     ).toBe(before);
+  });
+
+  it.each([
+    {
+      name: 'missing',
+      file: undefined,
+      filename: 'missing.png',
+      contentType: 'image/png',
+      code: 'REQUIRED',
+    },
+    {
+      name: 'unsupported',
+      file: Buffer.from('<svg></svg>'),
+      filename: 'image.svg',
+      contentType: 'image/svg+xml',
+      code: 'UNSUPPORTED_FORMAT',
+    },
+    {
+      name: 'corrupt',
+      file: Buffer.from('not-a-valid-png'),
+      filename: 'broken.png',
+      contentType: 'image/png',
+      code: 'INVALID_IMAGE',
+    },
+  ])('reports $name banner images on the image field', async (input) => {
+    const beforeMedia = await prisma.mediaAsset.count({
+      where: { uploadedById: cmsUserId },
+    });
+    const beforeBanners = await prisma.articleBanner.count({
+      where: { createdById: cmsUserId },
+    });
+    const beforeObjects = storage.objects.size;
+    const upload = request(app.getHttpServer())
+      .post('/cms/banners')
+      .set('Authorization', `Bearer ${cmsToken}`)
+      .field('title', 'Banner validation')
+      .field('description', 'This banner must not be created.');
+    if (input.file) {
+      upload.attach('image', input.file, {
+        filename: input.filename,
+        contentType: input.contentType,
+      });
+    }
+    const response = await upload.expect(400);
+    expect(response.body.request_id).toBe(response.headers['x-request-id']);
+    expect(response.body.error).toEqual({
+      code: 'VALIDATION_ERROR',
+      message: 'Payload Validation Failed',
+      fields: { image: [input.code] },
+    });
+    expect(
+      await prisma.mediaAsset.count({ where: { uploadedById: cmsUserId } }),
+    ).toBe(beforeMedia);
+    expect(
+      await prisma.articleBanner.count({ where: { createdById: cmsUserId } }),
+    ).toBe(beforeBanners);
+    expect(storage.objects.size).toBe(beforeObjects);
   });
 
   it('does not create media when object storage fails', async () => {
@@ -309,7 +444,10 @@ describe('CMS article create API', () => {
       .post('/cms/articles/assets')
       .set('Authorization', `Bearer ${cmsToken}`)
       .field('kind', 'ARTICLE_COVER')
-      .attach('file', image, { filename: 'cover.webp', contentType: 'image/webp' })
+      .attach('file', image, {
+        filename: 'cover.webp',
+        contentType: 'image/webp',
+      })
       .expect(500);
     expect(
       await prisma.mediaAsset.count({ where: { uploadedById: cmsUserId } }),
@@ -320,13 +458,20 @@ describe('CMS article create API', () => {
     const categoryName = `Dokumen ${randomUUID()}`;
     const category = await createCategory(categoryName);
     const tag = await createTag(`Ekspor ${randomUUID()}`);
+    expect(category).toEqual({
+      id: expect.any(String),
+      name: categoryName,
+      slug: expect.any(String),
+    });
     expect(category.slug).toMatch(/^dokumen-/);
     expect(tag.slug).toMatch(/^ekspor-/);
 
     await request(app.getHttpServer())
       .post('/cms/categories')
       .set('Authorization', `Bearer ${cmsToken}`)
-      .send({ name: categoryName.toLocaleUpperCase('id-ID') })
+      .send({
+        name: `  ${categoryName.toLocaleUpperCase('id-ID').replace(/ /g, '   ')}  `,
+      })
       .expect(409);
     const categories = await request(app.getHttpServer())
       .get('/cms/categories')
@@ -376,7 +521,10 @@ describe('CMS article create API', () => {
       .set('Authorization', `Bearer ${cmsToken}`)
       .field('title', 'Banner gagal')
       .field('description', 'Transaksi database sengaja digagalkan.')
-      .attach('image', image, { filename: 'banner.webp', contentType: 'image/webp' })
+      .attach('image', image, {
+        filename: 'banner.webp',
+        contentType: 'image/webp',
+      })
       .expect(500);
     expect(storage.removed).toHaveLength(beforeRemoved + 1);
     transaction.mockRestore();
@@ -404,20 +552,39 @@ describe('CMS article create API', () => {
       categoryId: category.id,
       tagIds: [tag.id],
     };
-    const response = await request(app.getHttpServer())
-      .post('/cms/articles')
-      .set('Authorization', `Bearer ${cmsToken}`)
-      .send(input)
-      .expect(201);
+    const linkedinUrl = 'https://example.test/existing-author-profile';
+    await prisma.authorProfile.update({
+      where: { userId: cmsUserId },
+      data: { linkedinUrl },
+    });
+    let response: request.Response;
+    try {
+      response = await request(app.getHttpServer())
+        .post('/cms/articles')
+        .set('Authorization', `Bearer ${cmsToken}`)
+        .send(input)
+        .expect(201);
+    } finally {
+      await prisma.authorProfile.update({
+        where: { userId: cmsUserId },
+        data: { linkedinUrl: 'https://www.linkedin.com/in/cms-writer/' },
+      });
+    }
     expect(response.body.data).toMatchObject({
       slug,
-      title: 'Mengenal Cargo Manifest',
+      title: 'Mengenal   Cargo Manifest',
       banner: { id: banner.id },
-      author: { id: cmsUserId, name: 'CMS Writer' },
+      author: { id: cmsUserId, name: 'CMS Writer', linkedinUrl },
       cover: { id: cover.id, kind: 'ARTICLE_COVER' },
       category: { id: category.id },
       tags: [{ id: tag.id }],
     });
+    expect(response.body.data.author).not.toHaveProperty('passwordHash');
+    expect(response.body.data.cover).not.toHaveProperty('objectKey');
+    expect(response.body.data.banner).not.toHaveProperty('createdById');
+    expect(response.body.data.banner.image).not.toHaveProperty('objectKey');
+    expect(response.body.data.category).not.toHaveProperty('normalizedName');
+    expect(response.body.data.tags[0]).not.toHaveProperty('normalizedName');
     const stored = await prisma.article.findUniqueOrThrow({ where: { slug } });
     expect(stored.authorId).toBe(cmsUserId);
     expect(stored.bannerId).toBe(banner.id);
@@ -435,7 +602,11 @@ describe('CMS article create API', () => {
     await request(app.getHttpServer())
       .post('/cms/articles')
       .set('Authorization', `Bearer ${cmsToken}`)
-      .send({ ...input, slug: `wrong-media-${randomUUID()}`, coverMediaId: body.id })
+      .send({
+        ...input,
+        slug: `wrong-media-${randomUUID()}`,
+        coverMediaId: body.id,
+      })
       .expect(400)
       .expect((invalid) => {
         expect(invalid.body.error.fields.coverMediaId).toEqual([

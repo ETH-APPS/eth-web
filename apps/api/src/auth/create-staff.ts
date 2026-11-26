@@ -1,5 +1,5 @@
-import argon2 from 'argon2';
 import { PrismaService } from '../database/prisma.service.js';
+import { hashPassword } from './password.js';
 
 async function main() {
   const email = process.env.STAFF_EMAIL?.trim().toLowerCase();
@@ -25,12 +25,7 @@ async function main() {
         email,
         firstName,
         role: 'STAFF',
-        passwordHash: await argon2.hash(password, {
-          type: argon2.argon2id,
-          memoryCost: 19456,
-          timeCost: 2,
-          parallelism: 1,
-        }),
+        passwordHash: await hashPassword(password),
       },
       select: { id: true, email: true, role: true },
     });

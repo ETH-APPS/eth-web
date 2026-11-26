@@ -10,9 +10,10 @@ bekerja paralel setelah kontrak respons API pada Fase 0 disepakati.
 Centang task setelah implementasi dan verifikasinya selesai. Centang status fase
 hanya ketika seluruh task dan kriteria selesai pada fase tersebut sudah terpenuhi.
 
-- [ ] Fase 0 — Kontrak dan lingkungan lokal siap
-- [ ] Fase 1 — Fondasi API dan data pendukung siap
-- [ ] Fase 2 — Artikel create dan read API siap
+- [ ] Fase 0 — Kontrak API siap; pemetaan frontend belum dikerjakan
+- [x] Fase 1 — Fondasi API dan data pendukung siap
+- [x] Fase 2A — Create artikel CMS API siap
+- [ ] Fase 2B — Read artikel publik API belum dikerjakan
 - [ ] Fase 3 — CMS minimal siap
 - [ ] Fase 4 — Pembaca publik dan migrasi siap
 - [ ] Fase 5 — Staging dan production selesai
@@ -50,13 +51,15 @@ draft, penjadwalan, pengaturan akun, atau pengaturan profil melalui CMS.
 **Hasil:** agent API dan frontend memakai nama field, respons, serta aturan
 publikasi yang sama sebelum membuat UI.
 
-- [ ] Agent API menuliskan kontrak OpenAPI untuk create/read artikel, kategori,
-   tag, banner, media, dan autentikasi CMS sesuai [plan API](01-api-plan.md).
+- [x] Agent API menuliskan kontrak OpenAPI untuk create artikel CMS, kategori,
+   tag, banner, upload media, dan autentikasi CMS sesuai
+   [plan API](01-api-plan.md). Kontrak read publik sengaja ditunda.
 - [ ] Agent frontend memetakan field form dan semua pembaca `articleCatalog.ts`
    terhadap kontrak tersebut sesuai [plan frontend](02-frontend-plan.md).
-- [ ] Siapkan database lokal terpisah dari production serta konfigurasi Spaces
+- [x] Siapkan database lokal terpisah dari production serta konfigurasi Spaces
    lokal tanpa menaruh credential di repo. Simpan aset lokal di prefix khusus
-   development.
+   development. Tes memakai database berakhiran `_test` dan object storage fake;
+   koneksi bucket development asli tetap memerlukan credential lokal.
 - [ ] Catat baseline halaman artikel publik sebelum mengubah UI. Screenshot CMS
    yang diberikan hanya referensi konsep desktop; belum ada frame Figma mobile
    390px dan desktop 1440px untuk halaman create.
@@ -70,40 +73,52 @@ publikasi yang sama sebelum membuat UI.
 **Hasil:** akun CMS yang diisi manual bisa login; kategori, tag, banner, serta
 media bisa dibuat dan dibaca tanpa artikel.
 
-- [ ] Tambah izin CMS yang terpisah dari role operasional saat ini sehingga satu
+- [x] Tambah izin CMS yang terpisah dari role operasional saat ini sehingga satu
    akun kelak dapat mempunyai akses CMS dan CRM sekaligus. Akun dan profil
    penulis diisi langsung ke database untuk sekarang; tidak ada UI manajemen
    akun/profil.
-- [ ] Tambah tabel kategori, tag, banner CTA, media, dan profil penulis yang
+- [x] Tambah tabel kategori, tag, banner CTA, media, dan profil penulis yang
    dibutuhkan tampilan publik. Banner berisi judul, deskripsi, dan ilustrasi;
    WhatsApp serta email tetap berasal dari konfigurasi frontend.
-- [ ] Tambah endpoint CMS terproteksi untuk upload dan create/list data pendukung.
+- [x] Tambah endpoint CMS terproteksi untuk upload dan create/list data pendukung.
    Gunakan Spaces untuk berkas, database untuk referensi dan metadata.
-- [ ] Siapkan satu banner bawaan. Jangan menambahkan edit/hapus data pendukung
-   pada fase ini.
+- [x] Siapkan dukungan banner bawaan dan fallback-nya. Record banner default
+   awal tetap diprovisi manual di database seperti akun/profil; belum ada
+   endpoint edit, hapus, atau pengaturan default.
 
-- [ ] **Fase 1 selesai:** tes API membuktikan akun CMS bisa membuat data pendukung,
+- [x] **Fase 1 selesai:** tes API membuktikan akun CMS bisa membuat data pendukung,
   akun tanpa izin ditolak, file tidak valid ditolak, dan objek media dapat
   dibaca melalui URL yang dikembalikan.
 
-## Fase 2 — Artikel create dan read API
+## Fase 2A — Create artikel CMS API
 
-**Hasil:** artikel dapat diterbitkan lewat API dan langsung tersedia pada
-endpoint publik tanpa deploy ulang.
+**Hasil:** artikel dapat dibuat dan langsung berstatus terbit melalui API CMS.
+Endpoint pembaca publik dikerjakan pada fase berikutnya.
 
-- [ ] Tambah model artikel dengan satu kategori, banyak tag, key points berjumlah
+- [x] Tambah model artikel dengan satu kategori, banyak tag, key points berjumlah
    bebas, satu banner bawaan/pilihan, penulis dari akun login, dan tanggal
    publikasi. Slug unik; isi HTML semantik disaring oleh API.
-- [ ] Tambah endpoint CMS untuk create sekali jalan serta endpoint publik untuk
-   daftar, detail slug, pencarian, filter, dan data yang diperlukan sitemap.
+- [x] Tambah endpoint CMS untuk create sekali jalan, termasuk validasi cover,
+   gambar isi, kategori, tag, banner, profil penulis, dan transaksi relasi tag.
+- [x] Tambah pengujian publish, slug duplikat, referensi salah, permission,
+   default banner, pembersihan file gagal, dan sanitasi HTML.
+
+- [x] **Fase 2A selesai:** seluruh tes fokus create flow CMS lulus.
+
+## Fase 2B — Read artikel publik dan migrasi
+
+**Hasil:** artikel terbit tersedia pada endpoint publik tanpa deploy ulang.
+
+- [ ] Tambah endpoint publik untuk daftar, detail slug, pencarian, filter, dan
+   data yang diperlukan sitemap.
 - [ ] Buat respons daftar yang ringan dan respons detail yang lengkap. Hanya
    artikel terbit yang keluar dari endpoint publik.
 - [ ] Siapkan cara migrasi manual tujuh artikel lama ke database, termasuk tanggal,
    slug, cover, isi, tag, dan key points; jangan mengubah sumber publik dahulu.
+- [ ] Tambah tes daftar/filter/detail, pagination, pencarian, dan 404.
 
-- [ ] **Fase 2 selesai:** tes API mencakup publikasi, slug duplikat, referensi tidak
-  valid, izin akses, daftar/filter/detail, dan konten berbahaya; tujuh artikel
-  lama dapat dimasukkan ke database lokal tanpa mengubah URL.
+- [ ] **Fase 2B selesai:** tujuh artikel lama tersedia di endpoint publik dengan
+  URL lama dan artikel baru dapat dibaca tanpa build frontend.
 
 ## Fase 3 — CMS minimal
 

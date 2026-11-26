@@ -1,112 +1,26 @@
-import {
-  BadRequestException,
-  ConflictException,
-  Injectable,
-  Logger,
-} from '@nestjs/common';
-import { randomUUID } from 'node:crypto';
+import { ConflictException, Injectable } from '@nestjs/common';
 import sanitizeHtml from 'sanitize-html';
-import sharp from 'sharp';
-import {
-  MediaKind,
-  Prisma,
-  type MediaAsset,
-} from '../generated/prisma/client.js';
+import { MediaKind, Prisma } from '../generated/prisma/client.js';
 import { PrismaService } from '../database/prisma.service.js';
-import { ArticleObjectStorage } from './article-object-storage.js';
+import { fieldValidationException } from '../http/validation-exception.js';
+import { ArticleMediaService } from './article-media.service.js';
+import {
+  articleInclude,
+  toArticleResponse,
+  toBannerResponse,
+  toTaxonomyResponse,
+} from './article-response.mapper.js';
 import type { CreateArticleDto } from './dto/create-article.dto.js';
 import type { CreateBannerDto } from './dto/create-banner.dto.js';
 import type { CreateTaxonomyDto } from './dto/create-taxonomy.dto.js';
 
-const MAX_IMAGE_BYTES = 5 * 1024 * 1024;
-const imageFormats = {
-  jpeg: { extension: 'jpg', mimeType: 'image/jpeg' },
-  png: { extension: 'png', mimeType: 'image/png' },
-  webp: { extension: 'webp', mimeType: 'image/webp' },
-} as const;
-const allowedBodyTags = [
-  'p',
-  'h2',
-  'h3',
-  'strong',
-  'em',
-  'br',
-  'img',
-] as const;
-
-type UploadedImage = {
-  objectKey: string;
-  publicUrl: string;
-  mimeType: string;
-  sizeBytes: number;
-  width: number;
-  height: number;
-};
-
-function validationError(field: string, code: string) {
-  return new BadRequestException({
-    code: 'VALIDATION_ERROR',
-    message: 'Payload Validation Failed',
-    fields: { [field]: [code] },
-  });
-}
-
-function mediaResponse(media: MediaAsset) {
-  return {
-    id: media.id,
-    kind: media.kind,
-    url: media.publicUrl,
-    mimeType: media.mimeType,
-    sizeBytes: media.sizeBytes,
-    width: media.width,
-    height: media.height,
-  };
-}
-
-function taxonomyResponse(value: { id: string; name: string; slug: string }) {
-  return { id: value.id, name: value.name, slug: value.slug };
-}
-
-function bannerResponse(value: {
-  id: string;
-  title: string;
-  description: string;
-  isDefault: boolean;
-  image: MediaAsset;
-}) {
-  return {
-    id: value.id,
-    title: value.title,
-    description: value.description,
-    isDefault: value.isDefault,
-    image: mediaResponse(value.image),
-  };
-}
-
-function normalizedName(value: string): string {
-  return value.normalize('NFKC').trim().replace(/\s+/g, ' ').toLocaleLowerCase('id-ID');
-}
-
-function displayName(value: string): string {
-  return value.normalize('NFKC').trim().replace(/\s+/g, ' ');
-}
-
-function slugify(value: string): string {
-  return value
-    .normalize('NFD')
-    .replace(/[\u0300-\u036f]/g, '')
-    .toLocaleLowerCase('id-ID')
-    .replace(/[^a-z0-9]+/g, '-')
-    .replace(/^-|-$/g, '');
-}
+const allowedBodyTags = ['p', 'h2', 'h3', 'strong', 'em', 'br', 'img'] as const;
 
 @Injectable()
-export class CmsService {
-  private readonly logger = new Logger(CmsService.name);
-
+export class ArticleService {
   constructor(
     private readonly prisma: PrismaService,
-    private readonly storage: ArticleObjectStorage,
+    private readonly media: ArticleMediaService,
   ) {}
 
   async uploadArticleAsset(
@@ -114,23 +28,14 @@ export class CmsService {
     kind: MediaKind,
     file: Express.Multer.File | undefined,
   ) {
-    const uploaded = await this.uploadImage(kind, file);
-    try {
-      const media = await this.prisma.mediaAsset.create({
-        data: { ...uploaded, kind, uploadedById },
-      });
-      return mediaResponse(media);
-    } catch (error) {
-      await this.removeAfterFailure(uploaded.objectKey);
-      throw error;
-    }
+    return this.media.createAsset(uploadedById, kind, file);
   }
 
   async listCategories() {
     const values = await this.prisma.articleCategory.findMany({
       orderBy: [{ name: 'asc' }, { id: 'asc' }],
     });
-    return values.map(taxonomyResponse);
+    return values.map(toTaxonomyResponse);
   }
 
   async createCategory(input: CreateTaxonomyDto) {
@@ -141,7 +46,7 @@ export class CmsService {
     const values = await this.prisma.articleTag.findMany({
       orderBy: [{ name: 'asc' }, { id: 'asc' }],
     });
-    return values.map(taxonomyResponse);
+    return values.map(toTaxonomyResponse);
   }
 
   async createTag(input: CreateTaxonomyDto) {
@@ -153,7 +58,7 @@ export class CmsService {
       orderBy: [{ isDefault: 'desc' }, { createdAt: 'desc' }],
       include: { image: true },
     });
-    return values.map(bannerResponse);
+    return values.map(toBannerResponse);
   }
 
   async createBanner(
@@ -161,7 +66,7 @@ export class CmsService {
     input: CreateBannerDto,
     file: Express.Multer.File | undefined,
   ) {
-    const uploaded = await this.uploadImage(
+    const uploaded = await this.media.uploadImage(
       MediaKind.BANNER_ILLUSTRATION,
       file,
     );
@@ -176,7 +81,7 @@ export class CmsService {
         });
         return transaction.articleBanner.create({
           data: {
-            title: displayName(input.title),
+            title: input.title.trim(),
             description: input.description.trim(),
             imageMediaId: image.id,
             createdById,
@@ -184,18 +89,18 @@ export class CmsService {
           include: { image: true },
         });
       });
-      return bannerResponse(banner);
+      return toBannerResponse(banner);
     } catch (error) {
-      await this.removeAfterFailure(uploaded.objectKey);
+      await this.media.discard(uploaded.objectKey);
       throw error;
     }
   }
 
   async createArticle(authorId: string, input: CreateArticleDto) {
-    const title = displayName(input.title);
+    const title = input.title.trim();
     const keyPoints = input.keyPoints.map((point) => point.trim());
     if (keyPoints.some((point) => !point)) {
-      throw validationError('keyPoints', 'REQUIRED');
+      throw fieldValidationException({ keyPoints: ['REQUIRED'] });
     }
 
     const [author, cover, category, tags, selectedBanner] = await Promise.all([
@@ -228,17 +133,21 @@ export class CmsService {
     if (!author?.authorProfile) {
       throw new ConflictException({
         code: 'AUTHOR_PROFILE_REQUIRED',
-        message: 'Complete the author profile before publishing an article',
+        message: 'Set up the author profile before publishing an article',
       });
     }
-    if (!cover) throw validationError('coverMediaId', 'INVALID_REFERENCE');
-    if (!category) throw validationError('categoryId', 'INVALID_REFERENCE');
+    if (!cover) {
+      throw fieldValidationException({ coverMediaId: ['INVALID_REFERENCE'] });
+    }
+    if (!category) {
+      throw fieldValidationException({ categoryId: ['INVALID_REFERENCE'] });
+    }
     if (tags.length !== input.tagIds.length) {
-      throw validationError('tagIds', 'INVALID_REFERENCE');
+      throw fieldValidationException({ tagIds: ['INVALID_REFERENCE'] });
     }
     if (!selectedBanner) {
       if (input.bannerId) {
-        throw validationError('bannerId', 'INVALID_REFERENCE');
+        throw fieldValidationException({ bannerId: ['INVALID_REFERENCE'] });
       }
       throw new ConflictException({
         code: 'DEFAULT_BANNER_NOT_CONFIGURED',
@@ -264,40 +173,9 @@ export class CmsService {
             create: tags.map((tag) => ({ tagId: tag.id })),
           },
         },
-        include: {
-          coverMedia: true,
-          category: true,
-          banner: { include: { image: true } },
-          author: { include: { authorProfile: true } },
-          tags: { include: { tag: true } },
-        },
+        include: articleInclude,
       });
-      const profile = article.author.authorProfile!;
-      return {
-        id: article.id,
-        slug: article.slug,
-        title: article.title,
-        metaDescription: article.metaDescription,
-        publishedAt: article.publishedAt,
-        cover: mediaResponse(article.coverMedia),
-        coverImageAlt: article.coverImageAlt,
-        keyPoints: article.keyPoints,
-        category: taxonomyResponse(article.category),
-        tags: article.tags
-          .map(({ tag }) => taxonomyResponse(tag))
-          .sort((first, second) => first.name.localeCompare(second.name, 'id-ID')),
-        banner: bannerResponse(article.banner),
-        author: {
-          id: article.author.id,
-          name: [article.author.firstName, article.author.lastName]
-            .filter(Boolean)
-            .join(' '),
-          slug: profile.slug,
-          jobTitle: profile.jobTitle,
-          bio: profile.bio,
-          linkedinUrl: profile.linkedinUrl,
-        },
-      };
+      return toArticleResponse(article);
     } catch (error) {
       if (
         error instanceof Prisma.PrismaClientKnownRequestError &&
@@ -313,20 +191,25 @@ export class CmsService {
   }
 
   private async createTaxonomy(type: 'category' | 'tag', rawName: string) {
-    const name = displayName(rawName);
-    const normalized = normalizedName(name);
-    const slug = slugify(name);
-    if (!slug) throw validationError('name', 'INVALID_FORMAT');
+    const name = rawName.normalize('NFKC').trim().replace(/\s+/g, ' ');
+    const normalizedName = name.toLocaleLowerCase('id-ID');
+    const slug = name
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .toLocaleLowerCase('id-ID')
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/^-|-$/g, '');
+    if (!slug) throw fieldValidationException({ name: ['INVALID_FORMAT'] });
     try {
       const value =
         type === 'category'
           ? await this.prisma.articleCategory.create({
-              data: { name, normalizedName: normalized, slug },
+              data: { name, normalizedName, slug },
             })
           : await this.prisma.articleTag.create({
-              data: { name, normalizedName: normalized, slug },
+              data: { name, normalizedName, slug },
             });
-      return taxonomyResponse(value);
+      return toTaxonomyResponse(value);
     } catch (error) {
       if (
         error instanceof Prisma.PrismaClientKnownRequestError &&
@@ -341,51 +224,6 @@ export class CmsService {
     }
   }
 
-  private async uploadImage(
-    kind: MediaKind,
-    file: Express.Multer.File | undefined,
-  ): Promise<UploadedImage> {
-    if (!file) throw validationError('file', 'REQUIRED');
-    if (file.size > MAX_IMAGE_BYTES) {
-      throw validationError('file', 'MAX_SIZE');
-    }
-
-    let metadata: Awaited<ReturnType<ReturnType<typeof sharp>['metadata']>>;
-    try {
-      metadata = await sharp(file.buffer, {
-        failOn: 'error',
-        limitInputPixels: 40_000_000,
-      }).metadata();
-    } catch {
-      throw validationError('file', 'INVALID_IMAGE');
-    }
-    const format = metadata.format as keyof typeof imageFormats | undefined;
-    const details = format ? imageFormats[format] : undefined;
-    if (!details || !metadata.width || !metadata.height) {
-      throw validationError('file', 'UNSUPPORTED_FORMAT');
-    }
-
-    const folder =
-      kind === MediaKind.ARTICLE_COVER
-        ? 'covers'
-        : kind === MediaKind.ARTICLE_BODY
-          ? 'body'
-          : 'banners';
-    const objectKey = this.storage.objectKey(
-      folder,
-      `${randomUUID()}.${details.extension}`,
-    );
-    await this.storage.put(objectKey, file.buffer, details.mimeType);
-    return {
-      objectKey,
-      publicUrl: this.storage.publicUrl(objectKey),
-      mimeType: details.mimeType,
-      sizeBytes: file.size,
-      width: metadata.width,
-      height: metadata.height,
-    };
-  }
-
   private async sanitizeBody(authorId: string, rawHtml: string) {
     const tagNames = [...rawHtml.matchAll(/<\/?\s*([a-zA-Z0-9-]+)/g)].map(
       (match) => match[1]!.toLocaleLowerCase('en-US'),
@@ -396,7 +234,7 @@ export class CmsService {
       ) ||
       /\s(?:style|on[a-z]+)\s*=/i.test(rawHtml)
     ) {
-      throw validationError('bodyHtml', 'UNSUPPORTED_HTML');
+      throw fieldValidationException({ bodyHtml: ['UNSUPPORTED_HTML'] });
     }
 
     const preliminary = sanitizeHtml(rawHtml, {
@@ -405,9 +243,9 @@ export class CmsService {
       allowedSchemes: [],
       enforceHtmlBoundary: true,
     });
-    const mediaIds = [
-      ...preliminary.matchAll(/data-media-id="([^"]+)"/g),
-    ].map((match) => match[1]!);
+    const mediaIds = [...preliminary.matchAll(/data-media-id="([^"]+)"/g)].map(
+      (match) => match[1]!,
+    );
     const uniqueMediaIds = [...new Set(mediaIds)];
     const media = uniqueMediaIds.length
       ? await this.prisma.mediaAsset.findMany({
@@ -419,7 +257,7 @@ export class CmsService {
         })
       : [];
     if (media.length !== uniqueMediaIds.length) {
-      throw validationError('bodyHtml', 'INVALID_MEDIA_REFERENCE');
+      throw fieldValidationException({ bodyHtml: ['INVALID_MEDIA_REFERENCE'] });
     }
     const mediaById = new Map(media.map((item) => [item.id, item]));
 
@@ -466,25 +304,19 @@ export class CmsService {
         },
       },
     });
-    if (invalidImage) throw validationError('bodyHtml', 'INVALID_IMAGE');
+    if (invalidImage) {
+      throw fieldValidationException({ bodyHtml: ['INVALID_IMAGE'] });
+    }
 
-    const text = sanitizeHtml(bodyHtml, { allowedTags: [], allowedAttributes: {} })
+    const text = sanitizeHtml(bodyHtml, {
+      allowedTags: [],
+      allowedAttributes: {},
+    })
       .replace(/&nbsp;/g, ' ')
       .trim();
     if (!text && mediaIds.length === 0) {
-      throw validationError('bodyHtml', 'REQUIRED');
+      throw fieldValidationException({ bodyHtml: ['REQUIRED'] });
     }
     return bodyHtml;
-  }
-
-  private async removeAfterFailure(objectKey: string) {
-    try {
-      await this.storage.remove(objectKey);
-    } catch (cleanupError) {
-      this.logger.error(
-        `Failed to remove article object after database failure: ${objectKey}`,
-        cleanupError instanceof Error ? cleanupError.stack : undefined,
-      );
-    }
   }
 }

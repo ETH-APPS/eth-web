@@ -7,7 +7,6 @@ import {
   Post,
   Put,
   Query,
-  Req,
   UseGuards,
 } from '@nestjs/common';
 import {
@@ -21,7 +20,9 @@ import {
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
 import { UserRole } from '../generated/prisma/client.js';
-import { AccessGuard, type AuthenticatedRequest } from '../auth/auth.guard.js';
+import { AccessGuard } from '../auth/auth.guard.js';
+import type { AuthUser } from '../auth/auth-user.js';
+import { CurrentUser } from '../auth/current-user.decorator.js';
 import { Roles } from '../auth/roles.decorator.js';
 import { ApiDataResponse } from '../openapi/api-data-response.decorator.js';
 import { ApiErrorResponseDto } from '../openapi/api-error-response.dto.js';
@@ -51,15 +52,15 @@ export class CargoRequestController {
   @ApiOperation({ summary: 'Submit a cargo request for review' })
   @ApiDataResponse(201, CargoRequestResponseDto)
   @ApiBadRequestResponse({ type: ApiErrorResponseDto })
-  create(@Req() request: AuthenticatedRequest, @Body() input: CargoRequestDto) {
-    return this.cargoRequests.create(request.authUser.id, input);
+  create(@CurrentUser() user: AuthUser, @Body() input: CargoRequestDto) {
+    return this.cargoRequests.create(user.id, input);
   }
 
   @Get()
   @ApiOperation({ summary: 'List my cargo requests' })
   @ApiDataResponse(200, CargoRequestResponseDto, true)
-  list(@Req() request: AuthenticatedRequest) {
-    return this.cargoRequests.listForCustomer(request.authUser.id);
+  list(@CurrentUser() user: AuthUser) {
+    return this.cargoRequests.listForCustomer(user.id);
   }
 
   @Get(':id')
@@ -67,11 +68,8 @@ export class CargoRequestController {
   @ApiDataResponse(200, CargoRequestResponseDto)
   @ApiBadRequestResponse({ type: ApiErrorResponseDto })
   @ApiNotFoundResponse({ type: ApiErrorResponseDto })
-  get(
-    @Req() request: AuthenticatedRequest,
-    @Param('id', ParseUUIDPipe) id: string,
-  ) {
-    return this.cargoRequests.getForCustomer(request.authUser.id, id);
+  get(@CurrentUser() user: AuthUser, @Param('id', ParseUUIDPipe) id: string) {
+    return this.cargoRequests.getForCustomer(user.id, id);
   }
 
   @Put(':id')
@@ -81,11 +79,11 @@ export class CargoRequestController {
   @ApiNotFoundResponse({ type: ApiErrorResponseDto })
   @ApiConflictResponse({ type: ApiErrorResponseDto })
   resubmit(
-    @Req() request: AuthenticatedRequest,
+    @CurrentUser() user: AuthUser,
     @Param('id', ParseUUIDPipe) id: string,
     @Body() input: CargoRequestDto,
   ) {
-    return this.cargoRequests.resubmit(request.authUser.id, id, input);
+    return this.cargoRequests.resubmit(user.id, id, input);
   }
 }
 
@@ -132,9 +130,9 @@ export class StaffCargoRequestController {
   @ApiConflictResponse({ type: ApiErrorResponseDto })
   review(
     @Param('id', ParseUUIDPipe) id: string,
-    @Req() request: AuthenticatedRequest,
+    @CurrentUser() user: AuthUser,
     @Body() input: ReviewCargoRequestDto,
   ) {
-    return this.cargoRequests.review(id, request.authUser.id, input);
+    return this.cargoRequests.review(id, user.id, input);
   }
 }

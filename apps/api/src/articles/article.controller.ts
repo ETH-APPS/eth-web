@@ -3,7 +3,6 @@ import {
   Controller,
   Get,
   Post,
-  Req,
   UploadedFile,
   UseGuards,
   UseInterceptors,
@@ -21,15 +20,14 @@ import {
   ApiTags,
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
-import { AccessGuard, type AuthenticatedRequest } from '../auth/auth.guard.js';
+import { AccessGuard } from '../auth/auth.guard.js';
+import type { AuthUser } from '../auth/auth-user.js';
+import { CurrentUser } from '../auth/current-user.decorator.js';
 import { Permissions } from '../auth/permissions.decorator.js';
-import {
-  MediaKind,
-  UserPermission,
-} from '../generated/prisma/client.js';
+import { MediaKind, UserPermission } from '../generated/prisma/client.js';
 import { ApiErrorResponseDto } from '../openapi/api-error-response.dto.js';
 import { ApiDataResponse } from '../openapi/api-data-response.decorator.js';
-import { CmsService } from './cms.service.js';
+import { ArticleService } from './article.service.js';
 import { ArticleAssetUploadDto } from './dto/article-asset-upload.dto.js';
 import { CreateArticleDto } from './dto/create-article.dto.js';
 import { CreateBannerDto } from './dto/create-banner.dto.js';
@@ -39,14 +37,13 @@ import {
   CreatedArticleResponseDto,
   MediaAssetResponseDto,
   TaxonomyResponseDto,
-} from './dto/cms-response.dto.js';
+} from './dto/article-response.dto.js';
 
 const uploadOptions = { limits: { fileSize: 5 * 1024 * 1024, files: 1 } };
 
 @Controller('cms')
 @UseGuards(AccessGuard)
 @Permissions(UserPermission.CMS_ACCESS)
-@ApiTags('CMS articles')
 @ApiBearerAuth()
 @ApiUnauthorizedResponse({
   type: ApiErrorResponseDto,
@@ -56,10 +53,11 @@ const uploadOptions = { limits: { fileSize: 5 * 1024 * 1024, files: 1 } };
   type: ApiErrorResponseDto,
   description: 'CMS access required',
 })
-export class CmsController {
-  constructor(private readonly cms: CmsService) {}
+export class ArticleController {
+  constructor(private readonly articles: ArticleService) {}
 
   @Post('articles/assets')
+  @ApiTags('Articles')
   @UseInterceptors(FileInterceptor('file', uploadOptions))
   @ApiConsumes('multipart/form-data')
   @ApiOperation({ summary: 'Upload an article cover or body image' })
@@ -80,53 +78,59 @@ export class CmsController {
   @ApiBadRequestResponse({ type: ApiErrorResponseDto })
   @ApiPayloadTooLargeResponse({ type: ApiErrorResponseDto })
   uploadArticleAsset(
-    @Req() request: AuthenticatedRequest,
+    @CurrentUser() user: AuthUser,
     @Body() input: ArticleAssetUploadDto,
     @UploadedFile() file?: Express.Multer.File,
   ) {
-    return this.cms.uploadArticleAsset(request.authUser.id, input.kind, file);
+    return this.articles.uploadArticleAsset(user.id, input.kind, file);
   }
 
   @Get('categories')
+  @ApiTags('Article taxonomy')
   @ApiOperation({ summary: 'List article categories for the CMS form' })
   @ApiDataResponse(200, TaxonomyResponseDto, true)
   listCategories() {
-    return this.cms.listCategories();
+    return this.articles.listCategories();
   }
 
   @Post('categories')
+  @ApiTags('Article taxonomy')
   @ApiOperation({ summary: 'Create an article category' })
   @ApiDataResponse(201, TaxonomyResponseDto)
   @ApiBadRequestResponse({ type: ApiErrorResponseDto })
   @ApiConflictResponse({ type: ApiErrorResponseDto })
   createCategory(@Body() input: CreateTaxonomyDto) {
-    return this.cms.createCategory(input);
+    return this.articles.createCategory(input);
   }
 
   @Get('tags')
+  @ApiTags('Article taxonomy')
   @ApiOperation({ summary: 'List article tags for the CMS form' })
   @ApiDataResponse(200, TaxonomyResponseDto, true)
   listTags() {
-    return this.cms.listTags();
+    return this.articles.listTags();
   }
 
   @Post('tags')
+  @ApiTags('Article taxonomy')
   @ApiOperation({ summary: 'Create an article tag' })
   @ApiDataResponse(201, TaxonomyResponseDto)
   @ApiBadRequestResponse({ type: ApiErrorResponseDto })
   @ApiConflictResponse({ type: ApiErrorResponseDto })
   createTag(@Body() input: CreateTaxonomyDto) {
-    return this.cms.createTag(input);
+    return this.articles.createTag(input);
   }
 
   @Get('banners')
+  @ApiTags('Article banners')
   @ApiOperation({ summary: 'List reusable article banners' })
   @ApiDataResponse(200, ArticleBannerResponseDto, true)
   listBanners() {
-    return this.cms.listBanners();
+    return this.articles.listBanners();
   }
 
   @Post('banners')
+  @ApiTags('Article banners')
   @UseInterceptors(FileInterceptor('image', uploadOptions))
   @ApiConsumes('multipart/form-data')
   @ApiOperation({ summary: 'Create an article banner and upload its image' })
@@ -145,22 +149,23 @@ export class CmsController {
   @ApiBadRequestResponse({ type: ApiErrorResponseDto })
   @ApiPayloadTooLargeResponse({ type: ApiErrorResponseDto })
   createBanner(
-    @Req() request: AuthenticatedRequest,
+    @CurrentUser() user: AuthUser,
     @Body() input: CreateBannerDto,
     @UploadedFile() image?: Express.Multer.File,
   ) {
-    return this.cms.createBanner(request.authUser.id, input, image);
+    return this.articles.createBanner(user.id, input, image);
   }
 
   @Post('articles')
+  @ApiTags('Articles')
   @ApiOperation({ summary: 'Create and immediately publish an article' })
   @ApiDataResponse(201, CreatedArticleResponseDto)
   @ApiBadRequestResponse({ type: ApiErrorResponseDto })
   @ApiConflictResponse({ type: ApiErrorResponseDto })
   createArticle(
-    @Req() request: AuthenticatedRequest,
+    @CurrentUser() user: AuthUser,
     @Body() input: CreateArticleDto,
   ) {
-    return this.cms.createArticle(request.authUser.id, input);
+    return this.articles.createArticle(user.id, input);
   }
 }

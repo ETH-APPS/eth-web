@@ -5,7 +5,6 @@ import {
   HttpCode,
   HttpStatus,
   Post,
-  Req,
   UseGuards,
 } from '@nestjs/common';
 import {
@@ -22,7 +21,9 @@ import {
 import { ApiDataResponse } from '../openapi/api-data-response.decorator.js';
 import { ApiErrorResponseDto } from '../openapi/api-error-response.dto.js';
 import { UserRole } from '../generated/prisma/client.js';
-import { AccessGuard, type AuthenticatedRequest } from './auth.guard.js';
+import { AccessGuard } from './auth.guard.js';
+import type { AuthUser } from './auth-user.js';
+import { CurrentUser } from './current-user.decorator.js';
 import { Roles } from './roles.decorator.js';
 import { AuthTokenResponseDto } from './dto/auth-token-response.dto.js';
 import { AuthUserResponseDto } from './dto/auth-user-response.dto.js';
@@ -89,11 +90,8 @@ export class AuthController {
   @ApiUnauthorizedResponse({ type: ApiErrorResponseDto })
   @ApiForbiddenResponse({ type: ApiErrorResponseDto })
   @ApiConflictResponse({ type: ApiErrorResponseDto })
-  linkGoogle(
-    @Req() request: AuthenticatedRequest,
-    @Body() input: LinkGoogleDto,
-  ) {
-    return this.auth.linkGoogle(request.authUser.id, input.idToken);
+  linkGoogle(@CurrentUser() user: AuthUser, @Body() input: LinkGoogleDto) {
+    return this.auth.linkGoogle(user.id, input.idToken);
   }
 
   @Post('refresh')
@@ -127,7 +125,7 @@ export class AuthController {
     type: ApiErrorResponseDto,
     description: 'Missing or invalid access token',
   })
-  me(@Req() request: AuthenticatedRequest) {
-    return request.authUser;
+  me(@CurrentUser() user: AuthUser) {
+    return user;
   }
 }

@@ -15,6 +15,7 @@ import type { GoogleAuthDto } from './dto/google-auth.dto.js';
 import type { RegisterDto } from './dto/register.dto.js';
 import type { AuthUser } from './auth-user.js';
 import { GoogleTokenVerifier } from './google-token-verifier.js';
+import { hashPassword } from './password.js';
 
 const ACCESS_TOKEN_SECONDS = 15 * 60;
 const REFRESH_TOKEN_DAYS = 30;
@@ -74,12 +75,7 @@ export class AuthService {
 
   async register(input: RegisterDto) {
     const email = input.email.trim().toLowerCase();
-    const passwordHash = await argon2.hash(input.password, {
-      type: argon2.argon2id,
-      memoryCost: 19456,
-      timeCost: 2,
-      parallelism: 1,
-    });
+    const passwordHash = await hashPassword(input.password);
     let user: UserWithAuthContext;
     try {
       user = await this.prisma.user.create({
@@ -287,10 +283,7 @@ export class AuthService {
     return this.tokenResponse(user, refreshToken);
   }
 
-  private async tokenResponse(
-    user: UserWithAuthContext,
-    refreshToken: string,
-  ) {
+  private async tokenResponse(user: UserWithAuthContext, refreshToken: string) {
     const accessToken = await this.jwt.signAsync(
       { sub: user.id, role: user.role },
       {
