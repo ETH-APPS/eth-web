@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { Blocks, Clock3, Headset, PackageCheck, ShieldCheck } from 'lucide-vue-next'
 import CargoLandingHero from '~/components/marketing/CargoLandingHero.vue'
-import airFreightUrl from '~/assets/images/marketing/air-freight.png'
-import fclCargoUrl from '~/assets/images/marketing/fcl-cargo.png'
+import airFreightUrl from '~/assets/images/marketing/air-freight.webp'
+import fclCargoUrl from '~/assets/images/marketing/fcl-cargo.webp'
 import lclCargoUrl from '~/assets/images/marketing/lcl-cargo.png'
 import cargoHeroUrl from '~/assets/images/marketing/cargo-china.png'
 import { faqContentByPath, homeFaqContent } from '~/constants/faq'

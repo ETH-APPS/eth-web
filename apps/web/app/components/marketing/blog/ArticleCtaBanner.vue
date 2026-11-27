@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import articleCtaImage from '~/assets/images/marketing/article-cta.png'
+import articleCtaImage from '~/assets/images/marketing/article-cta.webp'
 </script>
 
 <template>

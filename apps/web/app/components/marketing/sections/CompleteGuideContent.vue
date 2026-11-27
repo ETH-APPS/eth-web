@@ -6,7 +6,7 @@ import {
 import facebookDark from '~/assets/images/marketing/facebook-dark.png'
 import instagramDark from '~/assets/images/marketing/Instagram-dark.png'
 import linkDark from '~/assets/images/marketing/Link-dark.png'
-import importHeroImage from '~/assets/images/marketing/multinational-cargo-hero.png'
+import importHeroImage from '~/assets/images/marketing/multinational-cargo-hero.webp'
 import threadsDark from '~/assets/images/marketing/Threads-dark.png'
 import tiktokDark from '~/assets/images/marketing/Tiktok-dark.png'
 import whatsappImage from '~/assets/images/marketing/whatsapp.png'

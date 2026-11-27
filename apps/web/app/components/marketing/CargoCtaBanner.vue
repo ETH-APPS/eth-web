@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import backgroundImage from '~/assets/images/marketing/cargo-cta-background.png'
-import containerImage from '~/assets/images/marketing/cargo-cta-container.png'
+import backgroundImage from '~/assets/images/marketing/cargo-cta-background.webp'
+import containerImage from '~/assets/images/marketing/cargo-cta-container.webp'
 
 const props = defineProps<{
   title: string

@@ -1,4 +1,4 @@
-import transferVector from '~/assets/images/marketing/vector-transfer.png'
+import transferVector from '~/assets/images/marketing/vector-transfer.webp'
 import handPackageVector from '~/assets/images/marketing/vector-hand-package-2.png'
 import aboutUsVector from '~/assets/images/marketing/vector-about-us.png'
 import completeGuideVector from '~/assets/images/marketing/complete-guide.png'

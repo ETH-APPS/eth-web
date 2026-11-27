@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import calculatorLogisticsUrl from '~/assets/images/marketing/kalkulator-logistik.png'
+import calculatorLogisticsUrl from '~/assets/images/marketing/kalkulator-logistik.webp'
 import { whatsappConsultationUrl } from '~/constants/whatsapp'
 </script>
 

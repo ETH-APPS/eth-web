@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import cargoAirUrl from '~/assets/images/marketing/cargo-air-landscape.png'
+import cargoAirUrl from '~/assets/images/marketing/cargo-air-landscape.webp'
 import airFreightVector from '~/assets/images/marketing/vector-air-freight.png'
 import { faqContentByPath, homeFaqContent } from '~/constants/faq'
 import { whatsappConsultationUrl } from '~/constants/whatsapp'

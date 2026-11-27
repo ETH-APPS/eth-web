@@ -4,7 +4,7 @@ import {
   Shirt,
   Wrench,
 } from 'lucide-vue-next'
-import sourcingHeroUrl from '~/assets/images/marketing/sourcing-hero.png'
+import sourcingHeroUrl from '~/assets/images/marketing/sourcing-hero.webp'
 import { whatsappConsultationUrl } from '~/constants/whatsapp'
 
 const popularCategories = [

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { Container, Package, Plane } from 'lucide-vue-next'
-import aboutUsImageUrl from '~/assets/images/marketing/about-us.png'
+import aboutUsImageUrl from '~/assets/images/marketing/about-us.webp'
 import { whatsappConsultationUrl } from '~/constants/whatsapp'
 
 const shippingMethods = [

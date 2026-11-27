@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import sourcingHeroUrl from '~/assets/images/marketing/sourcing-hero.png'
+import sourcingHeroUrl from '~/assets/images/marketing/sourcing-hero.webp'
 import { faqContentByPath, homeFaqContent } from '~/constants/faq'
 import { illustratedCtaBanners } from '~/constants/illustratedCtaBanners'
 import { whatsappConsultationUrl } from '~/constants/whatsapp'
