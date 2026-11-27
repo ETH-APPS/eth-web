@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ChevronDown, ChevronUp, Plane, Ship } from 'lucide-vue-next'
-import packageSearchIcon from '~/assets/icons/package-search.png'
+import packageSearchIcon from '~/assets/icons/package-search.png?no-inline'
 
 const steps = [
   {
@@ -202,7 +202,7 @@ onBeforeUnmount(() => {
               class="inline-flex items-center gap-1 text-primary-500 transition-colors hover:text-primary-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500"
             >
               Lacak
-              <img :src="packageSearchIcon" alt="" aria-hidden="true" width="16" height="16" class="size-4 object-contain">
+              <img :src="packageSearchIcon" alt="" aria-hidden="true" width="16" height="16" loading="lazy" class="size-4 object-contain">
             </NuxtLink>
           </p>
         </div>

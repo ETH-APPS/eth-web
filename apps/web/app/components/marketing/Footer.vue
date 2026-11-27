@@ -10,9 +10,9 @@ import logoBca from '~/assets/images/brand/bca.png'
 import logoMandiri from '~/assets/images/brand/mandiri.png'
 import logoPermata from '~/assets/images/brand/permata.png'
 import iconFacebook from '~/assets/images/marketing/facebook.png'
-import iconInstagram from '~/assets/images/marketing/instagram.png'
-import iconTiktok from '~/assets/images/marketing/tiktok.png'
-import iconYoutube from '~/assets/images/marketing/youtube.png'
+import iconInstagram from '~/assets/images/marketing/instagram.png?no-inline'
+import iconTiktok from '~/assets/images/marketing/tiktok.png?no-inline'
+import iconYoutube from '~/assets/images/marketing/youtube.png?no-inline'
 
 const currentYear = new Date().getFullYear()
 const route = useRoute()

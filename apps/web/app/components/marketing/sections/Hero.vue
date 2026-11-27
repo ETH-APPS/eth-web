@@ -18,7 +18,8 @@ if (import.meta.server) {
         href: heroPhoneUrl,
         media: phoneMedia,
         fetchpriority: 'high',
-        tagPriority: 'high',
+        // Let the mobile preload scanner discover the image before inline styles.
+        tagPriority: 30,
       },
       {
         rel: 'preload',
