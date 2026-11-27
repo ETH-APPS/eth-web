@@ -491,7 +491,7 @@ onBeforeUnmount(() => {
         </div>
 
         <aside aria-labelledby="marketplace-title" class="min-w-0">
-          <h3 id="marketplace-title" class="text-center text-[16px] font-semibold text-text-tertiary">
+          <h3 id="marketplace-title" class="text-center text-[14px] font-semibold text-text-tertiary lg:text-[16px]">
             Marketplace
           </h3>
 
@@ -530,11 +530,11 @@ onBeforeUnmount(() => {
             type="button"
             aria-controls="additional-sourcing-products"
             :aria-expanded="showAdditionalProducts"
-            class="mx-auto mt-6 flex min-h-11 items-center gap-2 rounded-xl px-4 text-[15px] font-medium text-primary-500 hover:bg-primary-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500 lg:hidden"
+            class="mx-auto mt-6 flex min-h-11 items-center gap-1.5 rounded-lg px-3 text-[13px] font-medium text-primary-500 hover:bg-primary-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500 lg:hidden"
             @click="showAdditionalProducts = true"
           >
             Lebih Banyak
-            <ChevronsDown :size="18" aria-hidden="true" />
+            <ChevronsDown :size="16" aria-hidden="true" />
           </button>
 
           <button
@@ -612,20 +612,20 @@ onBeforeUnmount(() => {
             type="button"
             aria-controls="additional-sourcing-products"
             :aria-expanded="showAdditionalProducts"
-            class="mx-auto mt-5 flex min-h-11 items-center gap-2 rounded-xl px-4 text-[15px] font-medium text-primary-500 hover:bg-primary-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500"
+            class="mx-auto mt-5 flex min-h-11 items-center gap-1.5 rounded-lg px-3 text-[13px] font-medium text-primary-500 hover:bg-primary-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500 lg:gap-2 lg:rounded-xl lg:px-4 lg:text-[15px]"
             @click="showAdditionalProducts = false"
           >
             Lebih Sedikit
-            <ChevronsDown :size="18" class="rotate-180" aria-hidden="true" />
+            <ChevronsDown :size="18" class="rotate-180 max-lg:size-4" aria-hidden="true" />
           </button>
         </div>
       </div>
 
       <div class="mt-10 text-center">
-        <p class="mx-auto max-w-[1080px] text-[14px] font-medium italic leading-[1.5] text-primary-500 lg:font-normal lg:text-primary-400">
+        <p class="mx-auto max-w-[1080px] text-[12px] font-medium italic leading-[1.5] text-primary-500 lg:text-[14px] lg:font-normal lg:text-primary-400">
           *Harga produk mengikuti data marketplace terkait, sedangkan perhitungan kargo dan transfer RMB bersifat estimasi awal; tarif aktual, kurs, serta ketentuan komoditas atau Lartas dikonfirmasi bersama tim marketing ETH Cargo.
         </p>
-        <p class="mt-5 text-[20px] font-normal leading-[1.5] text-text-tertiary">
+        <p class="mt-5 text-[16px] font-normal leading-[1.5] text-text-tertiary lg:text-[20px]">
           Butuh penawaran resmi atau rute khusus?
         </p>
         <UiAnimatedArrowButton
@@ -633,7 +633,7 @@ onBeforeUnmount(() => {
           target="_blank"
           variant="plain"
           :icon-size="18"
-          class="mt-5 inline-flex min-h-11 items-center gap-2 rounded-xl bg-primary-50 px-5 py-2 text-[16px] font-medium text-primary-500 transition-[background-color,color] duration-200 hover:bg-primary-500 hover:text-white focus-visible:bg-primary-500 focus-visible:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500 motion-reduce:transition-none"
+          class="mt-5 inline-flex min-h-11 items-center gap-1.5 rounded-lg bg-primary-50 px-4 py-1.5 text-[14px] font-medium text-primary-500 transition-[background-color,color] duration-200 hover:bg-primary-500 hover:text-white focus-visible:bg-primary-500 focus-visible:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500 motion-reduce:transition-none lg:gap-2 lg:rounded-xl lg:px-5 lg:py-2 lg:text-[16px]"
         >
           Konsultasi Gratis
         </UiAnimatedArrowButton>
