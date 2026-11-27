@@ -11,23 +11,20 @@ export interface CmsNavigationGroup {
 export const cmsNavigation: CmsNavigationGroup[] = [
   {
     label: 'Utama',
-    items: [{ label: 'Dashboard', to: '/dashboard' }],
+    items: [{ label: 'Ringkasan', to: '/dashboard' }],
   },
   {
-    label: 'Artikel',
+    label: 'Konten',
     items: [
-      { label: 'Daftar artikel', to: '/articles' },
-      { label: 'Tulis artikel', to: '/articles/create' },
+      { label: 'Artikel', to: '/articles' },
+      { label: 'Banner', to: '/articles/banners' },
       { label: 'Kategori', to: '/articles/categories' },
       { label: 'Tag', to: '/articles/tags' },
-      { label: 'Banner', to: '/articles/banners' },
+      { label: 'Media', to: '/media' },
     ],
   },
   {
     label: 'Sistem',
-    items: [
-      { label: 'Media', to: '/media' },
-      { label: 'Pengaturan', to: '/settings' },
-    ],
+    items: [{ label: 'Pengaturan', to: '/settings' }],
   },
 ]

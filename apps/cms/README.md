@@ -1,8 +1,8 @@
 # ETH Cargo CMS
 
-Fondasi dashboard internal berbasis Nuxt. Fase saat ini hanya menyediakan shell,
-navigasi, dan halaman placeholder. Belum ada login, request API, editor, maupun
-data dummy.
+Dashboard internal berbasis Nuxt. Layout dashboard, UI login, dan form create
+artikel sudah tersedia. Autentikasi, data kategori/tag/banner, upload media,
+editor Tiptap, dan penerbitan ke API masih tahap integrasi berikutnya.
 
 ## Menjalankan lokal
 
@@ -32,6 +32,17 @@ pnpm dev:api
 - `app/constants/navigation.ts`: label dan route navigasi.
 - `app/assets/css/main.css`: style khusus CMS dan import fondasi `@eth/ui`.
 - `../../packages/ui`: token warna dan font bersama web/CMS.
+
+## Status UI create artikel
+
+`/articles/create` menyediakan input judul, slug otomatis yang dapat dikoreksi,
+ringkasan, pratinjau sampul lokal, teks alternatif, isi artikel, poin utama,
+pengelompokan lokal, dan pratinjau artikel. Toolbar isi hanya memakai format yang
+direncanakan oleh API; Tiptap dan upload gambar isi dipasang saat integrasi.
+Tombol draft belum aktif karena API draft belum tersedia. Tombol terbitkan
+memvalidasi form lalu menampilkan status kesiapan, tanpa menyimpan artikel.
+Halaman dashboard dan manajemen lain masih placeholder. Sidebar dan header
+berasal dari `app/layouts/dashboard.vue` untuk seluruh halaman dashboard.
 
 Salin `.env.example` menjadi `.env` hanya ketika fase integrasi dimulai. Nilai
 secret tidak boleh masuk repository.
