@@ -4,7 +4,7 @@ import logoUrl from '~/assets/images/brand/logo-white.png'
 import logo1688 from '~/assets/images/brand/1688.png'
 import logoTaobao from '~/assets/images/brand/taobao.png'
 import logoAlibaba from '~/assets/images/brand/alibaba.png'
-import logoAliexpress from '~/assets/images/brand/aliexpress.png'
+import logoAliexpress from '~/assets/images/brand/aliexpress.webp'
 import logoTmall from '~/assets/images/brand/tmall.png'
 import logoBca from '~/assets/images/brand/bca.png'
 import logoMandiri from '~/assets/images/brand/mandiri.png'
@@ -26,22 +26,17 @@ const socials = [
 ]
 
 const marketplaceLogos = [
-  { name: '1688', src: logo1688, class: 'h-6', mobileClass: 'h-5' },
-  { name: 'Taobao', src: logoTaobao, class: 'h-5', mobileClass: 'h-[18px]' },
-  { name: 'Alibaba.com', src: logoAlibaba, class: 'h-[18px]', mobileClass: 'h-[18px]' },
-  { name: 'Tmall', src: logoTmall, class: 'h-[18px]', mobileClass: 'h-[18px]' },
-]
-
-const mobileMarketplaceLogos = [
-  ...marketplaceLogos.filter(logo => logo.name !== 'Tmall'),
-  { name: 'AliExpress', src: logoAliexpress, mobileClass: 'h-[18px]' },
-  ...marketplaceLogos.filter(logo => logo.name === 'Tmall'),
+  { name: '1688', src: logo1688, width: 300, height: 105, class: 'h-6', mobileClass: 'h-5' },
+  { name: 'Taobao', src: logoTaobao, width: 360, height: 108, class: 'h-5', mobileClass: 'h-[18px]' },
+  { name: 'Alibaba.com', src: logoAlibaba, width: 360, height: 84, class: 'h-[18px]', mobileClass: 'h-[18px]' },
+  { name: 'AliExpress', src: logoAliexpress, width: 360, height: 93, class: 'h-[18px]', mobileClass: 'h-[18px]' },
+  { name: 'Tmall', src: logoTmall, width: 360, height: 90, class: 'h-[18px]', mobileClass: 'h-[18px]' },
 ]
 
 const bankLogos = [
-  { name: 'BCA', src: logoBca, class: 'h-8' },
-  { name: 'Mandiri', src: logoMandiri, class: 'h-7' },
-  { name: 'Permata Bank', src: logoPermata, class: 'h-6' },
+  { name: 'BCA', src: logoBca, width: 258, height: 81, class: 'h-8' },
+  { name: 'Mandiri', src: logoMandiri, width: 344, height: 100, class: 'h-7' },
+  { name: 'Permata Bank', src: logoPermata, width: 344, height: 84, class: 'h-6' },
 ]
 
 const navigationGroups = [
@@ -200,8 +195,16 @@ const navHeadingClass = 'text-[16px] font-medium text-text-disable'
         <div class="mt-8 text-center">
           <p class="text-[18px] font-medium text-text-disable">E-Commerce</p>
           <ul class="mt-3 flex flex-wrap items-center justify-between gap-y-2" aria-label="Marketplace">
-            <li v-for="logo in mobileMarketplaceLogos" :key="logo.name">
-              <img :src="logo.src" :alt="logo.name" loading="lazy" class="w-auto max-w-full object-contain" :class="logo.mobileClass">
+            <li v-for="logo in marketplaceLogos" :key="logo.name">
+              <img
+                :src="logo.src"
+                :alt="logo.name"
+                :width="logo.width"
+                :height="logo.height"
+                loading="lazy"
+                class="w-auto max-w-full object-contain"
+                :class="logo.mobileClass"
+              >
             </li>
           </ul>
         </div>
@@ -210,7 +213,15 @@ const navHeadingClass = 'text-[16px] font-medium text-text-disable'
           <p class="text-[18px] font-medium text-text-disable">Pembayaran</p>
           <ul class="mt-3 flex flex-wrap items-center justify-center gap-x-6 gap-y-3" aria-label="Bank pembayaran">
             <li v-for="logo in bankLogos" :key="logo.name">
-              <img :src="logo.src" :alt="logo.name" loading="lazy" class="w-auto object-contain" :class="logo.class">
+              <img
+                :src="logo.src"
+                :alt="logo.name"
+                :width="logo.width"
+                :height="logo.height"
+                loading="lazy"
+                class="w-auto object-contain"
+                :class="logo.class"
+              >
             </li>
           </ul>
         </div>
@@ -282,15 +293,17 @@ const navHeadingClass = 'text-[16px] font-medium text-text-disable'
               aria-label="Marketplace"
             >
               <li
-                v-for="logo in mobileMarketplaceLogos"
+                v-for="logo in marketplaceLogos"
                 :key="logo.name"
               >
                 <img
                   :src="logo.src"
                   :alt="logo.name"
+                  :width="logo.width"
+                  :height="logo.height"
                   loading="lazy"
                   class="w-auto object-contain"
-                  :class="logo.class ?? logo.mobileClass"
+                  :class="logo.class"
                 >
               </li>
             </ul>
@@ -311,6 +324,8 @@ const navHeadingClass = 'text-[16px] font-medium text-text-disable'
                 <img
                   :src="logo.src"
                   :alt="logo.name"
+                  :width="logo.width"
+                  :height="logo.height"
                   loading="lazy"
                   class="w-auto object-contain"
                   :class="logo.class"

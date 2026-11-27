@@ -16,11 +16,41 @@ const props = withDefaults(defineProps<{
 })
 
 const imageFailed = ref(false)
+const optimizedImageFailed = ref(false)
 const imageRequested = ref(props.loadImage)
+
+const imageSrcset = computed(() => {
+  if (!imageRequested.value || optimizedImageFailed.value)
+    return undefined
+
+  let url: URL
+  try {
+    url = new URL(props.image)
+  }
+  catch {
+    return undefined
+  }
+
+  if (
+    url.protocol !== 'https:'
+    || !url.hostname.endsWith('.alicdn.com')
+    || !/^\/img\/ibank\/[^/]+\.(?:jpe?g|png)$/i.test(url.pathname)
+    || url.search
+    || url.hash
+  ) return undefined
+
+  return [240, 320, 360, 480, 640, 800, 960, 1200]
+    .map(width => `${url.href}_${width}x${width}q75.jpg_.webp ${width}w`)
+    .join(', ')
+})
+
+// Lazy images use the rendered slot in browsers that support sizes="auto".
+const imageSizes = 'auto, (min-width: 80rem) 206px, (min-width: 64rem) min(219px, calc((100vw - 454px) / 3)), (min-width: 48rem) calc((100vw - 48px) / 2), calc((100vw - 44px) / 2)'
 
 watch([() => props.image, () => props.loadImage], ([image, loadImage], [previousImage]) => {
   if (image !== previousImage) {
     imageFailed.value = false
+    optimizedImageFailed.value = false
     imageRequested.value = loadImage
   }
   else if (loadImage) {
@@ -30,7 +60,11 @@ watch([() => props.image, () => props.loadImage], ([image, loadImage], [previous
 })
 
 function handleImageError() {
-  if (imageRequested.value)
+  if (!imageRequested.value) return
+
+  if (imageSrcset.value)
+    optimizedImageFailed.value = true
+  else
     imageFailed.value = true
 }
 const formattedPrice = computed(() => props.priceIdr === null
@@ -52,17 +86,20 @@ const consultationUrl = computed(() => productWhatsappUrl(props))
       class="group block rounded-2xl focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary-500"
     >
       <div class="aspect-square overflow-hidden rounded-2xl bg-primary-50">
-        <img
-          v-if="!imageFailed"
-          :src="imageRequested ? image : undefined"
-          :alt="title"
-          width="320"
-          height="320"
-          loading="lazy"
-          referrerpolicy="no-referrer"
-          class="size-full object-cover transition-transform duration-300 group-hover:scale-105 motion-reduce:transition-none"
-          @error="handleImageError"
-        >
+        <picture v-if="!imageFailed" class="block size-full">
+          <source v-if="imageSrcset" type="image/webp" :srcset="imageSrcset" :sizes="imageSizes">
+          <img
+            :src="imageRequested ? image : undefined"
+            :alt="title"
+            width="320"
+            height="320"
+            loading="lazy"
+            decoding="async"
+            referrerpolicy="no-referrer"
+            class="size-full object-cover transition-transform duration-300 group-hover:scale-105 motion-reduce:transition-none"
+            @error="handleImageError"
+          >
+        </picture>
         <div v-else class="flex size-full items-center justify-center text-primary-300">
           <PackageSearch :size="44" aria-hidden="true" />
         </div>

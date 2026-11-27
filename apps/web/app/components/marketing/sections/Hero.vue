@@ -171,7 +171,6 @@ function handleTabKeydown(event: KeyboardEvent) {
       width="1920"
       height="1080"
       loading="eager"
-      decoding="async"
       fetchpriority="high"
       aria-hidden="true"
       class="absolute inset-0 size-full object-cover object-center"

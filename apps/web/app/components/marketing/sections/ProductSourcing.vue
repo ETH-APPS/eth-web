@@ -5,7 +5,7 @@ import logo1688 from '~/assets/images/brand/1688.png'
 import logoTaobao from '~/assets/images/brand/taobao.png'
 import logoAlibaba from '~/assets/images/brand/alibaba.png'
 import logoTmall from '~/assets/images/brand/tmall.png'
-import logoAliexpress from '~/assets/images/brand/aliexpress.png'
+import logoAliexpress from '~/assets/images/brand/aliexpress.webp'
 import { illustratedCtaBanners } from '~/constants/illustratedCtaBanners'
 import { productCategories } from '~/constants/productCategories'
 import { productMarketplaceSources, type ProductMarketplace } from '~/constants/productMarketplaces'
@@ -45,15 +45,10 @@ watch(showAdditionalProducts, (expanded) => {
 
 const skeletonCount = computed(() => showAdditionalProducts.value ? 6 : 3)
 
-const { data: initialData, error: initialError, pending: initialPending } = await useFetch<ProductSearchResult>('/api/products/toplist', {
-  key: 'home-products-toplist-hot-six',
-  retry: 0,
-})
-
-const products = ref<Product[]>(initialData.value?.products.slice(0, MAX_PRODUCTS) ?? [])
+const products = ref<Product[]>([])
 const hasSearched = ref(false)
-const loading = ref(false)
-const errorMessage = ref(initialError.value ? 'Produk belum dapat dimuat. Coba lagi.' : '')
+const loading = ref(true)
+const errorMessage = ref('')
 
 let activeController: AbortController | null = null
 let marketplaceTransitionTimer: ReturnType<typeof setTimeout> | null = null
@@ -109,7 +104,6 @@ function showMarketplaceTransition() {
   if (
     marketplaceTransitionTimer
     || loading.value
-    || initialPending.value
     || errorMessage.value
     || products.value.length === 0
   ) return
@@ -216,6 +210,8 @@ async function runSearch(keyword = searchQuery.value) {
 
 onMounted(() => {
   document.addEventListener('pointerdown', closeMarketplaceOnPointerDown)
+  // ProductSourcing hydrates near the viewport, so the homepage can render without waiting for Ducking.
+  void runSearch()
 })
 
 onBeforeUnmount(() => {
@@ -395,11 +391,12 @@ onBeforeUnmount(() => {
           </p>
 
           <!-- Product area: mempertahankan tinggi konten saat loading -->
-          <div class="relative mt-5 min-h-[240px] lg:min-h-[320px]">
+          <div class="relative mt-5 min-h-[240px] lg:min-h-[320px]" :aria-busy="loading">
             <!-- Skeleton overlay -->
             <div
-              v-if="loading || initialPending"
-              class="absolute inset-0 z-10 grid grid-cols-2 content-start gap-x-3 gap-y-7 bg-white md:gap-x-4 lg:grid-cols-3"
+              v-if="loading"
+              class="z-10 grid grid-cols-2 content-start gap-x-3 gap-y-7 bg-white md:gap-x-4 lg:grid-cols-3"
+              :class="products.length ? 'absolute inset-0' : ''"
               aria-live="polite"
               aria-label="Sedang memuat produk"
             >
@@ -435,7 +432,7 @@ onBeforeUnmount(() => {
 
             <!-- Empty state -->
             <p
-              v-else-if="products.length === 0 && !loading && !initialPending && !errorMessage"
+              v-else-if="products.length === 0 && !loading && !errorMessage"
               class="rounded-2xl border border-border-200 p-6 text-center text-[14px] text-text-secondary"
             >
               {{ hasSearched ? 'Belum ada produk untuk pencarian ini. Coba kata lain.' : 'Produk terlaris belum tersedia. Coba lagi nanti.' }}
@@ -509,7 +506,7 @@ onBeforeUnmount(() => {
                 :width="marketplace.width"
                 :height="marketplace.height"
                 loading="lazy"
-                class="max-h-12 max-w-full object-contain lg:max-w-[140px]"
+                class="h-12 w-full max-w-full object-contain lg:max-w-[140px]"
               >
             </li>
           </ul>

@@ -4,7 +4,8 @@ import { blogAuthor } from '~/constants/blogAuthor'
 
 definePageMeta({
   layout: 'marketing',
-  validate(route) {
+  async validate(route) {
+    const { articleBySlug } = await import('~/content/articleCatalog')
     return articleBySlug.has(String(route.params.slug ?? ''))
   },
 })

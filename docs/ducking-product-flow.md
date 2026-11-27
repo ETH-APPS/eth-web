@@ -15,8 +15,10 @@ flowchart LR
     A -->|Klik kartu dengan detail produk| D[WhatsApp tim ETH Cargo]
 ```
 
-Halaman Home meminta maksimal enam produk `data.hot.products` saat SSR lewat `useFetch`
-ke `/api/products/toplist`. Request upstream-nya tetap di server dan memakai
+Section Product Sourcing meminta maksimal enam produk `data.hot.products` dari
+`/api/products/toplist` ketika section mulai aktif di dekat viewport. HTML Home
+langsung menyertakan section dan skeleton tanpa menunggu respons produk.
+Request upstream-nya tetap di server dan memakai
 `limit=6&language=en`; tidak ada pencarian `sepatu` saat Home idle. Pilihan sumber
 awal adalah `1688`. Ketika input keyword kosong, termasuk setelah pencarian
 dikosongkan, Home menggunakan Top List. Jika pilihan marketplace masih Taobao,
@@ -155,7 +157,8 @@ jadi akses Docker harus tetap terbatas.
    produk Ducking.
 3. Jangan panggil `/api/products/search`, `/api/products/toplist`, atau membuka
    Home hanya untuk smoke test produk sampai penggunaan API berbayar diizinkan.
-   Membuka Home memicu Top List lewat SSR. Pemeriksaan gambar, pergantian
+   Browser memicu Top List saat mendekati section Product Sourcing, termasuk
+   saat membuka Home langsung pada anchor section. Pemeriksaan gambar, pergantian
    sumber, dan pesan WhatsApp ditunda sampai ada persetujuan untuk panggilan
    produk nyata.
 

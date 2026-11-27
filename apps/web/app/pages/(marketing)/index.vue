@@ -1,4 +1,8 @@
 <script setup lang="ts">
+import poppinsRegular from '@fontsource/poppins/files/poppins-latin-400-normal.woff2?url'
+import poppinsMedium from '@fontsource/poppins/files/poppins-latin-500-normal.woff2?url'
+import poppinsSemibold from '@fontsource/poppins/files/poppins-latin-600-normal.woff2?url'
+import poppinsBold from '@fontsource/poppins/files/poppins-latin-700-normal.woff2?url'
 import logoUrl from '~/assets/images/brand/logo.png'
 import { homeFaqContent } from '~/constants/faq'
 import { illustratedCtaBanners } from '~/constants/illustratedCtaBanners'
@@ -10,6 +14,17 @@ const siteUrl = useRuntimeConfig().public.siteUrl || (import.meta.dev ? useReque
 definePageMeta({
   layout: 'marketing'
 })
+
+if (import.meta.server) {
+  const fontPreload = { rel: 'preload', as: 'font', type: 'font/woff2', crossorigin: 'anonymous' } as const
+
+  useHead({
+    link: [
+      ...[poppinsRegular, poppinsMedium, poppinsSemibold].map(href => ({ ...fontPreload, href })),
+      { ...fontPreload, href: poppinsBold, media: '(min-width: 64rem)' },
+    ],
+  })
+}
 
 if (siteUrl) {
   const homepage = new URL('/', siteUrl).href
@@ -62,7 +77,7 @@ useSeoMeta({
   <MarketingSectionsHero />
   <MarketingSectionsHomeLogisticsEstimator />
   <LazyMarketingSectionsProductSourcing :hydrate-on-visible="{ rootMargin: '800px' }" />
-  <MarketingSectionsMainServices />
+  <LazyMarketingSectionsMainServices :hydrate-on-visible="{ rootMargin: '320px' }" />
   <LazyMarketingSectionsWhyChooseUs :hydrate-on-visible="{ rootMargin: '800px' }" />
   <LazyMarketingSectionsShippingFlow :hydrate-on-visible="{ rootMargin: '800px' }" />
   <!-- <MarketingSectionsHomeRateEstimator /> -->

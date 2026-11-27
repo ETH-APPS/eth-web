@@ -2,6 +2,7 @@
 import type { Component } from 'vue'
 import { Menu } from 'lucide-vue-next'
 import logoUrl from '~/assets/images/brand/logo.png'
+import logoWhiteMobileUrl from '~/assets/images/brand/logo-white-mobile.webp'
 import logoWhiteUrl from '~/assets/images/brand/logo-white.webp'
 import { marketingNavigation, quoteNavigation } from '~/constants/navigation'
 
@@ -242,20 +243,16 @@ onBeforeUnmount(() => {
         class="shrink-0 rounded-sm focus-visible:outline-2 focus-visible:outline-offset-4"
         :class="useLightStyle ? 'focus-visible:outline-primary-500' : 'focus-visible:outline-white'"
       >
-        <img
-          :src="logoWhiteUrl"
-          width="128"
-          height="40"
-          alt="ETH Cargo"
-          class="h-10 w-32 object-contain object-left lg:hidden"
-        >
-        <img
-          :src="useLightStyle ? logoWhiteUrl : logoUrl"
-          width="160"
-          height="48"
-          alt="ETH Cargo"
-          class="hidden h-12 w-40 object-contain lg:block"
-        >
+        <picture>
+          <source :media="desktopNavigationQuery" :srcset="useLightStyle ? logoWhiteUrl : logoUrl" width="160" height="48">
+          <img
+            :src="logoWhiteMobileUrl"
+            width="128"
+            height="40"
+            alt="ETH Cargo"
+            class="h-10 w-32 object-contain object-left lg:h-12 lg:w-40 lg:object-center"
+          >
+        </picture>
       </NuxtLink>
 
       <nav

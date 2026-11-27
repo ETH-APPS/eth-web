@@ -6,9 +6,12 @@ import { BLOG_PAGE_SIZE, parseBlogPage } from '~/utils/blogPagination'
 
 definePageMeta({
   layout: 'marketing',
-  validate(route) {
-    const { allArticles } = useAllBlogArticles()
-    return parseBlogPage(route.query.page, Math.ceil(allArticles.length / BLOG_PAGE_SIZE)) !== null
+  async validate(route) {
+    if (route.query.page === undefined)
+      return true
+
+    const { articles } = await import('~/content/articleCatalog')
+    return parseBlogPage(route.query.page, Math.ceil(articles.length / BLOG_PAGE_SIZE)) !== null
   },
 })
 

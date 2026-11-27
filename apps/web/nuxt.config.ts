@@ -20,6 +20,7 @@ export default defineNuxtConfig({
         {
           rel: 'icon',
           type: 'image/png',
+          sizes: '64x64',
           href: '/favicon-eth.png',
         },
       ],
