@@ -16,6 +16,7 @@ const props = withDefaults(defineProps<{
   ctaTo: string
   animatedCta?: boolean
   image: string
+  loadImage?: boolean
   imageAlt?: string
   imageWidth: number
   imageHeight: number
@@ -35,6 +36,7 @@ const props = withDefaults(defineProps<{
   ctaTo: whatsappConsultationUrl,
   animatedCta: false,
   imageAlt: '',
+  loadImage: true,
   imageMaxWidth: 480,
   imageTopOffset: 72,
   imageRightOffset: 0,
@@ -56,7 +58,7 @@ const titleId = `illustrated-cta-${useId()}`
       <div class="absolute inset-0 overflow-hidden rounded-[32px] bg-linear-to-r from-[#a52832] to-[#8d2930]">
         <img
           v-if="variant === 'background' && backgroundImage"
-          :src="backgroundImage"
+          :src="loadImage ? backgroundImage : undefined"
           alt=""
           width="1230"
           height="315"
@@ -116,7 +118,7 @@ const titleId = `illustrated-cta-${useId()}`
       </div>
 
       <img
-        :src="image"
+        :src="loadImage ? image : undefined"
         :alt="imageAlt"
         :width="imageWidth"
         :height="imageHeight"
@@ -171,7 +173,7 @@ const titleId = `illustrated-cta-${useId()}`
 
       <div class="relative min-w-0">
         <img
-          :src="image"
+          :src="loadImage ? image : undefined"
           :alt="imageAlt"
           :width="imageWidth"
           :height="imageHeight"

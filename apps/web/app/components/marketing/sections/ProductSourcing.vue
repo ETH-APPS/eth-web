@@ -13,11 +13,11 @@ import { whatsappConsultationUrl } from '~/constants/whatsapp'
 import type { Product, ProductSearchResult, ProductSource } from '../../../../shared/types/products'
 
 const marketplaces = [
-  { name: '1688', logo: logo1688 },
-  { name: 'Taobao', logo: logoTaobao },
-  { name: 'Alibaba', logo: logoAlibaba },
-  { name: 'Tmall', logo: logoTmall },
-  { name: 'AliExpress', logo: logoAliexpress },
+  { name: '1688', logo: logo1688, width: 300, height: 105 },
+  { name: 'Taobao', logo: logoTaobao, width: 360, height: 108 },
+  { name: 'Alibaba', logo: logoAlibaba, width: 360, height: 84 },
+  { name: 'Tmall', logo: logoTmall, width: 360, height: 90 },
+  { name: 'AliExpress', logo: logoAliexpress, width: 360, height: 93 },
 ]
 
 const productSourcingBanner = illustratedCtaBanners.productSourcing
@@ -36,6 +36,12 @@ const selectedCategory = ref<string | null>(null)
 const activeCategory = computed(() => productCategories.find(category => category.name === selectedCategory.value))
 const displayedKeyword = ref('')
 const showAdditionalProducts = ref(false)
+const hasExpandedProducts = ref(false)
+
+watch(showAdditionalProducts, (expanded) => {
+  if (expanded)
+    hasExpandedProducts.value = true
+})
 
 const skeletonCount = computed(() => showAdditionalProducts.value ? 6 : 3)
 
@@ -476,6 +482,7 @@ onBeforeUnmount(() => {
                       :image="product.image"
                       :detail-url="product.detailUrl"
                       :source="displayedSource"
+                      :load-image="showAdditionalProducts"
                       :class="index === 0 ? 'lg:hidden' : ''"
                     />
                   </div>
@@ -499,6 +506,8 @@ onBeforeUnmount(() => {
               <img
                 :src="marketplace.logo"
                 :alt="marketplace.name"
+                :width="marketplace.width"
+                :height="marketplace.height"
                 loading="lazy"
                 class="max-h-12 max-w-full object-contain lg:max-w-[140px]"
               >
@@ -551,6 +560,7 @@ onBeforeUnmount(() => {
         <div class="min-h-0 overflow-hidden">
           <MarketingIllustratedCtaBanner
             v-bind="productSourcingBanner"
+            :load-image="hasExpandedProducts"
             class="mt-10"
             variant="background"
             image-alt="Ilustrasi layanan impor dan sourcing produk dari China"
@@ -588,7 +598,7 @@ onBeforeUnmount(() => {
             </a>
 
             <img
-              :src="productSourcingBanner.image"
+              :src="hasExpandedProducts ? productSourcingBanner.image : undefined"
               alt="Ilustrasi layanan impor dan sourcing produk dari China"
               :width="productSourcingBanner.imageWidth"
               :height="productSourcingBanner.imageHeight"

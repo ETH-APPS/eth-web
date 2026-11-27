@@ -3,16 +3,36 @@ import { ArrowUpRight, PackageSearch } from 'lucide-vue-next'
 import { productWhatsappUrl } from '~/constants/whatsapp'
 import type { ProductSource } from '../../../shared/types/products'
 
-const props = defineProps<{
+const props = withDefaults(defineProps<{
   title: string
   priceIdr: number | null
   soldCount?: number | null
   image: string
   detailUrl: string
   source: ProductSource
-}>()
+  loadImage?: boolean
+}>(), {
+  loadImage: true,
+})
 
 const imageFailed = ref(false)
+const imageRequested = ref(props.loadImage)
+
+watch([() => props.image, () => props.loadImage], ([image, loadImage], [previousImage]) => {
+  if (image !== previousImage) {
+    imageFailed.value = false
+    imageRequested.value = loadImage
+  }
+  else if (loadImage) {
+    // Keep the source after collapse so the closing animation retains its image.
+    imageRequested.value = true
+  }
+})
+
+function handleImageError() {
+  if (imageRequested.value)
+    imageFailed.value = true
+}
 const formattedPrice = computed(() => props.priceIdr === null
   ? 'Harga tidak tersedia'
   : new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(props.priceIdr))
@@ -34,14 +54,14 @@ const consultationUrl = computed(() => productWhatsappUrl(props))
       <div class="aspect-square overflow-hidden rounded-2xl bg-primary-50">
         <img
           v-if="!imageFailed"
-          :src="image"
+          :src="imageRequested ? image : undefined"
           :alt="title"
           width="320"
           height="320"
           loading="lazy"
           referrerpolicy="no-referrer"
           class="size-full object-cover transition-transform duration-300 group-hover:scale-105 motion-reduce:transition-none"
-          @error="imageFailed = true"
+          @error="handleImageError"
         >
         <div v-else class="flex size-full items-center justify-center text-primary-300">
           <PackageSearch :size="44" aria-hidden="true" />
