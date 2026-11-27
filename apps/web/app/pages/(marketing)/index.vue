@@ -16,6 +16,13 @@ definePageMeta({
 })
 
 if (import.meta.server) {
+  // Keep speculative chunks for other routes out of the homepage's initial requests.
+  injectHead().hooks?.hook('tags:resolve', (context) => {
+    context.tags = context.tags.filter(({ tag, props }) => !(
+      tag === 'link' && props.rel === 'prefetch' && (props.as === 'script' || props.as === 'style')
+    ))
+  })
+
   const fontPreload = { rel: 'preload', as: 'font', type: 'font/woff2', crossorigin: 'anonymous' } as const
 
   useHead({

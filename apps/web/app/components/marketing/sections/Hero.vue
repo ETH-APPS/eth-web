@@ -18,6 +18,7 @@ if (import.meta.server) {
         href: heroPhoneUrl,
         media: phoneMedia,
         fetchpriority: 'high',
+        tagPriority: 'high',
       },
       {
         rel: 'preload',
