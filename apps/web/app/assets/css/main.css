@@ -40,3 +40,9 @@
     font-family: var(--font-sans);
   }
 }
+
+@utility defer-render {
+  content-visibility: auto;
+  /* Use the measured height after the section has rendered once. */
+  contain-intrinsic-block-size: auto var(--section-placeholder);
+}

@@ -6,6 +6,7 @@ import logoTaobao from '~/assets/images/brand/taobao.png'
 import logoAlibaba from '~/assets/images/brand/alibaba.png'
 import logoTmall from '~/assets/images/brand/tmall.png'
 import logoAliexpress from '~/assets/images/brand/aliexpress.webp'
+import logoAliexpressMobile from '~/assets/images/brand/aliexpress-mobile.webp'
 import { illustratedCtaBanners } from '~/constants/illustratedCtaBanners'
 import { productCategories } from '~/constants/productCategories'
 import { productMarketplaceSources, type ProductMarketplace } from '~/constants/productMarketplaces'
@@ -17,7 +18,7 @@ const marketplaces = [
   { name: 'Taobao', logo: logoTaobao, width: 360, height: 108 },
   { name: 'Alibaba', logo: logoAlibaba, width: 360, height: 84 },
   { name: 'Tmall', logo: logoTmall, width: 360, height: 90 },
-  { name: 'AliExpress', logo: logoAliexpress, width: 360, height: 93 },
+  { name: 'AliExpress', logo: logoAliexpress, mobileLogo: logoAliexpressMobile, width: 360, height: 93 },
 ]
 
 const productSourcingBanner = illustratedCtaBanners.productSourcing
@@ -375,10 +376,10 @@ onBeforeUnmount(() => {
 
           <p class="mt-3 text-[12px] leading-5 text-text-secondary">
             *Anda bisa menempelkan link produk dari
-            <span class="font-semibold text-[#ff4b14]">1688</span>,
-            <span class="font-semibold text-[#ff4b14]">TaoBao</span>,
+            <span class="font-bold text-orange-700 lg:font-semibold lg:text-[#ff4b14]">1688</span>,
+            <span class="font-bold text-orange-700 lg:font-semibold lg:text-[#ff4b14]">TaoBao</span>,
             <span class="font-semibold text-black">Aliexpress</span>,
-            <span class="font-semibold text-[#ff4b14]">Alibaba</span> dan
+            <span class="font-bold text-orange-700 lg:font-semibold lg:text-[#ff4b14]">Alibaba</span> dan
             <span class="font-semibold text-primary-500">Tmall</span>.
           </p>
 
@@ -397,9 +398,9 @@ onBeforeUnmount(() => {
               v-if="loading"
               class="z-10 grid grid-cols-2 content-start gap-x-3 gap-y-7 bg-white md:gap-x-4 lg:grid-cols-3"
               :class="products.length ? 'absolute inset-0' : ''"
-              aria-live="polite"
-              aria-label="Sedang memuat produk"
+              role="status"
             >
+              <span class="sr-only">Sedang memuat produk</span>
               <div
                 v-for="index in skeletonCount"
                 :key="index"
@@ -500,14 +501,17 @@ onBeforeUnmount(() => {
               :key="marketplace.name"
               class="flex h-14 w-28 shrink-0 items-center justify-center lg:w-auto"
             >
-              <img
-                :src="marketplace.logo"
-                :alt="marketplace.name"
-                :width="marketplace.width"
-                :height="marketplace.height"
-                loading="lazy"
-                class="h-12 w-full max-w-full object-contain lg:max-w-[140px]"
-              >
+              <picture class="contents">
+                <source v-if="marketplace.mobileLogo" media="(width < 64rem)" :srcset="marketplace.mobileLogo">
+                <img
+                  :src="marketplace.logo"
+                  :alt="marketplace.name"
+                  :width="marketplace.width"
+                  :height="marketplace.height"
+                  loading="lazy"
+                  class="h-12 w-full max-w-full object-contain lg:max-w-[140px]"
+                >
+              </picture>
             </li>
           </ul>
         </aside>
@@ -588,7 +592,7 @@ onBeforeUnmount(() => {
               :href="productSourcingBanner.ctaTo"
               target="_blank"
               rel="noopener noreferrer"
-              class="mt-5 inline-flex min-h-11 items-center gap-2 rounded-full bg-green-500 px-4 text-[13px] font-semibold text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+              class="mt-5 inline-flex min-h-11 items-center gap-2 rounded-full bg-green-700 px-4 text-[13px] font-semibold text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
             >
               {{ productSourcingBanner.ctaLabel }}
               <UiWhatsappIcon class="size-5" />
@@ -618,7 +622,7 @@ onBeforeUnmount(() => {
       </div>
 
       <div class="mt-10 text-center">
-        <p class="mx-auto max-w-[1080px] text-[14px] font-normal italic leading-[1.5] text-primary-400">
+        <p class="mx-auto max-w-[1080px] text-[14px] font-medium italic leading-[1.5] text-primary-500 lg:font-normal lg:text-primary-400">
           *Harga produk mengikuti data marketplace terkait, sedangkan perhitungan kargo dan transfer RMB bersifat estimasi awal; tarif aktual, kurs, serta ketentuan komoditas atau Lartas dikonfirmasi bersama tim marketing ETH Cargo.
         </p>
         <p class="mt-5 text-[20px] font-normal leading-[1.5] text-text-tertiary">

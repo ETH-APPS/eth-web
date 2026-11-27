@@ -38,7 +38,7 @@ defineProps<{
       </p>
 
       <div class="mt-auto flex items-end justify-between gap-3 pt-5">
-        <p class="text-[10px] leading-snug text-[#14a444]">
+        <p class="text-[10px] font-medium leading-snug text-green-700 lg:font-normal lg:text-[#14a444]">
           {{ eyebrow }}
         </p>
 
@@ -46,7 +46,7 @@ defineProps<{
           :to="to"
           class="inline-flex shrink-0 items-center gap-2 rounded-sm text-[13px] font-medium text-primary-500 transition-colors hover:text-primary-700 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary-500"
         >
-          <span>Lihat Detail</span>
+          <span>Lihat Detail<span class="sr-only"> {{ title }}</span></span>
           <ChevronRight
             aria-hidden="true"
             :size="22"

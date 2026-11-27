@@ -83,6 +83,7 @@ const optimizedAvatar = computed(() => {
         <div class="mt-1.5 flex items-center justify-between gap-4">
           <div
             class="flex items-center gap-0.5"
+            role="img"
             :aria-label="`Rating ${stars} dari 5`"
           >
             <!-- Path bintang didefinisikan sekali sebagai <symbol id="testimonial-star"> di
@@ -104,7 +105,7 @@ const optimizedAvatar = computed(() => {
               <use href="#testimonial-star" />
             </svg>
           </div>
-          <p class="shrink-0 text-[11px] font-normal text-text-disable">
+          <p class="shrink-0 text-[11px] font-medium text-text-tertiary lg:font-normal lg:text-text-disable">
             {{ reviewDate }}
           </p>
         </div>
@@ -118,6 +119,7 @@ const optimizedAvatar = computed(() => {
     <div
       v-if="attachments > 0"
       class="mt-3 flex gap-2"
+      role="group"
       aria-label="Lampiran ulasan"
     >
       <div

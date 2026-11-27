@@ -79,7 +79,7 @@ const isWhatsappCta = computed(() => props.ctaTo?.startsWith('https://wa.me/'))
             :rel="isWhatsappCta ? 'noopener noreferrer' : undefined"
             variant="plain"
             :class="compact ? 'h-11 px-5 text-[14px]' : 'h-12 px-6 text-[16px]'"
-            class="inline-flex shrink-0 items-center justify-center gap-2 self-start rounded-xl bg-[#22c55e] font-medium text-bg-0 transition-[background-color,color,box-shadow] hover:bg-green-100 hover:text-green-700 hover:ring-2 hover:ring-inset hover:ring-green-700 focus-visible:bg-green-100 focus-visible:text-green-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-bg-0 focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-green-700 sm:self-auto"
+            class="inline-flex shrink-0 items-center justify-center gap-2 self-start rounded-xl bg-[#22c55e] font-medium text-bg-0 transition-[background-color,color,box-shadow] hover:bg-green-100 hover:text-green-700 hover:ring-2 hover:ring-inset hover:ring-green-700 focus-visible:bg-green-100 focus-visible:text-green-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-bg-0 focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-green-700 sm:self-auto max-lg:bg-green-700 max-lg:font-semibold"
           >
             {{ ctaLabel }}
             <template #trailing>
@@ -93,7 +93,7 @@ const isWhatsappCta = computed(() => props.ctaTo?.startsWith('https://wa.me/'))
             :target="isWhatsappCta ? '_blank' : undefined"
             :rel="isWhatsappCta ? 'noopener noreferrer' : undefined"
             :class="compact ? 'h-11 px-5 text-[14px]' : 'h-12 px-6 text-[16px]'"
-            class="inline-flex shrink-0 items-center justify-center gap-2 self-start rounded-xl bg-[#22c55e] font-medium text-bg-0 transition-[background-color,transform] hover:-translate-y-0.5 hover:bg-[#16a34a] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-bg-0 sm:self-auto"
+            class="inline-flex shrink-0 items-center justify-center gap-2 self-start rounded-xl bg-[#22c55e] font-medium text-bg-0 transition-[background-color,transform] hover:-translate-y-0.5 hover:bg-[#16a34a] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-bg-0 sm:self-auto max-lg:bg-green-700 max-lg:font-semibold max-lg:hover:bg-green-800"
           >
             <span>{{ ctaLabel }}</span>
             <img

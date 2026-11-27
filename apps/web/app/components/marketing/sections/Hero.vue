@@ -1,25 +1,36 @@
 <script setup lang="ts">
 import { ChevronLeft, ChevronRight } from 'lucide-vue-next'
+import heroPhoneUrl from '~/assets/images/marketing/hero-mobile.avif'
 import heroMobileUrl from '~/assets/images/marketing/hero-1080.webp'
 import heroDesktopUrl from '~/assets/images/marketing/hero-1920.webp'
 
-// Browser memilih file sesuai lebar layar x DPR: HP -> 1080w, layar besar -> 1920w
 const heroSrcset = `${heroMobileUrl} 1080w, ${heroDesktopUrl} 1920w`
+const phoneMedia = '(width < 48rem)'
 
-// Preload gambar LCP: browser menemukannya dari <head>, tanpa menunggu markup hero selesai dibaca.
-// `imagesrcset` dan `imagesizes` harus sama dengan <img> di bawah supaya tidak terunduh dua kali.
-useHead({
-  link: [
-    {
-      rel: 'preload',
-      as: 'image',
-      href: heroMobileUrl,
-      imagesrcset: heroSrcset,
-      imagesizes: '100vw',
-      fetchpriority: 'high'
-    }
-  ]
-})
+if (import.meta.server) {
+  // Both phone layers use the same source, so they share this preload.
+  useHead({
+    link: [
+      {
+        rel: 'preload',
+        as: 'image',
+        type: 'image/avif',
+        href: heroPhoneUrl,
+        media: phoneMedia,
+        fetchpriority: 'high',
+      },
+      {
+        rel: 'preload',
+        as: 'image',
+        href: heroMobileUrl,
+        imagesrcset: heroSrcset,
+        imagesizes: '100vw',
+        media: '(min-width: 48rem)',
+        fetchpriority: 'high',
+      },
+    ],
+  })
+}
 
 const services = [
   {
@@ -162,31 +173,32 @@ function handleTabKeydown(event: KeyboardEvent) {
     aria-labelledby="hero-title"
     class="relative isolate h-[346px] overflow-hidden bg-[#075474] md:h-[420px] lg:h-[100svh] lg:min-h-[720px]"
   >
-    <!-- Gambar latar (semua ukuran layar) -->
-    <img
-      :src="heroMobileUrl"
-      :srcset="heroSrcset"
-      sizes="100vw"
-      alt=""
-      width="1920"
-      height="1080"
-      loading="eager"
-      fetchpriority="high"
-      aria-hidden="true"
-      class="absolute inset-0 size-full object-cover object-center"
-    >
-    <!-- Gambar overlay khusus mobile (md:hidden). `sizes` sengaja SAMA dengan gambar latar
-         supaya browser selalu memilih file yang sama dan tidak mengunduh dua kali -->
-    <img
-      :src="heroMobileUrl"
-      :srcset="heroSrcset"
-      sizes="100vw"
-      alt=""
-      width="1920"
-      height="1080"
-      aria-hidden="true"
-      class="absolute left-1/2 top-4 h-auto w-[128%] max-w-none -translate-x-1/2 [mask-image:linear-gradient(to_bottom,transparent_0%,black_12%,black_88%,transparent_100%)] [-webkit-mask-image:linear-gradient(to_bottom,transparent_0%,black_12%,black_88%,transparent_100%)] md:hidden"
-    >
+    <picture class="contents" aria-hidden="true">
+      <source :media="phoneMedia" type="image/avif" :srcset="heroPhoneUrl">
+      <img
+        :src="heroMobileUrl"
+        :srcset="heroSrcset"
+        sizes="100vw"
+        alt=""
+        width="1920"
+        height="1080"
+        loading="eager"
+        fetchpriority="high"
+        class="absolute inset-0 size-full object-cover object-center"
+      >
+    </picture>
+    <picture class="contents md:hidden" aria-hidden="true">
+      <source :media="phoneMedia" type="image/avif" :srcset="heroPhoneUrl">
+      <img
+        :src="heroMobileUrl"
+        :srcset="heroSrcset"
+        sizes="100vw"
+        alt=""
+        width="1920"
+        height="1080"
+        class="absolute left-1/2 top-4 h-auto w-[128%] max-w-none -translate-x-1/2 [mask-image:linear-gradient(to_bottom,transparent_0%,black_12%,black_88%,transparent_100%)] [-webkit-mask-image:linear-gradient(to_bottom,transparent_0%,black_12%,black_88%,transparent_100%)]"
+      >
+    </picture>
     <div class="absolute inset-0 bg-[rgba(0,45,69,0.08)] lg:bg-[rgba(0,45,69,0.28)]" />
     <div
       aria-hidden="true"

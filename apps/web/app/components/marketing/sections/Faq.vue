@@ -43,7 +43,7 @@ function toggleFaq(index: number) {
           >
             {{ title }}
           </h2>
-          <p class="mt-3 text-[14px] font-medium text-text-disable lg:mt-5 lg:text-[24px] lg:font-normal">
+          <p class="mt-3 text-[14px] font-semibold text-text-tertiary lg:mt-5 lg:text-[24px] lg:font-normal lg:text-text-disable">
             {{ content.subtitle }}
           </p>
           <p class="mt-5 text-[16px] font-medium leading-[1.45] text-text-secondary lg:mt-8 lg:font-normal lg:leading-[1.55]">

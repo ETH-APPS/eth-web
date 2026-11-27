@@ -76,14 +76,33 @@ useSeoMeta({
 <template>
   <MarketingSectionsHero />
   <MarketingSectionsHomeLogisticsEstimator />
-  <LazyMarketingSectionsProductSourcing :hydrate-on-visible="{ rootMargin: '800px' }" />
-  <LazyMarketingSectionsMainServices :hydrate-on-visible="{ rootMargin: '320px' }" />
-  <LazyMarketingSectionsWhyChooseUs :hydrate-on-visible="{ rootMargin: '800px' }" />
-  <LazyMarketingSectionsShippingFlow :hydrate-on-visible="{ rootMargin: '800px' }" />
+  <LazyMarketingSectionsProductSourcing
+    class="max-lg:defer-render [--section-placeholder:1180px]"
+    :hydrate-on-visible="{ rootMargin: '800px' }"
+  />
+  <LazyMarketingSectionsMainServices
+    class="max-lg:defer-render [--section-placeholder:1380px] sm:[--section-placeholder:1280px]"
+    :hydrate-on-visible="{ rootMargin: '320px' }"
+  />
+  <LazyMarketingSectionsWhyChooseUs
+    class="max-lg:defer-render [--section-placeholder:690px] md:[--section-placeholder:1150px]"
+    :hydrate-on-visible="{ rootMargin: '800px' }"
+  />
+  <LazyMarketingSectionsShippingFlow
+    class="max-lg:defer-render [--section-placeholder:450px] md:[--section-placeholder:820px]"
+    :hydrate-on-visible="{ rootMargin: '800px' }"
+  />
   <!-- <MarketingSectionsHomeRateEstimator /> -->
-  <LazyMarketingSectionsTestimonials :hydrate-on-visible="{ rootMargin: '1600px' }" />
-  <LazyMarketingSectionsFaq :content="homeFaqContent" :hydrate-on-interaction="['pointerenter', 'focusin', 'click']" />
-  <div id="quote" class="pb-6 lg:pb-10">
+  <LazyMarketingSectionsTestimonials
+    class="max-lg:defer-render [--section-placeholder:550px] sm:[--section-placeholder:490px]"
+    :hydrate-on-visible="{ rootMargin: '1600px' }"
+  />
+  <LazyMarketingSectionsFaq
+    class="max-lg:defer-render [--section-placeholder:940px] sm:[--section-placeholder:690px] md:[--section-placeholder:600px]"
+    :content="homeFaqContent"
+    :hydrate-on-interaction="['pointerenter', 'focusin', 'click']"
+  />
+  <div id="quote" class="pb-6 max-lg:defer-render [--section-placeholder:370px] sm:[--section-placeholder:232px] lg:pb-10">
     <UiContainer wide>
       <MarketingCargoCtaBanner
         v-bind="homeBanner"

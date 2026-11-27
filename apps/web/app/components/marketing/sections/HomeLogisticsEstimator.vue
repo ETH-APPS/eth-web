@@ -176,7 +176,7 @@ watch([rmbAmount, transferTarget], () => {
               >
                 <p
                   v-if="totalPayment === null"
-                  class="text-center text-[13px] italic text-text-disable"
+                  class="text-center text-[13px] font-medium italic text-text-tertiary lg:font-normal lg:text-text-disable"
                 >
                   Mohon isi nominal dan akun penerima terlebih dahulu
                 </p>

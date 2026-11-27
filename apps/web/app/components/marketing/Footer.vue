@@ -100,12 +100,14 @@ const linkClass =
   'text-[14px] font-normal text-text-secondary transition-colors hover:text-primary-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500'
 const headingClass = 'text-[17px] font-medium text-text-disable'
 const navHeadingClass = 'text-[16px] font-medium text-text-disable'
+const mobileHeadingClass = 'text-[18px] font-semibold text-text-secondary'
 </script>
 
 <template>
   <footer
     id="footer"
     class="bg-bg-100 text-text-secondary"
+    :class="isHomePage && 'max-lg:defer-render [--section-placeholder:1390px] sm:[--section-placeholder:1230px] md:[--section-placeholder:1150px]'"
   >
     <UiContainer class="py-6 lg:py-12">
       <!-- MOBILE -->
@@ -184,7 +186,7 @@ const navHeadingClass = 'text-[16px] font-medium text-text-disable'
         </nav>
 
         <div class="mt-7 text-center">
-          <p class="text-[18px] font-medium text-text-disable">Operasional</p>
+          <p :class="mobileHeadingClass">Operasional</p>
           <p class="mt-1 flex flex-wrap items-center justify-center gap-x-2 text-[16px] text-text-secondary">
             <Clock3 :size="24" :stroke-width="1.8" aria-hidden="true" class="text-primary-500" />
             <span>09.00 - 17.00</span>
@@ -193,7 +195,7 @@ const navHeadingClass = 'text-[16px] font-medium text-text-disable'
         </div>
 
         <div class="mt-8 text-center">
-          <p class="text-[18px] font-medium text-text-disable">E-Commerce</p>
+          <p :class="mobileHeadingClass">E-Commerce</p>
           <ul class="mt-3 flex flex-wrap items-center justify-between gap-y-2" aria-label="Marketplace">
             <li v-for="logo in marketplaceLogos" :key="logo.name">
               <img
@@ -210,7 +212,7 @@ const navHeadingClass = 'text-[16px] font-medium text-text-disable'
         </div>
 
         <div class="mt-8 text-center">
-          <p class="text-[18px] font-medium text-text-disable">Pembayaran</p>
+          <p :class="mobileHeadingClass">Pembayaran</p>
           <ul class="mt-3 flex flex-wrap items-center justify-center gap-x-6 gap-y-3" aria-label="Bank pembayaran">
             <li v-for="logo in bankLogos" :key="logo.name">
               <img
@@ -396,7 +398,7 @@ const navHeadingClass = 'text-[16px] font-medium text-text-disable'
         </div>
       </section>
 
-      <div class="mt-10 text-center text-[10px] font-normal text-text-disable lg:mt-16 lg:text-[12px]">
+      <div class="mt-10 text-center text-[10px] font-medium text-text-secondary lg:mt-16 lg:text-[12px] lg:font-normal lg:text-text-disable">
         <p>
           © {{ currentYear }} ETH Cargo. All rights reserved.
         </p>
