@@ -1,5 +1,4 @@
 import type { MarketingFaqContent } from '~/constants/faq'
-import heroPlaceholderUrl from '~/assets/images/marketing/multinational-cargo-hero.webp'
 import heroCargoAmerica from '~/assets/images/marketing/cargo-amerika.webp'
 import heroCargoThailand from '~/assets/images/marketing/cargo-thailand.webp'
 import heroCargoTaiwan from '~/assets/images/marketing/cargo-taiwan.webp'

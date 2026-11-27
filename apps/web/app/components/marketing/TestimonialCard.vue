@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { Star } from 'lucide-vue-next'
 import googleLogo from '~/assets/images/marketing/google.png'
 
 const props = withDefaults(defineProps<{
@@ -86,15 +85,24 @@ const optimizedAvatar = computed(() => {
             class="flex items-center gap-0.5"
             :aria-label="`Rating ${stars} dari 5`"
           >
-            <Star
+            <!-- Path bintang didefinisikan sekali sebagai <symbol id="testimonial-star"> di
+                 sections/Testimonials.vue; di sini hanya direferensikan supaya HTML marquee (×3) tetap kecil -->
+            <svg
               v-for="star in 5"
               :key="star"
-              :size="15"
-              :stroke-width="1.5"
+              width="15"
+              height="15"
+              viewBox="0 0 24 24"
               :fill="star <= stars ? 'currentColor' : 'none'"
+              stroke="currentColor"
+              stroke-width="1.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
               :class="star <= stars ? 'text-[#fbbf24]' : 'text-border-300'"
               aria-hidden="true"
-            />
+            >
+              <use href="#testimonial-star" />
+            </svg>
           </div>
           <p class="shrink-0 text-[11px] font-normal text-text-disable">
             {{ reviewDate }}

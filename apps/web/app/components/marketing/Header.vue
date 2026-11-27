@@ -13,12 +13,15 @@ const props = withDefaults(defineProps<{
 
 type NavigationLabel = typeof marketingNavigation[number]['label']
 
-// Keep menu HTML available for SSR while deferring its JavaScript until interaction.
-const FeaturesMenu = defineLazyHydrationComponent('interaction', () => import('./header-menus/FeaturesMenu.vue'))
-const InformationMenu = defineLazyHydrationComponent('interaction', () => import('./header-menus/InformationMenu.vue'))
-const InsightsMenu = defineLazyHydrationComponent('interaction', () => import('./header-menus/InsightsMenu.vue'))
-const ServicesMenu = defineLazyHydrationComponent('interaction', () => import('./header-menus/ServicesMenu.vue'))
-const menuHydrationEvents: (keyof HTMLElementEventMap)[] = ['pointerenter', 'focusin', 'click']
+// Isi mega menu (±64 KB HTML) tidak di-SSR: di mobile tidak pernah tampil, tapi sebelumnya ikut
+// di-parse sebelum hero dan memperlambat LCP. Isinya dirender di client saat browser idle,
+// hanya pada layar desktop (nav ini `hidden` di bawah lg), sebelum pengguna sempat membukanya.
+const FeaturesMenu = defineAsyncComponent(() => import('./header-menus/FeaturesMenu.vue'))
+const InformationMenu = defineAsyncComponent(() => import('./header-menus/InformationMenu.vue'))
+const InsightsMenu = defineAsyncComponent(() => import('./header-menus/InsightsMenu.vue'))
+const ServicesMenu = defineAsyncComponent(() => import('./header-menus/ServicesMenu.vue'))
+// Sama dengan breakpoint `lg` Tailwind (64rem), tempat nav desktop mulai tampil
+const desktopNavigationQuery = '(min-width: 64rem)'
 
 const menuComponents: Partial<Record<NavigationLabel, Component>> = {
   Layanan: ServicesMenu,
@@ -33,8 +36,52 @@ const isLight = computed(() => props.variant === 'light')
 const isScrolled = ref(false)
 const activeMenu = ref<NavigationLabel | null>(null)
 const isMobileMenuOpen = ref(false)
+const shouldRenderMenus = ref(false)
 let closeMenuTimer: ReturnType<typeof setTimeout> | undefined
 let scrollAnimationFrame: number | undefined
+let desktopMediaQuery: MediaQueryList | undefined
+let menuRenderIdleHandle: number | undefined
+let menuRenderTimer: ReturnType<typeof setTimeout> | undefined
+
+function stopWatchingDesktopQuery() {
+  desktopMediaQuery?.removeEventListener('change', handleDesktopQueryChange)
+  desktopMediaQuery = undefined
+}
+
+function cancelScheduledMenuRender() {
+  if (menuRenderIdleHandle !== undefined) {
+    cancelIdleCallback(menuRenderIdleHandle)
+    menuRenderIdleHandle = undefined
+  }
+
+  if (menuRenderTimer !== undefined) {
+    clearTimeout(menuRenderTimer)
+    menuRenderTimer = undefined
+  }
+}
+
+function renderMenus() {
+  cancelScheduledMenuRender()
+  stopWatchingDesktopQuery()
+  shouldRenderMenus.value = true
+}
+
+function scheduleMenuRender() {
+  if (shouldRenderMenus.value || menuRenderIdleHandle !== undefined || menuRenderTimer !== undefined) return
+
+  if ('requestIdleCallback' in window) {
+    menuRenderIdleHandle = requestIdleCallback(renderMenus, { timeout: 2000 })
+  }
+  else {
+    menuRenderTimer = setTimeout(renderMenus, 200)
+  }
+}
+
+function handleDesktopQueryChange(event: MediaQueryListEvent) {
+  if (event.matches) {
+    scheduleMenuRender()
+  }
+}
 
 const isMenuOpen = computed(() => activeMenu.value !== null)
 const useLightStyle = computed(() => (
@@ -67,6 +114,11 @@ function clearCloseMenuTimer() {
 
 function openMenu(label: NavigationLabel) {
   if (!getMenuComponent(label)) return
+
+  // Pengaman bila menu dibuka sebelum render idle berjalan
+  if (!shouldRenderMenus.value) {
+    renderMenus()
+  }
 
   clearCloseMenuTimer()
   activeMenu.value = label
@@ -148,6 +200,15 @@ onMounted(() => {
   updateHeaderStyle()
   window.addEventListener('scroll', handleScroll, { passive: true })
   window.addEventListener('keydown', handleEscape)
+
+  desktopMediaQuery = window.matchMedia(desktopNavigationQuery)
+
+  if (desktopMediaQuery.matches) {
+    scheduleMenuRender()
+  }
+  else {
+    desktopMediaQuery.addEventListener('change', handleDesktopQueryChange)
+  }
 })
 
 onBeforeUnmount(() => {
@@ -155,6 +216,8 @@ onBeforeUnmount(() => {
   window.removeEventListener('keydown', handleEscape)
   document.documentElement.style.overflow = ''
   clearCloseMenuTimer()
+  cancelScheduledMenuRender()
+  stopWatchingDesktopQuery()
 
   if (scrollAnimationFrame !== undefined) {
     cancelAnimationFrame(scrollAnimationFrame)
@@ -262,7 +325,7 @@ onBeforeUnmount(() => {
                   : 'grid-rows-[0fr] opacity-0'"
               >
                 <div class="min-h-0 overflow-hidden">
-                  <component :is="getMenuComponent(item.label)" :hydrate-on-interaction="menuHydrationEvents" />
+                  <component :is="getMenuComponent(item.label)" v-if="shouldRenderMenus" />
                 </div>
               </div>
             </div>
