@@ -12,7 +12,7 @@
     "test:calculator": "node --experimental-strip-types --test tests/calculator.test.ts"
   },
   "dependencies": {
-    "@fontsource/poppins": "^5.3.0",
+    "@eth/ui": "workspace:*",
     "@phosphor-icons/vue": "^2.2.1",
     "lucide-vue-next": "^1.0.0",
     "nuxt": "^4.6.2",

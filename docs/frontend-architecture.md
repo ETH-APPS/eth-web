@@ -4,6 +4,15 @@ Dokumen ini menjadi konteks awal untuk pengembangan frontend `apps/web`.
 Keputusan di dalamnya dapat berkembang bersama kebutuhan produk, tetapi struktur
 dasarnya sebaiknya tetap konsisten.
 
+Keputusan CMS 27 November 2026: dashboard menjadi aplikasi Nuxt terpisah di
+`apps/cms`; CRM menyusul di `apps/crm`. UI dasar, token warna, serta Poppins
+dibagikan melalui Nuxt Layer `packages/ui`. Struktur pengembangan di bawah tetap
+menjadi pedoman untuk `apps/web`; contoh admin/dashboard di tree bukan instruksi
+menaruh CMS baru dalam aplikasi marketing. Rincian implementasi dan checklist ada
+di [rencana CMS](cms/00-phases.md) dan [frontend CMS](cms/01-frontend-plan.md).
+CMS memakai Axios + TanStack Vue Query, sesi `nuxt-auth-utils` melalui server
+Nuxt, serta state Vue/Nuxt sederhana; Pinia belum diperlukan untuk tahap awal.
+
 ## Project Context
 
 | Topik | Keputusan saat ini |

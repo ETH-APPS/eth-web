@@ -1,105 +1,41 @@
-# Plan frontend artikel dan CMS minimal
+# Frontend artikel publik dari API
 
-Ikuti [urutan fase](00-phases.md) dan kontrak dari [plan API](01-api-plan.md).
-Dokumen ini adalah ruang kerja agent frontend. Sebelum mengubah `apps/web`,
-baca `docs/frontend-architecture.md` dan `docs/responsive-guidelines.md`
-sepenuhnya, periksa implementasi serta staged/unstaged diff. Bila ada Figma,
-periksa frame 390px dan 1440px. Screenshot CMS yang diberikan baru menunjukkan
-konsep daftar artikel desktop, bukan desain form create atau frame mobile.
+Pembaruan keputusan 27 November 2026. Dashboard CMS berada di `apps/cms`;
+rencana dan checklist-nya sekarang ada di [fase CMS](../cms/00-phases.md) serta
+[frontend CMS](../cms/01-frontend-plan.md). Dokumen ini berfokus pada integrasi
+artikel di website `apps/web`, yang dikerjakan setelah rilis CMS/API ke production
+dan merge perubahan teruji ke `main`.
 
-## Batas rilis pertama
+Sebelum mengubah `apps/web`, baca `docs/frontend-architecture.md` dan
+`docs/responsive-guidelines.md` sepenuhnya, periksa staged/unstaged diff, serta
+pertahankan desain existing. Kontrak API tetap mengikuti [plan API](01-api-plan.md).
 
-- Ada login CMS dan satu halaman untuk create/publish artikel. Belum ada
-  dashboard daftar artikel lengkap, editor artikel lama, delete, draft,
-  penjadwalan, pengelolaan akun, atau form profil.
-- Akun dan profil penulis disiapkan langsung di database. Form tidak memilih
-  penulis lain: API menentukan penulis dari akun login.
-- Form dapat memilih kategori/tag/banner yang ada atau membuatnya baru tanpa
-  berpindah ke halaman manajemen. Banner default terpilih awalnya.
-- Media artikel dan ilustrasi banner diunggah lewat API ke DigitalOcean Spaces.
-  Editor artikel baru hanya menawarkan paragraf, H2, H3, bold, italic, serta
-  gambar. Tidak ada kontrol warna, font, ukuran, CSS, atau raw HTML untuk
-  penulis. Tujuh artikel lama dengan H4, daftar, tautan, dan tabel tetap
-  dirender benar setelah migrasi.
-- Artikel publik baru langsung tersedia tanpa build ulang. SEO dan route lama
-  tetap bekerja.
+## Prasyarat dan handoff CMS
 
-## Fase 0 — Inventaris dan kontrak
+- [ ] CMS login/create sudah dirilis dan API production dapat membaca artikel baru.
+- [ ] Perubahan backend/CMS tersedia pada `main`; integrasi web memakai branch
+  fitur baru dari basis tersebut.
+- [ ] Migrasi tujuh artikel mempertahankan slug, tanggal asli, isi, media, tag,
+  key points, penulis, dan banner. Uji lokal/staging sebelum cutover production.
+- [ ] Tetapkan prosedur import HTML lama: beberapa file memuat H4, list, link,
+  atau tabel yang belum diterima create API. Jangan menghapus struktur tersebut
+  diam-diam untuk menyatakan migrasi identik. Tes Airwaybill 27 November adalah
+  contoh create baru dengan tanggal server dan HTML disederhanakan.
+- [ ] Jangan menampilkan tautan CMS yang menjanjikan artikel sudah tampil di
+  website sampai fase integrasi ini selesai. Hasil CMS awal diverifikasi via API.
 
-- [ ] Petakan semua pemakai `articleCatalog.ts` dan `articleSlugs.ts`: daftar
-   `/artikel`, detail, pencarian, tag, halaman penulis Baariq, carousel,
-   rekomendasi, sitemap, serta route indexable.
-- [ ] Cocokkan field form dengan OpenAPI API. Gunakan satu tipe klien/adapter
-   untuk respons artikel agar komponen tidak bergantung pada struktur HTTP
-   mentah. Jangan menduplikasi konten antara versi desktop/mobile.
-- [ ] Ukur dan simpan baseline publik 1440px sebelum mengubah komponen, terutama
-   bila pekerjaan responsive hanya menyentuh mobile/tablet. Sumber visual CMS
-   adalah screenshot konsep; jangan mengarang aturan visual yang bertentangan
-   dengan komponen dan guideline existing.
-- [ ] **Fase 0 frontend selesai:** seluruh pembaca katalog sudah dipetakan,
-  field form cocok dengan OpenAPI, dan baseline publik tersimpan.
+## Inventaris frontend publik
 
-## Fase 3 — Login dan satu halaman create
-
-- [ ] Buat route/login CMS minimal memakai auth API yang ada. Simpan sesi dengan
-   pola yang aman untuk Nuxt, lindungi route create, dan tangani token kedaluwarsa
-   serta 401/403. Jangan menganggap route guard frontend sebagai otorisasi;
-   backend tetap menegakkan izin CMS.
-- [ ] Buat form berisi judul; slug otomatis yang dapat diubah sebelum publish; meta
-   description; cover + alt; editor isi; daftar key points dinamis; satu
-   kategori; banyak tag; serta banner default/pilihan baru. Tampilkan penulis
-   dari akun login sebagai informasi, bukan field yang bisa diubah.
-- [ ] Untuk kategori/tag/banner, tampilkan pilihan yang sudah ada dan aksi
-   “buat baru” dalam form. Banner baru hanya meminta title, description,
-   ilustrasi; WhatsApp dan email tidak menjadi field. Satu banner yang dibuat
-   dapat dipakai lagi pada artikel berikutnya.
-- [ ] Upload gambar sampul dan gambar isi melalui API media saat alur publish;
-   banner baru memakai endpoint create banner yang sekaligus mengunggah
-   ilustrasinya. Tampilkan progress/error yang berguna; gunakan URL/ID yang
-   dikembalikan API, bukan URL yang diketik manual. Batasi file sesuai kontrak
-   API: JPEG, PNG, atau WebP maksimal 5 MiB; SVG belum didukung.
-- [ ] Pastikan editor mengeluarkan HTML semantik sesuai daftar kontrol yang disetujui.
-   Preview memakai renderer/CSS artikel publik yang sama agar penulis melihat
-   hasil mendekati publikasi. Buat daftar isi dari H2/H3 seperti sekarang;
-   nomor/ID heading dihasilkan konsisten.
-- [ ] Saat publish, validasi semua field, cegah pengiriman ganda, tampilkan error
-   konflik slug, dan setelah berhasil tampilkan tautan artikel publik.
-   Rilis awal langsung menerbitkan; jangan tampilkan tombol simpan draft.
-
-- [ ] **Fase 3 frontend selesai:** akun CMS hasil provisioning manual dapat login,
-  membuat kategori/tag/banner baru dari form, upload media, lalu menerbitkan satu
-  artikel yang dibaca oleh API. Akun biasa tidak dapat mengakses alur create.
-
-### Alur gambar dan satu klik Terbitkan
-
-Penulis hanya melihat satu form dan satu tombol **Terbitkan**. Memilih cover atau
-menyisipkan gambar di editor belum memanggil API: FE menyimpan `File` dan
-menampilkan preview lokal. Setiap gambar isi perlu identitas sementara di editor
-agar posisinya tetap terhubung ke file yang dipilih.
-
-Saat **Terbitkan** diklik, FE menjalankan langkah berikut secara berurutan:
-
-1. Validasi seluruh field dan file di sisi FE; cegah klik ganda dan tampilkan
-   status proses.
-2. Upload cover ke `POST /cms/articles/assets` dengan `kind=ARTICLE_COVER`, lalu
-   upload setiap gambar isi ke endpoint yang sama dengan `kind=ARTICLE_BODY`.
-   Simpan `id` dan `url` dari respons tiap upload. Tampilkan progres serta error
-   per gambar.
-3. Bentuk `bodyHtml` dari editor. Ganti identitas sementara tiap gambar dengan
-   `<img data-media-id="ID_DARI_API" alt="...">`; jangan kirim URL preview lokal.
-   API akan memvalidasi media dan mengisi `src` dari URL yang tersimpan.
-4. Kirim `POST /cms/articles` dengan field artikel, `coverMediaId` dari langkah
-   upload, dan `bodyHtml` tersebut. Ini satu-satunya langkah yang menerbitkan
-   artikel. Setelah berhasil, tampilkan URL publiknya.
-
-Jika kategori, tag, atau banner baru diperlukan, buat melalui endpoint CMS
-masing-masing sebelum request artikel terakhir; banner baru dibuat dengan
-gambar ilustrasinya melalui `POST /cms/banners`. Jika satu langkah gagal, jangan
-kirim request artikel. Pertahankan isi form dan ID upload yang sudah berhasil
-agar percobaan ulang tidak mengunggah file yang sama lagi. Backend saat ini belum
-menyediakan pembersihan untuk media yang berhasil diunggah tetapi artikelnya
-tidak jadi diterbitkan; rencanakan penanganan aset tak terpakai sebelum rilis
-production.
+- [ ] Petakan seluruh pemakai `articleCatalog.ts` dan `articleSlugs.ts`: daftar,
+  detail, pencarian/tag/kategori, halaman penulis, carousel/rekomendasi, sitemap,
+  serta route indexable. Tidak membuat sumber slug statis baru.
+- [ ] Cocokkan kebutuhan komponen dengan respons public read API. Gunakan adapter
+  kecil bila perlu; jangan mengimpor source backend atau menyalin aturan bisnis.
+- [ ] Simpan baseline publik 1440px sebelum mengubah komponen; jalankan matriks
+  responsive dan pemeriksaan overflow setelah integrasi.
+- [ ] Konfigurasikan akses server web ke API production/staging secara privat.
+  Pilihan network dan konfigurasi web dipasang sebagai bagian rilis integrasi ini,
+  tanpa mengambil alih hostname API layanan lama.
 
 ## Fase 4 — Pembaca publik dari API
 
@@ -147,20 +83,21 @@ production.
 - [ ] Jalankan type-check/build frontend yang tersedia dan `git diff --check`.
   Verifikasi SSR dan sitemap pada runtime lokal, bukan hanya navigasi klien.
 
-## Fase 5 — Staging dan production web
+## Rilis integrasi web — setelah CMS production
 
 - [ ] Arahkan web staging ke API dan subdomain staging.
 - [ ] Batasi staging untuk tim internal dan pasang `noindex`.
 - [ ] Pastikan canonical staging tidak diterbitkan sebagai URL production.
 - [ ] Siapkan jalur deploy web dari branch `staging` yang terpisah dari workflow
   production `main`.
-- [ ] Uji alur login → upload → create → read di staging.
+- [ ] Uji artikel dari CMS muncul pada SSR web staging, daftar, detail, pencarian,
+   filter, penulis, dan sitemap tanpa rebuild.
 - [ ] Setelah data production dimigrasi dan API production sehat, alihkan web
   production dari katalog lokal ke API.
 - [ ] Jalankan smoke test domain production dan catat commit SHA serta hasilnya.
-- [ ] **Fase 5 frontend selesai:** staging dan production membaca API lingkungan
+- [ ] **Integrasi web selesai:** staging dan production membaca API lingkungan
   masing-masing, alur create → read lulus, dan metadata publik terverifikasi.
 
-Editor artikel lama, dashboard daftar seperti mockup, dan halaman profil penulis
-dinamis adalah fase lanjutan.
+Pengembangan UI CMS, editor artikel lama, dan dashboard daftar data nyata berada
+pada roadmap CMS tersendiri; halaman profil penulis dinamis tetap fase lanjutan.
 

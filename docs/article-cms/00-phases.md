@@ -1,9 +1,16 @@
 # Rencana bertahap artikel berbasis database
 
-Dokumen ini adalah urutan kerja utama. Rincian tugas ada di [plan API](01-api-plan.md)
-dan [plan frontend](02-frontend-plan.md). Kerjakan satu fase sampai kriteria selesai
-terpenuhi sebelum menganggap fase berikutnya siap. Agent API dan frontend boleh
-bekerja paralel setelah kontrak respons API pada Fase 0 disepakati.
+Dokumen ini menyimpan roadmap dan progres backend artikel. Untuk pengembangan
+dashboard, urutan eksekusi terbaru ada di [fase CMS](../cms/00-phases.md), dengan
+[plan frontend CMS](../cms/01-frontend-plan.md) dan
+[deployment CMS/API/database](../cms/02-deployment-plan.md).
+Kontrak backend tetap ada di [plan API](01-api-plan.md); integrasi website publik
+ada di [plan frontend artikel](02-frontend-plan.md).
+
+Keputusan 27 November 2026: rilis CMS login/create lebih dahulu, setelah staging
+lulus promosikan ke `main` dan production. Migrasi serta konsumsi API oleh web
+publik baru dimulai sesudah itu. Nomor fase historis di bawah tidak menggantikan
+urutan pada rencana CMS terbaru.
 
 ## Status keseluruhan
 
@@ -21,10 +28,11 @@ hanya ketika seluruh task dan kriteria selesai pada fase tersebut sudah terpenuh
 ## Sasaran rilis pertama
 
 Tim SEO login ke CMS, membuat kategori/tag/banner bila perlu, mengunggah media,
-menulis artikel, lalu menerbitkannya. Artikel langsung terbaca di halaman publik,
-pencarian, dan sitemap tanpa build ulang. Tujuh artikel lama dipindahkan manual
-dengan URL dan tanggal aslinya. Rilis pertama belum menyediakan edit, hapus,
-draft, penjadwalan, pengaturan akun, atau pengaturan profil melalui CMS.
+menulis artikel, lalu menerbitkannya. Rilis CMS pertama memverifikasi hasil lewat
+public read API; halaman website masih memakai katalog lokal. Pada rilis web
+berikutnya, tujuh artikel lama dipindahkan manual dengan URL dan tanggal aslinya,
+lalu daftar/detail/pencarian/sitemap membaca API tanpa build ulang. Belum ada
+edit, hapus, draft, penjadwalan, pengaturan akun, atau pengaturan profil melalui CMS.
 
 ## Aturan branch dan rilis
 
@@ -66,8 +74,10 @@ publikasi yang sama sebelum membuat UI.
    `localhost:5432/eth_apps`, schema `public`; seluruh 4 migration berstatus
    terpasang. Tabel artikel, taksonomi, banner, media, profil penulis, serta izin
    tersedia. Sebelumnya migration CMS hanya terpasang di `eth_apps_test`.
-   Tabel `Article` lokal masih kosong; migrasi isi tujuh artikel lama belum
-   dikerjakan. Profil/izin user disimpan di tabel relasi, bukan kolom baru `User`.
+   Pada pemeriksaan 26 November tabel `Article` lokal masih kosong. Pada
+   27 November pengguna berhasil membuat satu artikel Airwaybill melalui API
+   dengan upload Spaces; ini tes create baru, bukan migrasi tujuh artikel dengan
+   tanggal asli. Profil/izin user disimpan di tabel relasi, bukan kolom baru `User`.
 - [ ] Catat baseline halaman artikel publik sebelum mengubah UI. Screenshot CMS
    yang diberikan hanya referensi konsep desktop; belum ada frame Figma mobile
    390px dan desktop 1440px untuk halaman create.
@@ -138,6 +148,10 @@ dimigrasikan; pembaca frontend dan sitemap belum dialihkan ke API.
 
 ## Fase 3 — CMS minimal
 
+Rincian fase ini sekarang mengikuti [rencana CMS](../cms/00-phases.md): fondasi
+dan placeholder → UI oleh pemilik proyek → login → create → deployment.
+Dashboard/list/manajemen masih placeholder pada rilis CMS awal.
+
 **Hasil:** tim SEO dapat login dan menerbitkan artikel melalui satu halaman
 create, termasuk membuat kategori, tag, atau banner dari form yang sama.
 
@@ -150,13 +164,17 @@ create, termasuk membuat kategori, tag, atau banner dari form yang sama.
    baru tanpa halaman manajemen terpisah. Upload cover, gambar isi, dan
    ilustrasi banner memakai API media.
 - [ ] Tangani validasi, konflik slug, kegagalan upload/publish, serta cegah klik
-   publish ganda. Setelah sukses, tampilkan URL artikel publik.
+   publish ganda. Setelah sukses, tampilkan ID/slug dan verifikasi detail API;
+   tautan website publik baru menjadi bukti setelah integrasi web selesai.
 
 - [ ] **Fase 3 selesai:** editor CMS dapat menerbitkan artikel lengkap dari browser
   lokal dengan akun hasil provisioning manual, tanpa menyentuh database untuk
   setiap artikel baru.
 
 ## Fase 4 — Alihkan pembaca publik dan migrasi
+
+Dilaksanakan setelah rilis CMS pada Fase 5 historis di bawah; pada rencana
+baru pekerjaan ini adalah [Fase 6 CMS](../cms/00-phases.md#fase-6--website-publik-mengonsumsi-api).
 
 **Hasil:** frontend publik sepenuhnya membaca database; tujuh URL lama dan
 konten baru sama-sama berfungsi.
@@ -180,26 +198,28 @@ konten baru sama-sama berfungsi.
 
 ## Fase 5 — Staging lalu production
 
-**Hasil:** alur create → read yang sudah selesai secara lokal teruji di staging
-sebelum dirilis ke production.
+**Hasil:** CMS login/create dan read API teruji di staging, lalu perubahan
+dipromosikan ke `main` dan production. Checklist operasional terbaru ada di
+[deployment CMS](../cms/02-deployment-plan.md).
 
 - [ ] Siapkan API dan PostgreSQL staging di VM yang sama tetapi dengan service,
    volume/database, environment, dan subdomain terpisah. Pasang migrasi schema,
    healthcheck, backup, dan credential khusus lingkungan. Siapkan deploy
    `staging` yang tidak memanggil helper production dari `main`.
-- [ ] Siapkan web staging yang memakai API staging. Batasi akses ke tim internal,
-   beri `noindex`, dan pastikan sitemap/canonical staging tidak mengarah ke
-   production. Media staging memakai prefix sendiri pada bucket sementara.
-- [ ] Uji login, upload, create, hasil SSR publik, tujuh artikel lama, sitemap,
-   rollback, serta jalur kegagalan. Jangan gunakan data atau secret production
-   untuk pengujian.
+- [ ] Siapkan CMS staging di `cms-staging.ethcargoindo.com` yang memakai API
+   staging internal. Batasi akses ke tim internal dan beri `noindex`. Media
+   staging memakai prefix sendiri pada bucket sementara.
+- [ ] Uji login, upload, create, read API, rollback, serta jalur kegagalan. Jangan
+   gunakan data atau secret production untuk pengujian. SSR web, tujuh artikel
+   lama, dan sitemap diuji pada fase integrasi publik berikutnya.
 - [ ] Setelah staging lulus, siapkan deployment API dan PostgreSQL production
-   (belum ada saat ini), backup serta migrasi sebelum cutover web. Migrasikan
-   tujuh artikel di production, verifikasi jumlah/slug, lalu deploy web dari
-   `main`. Lakukan smoke test publik dan catat SHA serta hasilnya.
+   (belum ada saat ini), backup serta migration schema, dan CMS production di
+   `cms.ethcargoindo.com`. Catat SHA/artifact staging yang dipromosikan melalui
+   `main`; lakukan smoke test CMS/API. Cutover web dan migrasi tujuh artikel
+   dilakukan terpisah setelah rilis CMS ini.
 
-- [ ] **Fase 5 selesai:** staging dan production menjalankan commit yang dimaksud;
-  artikel baru muncul tanpa deploy ulang; layanan web lama tetap sehat; tersedia
+- [ ] **Fase 5 selesai:** CMS/API staging dan production menjalankan release teruji;
+  artikel baru terbaca melalui API; layanan web lama tetap sehat; tersedia
   langkah pemulihan jika migrasi atau cutover gagal.
 
 ## Fase lanjutan setelah rilis pertama

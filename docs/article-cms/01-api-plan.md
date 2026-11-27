@@ -6,6 +6,12 @@ backend. Kontrak yang sudah diimplementasikan di OpenAPI menjadi sumber untuk
 `docs/backend-guidelines.md`, implementasi relevan, serta staged dan unstaged
 diff. Ikuti pola NestJS, Prisma, autentikasi, respons, dan tes API yang ada.
 
+Keputusan 27 November 2026: frontend CMS memiliki [rencana tersendiri](../cms/01-frontend-plan.md)
+di `apps/cms`. Urutan rilis mengikuti [fase CMS](../cms/00-phases.md) dan
+[deployment CMS/API/database](../cms/02-deployment-plan.md): CMS/API dirilis lebih
+dahulu melalui staging dan `main`; konsumsi API oleh website publik menyusul.
+Dokumen ini tetap menjadi sumber kontrak backend, bukan lokasi duplikasi rencana UI.
+
 ## Standardisasi validasi dan error
 
 Ikuti [konvensi validasi dan error backend](../backend-guidelines.md#validation-and-error-conventions).
