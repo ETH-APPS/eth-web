@@ -60,13 +60,14 @@ useSeoMeta({
 
 <template>
   <MarketingSectionsHero />
+  <MarketingSectionsHomeLogisticsEstimator />
+  <LazyMarketingSectionsProductSourcing :hydrate-on-visible="{ rootMargin: '800px' }" />
   <MarketingSectionsMainServices />
-  <MarketingSectionsWhyChooseUs />
-  <MarketingSectionsShippingFlow />
-  <MarketingSectionsHomeRateEstimator />
-  <MarketingSectionsProductSourcing />
-  <MarketingSectionsTestimonials />
-  <MarketingSectionsFaq :content="homeFaqContent" />
+  <LazyMarketingSectionsWhyChooseUs :hydrate-on-visible="{ rootMargin: '800px' }" />
+  <LazyMarketingSectionsShippingFlow :hydrate-on-visible="{ rootMargin: '800px' }" />
+  <!-- <MarketingSectionsHomeRateEstimator /> -->
+  <LazyMarketingSectionsTestimonials :hydrate-on-visible="{ rootMargin: '1600px' }" />
+  <LazyMarketingSectionsFaq :content="homeFaqContent" :hydrate-on-interaction="['pointerenter', 'focusin', 'click']" />
   <div id="quote" class="pb-6 lg:pb-10">
     <UiContainer wide>
       <MarketingCargoCtaBanner

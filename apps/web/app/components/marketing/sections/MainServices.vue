@@ -47,10 +47,14 @@ const services = [
         id="main-services-title"
         class="text-center text-[24px] font-semibold leading-tight text-primary-500 lg:text-[32px]"
       >
-        Solusi Logistik Import Terpadu
+        Layanan Utama ETH Cargo
       </h2>
 
-      <div class="mx-auto mt-11 max-w-[724px] rounded-[34px] border border-border-200 px-5 pb-5 pt-6 shadow-md md:px-6 lg:pb-4 lg:pt-5">
+      <p class="mx-auto mt-4 max-w-[850px] text-[16px] text-center font-normal leading-[1.5] text-text-secondary lg:text-[20px]">
+        Dukungan pengiriman kargo All-In Door-to-Door dari China ke Indonesia serta transaksi RMB ke supplier dalam satu alur yang terkelola.      
+      </p>
+
+      <!-- <div class="mx-auto mt-11 max-w-[724px] rounded-[34px] border border-border-200 px-5 pb-5 pt-6 shadow-md md:px-6 lg:pb-4 lg:pt-5">
         <div class="flex items-center justify-center gap-3 text-primary-500 lg:gap-4">
           <PackageSearch
             aria-hidden="true"
@@ -134,7 +138,7 @@ const services = [
             </span>
           </a>
         </p>
-      </div>
+      </div> -->
 
       <div class="mt-11 grid grid-cols-1 gap-6 md:mx-auto md:max-w-[560px] lg:mx-0 lg:max-w-none lg:grid-cols-3 lg:gap-9">
         <MarketingServiceCard

@@ -30,7 +30,7 @@ const showMultinationalRoutes = computed(() => (
         :show-top-border="!['/china-cargo', '/sea-freight', '/air-freight', '/live-tracking'].includes(route.path) && !route.path.startsWith('/multinational-cargo')"
       />
     </main>
-    <MarketingFooter />
+    <LazyMarketingFooter :hydrate-on-interaction="['pointerenter', 'focusin', 'click']" />
     <MarketingFloatingWhatsapp />
   </div>
 </template>

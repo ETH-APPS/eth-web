@@ -84,8 +84,6 @@ const navigationGroups = [
 ] as const
 
 const activeMobileSection = ref<string | null>(null)
-const mobileSeoOpen = ref(false)
-const seoDescription = 'Informasi tambahan mengenai layanan forwarder China–Indonesia, pengiriman kargo laut dan udara, jasa sourcing, serta solusi impor B2B ETH Cargo.'
 
 const seoTitle = 'Tentang ETH Cargo | Jasa Forwarder China Indonesia #1'
 const seoParagraphs = [
@@ -127,6 +125,7 @@ const navHeadingClass = 'text-[16px] font-medium text-text-disable'
               :src="logoUrl"
               width="220"
               height="66"
+              loading="lazy"
               alt="ETH Cargo"
               class="h-[66px] w-[220px] object-contain"
             >
@@ -140,7 +139,7 @@ const navHeadingClass = 'text-[16px] font-medium text-text-disable'
               :aria-label="social.label"
               class="flex size-8 items-center justify-center rounded-md focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500"
             >
-              <img :src="social.icon" alt="" aria-hidden="true" width="20" height="20" class="size-5 object-contain">
+              <img :src="social.icon" alt="" aria-hidden="true" width="20" height="20" loading="lazy" class="size-5 object-contain">
             </a>
           </div>
         </div>
@@ -229,6 +228,7 @@ const navHeadingClass = 'text-[16px] font-medium text-text-disable'
               :src="logoUrl"
               width="220"
               height="66"
+              loading="lazy"
               alt="ETH Cargo"
               class="h-[66px] w-[220px] object-contain object-left"
             >
@@ -251,6 +251,7 @@ const navHeadingClass = 'text-[16px] font-medium text-text-disable'
                 aria-hidden="true"
                 width="16"
                 height="16"
+                loading="lazy"
                 class="size-4 object-contain"
               >
             </a>
@@ -348,11 +349,10 @@ const navHeadingClass = 'text-[16px] font-medium text-text-disable'
         </nav>
       </div>
 
-      <!-- SEO BOX (desktop) -->
       <section
         v-if="isHomePage"
         aria-labelledby="footer-seo-title"
-        class="mt-10 hidden rounded-xl border border-border-200 px-4 pt-4 pb-8 lg:block"
+        class="mt-10 rounded-xl border border-border-200 px-4 pt-4 pb-8"
       >
         <h2
           id="footer-seo-title"
@@ -361,7 +361,7 @@ const navHeadingClass = 'text-[16px] font-medium text-text-disable'
           {{ seoTitle }}
         </h2>
 
-        <div class="mt-2 grid grid-cols-2 gap-x-16">
+        <div class="mt-3 grid grid-cols-1 gap-y-4 lg:mt-2 lg:grid-cols-2 lg:gap-x-16">
           <div class="space-y-4 text-[12px] leading-relaxed text-text-tertiary">
             <p v-for="paragraph in seoParagraphs" :key="paragraph">
               {{ paragraph }}
@@ -385,36 +385,6 @@ const navHeadingClass = 'text-[16px] font-medium text-text-disable'
         <p>
           © {{ currentYear }} ETH Cargo. All rights reserved.
         </p>
-      </div>
-
-      <div v-if="isHomePage" class="mt-10 lg:hidden">
-        <button
-          type="button"
-          class="flex min-h-12 w-full items-center justify-between rounded-xl border border-border-200 px-3 text-left text-[16px] text-text-tertiary focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500"
-          :aria-expanded="mobileSeoOpen"
-          aria-controls="footer-mobile-seo"
-          @click="mobileSeoOpen = !mobileSeoOpen"
-        >
-          <span>SEO BOX</span>
-          <ChevronDown
-            :size="20"
-            :stroke-width="1.8"
-            aria-hidden="true"
-            class="transition-transform duration-200 motion-reduce:transition-none"
-            :class="mobileSeoOpen ? 'rotate-180' : ''"
-          />
-        </button>
-        <div
-          id="footer-mobile-seo"
-          class="grid transition-[grid-template-rows,opacity] duration-300 motion-reduce:transition-none"
-          :class="mobileSeoOpen ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0'"
-          :aria-hidden="!mobileSeoOpen"
-          :inert="!mobileSeoOpen"
-        >
-          <div class="min-h-0 overflow-hidden">
-            <p class="px-3 pt-3 text-[12px] leading-relaxed text-text-tertiary">{{ seoDescription }}</p>
-          </div>
-        </div>
       </div>
     </UiContainer>
   </footer>

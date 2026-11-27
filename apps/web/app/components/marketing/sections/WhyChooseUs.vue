@@ -1,13 +1,7 @@
+
 <script setup lang="ts">
 import { ChevronLeft, ChevronRight, Cuboid } from 'lucide-vue-next'
 import tribunnewsLogo from '~/assets/images/marketing/Tribunnews.webp'
-
-const stats = [
-  { value: '+10.000', label: 'Pengiriman\nSelesai' },
-  { value: '98%', label: 'Tingkat Ketepatan\nWaktu' },
-  { value: '+5', label: 'Rute Pengiriman\nInternasional' },
-  { value: '+10', label: 'Tahun\nPengalaman' },
-]
 
 const benefits = [
   {
@@ -51,6 +45,7 @@ const mediaOutlets = [
 ]
 
 const isPressMarquee = mediaOutlets.length > 4
+
 const pressTrackStyle = {
   '--press-mobile-width': `${mediaOutlets.length * 150}%`,
   '--press-desktop-width': `${mediaOutlets.length * 75}%`,
@@ -112,26 +107,8 @@ onBeforeUnmount(() => {
   <section
     id="why-us"
     aria-labelledby="why-us-title"
-    class="bg-white"
+    class="bg-bg-100"
   >
-    <div class="bg-primary-500 py-12 text-white">
-      <UiContainer>
-        <dl class="grid grid-cols-1 gap-8 text-center md:grid-cols-2 lg:grid-cols-4">
-          <div
-            v-for="stat in stats"
-            :key="stat.label"
-          >
-            <dt class="text-[46px] font-bold leading-none tracking-tight lg:text-[56px]">
-              {{ stat.value }}
-            </dt>
-            <dd class="mt-4 whitespace-pre-line text-xl font-semibold leading-[1.3]">
-              {{ stat.label }}
-            </dd>
-          </div>
-        </dl>
-      </UiContainer>
-    </div>
-
     <UiContainer class="py-12">
       <div class="text-center">
         <h2
@@ -140,6 +117,7 @@ onBeforeUnmount(() => {
         >
           Mengapa Memilih ETH Cargo?
         </h2>
+
         <p class="mx-auto mt-4 hidden max-w-[850px] text-[16px] leading-[1.5] text-text-secondary md:block lg:text-lg">
           Kami memahami bahwa efisiensi biaya dan kepastian pengiriman adalah kunci
           keberlanjutan bisnis Anda. ETH Cargo menghadirkan solusi pengiriman B2B yang
@@ -169,6 +147,7 @@ onBeforeUnmount(() => {
                 class="size-6 lg:size-5"
               />
             </span>
+
             <h3 class="text-[20px] font-medium leading-tight text-text-secondary lg:text-[17px]">
               {{ benefit.title }}
             </h3>
@@ -220,7 +199,7 @@ onBeforeUnmount(() => {
           role="group"
           aria-label="Media yang meliput ETH Cargo"
         >
-          <!-- Marquee: hanya grup pertama yang bisa diakses keyboard/screen reader, sisanya duplikat visual -->
+          <!-- Marquee: hanya grup pertama yang bisa diakses keyboard/screen reader -->
           <div v-if="isPressMarquee" class="press-marquee overflow-hidden">
             <div class="press-track" :style="pressTrackStyle">
               <div
@@ -256,7 +235,7 @@ onBeforeUnmount(() => {
             </div>
           </div>
 
-          <!-- Static: dipakai kalau outlet <= 4 -->
+          <!-- Static: digunakan jika outlet <= 4 -->
           <div v-else class="flex flex-wrap justify-center gap-y-6">
             <div
               v-for="outlet in mediaOutlets"

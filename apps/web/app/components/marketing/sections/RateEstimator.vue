@@ -21,7 +21,7 @@ const props = withDefaults(
     guideTo?: string
     showGuideAction?: boolean
     sectionId?: string
-    variant?: 'default' | 'page-hero' | 'split'
+    variant?: 'default' | 'page-hero' | 'split' | 'card'
     calculatorEnabled?: boolean
     animatedSubmit?: boolean
     showShippingPriceField?: boolean
@@ -48,6 +48,7 @@ const props = withDefaults(
     showShippingPriceField: false,
   },
 )
+const emit = defineEmits<{ layoutChange: [] }>()
 
 const titleId = computed(() => `${props.sectionId}-title`)
 const itemName = ref('')
@@ -101,6 +102,9 @@ function handleSubmit() {
   if (!props.calculatorEnabled)
     return
 
+  if (props.variant === 'card')
+    emit('layoutChange')
+
   const quantity = Number(boxCount.value)
   const enteredRate = props.showShippingPriceField ? Number(shippingPrice.value) : undefined
   detailsOpen.value = cargoService.value === 'Air Cargo'
@@ -125,6 +129,11 @@ watch(
     estimate.value = null
   },
 )
+
+watch(cargoService, () => {
+  if (props.variant === 'card')
+    emit('layoutChange')
+})
 </script>
 
 <template>
@@ -132,24 +141,27 @@ watch(
     :id="sectionId"
     :aria-labelledby="titleId"
     class="bg-bg-100"
-    :class="variant === 'split' ? 'py-10' : 'py-16 sm:py-20'"
+    :class="variant === 'card' ? 'flex min-w-0 flex-col overflow-hidden rounded-[20px] border border-border-200 bg-bg-0' : variant === 'split' ? 'py-10' : 'py-16 sm:py-20'"
   >
-    <UiContainer>
-      <div class="text-center">
+    <UiContainer :class="variant === 'card' ? '!mx-0 !flex !w-full !max-w-none !flex-1 !flex-col' : ''">
+      <div :class="variant === 'card' ? 'bg-primary-500 px-5 py-3 text-left' : 'text-center'">
         <component
-          :is="variant === 'page-hero' ? 'h1' : 'h2'"
+          :is="variant === 'page-hero' ? 'h1' : variant === 'card' ? 'h3' : 'h2'"
           :id="titleId"
-          class="leading-tight text-primary-500"
-          :class="variant === 'page-hero'
-            ? 'text-[28px] font-semibold lg:text-[32px] lg:font-bold'
+          class="leading-tight"
+          :class="variant === 'card'
+            ? 'text-[16px] font-semibold text-white'
+            : variant === 'page-hero'
+            ? 'text-[28px] font-semibold text-primary-500 lg:text-[32px] lg:font-bold'
             : variant === 'split'
-              ? 'text-[24px] font-semibold lg:text-[28px]'
-              : 'text-[24px] font-bold lg:text-[32px]'"
+              ? 'text-[24px] font-semibold text-primary-500 lg:text-[28px]'
+              : 'text-[24px] font-bold text-primary-500 lg:text-[32px]'"
         >
           {{ title }}
         </component>
 
         <p
+          v-if="variant !== 'card'"
           class="mx-auto font-normal leading-[1.5] text-text-tertiary"
           :class="variant === 'split'
             ? 'mt-4 max-w-[760px] text-[14px] lg:text-[16px]'
@@ -161,7 +173,7 @@ watch(
         </p>
       </div>
 
-      <div :class="variant === 'split' ? 'mx-auto mt-3 grid max-w-[960px] items-start gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,435px)] lg:gap-12' : 'contents'">
+      <div :class="variant === 'card' ? 'flex flex-1 flex-col' : variant === 'split' ? 'mx-auto mt-3 grid max-w-[960px] items-start gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,435px)] lg:gap-12' : 'contents'">
         <div v-if="variant === 'split'" class="mx-auto w-full max-w-[380px] min-w-0 lg:max-w-[440px] lg:pt-4">
           <slot name="aside" />
         </div>
@@ -170,18 +182,18 @@ watch(
         v-if="!showShippingPriceField || !estimate"
         :aria-labelledby="titleId"
         class="mx-auto w-full rounded-[20px] border border-border-200 bg-bg-0 p-5 shadow-md sm:p-7"
-        :class="variant === 'split' ? 'split-form max-w-[435px]' : 'mt-8 max-w-[600px]'"
+        :class="variant === 'card' ? 'card-form !mx-0 !flex !flex-1 !max-w-none !flex-col !rounded-none !border-0 !p-5 !shadow-none' : variant === 'split' ? 'split-form max-w-[435px]' : 'mt-8 max-w-[600px]'"
         @submit.prevent="handleSubmit"
       >
         <div v-if="!showShippingPriceField">
           <label
-            for="item-name"
+            :for="`${sectionId}-item-name`"
             class="mb-2 block text-[16px] font-normal text-text-secondary"
           >
             Nama Barang
           </label>
           <input
-            id="item-name"
+            :id="`${sectionId}-item-name`"
             v-model.trim="itemName"
             name="item-name"
             type="text"
@@ -194,7 +206,7 @@ watch(
 
         <div :class="showShippingPriceField ? undefined : 'mt-4'">
           <label
-            for="cargo-service"
+            :for="`${sectionId}-cargo-service`"
             class="mb-2 block text-[16px] font-normal text-text-secondary"
           >
             Jenis Layanan Kargo
@@ -202,7 +214,7 @@ watch(
 
           <div class="relative">
             <select
-              id="cargo-service"
+              :id="`${sectionId}-cargo-service`"
               v-model="cargoService"
               name="cargo-service"
               required
@@ -348,13 +360,14 @@ watch(
           </label>
         </div>
 
-        <div class="mt-8 flex justify-end">
+        <div class="mt-8 flex justify-end" :class="variant === 'card' ? '!mt-auto pt-8' : ''">
           <UiAnimatedArrowButton
             v-if="animatedSubmit"
             type="submit"
             variant="plain"
             :show-arrow="false"
             class="inline-flex h-14 w-full items-center justify-center rounded-xl bg-primary-500 px-6 text-[16px] font-semibold text-bg-0 transition-[background-color,color,box-shadow] duration-200 hover:bg-primary-100 hover:text-primary-500 hover:ring-2 hover:ring-inset hover:ring-primary-500 focus-visible:bg-primary-100 focus-visible:text-primary-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500 focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-primary-500 sm:w-auto lg:text-[15px]"
+            :class="variant === 'card' ? '!h-12 !w-auto !px-5 !text-[14px]' : ''"
           >
             {{ submitLabel }}
           </UiAnimatedArrowButton>
@@ -394,7 +407,7 @@ watch(
       <div
         v-if="showShippingPriceField && estimate"
         class="mx-auto mt-8 w-full max-w-[600px] rounded-[20px] border border-border-200 bg-bg-0 px-4 py-5 shadow-md sm:px-5 sm:py-6"
-        :class="variant === 'split' ? 'split-result' : ''"
+        :class="variant === 'card' ? '!m-0 !max-w-none !rounded-none !border-0 !shadow-none' : variant === 'split' ? 'split-result' : ''"
         aria-live="polite"
       >
         <h2 class="text-center text-[20px] font-semibold leading-tight text-text-secondary sm:text-[23px]">
@@ -488,7 +501,18 @@ watch(
             {{ detailsOpen ? 'Tutup Detail' : 'Lihat Detail' }}
             <ChevronDown :size="20" :class="detailsOpen ? 'rotate-180' : ''" aria-hidden="true" />
           </button>
+          <UiAnimatedArrowButton
+            v-if="variant === 'card'"
+            type="button"
+            variant="plain"
+            :show-arrow="false"
+            class="inline-flex min-h-12 items-center justify-center rounded-xl bg-primary-500 px-5 text-[14px] font-semibold text-bg-0 transition-[background-color,color,box-shadow] duration-200 hover:bg-primary-100 hover:text-primary-500 hover:ring-2 hover:ring-inset hover:ring-primary-500 focus-visible:bg-primary-100 focus-visible:text-primary-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500 focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-primary-500"
+            @click="estimate = null"
+          >
+            Hitung Ulang
+          </UiAnimatedArrowButton>
           <button
+            v-else
             type="button"
             class="inline-flex min-h-12 items-center justify-center rounded-xl bg-primary-500 px-5 text-[15px] font-semibold text-bg-0 transition-colors hover:bg-primary-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500 sm:text-[16px]"
             @click="estimate = null"
@@ -499,7 +523,7 @@ watch(
       </div>
       </div>
 
-      <div v-if="variant !== 'split'" class="mt-14 flex flex-col items-center justify-center gap-3 text-center sm:flex-row sm:gap-5">
+      <div v-if="variant !== 'split' && variant !== 'card'" class="mt-14 flex flex-col items-center justify-center gap-3 text-center sm:flex-row sm:gap-5">
         <p
           class="text-text-tertiary lg:font-normal"
           :class="variant === 'page-hero' ? 'text-[16px] font-normal lg:text-[20px]' : 'text-[14px] font-medium lg:text-[16px]'"
@@ -522,6 +546,22 @@ watch(
 </template>
 
 <style scoped>
+.card-form label {
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+
+.card-form input,
+.card-form select {
+  height: 2.75rem;
+  font-size: 0.875rem;
+}
+
+.card-form button[type='submit'] {
+  height: 3rem;
+  font-size: 0.875rem;
+}
+
 .split-form {
   padding: 1.25rem;
 }

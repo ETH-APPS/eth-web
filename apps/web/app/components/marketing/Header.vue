@@ -1,10 +1,6 @@
 <script setup lang="ts">
 import type { Component } from 'vue'
 import { Menu } from 'lucide-vue-next'
-import FeaturesMenu from './header-menus/FeaturesMenu.vue'
-import InformationMenu from './header-menus/InformationMenu.vue'
-import InsightsMenu from './header-menus/InsightsMenu.vue'
-import ServicesMenu from './header-menus/ServicesMenu.vue'
 import logoUrl from '~/assets/images/brand/logo.png'
 import logoWhiteUrl from '~/assets/images/brand/logo-white.webp'
 import { marketingNavigation, quoteNavigation } from '~/constants/navigation'
@@ -16,6 +12,13 @@ const props = withDefaults(defineProps<{
 })
 
 type NavigationLabel = typeof marketingNavigation[number]['label']
+
+// Keep menu HTML available for SSR while deferring its JavaScript until interaction.
+const FeaturesMenu = defineLazyHydrationComponent('interaction', () => import('./header-menus/FeaturesMenu.vue'))
+const InformationMenu = defineLazyHydrationComponent('interaction', () => import('./header-menus/InformationMenu.vue'))
+const InsightsMenu = defineLazyHydrationComponent('interaction', () => import('./header-menus/InsightsMenu.vue'))
+const ServicesMenu = defineLazyHydrationComponent('interaction', () => import('./header-menus/ServicesMenu.vue'))
+const menuHydrationEvents: (keyof HTMLElementEventMap)[] = ['pointerenter', 'focusin', 'click']
 
 const menuComponents: Partial<Record<NavigationLabel, Component>> = {
   Layanan: ServicesMenu,
@@ -259,7 +262,7 @@ onBeforeUnmount(() => {
                   : 'grid-rows-[0fr] opacity-0'"
               >
                 <div class="min-h-0 overflow-hidden">
-                  <component :is="getMenuComponent(item.label)" />
+                  <component :is="getMenuComponent(item.label)" :hydrate-on-interaction="menuHydrationEvents" />
                 </div>
               </div>
             </div>

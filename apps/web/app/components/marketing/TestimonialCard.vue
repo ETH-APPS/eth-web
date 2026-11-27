@@ -16,6 +16,14 @@ const props = withDefaults(defineProps<{
 })
 
 const avatarFailed = ref(false)
+const avatarImage = useTemplateRef<HTMLImageElement>('avatarImage')
+
+onMounted(() => {
+  // A lazy-loaded avatar can fail before its section is hydrated.
+  if (avatarImage.value?.complete && avatarImage.value.naturalWidth === 0) {
+    avatarFailed.value = true
+  }
+})
 
 // Foto profil Google (lh3.googleusercontent.com): "-rp" = PNG, "-rw" = WebP.
 // Avatar tampil 40px, jadi s80 sudah cukup tajam untuk layar retina.
@@ -37,6 +45,7 @@ const optimizedAvatar = computed(() => {
     <div class="flex items-start gap-3">
       <img
         v-if="!avatarFailed"
+        ref="avatarImage"
         :src="optimizedAvatar"
         alt=""
         width="40"
