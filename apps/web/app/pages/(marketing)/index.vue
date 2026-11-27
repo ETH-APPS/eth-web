@@ -16,12 +16,35 @@ definePageMeta({
 })
 
 if (import.meta.server) {
-  // Keep speculative chunks for other routes out of the homepage's initial requests.
+  const mobileHint = useRequestHeader('sec-ch-ua-mobile')
+  const isMobile = mobileHint === '?1'
+    || (mobileHint === undefined && /\b(?:Mobile|Android)\b/i.test(useRequestHeader('user-agent') ?? ''))
+  const vary = useResponseHeader('Vary')
+  vary.value = [vary.value, 'Sec-CH-UA-Mobile', 'User-Agent'].filter(Boolean).join(', ')
+
+  // Serve the same compiled Tailwind stylesheet with the mobile HTML on cold loads.
+  const mobileCss = !import.meta.dev && isMobile
+    ? (await import('~/assets/css/main.css?inline')).default
+    : undefined
+
   injectHead().hooks?.hook('tags:resolve', (context) => {
-    context.tags = context.tags.filter(({ tag, props }) => !(
-      tag === 'link' && props.rel === 'prefetch' && (props.as === 'script' || props.as === 'style')
-    ))
+    context.tags = context.tags.filter(({ tag, props }) => {
+      if (tag !== 'link') return true
+
+      if (mobileCss && props.rel === 'stylesheet' && typeof props.href === 'string'
+        && /\/entry\.[\w-]+\.css$/.test(props.href)) return false
+
+      // Mobile lets the module entry and dynamic imports fetch their own dependencies.
+      // This gives CSS and the hero bandwidth before hydration starts.
+      if (isMobile && props.rel === 'modulepreload' && props.as === 'script') return false
+
+      return props.rel !== 'prefetch' || (props.as !== 'script' && props.as !== 'style')
+    })
   })
+
+  if (mobileCss) {
+    useHead({ style: [{ innerHTML: mobileCss, tagPriority: 71 }] })
+  }
 
   const fontPreload = { rel: 'preload', as: 'font', type: 'font/woff2', crossorigin: 'anonymous' } as const
 
