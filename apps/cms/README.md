@@ -1,8 +1,9 @@
 # ETH Cargo CMS
 
 Dashboard internal berbasis Nuxt. Layout dashboard, UI login, dan form create
-artikel sudah tersedia. Autentikasi, data kategori/tag/banner, upload media,
-editor Tiptap, dan penerbitan ke API masih tahap integrasi berikutnya.
+artikel sudah tersedia. Login, session HttpOnly, refresh token, logout, dan
+penjagaan route sudah terhubung ke API. Data kategori/tag/banner, upload media,
+editor Tiptap, dan penerbitan artikel dikerjakan pada fase berikutnya.
 
 ## Menjalankan lokal
 
@@ -21,12 +22,29 @@ pnpm dev:api
 
 `pnpm dev` menjalankan seluruh package yang memiliki script `dev`.
 
+Salin `.env.example` menjadi `.env`, lalu isi:
+
+- `NUXT_API_BASE_URL`: URL privat API NestJS, lokalnya `http://localhost:3001`.
+- `NUXT_CMS_ORIGIN`: origin CMS persis, lokalnya `http://localhost:3002`.
+- `NUXT_APP_SECRET`: secret session yang berbeda per environment, minimal 32
+  karakter di staging/production. Development lokal dapat membangkitkannya.
+
+Browser hanya memanggil `/api` pada origin CMS. Access dan refresh token disimpan
+di bagian secure session server, bukan localStorage atau state Vue. Cookie bernama
+`eth-cms-session`, host-only, HttpOnly, SameSite Lax, dan Secure pada HTTPS.
+
 ## Lokasi kerja UI
 
 - `app/layouts/auth.vue`: shell login.
 - `app/layouts/dashboard.vue`: shell dashboard dan sidebar.
 - `app/pages/login.vue`: UI login.
 - `app/pages/articles/create.vue`: UI create artikel.
+- `app/composables/useAuth.ts`: satu pintu aksi login, verifikasi sesi, dan logout.
+- `app/plugins/api.ts`: instance Axios browser dengan base URL `/api`.
+- `app/plugins/vue-query.ts`: konfigurasi TanStack Vue Query.
+- `app/middleware/auth.global.ts`: guard seluruh route dashboard.
+- `server/api/auth`: endpoint server Nuxt untuk login, user aktif, dan logout.
+- `server/utils/auth.ts`: secure session serta rotasi refresh token.
 - `app/pages/**`: halaman placeholder lain sesuai route.
 - `app/components/CmsNavigation.vue`: navigasi dari satu data source.
 - `app/constants/navigation.ts`: label dan route navigasi.
@@ -44,5 +62,5 @@ memvalidasi form lalu menampilkan status kesiapan, tanpa menyimpan artikel.
 Halaman dashboard dan manajemen lain masih placeholder. Sidebar dan header
 berasal dari `app/layouts/dashboard.vue` untuk seluruh halaman dashboard.
 
-Salin `.env.example` menjadi `.env` hanya ketika fase integrasi dimulai. Nilai
-secret tidak boleh masuk repository.
+Provision user dilakukan di API/database, bukan dari CMS. User harus memiliki
+permission `CMS_ACCESS`. Nilai secret tidak boleh masuk repository atau log.

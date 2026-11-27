@@ -3,6 +3,15 @@ import { cmsNavigation } from '~/constants/navigation'
 
 const route = useRoute()
 const menuOpen = ref(false)
+const { user, logout, isLoggingOut } = useAuth()
+
+const userName = computed(() => {
+  if (!user.value)
+    return 'ETH Cargo CMS'
+  return [user.value.firstName, user.value.lastName].filter(Boolean).join(' ')
+})
+
+const userInitial = computed(() => user.value?.firstName?.charAt(0).toUpperCase() || 'E')
 
 const breadcrumbs = computed(() => {
   if (route.path === '/articles/create') return ['Konten', 'Buat artikel']
@@ -81,10 +90,18 @@ watch(() => route.path, () => {
           </label>
           <div class="hidden h-8 w-px bg-border-200 sm:block" aria-hidden="true" />
           <div class="hidden text-right leading-4 sm:block">
-            <p class="text-[11px] font-semibold text-text-secondary">ETH Cargo CMS</p>
-            <p class="text-[10px] text-text-disable">Akun belum terhubung</p>
+            <p class="text-[11px] font-semibold text-text-secondary">{{ userName }}</p>
+            <p class="text-[10px] text-text-disable">CMS</p>
           </div>
-          <span class="flex size-9 items-center justify-center rounded-full bg-primary-500 text-[12px] font-semibold text-white" aria-hidden="true">E</span>
+          <span class="flex size-9 items-center justify-center rounded-full bg-primary-500 text-[12px] font-semibold text-white" aria-hidden="true">{{ userInitial }}</span>
+          <button
+            type="button"
+            :disabled="isLoggingOut"
+            class="min-h-9 rounded-lg px-2 text-[11px] font-semibold text-primary-500 hover:bg-primary-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500 disabled:cursor-not-allowed disabled:opacity-60"
+            @click="logout"
+          >
+            {{ isLoggingOut ? 'Keluar...' : 'Keluar' }}
+          </button>
         </div>
       </header>
 

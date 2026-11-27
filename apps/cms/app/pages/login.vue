@@ -5,7 +5,8 @@ useHead({ title: 'Masuk | ETH Cargo CMS' })
 const email = ref('')
 const password = ref('')
 const errors = reactive({ email: '', password: '' })
-const isLoading = ref(false)
+const route = useRoute()
+const { login, isLoggingIn, loginError } = useAuth()
 
 function validate() {
   errors.email = ''
@@ -27,16 +28,16 @@ function validate() {
 async function handleSubmit() {
   if (!validate()) return
 
-  isLoading.value = true
   try {
-    // TODO: sambungkan ke API login CMS
-    // await $fetch('/api/auth/login', {
-    //   method: 'POST',
-    //   body: { email: email.value, password: password.value },
-    // })
-    // await navigateTo('/')
-  } finally {
-    isLoading.value = false
+    await login(email.value.trim(), password.value)
+    const redirect = typeof route.query.redirect === 'string'
+      && route.query.redirect.startsWith('/')
+      && !route.query.redirect.startsWith('//')
+      ? route.query.redirect
+      : '/dashboard'
+    await navigateTo(redirect)
+  } catch {
+    // Pesan kegagalan disediakan oleh useAuth.
   }
 }
 </script>
@@ -51,6 +52,9 @@ async function handleSubmit() {
     </div>
 
     <form class="mt-6 space-y-4" novalidate @submit.prevent="handleSubmit">
+      <p v-if="loginError" role="alert" class="rounded-lg border border-error-600 bg-primary-50 px-3 py-2 text-xs text-error-700">
+        {{ loginError }}
+      </p>
       <div>
         <label for="email" class="mb-2 block text-[13px] font-medium text-text-secondary">
           Email
@@ -93,11 +97,11 @@ async function handleSubmit() {
 
       <button
         type="submit"
-        :disabled="isLoading"
+        :disabled="isLoggingIn"
         class="mt-1 flex min-h-11 w-full items-center justify-center rounded-full bg-primary-500 px-4 text-[13px] font-semibold text-white transition-colors hover:bg-primary-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500 disabled:cursor-not-allowed disabled:opacity-60"
       >
         <svg
-          v-if="isLoading"
+          v-if="isLoggingIn"
           class="mr-2 h-4 w-4 animate-spin motion-reduce:animate-none"
           viewBox="0 0 24 24"
           fill="none"
@@ -106,7 +110,7 @@ async function handleSubmit() {
           <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" class="opacity-25" />
           <path d="M4 12a8 8 0 018-8" stroke="currentColor" stroke-width="4" stroke-linecap="round" class="opacity-75" />
         </svg>
-        {{ isLoading ? 'Memproses...' : 'Masuk' }}
+        {{ isLoggingIn ? 'Memproses...' : 'Masuk' }}
       </button>
     </form>
     <p class="mt-5 rounded-full border border-border-200 px-4 py-2.5 text-center text-[13px] font-medium text-primary-500">

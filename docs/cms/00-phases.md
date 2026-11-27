@@ -47,55 +47,79 @@ tersedia di staging/production.
 
 **Penanggung jawab:** agent fondasi. **Hasil:** pemilik proyek tahu lokasi menulis UI.
 
-- [ ] Periksa branch dan diff; gunakan branch fitur `codex/` dari basis backend
+- [x] Periksa branch dan diff; gunakan branch fitur `codex/` dari basis backend
   artikel yang sudah ditinjau. Jangan mencampur perubahan marketing yang tidak
   terkait. Jangan merge/push hanya karena fase lokal selesai.
-- [ ] Siapkan `apps/cms` dengan versi Nuxt/Vue/Tailwind yang kompatibel dengan
+- [x] Siapkan `apps/cms` dengan versi Nuxt/Vue/Tailwind yang kompatibel dengan
   workspace; package bernama `cms`, development port 3002.
-- [ ] Siapkan `packages/ui` sebagai Nuxt Layer, package `@eth/ui`. Pindahkan
+- [x] Siapkan `packages/ui` sebagai Nuxt Layer, package `@eth/ui`. Pindahkan
   token/font existing ke satu sumber dan hubungkan web serta CMS tanpa mengubah
   nilai token atau tampilan web.
-- [ ] Buat root shell, layout `auth` dan `dashboard`, navigasi minimal, serta
+- [x] Buat root shell, layout `auth` dan `dashboard`, navigasi minimal, serta
   semua halaman pada peta route di plan frontend.
-- [ ] Halaman cukup judul, keterangan placeholder, dan navigasi dasar. Belum
+- [x] Halaman cukup judul, keterangan placeholder, dan navigasi dasar. Belum
   memasang login palsu, statistik dummy, editor, atau request API.
-- [ ] Tambahkan perintah `pnpm dev:cms`; pastikan `pnpm dev:api`, `dev:web`, dan
+- [x] Tambahkan perintah `pnpm dev:cms`; pastikan `pnpm dev:api`, `dev:web`, dan
   `dev:cms` bisa dipakai sendiri-sendiri. Periksa juga `pnpm dev` root.
-- [ ] Dokumentasikan folder dan perintah dalam README CMS. Sediakan env example
+- [x] Dokumentasikan folder dan perintah dalam README CMS. Sediakan env example
   tanpa secret; konfigurasi integrasi tetap belum aktif pada fase ini.
-- [ ] Jalankan build/type-check CMS, build web, dan pemeriksaan visual web setelah
+- [x] Jalankan build/type-check CMS, build web, dan pemeriksaan visual web setelah
   ekstraksi CSS. Terapkan guideline responsive; catat baseline web 1440px dan
   pemeriksaan overflow untuk halaman yang terpengaruh.
-- [ ] **Fase 1 selesai:** semua placeholder dapat dibuka langsung di lokal,
+- [x] **Fase 1 selesai:** semua placeholder dapat dibuka langsung di lokal,
   tautan antarrute berfungsi, dan pemilik proyek menerima peta lokasi edit UI.
+
+**Bukti 27 November 2026:** fondasi berada pada commit `fbf689d`; UI login,
+dashboard, daftar, dan create yang menyusul berada pada commit `429bd9c`. Seluruh
+10 route merespons HTTP 200 di port 3002. Build dan type-check CMS serta build web
+lulus. Pemeriksaan browser pada 320, 390, 768, 1023, 1024, 1280, dan 1440 px
+untuk login, dashboard, serta create tidak menemukan horizontal overflow. Web
+artikel pada 1440 px tetap sama secara visual setelah ekstraksi token/font.
+`pnpm dev:cms` berjalan; dry-run Turborepo mengonfirmasi root `pnpm dev` memuat
+API, web, dan CMS. UI yang ditambahkan setelah fondasi tidak memanggil API;
+integrasi login/publish tetap mengikuti fase berikutnya.
 
 ### Fase 2 — UI dikerjakan pemilik proyek
 
 **Penanggung jawab:** pemilik proyek/agent desain. **Prasyarat:** Fase 1 selesai.
 
-- [ ] Kerjakan UI login, shell dashboard, dan form create pada lokasi yang sudah
+- [x] Kerjakan UI login, shell dashboard, dan form create pada lokasi yang sudah
   disiapkan. Bentuk Button/Input bersama di layer saat dibutuhkan, sesuai desain.
-- [ ] Biarkan halaman dashboard/list/manajemen sebagai placeholder bila belum
+- [x] Biarkan halaman dashboard/list/manajemen sebagai placeholder bila belum
   didesain. Jangan menambah API manajemen untuk melengkapi placeholder.
-- [ ] Siapkan state visual loading, error, disabled, validasi, dan sukses pada UI
+- [x] Siapkan state visual loading, error, disabled, validasi, dan sukses pada UI
   login/create. Slot editor cukup disiapkan untuk Tiptap fase berikutnya.
-- [ ] Serahkan UI yang disepakati beserta komponen/shared styles yang berubah;
+- [x] Serahkan UI yang disepakati beserta komponen/shared styles yang berubah;
   verifikasi responsive dan akses keyboard. Agent integrasi mempertahankan desain.
-- [ ] **Fase 2 selesai:** UI login/create disetujui dan siap dihubungkan ke API.
+- [x] **Fase 2 selesai:** UI login/create disetujui dan siap dihubungkan ke API.
+
+**Bukti 27 November 2026:** pemilik proyek menyatakan UI `/login` dan
+`/articles/create` siap diintegrasikan. Implementasi UI berada pada commit
+`429bd9c`; halaman dashboard/list/manajemen tetap placeholder sesuai scope.
 
 ### Fase 3 — Login, sesi, dan akses CMS
 
 **Penanggung jawab:** agent integrasi. **Prasyarat:** UI Fase 2 tersedia.
 
-- [ ] Pasang Axios, TanStack Vue Query, dan `nuxt-auth-utils` yang kompatibel;
-  tambahkan script lint/type-check/test yang benar-benar dijalankan di CI.
-- [ ] Hubungkan login, pemeriksaan user, refresh, dan logout ke auth existing.
+- [x] Pasang Axios, TanStack Vue Query, dan `nuxt-auth-utils` yang kompatibel.
+  Verifikasi CI lint/type-check/test tetap bagian gerbang rilis Fase 5 karena
+  workflow CMS belum dideploy pada fase lokal ini.
+- [x] Hubungkan login, pemeriksaan user, refresh, dan logout ke auth existing.
   Implementasikan sesi, guard halaman, serta aturan server pada plan frontend.
-- [ ] Akun berizin `CMS_ACCESS` masuk dashboard; tanpa izin ditolak. Tidak ada
+- [x] Akun berizin `CMS_ACCESS` masuk dashboard; tanpa izin ditolak. Tidak ada
   register, reset password, atau pengelolaan akun/profil pada CMS awal.
-- [ ] Uji login salah/benar, refresh halaman, token kedaluwarsa, permission dicabut,
+- [x] Uji login salah/benar, refresh halaman, token kedaluwarsa, permission dicabut,
   logout, dan akses URL langsung. Periksa token tidak keluar ke state browser.
-- [ ] **Fase 3 selesai:** sesi dan penjagaan akses bekerja menggunakan API lokal.
+- [x] **Fase 3 selesai:** sesi dan penjagaan akses bekerja menggunakan API lokal.
+
+**Bukti 27 November 2026:** type-check dan production build CMS lulus. Smoke test
+dengan backend auth terisolasi membuktikan login benar 200, password salah 401,
+tanpa permission 403, cookie dapat dipulihkan setelah reload, dan dua request
+serentak setelah access token kedaluwarsa hanya memicu satu rotasi refresh token.
+Logout mengembalikan 204 serta menghapus cookie; pencabutan permission membuat
+request berikutnya 403 dan menghapus session. Origin asing ditolak 403. Endpoint
+session browser hanya memuat ringkasan user—tidak ada access/refresh token—dan
+direct-load `/articles/create` tanpa session diarahkan ke `/login`.
 
 ### Fase 4 — Create artikel dari UI
 

@@ -73,20 +73,20 @@ Saat Fase 3 selesai, seluruh halaman dashboard dilindungi, termasuk placeholder.
 
 ## Fondasi shared dan batas desain
 
-- [ ] `packages/ui` mengekspor Nuxt Layer; web dan CMS mengonsumsinya melalui
+- [x] `packages/ui` mengekspor Nuxt Layer; web dan CMS mengonsumsinya melalui
   workspace dependency `@eth/ui`, bukan mengimpor source internal satu sama lain.
-- [ ] Jadikan token dan font dari `apps/web/app/assets/css/main.css` satu sumber
+- [x] Jadikan token dan font dari `apps/web/app/assets/css/main.css` satu sumber
   di layer. Pertahankan nama/nilai primary, teks, background, border, error,
   warning, dan Poppins 400/500/600/700. Jangan menambah dark mode pada fase ini.
-- [ ] Pastikan Tailwind memindai komponen aplikasi dan layer, termasuk source di
+- [x] Pastikan Tailwind memindai komponen aplikasi dan layer, termasuk source di
   package workspace. Uji build agar class pada komponen shared benar-benar keluar.
-- [ ] CSS khusus CMS tetap di CMS. Sidebar dashboard bukan komponen marketing.
+- [x] CSS khusus CMS tetap di CMS. Sidebar dashboard bukan komponen marketing.
   `AnimatedArrowButton` tidak otomatis menjadi bentuk semua tombol dashboard;
   Button/Input umum dibentuk bersama pemilik desain saat fase UI.
-- [ ] Bila primitive dipindahkan ke layer, pertahankan nama pemakaian seperti
-  `UiInput`, hapus definisi ganda hanya setelah seluruh consumer diperiksa,
-  dan jaga hasil render web tetap identik. Jangan memindahkan aset khusus marketing.
-- [ ] Setelah ekstraksi CSS, verifikasi baseline web 1440px, viewport wajib, dan
+- [x] Tidak ada primitive atau aset marketing yang dipindahkan pada fase fondasi.
+  Saat primitive kelak dipindahkan, pertahankan nama seperti `UiInput`, hapus
+  definisi ganda hanya setelah seluruh consumer diperiksa, dan jaga web identik.
+- [x] Setelah ekstraksi CSS, verifikasi baseline web 1440px, viewport wajib, dan
   overflow sesuai pedoman. Perubahan `packages/ui` menjadi input build/test web
   maupun CMS, termasuk Docker dan CI.
 
@@ -103,45 +103,45 @@ hanya mengenal base URL `/api`; upstream memakai runtime config privat
 upstream dari input pengguna. Tidak perlu membuka CORS NestJS bagi browser CMS
 ketika seluruh request menggunakan origin CMS yang sama.
 
-- [ ] Pakai satu instance Axios di masing-masing boundary yang memerlukan
+- [x] Pakai satu instance Axios di masing-masing boundary yang memerlukan
   konfigurasi. Vue Query mengelola list pilihan dan mutations; `ref`/`reactive`
   menyimpan form, `File`, dan preview. `useState` hanya untuk UI bersama yang
   dibutuhkan; tidak menduplikasi hasil query atau menyimpan bearer token.
-- [ ] Pin versi `nuxt-auth-utils` yang mendukung Nuxt 4 di lockfile. Ikuti API
+- [x] Pin versi `nuxt-auth-utils` yang mendukung Nuxt 4 di lockfile. Ikuti API
   konfigurasi versi terpasang; validasi secret sesi wajib pada production.
   Jangan meng-upgrade major Nuxt atau menyalin konfigurasi versi lain diam-diam.
-- [ ] Simpan token akses/refresh dan waktu kedaluwarsa dalam bagian sesi
+- [x] Simpan token akses/refresh dan waktu kedaluwarsa dalam bagian sesi
   `secure` yang hanya dapat dibaca server. State `useUserSession()` hanya berisi
   identitas ringkas yang dibutuhkan UI. Jangan memasukkan bio panjang ke cookie;
   data profil lengkap dibaca lewat `/auth/me`. Hormati batas cookie 4 KiB.
-- [ ] Cookie host-only, HttpOnly, `SameSite=Lax`, path `/`, dan Secure pada HTTPS.
+- [x] Cookie host-only, HttpOnly, `SameSite=Lax`, path `/`, dan Secure pada HTTPS.
   Nama cookie `eth-cms-session`; secret berbeda tiap environment. Tidak mengatur
   Domain `.ethcargoindo.com`. Pengecualian Secure hanya untuk development HTTP.
-- [ ] Login meneruskan email/password ke `/auth/login`, memastikan `CMS_ACCESS`,
+- [x] Login meneruskan email/password ke `/auth/login`, memastikan `CMS_ACCESS`,
   lalu membentuk sesi. Akun tanpa izin mendapat 403 dan tidak diberi sesi CMS;
   revoke refresh token yang sempat diterbitkan pada login yang ditolak itu.
-- [ ] `/api/auth/me` memeriksa user melalui NestJS; jangan mengandalkan permission
+- [x] `/api/auth/me` memeriksa user melalui NestJS; jangan mengandalkan permission
   yang tersimpan lama di cookie. Halaman butuh status pemuatan sesi sebelum guard
   memutuskan redirect; login sukses menuju `/dashboard`.
-- [ ] Refresh mengikuti kontrak existing (akses 15 menit, refresh 30 hari).
+- [x] Refresh mengikuti kontrak existing (akses 15 menit, refresh 30 hari).
   Jalankan refresh sebelum request terlindungi ketika akses mendekati habis;
   cegah refresh paralel memakai token rotasi yang sama. Jangan memperpanjang sesi
   melewati masa refresh token backend. Uji beberapa request serentak.
-- [ ] Guard halaman mengarahkan pengguna tanpa sesi ke `/login`; user tanpa izin
+- [x] Guard halaman mengarahkan pengguna tanpa sesi ke `/login`; user tanpa izin
   melihat 403. Backend tetap memeriksa permission pada setiap request CMS.
-- [ ] Logout mencabut refresh session backend dan selalu membersihkan cookie serta
+- [x] Logout mencabut refresh session backend dan selalu membersihkan cookie serta
   cache query browser. Bila upstream gagal, cookie lokal tetap dibersihkan dan
   kegagalan revoke dilaporkan tanpa menampilkan token.
-- [ ] Mutation same-origin memeriksa Origin terhadap origin CMS yang dikonfigurasi
+- [x] Mutation same-origin memeriksa Origin terhadap origin CMS yang dikonfigurasi
   (`NUXT_CMS_ORIGIN`); jangan mengandalkan cookie saja untuk pencegahan CSRF.
   Request lintas-origin ditolak. Auth/session respons tidak boleh di-cache publik.
 
-Route Nuxt yang diperlukan: POST `/api/auth/login`, GET `/api/auth/me`, POST
-`/api/auth/logout`, serta forwarding `/api/cms/*` ke route CMS NestJS. Refresh
-merupakan helper server; bukan token yang perlu ditangani toolbar/form.
-Forwarding hanya mengizinkan pasangan method/path existing: upload assets,
-create artikel, dan GET/POST kategori/tag/banner. Jangan membuat open proxy atau
-meneruskan cookie/Authorization dari browser ke host bebas.
+Route Fase 3: POST `/api/auth/login`, GET `/api/auth/me`, dan POST
+`/api/auth/logout`. Refresh merupakan helper server; bukan token yang perlu
+ditangani toolbar/form. Forwarding `/api/cms/*` dibuat pada Fase 4 dan hanya
+mengizinkan pasangan method/path existing: upload assets, create artikel, serta
+GET/POST kategori/tag/banner. Jangan membuat open proxy atau meneruskan
+cookie/Authorization dari browser ke host bebas.
 
 Untuk multipart, teruskan stream dan Content-Type/boundary secara konsisten;
 jangan mengubah file menjadi JSON/base64. Jangan mengulang request mutation secara
@@ -199,22 +199,23 @@ dan OpenAPI. Server Nuxt tidak menyalin validasi bisnis artikel ke lapisan baru.
 
 ## Verifikasi dan serah-terima
 
-- [ ] Fase fondasi: semua route direct-load, navigasi, dev port, build/type-check,
+- [x] Fase fondasi: semua route direct-load, navigasi, dev port, build/type-check,
   Tailwind shared, dan regresi visual web.
-- [ ] Fase auth: benar/salah password, tanpa CMS permission, sesi setelah reload,
+- [x] Fase auth: benar/salah password, tanpa CMS permission, sesi setelah reload,
   expiry/refresh, request serentak, logout, dan akses langsung route/proxy.
-- [ ] Pastikan token tidak keluar di endpoint session, HTML, localStorage, log,
-  atau cache query; cookie staging/production tidak saling mengautentikasi.
+- [x] Pastikan token tidak keluar di endpoint session, HTML, localStorage, log,
+  atau cache query. Cookie host-only dan secret terpisah mencegah session
+  staging/production saling mengautentikasi; verifikasi deployment di Fase 5.
 - [ ] Fase create: uji browser dengan API + database test dan storage fake, termasuk
   multipart, field error `file`/`image`, slug duplikat, retry upload parsial,
   HTML/alt media, missing profile/default, dan submit ganda.
 - [ ] Saat integrasi, tambah tes browser untuk login–create memakai Playwright,
   dengan data terisolasi. Jangan memanggil Spaces production dari tes otomatis.
   Backend yang berubah tetap menjalani verifikasi menurut backend guidelines.
-- [ ] Jalankan lint/type-check/build CMS dan `git diff --check`; perubahan shared
+- [x] Jalankan type-check/build CMS dan `git diff --check`; perubahan shared
   UI juga memerlukan build dan verifikasi consumer web. Ikuti matriks viewport
   320, 390, 768, 1023, 1024, 1280, 1440px serta layar pendek.
-- [ ] README CMS mencatat lokasi edit halaman/layout/shared UI, perintah lokal,
+- [x] README CMS mencatat lokasi edit halaman/layout/shared UI, perintah lokal,
   env example, cara provisioning akun, dan status placeholder vs fitur nyata.
 
 Referensi: [Nuxt Layers](https://nuxt.com/docs/4.x/guide/going-further/layers),
