@@ -1,6 +1,7 @@
 import axios from 'axios'
 import { createError, type H3Event } from 'h3'
-import type { ApiEnvelope, AuthTokenData, CmsSessionUser, CmsUser } from '../../shared/types/auth'
+import type { ApiEnvelope } from '../../shared/types/api'
+import type { AuthTokenData, CmsSessionUser, CmsUser } from '../../shared/types/auth'
 import { backendApi, upstreamError } from './api'
 
 const CMS_ACCESS = 'CMS_ACCESS'
@@ -78,7 +79,7 @@ async function rotateTokens(event: H3Event) {
   }
 }
 
-async function accessToken(event: H3Event, forceRefresh = false) {
+export async function cmsAccessToken(event: H3Event, forceRefresh = false) {
   const session = await requireUserSession(event)
   if (
     forceRefresh
@@ -92,7 +93,7 @@ async function accessToken(event: H3Event, forceRefresh = false) {
 }
 
 export async function currentCmsUser(event: H3Event) {
-  let token = await accessToken(event)
+  let token = await cmsAccessToken(event)
   let response
   try {
     response = await backendApi(event).get<ApiEnvelope<CmsUser>>('/auth/me', {
@@ -101,7 +102,7 @@ export async function currentCmsUser(event: H3Event) {
   } catch (error) {
     if (!axios.isAxiosError(error) || error.response?.status !== 401)
       upstreamError(error)
-    token = await accessToken(event, true)
+    token = await cmsAccessToken(event, true)
     try {
       response = await backendApi(event).get<ApiEnvelope<CmsUser>>('/auth/me', {
         headers: { Authorization: `Bearer ${token}` },

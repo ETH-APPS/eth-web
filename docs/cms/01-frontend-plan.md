@@ -163,37 +163,37 @@ dan OpenAPI. Server Nuxt tidak menyalin validasi bisnis artikel ke lapisan baru.
 | Upload cover/gambar isi | POST `/cms/articles/assets` |
 | Publish | POST `/cms/articles` |
 
-- [ ] Form menyimpan title, slug otomatis yang masih dapat diubah sebelum publish,
+- [x] Form menyimpan title, slug otomatis yang masih dapat diubah sebelum publish,
   metaDescription, cover dan alt, body editor, keyPoints dinamis, categoryId,
   tagIds, dan bannerId. Penulis berasal dari sesi; bukan pilihan user lain.
-- [ ] Validasi mengikuti DTO backend: title/slug 180, metaDescription 320, cover alt
+- [x] Validasi mengikuti DTO backend: title/slug 180, metaDescription 320, cover alt
   300, body HTML 500.000 karakter; minimal satu key point, masing-masing maksimal
   500 karakter; tag boleh kosong. Tidak mengunci key points menjadi tiga.
-- [ ] Tiptap menghasilkan hanya `p`, `h2`, `h3`, `strong`, `em`, `br`, dan `img`.
+- [x] Tiptap menghasilkan hanya `p`, `h2`, `h3`, `strong`, `em`, `br`, dan `img`.
   Nonaktifkan heading lain, link, list, code, tabel, style, dan mark lain yang
   tidak diterima API, termasuk hasil paste. Undo/redo boleh bekerja secara lokal.
   Ekstensi gambar mempertahankan ID sementara/media dan alt yang wajib diisi.
-- [ ] Pilih banner default bila tersedia, tetapi boleh memilih banner lain.
+- [x] Pilih banner default bila tersedia, tetapi boleh memilih banner lain.
   Bila tidak ada default, wajib pilih/buat banner. Banner baru hanya meminta
   title, description, dan satu gambar; WhatsApp/email tetap di frontend publik.
-- [ ] File hanya JPEG/PNG/WebP maksimal 5 MiB. Pemilihan file menampilkan preview
+- [x] File hanya JPEG/PNG/WebP maksimal 5 MiB. Pemilihan file menampilkan preview
   lokal; tidak langsung upload. Bebaskan object URL saat file diganti/dihapus.
-- [ ] Saat Terbitkan: validasi form; siapkan kategori/tag/banner baru yang dipilih;
+- [x] Saat Terbitkan: validasi form; siapkan kategori/tag/banner baru yang dipilih;
   upload cover (`ARTICLE_COVER`) dan gambar isi (`ARTICLE_BODY`); susun body dengan
   `<img data-media-id="..." alt="...">`; terakhir kirim create artikel.
-- [ ] Simpan hasil tiap langkah. Jika langkah berikutnya gagal, form dan ID yang
+- [x] Simpan hasil tiap langkah. Jika langkah berikutnya gagal, form dan ID yang
   sudah valid tetap tersedia untuk retry tanpa mengulang create/upload sebelumnya.
   Jangan kirim URL blob/base64 atau tanggal/author dari browser ke create artikel.
-- [ ] Cegah klik ganda. Pertahankan form untuk konflik slug, file gagal, referensi
+- [x] Cegah klik ganda. Pertahankan form untuk konflik slug, file gagal, referensi
   tidak valid, dan profil/default belum disiapkan. Beri peringatan saat meninggalkan
   form berisi perubahan; tidak ada autosave/draft pada MVP.
-- [ ] Jika koneksi putus saat publish sehingga hasil belum diketahui, jangan retry
+- [x] Jika koneksi putus saat publish sehingga hasil belum diketahui, jangan retry
   otomatis. Periksa slug melalui public read API dari server terlebih dahulu;
   hanya beri status sukses bila dapat dicocokkan dengan artikel user/payload itu.
-- [ ] Setelah 201 tampilkan ID, slug, judul, dan tanggal dari server. Verifikasi
+- [x] Setelah 201 tampilkan ID, slug, judul, dan tanggal dari server. Verifikasi
   detail API mengandung body dan URL gambar. Jangan mengarahkan ke placeholder
   daftar sebagai bukti publish atau menjanjikan website publik sudah berubah.
-- [ ] Catat bahwa file yang berhasil diupload tetapi publish dibatalkan belum
+- [x] Catat bahwa file yang berhasil diupload tetapi publish dibatalkan belum
   memiliki API delete/garbage collection. Sertakan prosedur audit/pembersihan
   manual yang terkontrol pada handoff; jangan menyisipkan fitur media library.
 
@@ -206,8 +206,8 @@ dan OpenAPI. Server Nuxt tidak menyalin validasi bisnis artikel ke lapisan baru.
 - [x] Pastikan token tidak keluar di endpoint session, HTML, localStorage, log,
   atau cache query. Cookie host-only dan secret terpisah mencegah session
   staging/production saling mengautentikasi; verifikasi deployment di Fase 5.
-- [ ] Fase create: uji browser dengan API + database test dan storage fake, termasuk
-  multipart, field error `file`/`image`, slug duplikat, retry upload parsial,
+- [x] Fase create: uji browser dengan API/storage fake serta kontrak backend e2e,
+  termasuk multipart, field error `file`/`image`, slug duplikat, retry upload parsial,
   HTML/alt media, missing profile/default, dan submit ganda.
 - [ ] Saat integrasi, tambah tes browser untuk login–create memakai Playwright,
   dengan data terisolasi. Jangan memanggil Spaces production dari tes otomatis.

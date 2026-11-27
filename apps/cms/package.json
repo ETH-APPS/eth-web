@@ -11,6 +11,11 @@
   "dependencies": {
     "@eth/ui": "workspace:*",
     "@tanstack/vue-query": "^5.108.4",
+    "@tiptap/extension-image": "^3.35.0",
+    "@tiptap/extension-placeholder": "^3.35.0",
+    "@tiptap/pm": "^3.35.0",
+    "@tiptap/starter-kit": "^3.35.0",
+    "@tiptap/vue-3": "^3.35.0",
     "axios": "^1.21.1",
     "nuxt": "^4.6.2",
     "nuxt-auth-utils": "0.6.2",

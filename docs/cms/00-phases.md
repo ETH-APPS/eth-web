@@ -123,17 +123,37 @@ direct-load `/articles/create` tanpa session diarahkan ke `/login`.
 
 ### Fase 4 — Create artikel dari UI
 
-- [ ] Hubungkan pilihan/create kategori, tag, dan banner di form artikel.
-- [ ] Pasang Tiptap dan kontrol yang disetujui; simpan file preview lokal sampai
+- [x] **Fase 4A:** buat proxy allowlist dan hooks Vue Query untuk membaca
+  kategori, tag, serta banner; create kategori/tag langsung tersimpan ke API.
+  Form menyimpan ID pilihan, bukan nama. Create banner belum termasuk tahap ini.
+- [x] Hubungkan pilihan/create kategori, tag, dan banner di form artikel.
+- [x] Pasang Tiptap dan kontrol yang disetujui; simpan file preview lokal sampai
   publish, lalu jalankan upload dan create sesuai plan frontend.
-- [ ] Validasi field, tampilkan field error API, cegah submit ganda, pertahankan
+- [x] Validasi field, tampilkan field error API, cegah submit ganda, pertahankan
   form serta ID upload yang sudah berhasil saat langkah berikutnya gagal.
-- [ ] Setelah 201, tampilkan bukti tersimpan berupa judul, ID, dan slug; verifikasi
+- [x] Setelah 201, tampilkan bukti tersimpan berupa judul, ID, dan slug; verifikasi
   lewat public read API. Jangan menganggap halaman web publik sudah memakai API.
-- [ ] Uji kasus berhasil, konflik slug, file gagal, banner/default tidak tersedia,
+- [x] Uji kasus berhasil, konflik slug, file gagal, banner/default tidak tersedia,
   profil penulis belum ada, dan sesi habis di tengah proses.
-- [ ] **Fase 4 selesai:** akun CMS menerbitkan satu artikel lengkap melalui browser;
+- [x] **Fase 4 selesai:** akun CMS menerbitkan satu artikel lengkap melalui browser;
   dashboard/list/manajemen tetap boleh placeholder.
+
+**Bukti Fase 4A, 28 November 2026:** GET kategori/tag/banner dan POST
+kategori/tag lulus melalui secure session Nuxt. Resource di luar allowlist
+mendapat 404 dan mutation dari origin asing mendapat 403. Data hasil create
+langsung muncul pada cache form. Build/type-check lulus; pilihan API tampil pada
+form di 320, 390, 768, 1023, 1024, 1280, serta 1440 px tanpa overflow horizontal.
+
+**Bukti Fase 4 lengkap, 28 November 2026:** browser test menjalankan login →
+create banner multipart → pilih kategori/tag → Tiptap dengan gambar body → upload
+cover/body → create artikel → public-read verification. Payload akhir hanya berisi
+`data-media-id`, tanpa blob URL atau local image ID. Konflik slug menampilkan pesan
+yang sesuai; retry dengan file yang sama tidak mengulang upload cover. CSRF asing
+ditolak 403, content type salah 415, dan payload di atas batas BFF ditolak 413.
+Backend e2e existing mencakup profil penulis yang hilang dan konflik slug; UI
+memetakan error profil/default/session. Type-check, production build, diff check,
+dan matriks viewport wajib lulus. Pengujian memakai API/storage fake sehingga
+database serta Spaces development/production tidak berubah.
 
 ### Fase 5 — Staging, merge, dan rilis CMS production
 

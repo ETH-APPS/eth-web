@@ -24,8 +24,3 @@ export interface AuthTokenData {
   refreshToken: string
   expiresInSeconds: number
 }
-
-export interface ApiEnvelope<T> {
-  request_id: string
-  data: T
-}

@@ -1,50 +1,106 @@
 <script setup lang="ts">
-const props = defineProps<{ modelValue: string }>()
-const emit = defineEmits<{ 'update:modelValue': [value: string] }>()
-const editor = ref<HTMLElement | null>(null)
+import Image from '@tiptap/extension-image'
+import Placeholder from '@tiptap/extension-placeholder'
+import StarterKit from '@tiptap/starter-kit'
+import { EditorContent, useEditor } from '@tiptap/vue-3'
+import type { ArticleBodyImageDraft } from '~/types/article'
+
+const props = defineProps<{
+  modelValue: string
+  images: ArticleBodyImageDraft[]
+}>()
+const emit = defineEmits<{
+  'update:modelValue': [value: string]
+  'update:images': [value: ArticleBodyImageDraft[]]
+}>()
+
+const BodyImage = Image.extend({
+  addAttributes() {
+    return {
+      ...this.parent?.(),
+      'data-local-image-id': {
+        default: null,
+        parseHTML: element => element.getAttribute('data-local-image-id'),
+        renderHTML: attributes => attributes['data-local-image-id']
+          ? { 'data-local-image-id': attributes['data-local-image-id'] }
+          : {},
+      },
+      'data-media-id': {
+        default: null,
+        parseHTML: element => element.getAttribute('data-media-id'),
+        renderHTML: attributes => attributes['data-media-id']
+          ? { 'data-media-id': attributes['data-media-id'] }
+          : {},
+      },
+    }
+  },
+})
+
 const imageInput = ref<HTMLInputElement | null>(null)
 const imageDialog = ref<HTMLDialogElement | null>(null)
+const pendingImageFile = ref<File | null>(null)
 const pendingImageUrl = ref('')
-const pendingImageName = ref('')
 const imageAlt = ref('')
 const imageError = ref('')
-const activeImageUrls = new Set<string>()
-let insertionRange: Range | null = null
+const drafts = shallowRef<ArticleBodyImageDraft[]>([...props.images])
 
-function syncContent() {
-  const usedImageUrls = new Set(
-    [...(editor.value?.querySelectorAll<HTMLImageElement>('img[data-local-image-id]') ?? [])]
-      .map(image => image.src),
+function syncImages(html: string) {
+  const body = new DOMParser().parseFromString(html, 'text/html').body
+  const usedIds = new Set(
+    [...body.querySelectorAll('img[data-local-image-id]')]
+      .map(image => image.getAttribute('data-local-image-id'))
+      .filter((id): id is string => Boolean(id)),
   )
-  activeImageUrls.forEach((url) => {
-    if (!usedImageUrls.has(url)) {
-      URL.revokeObjectURL(url)
-      activeImageUrls.delete(url)
-    }
-  })
-  emit('update:modelValue', editor.value?.innerHTML ?? '')
+  const removed = drafts.value.filter(image => !usedIds.has(image.id))
+  removed.forEach(image => URL.revokeObjectURL(image.previewUrl))
+  if (removed.length) {
+    drafts.value = drafts.value.filter(image => usedIds.has(image.id))
+    emit('update:images', drafts.value)
+  }
 }
 
-function format(command: 'bold' | 'italic' | 'formatBlock' | 'insertLineBreak', value?: string) {
-  editor.value?.focus()
-  document.execCommand(command, false, value)
-  syncContent()
-}
-
-function pastePlainText(event: ClipboardEvent) {
-  event.preventDefault()
-  const text = event.clipboardData?.getData('text/plain') ?? ''
-  document.execCommand('insertText', false, text)
-  syncContent()
-}
+const editor = useEditor({
+  content: props.modelValue,
+  extensions: [
+    StarterKit.configure({
+      blockquote: false,
+      bulletList: false,
+      code: false,
+      codeBlock: false,
+      heading: { levels: [2, 3] },
+      horizontalRule: false,
+      link: false,
+      listItem: false,
+      orderedList: false,
+      strike: false,
+      underline: false,
+    }),
+    BodyImage.configure({ allowBase64: false }),
+    Placeholder.configure({ placeholder: 'Mulai tulis artikel di sini...' }),
+  ],
+  editorProps: {
+    attributes: {
+      'aria-label': 'Isi artikel',
+      'aria-multiline': 'true',
+      'role': 'textbox',
+    },
+    handlePaste: (_view, event) => Boolean(event.clipboardData?.files.length),
+    handleDrop: (_view, event) => Boolean(event.dataTransfer?.files.length),
+    transformPastedHTML(html) {
+      const body = new DOMParser().parseFromString(html, 'text/html').body
+      body.querySelectorAll('img').forEach(image => image.remove())
+      return body.innerHTML
+    },
+  },
+  onUpdate: ({ editor }) => {
+    const html = editor.getHTML()
+    emit('update:modelValue', html)
+    syncImages(html)
+  },
+})
 
 function openImagePicker() {
   imageError.value = ''
-  const selection = window.getSelection()
-  const range = selection?.rangeCount ? selection.getRangeAt(0) : null
-  insertionRange = range && editor.value?.contains(range.commonAncestorContainer)
-    ? range.cloneRange()
-    : null
   imageInput.value?.click()
 }
 
@@ -61,9 +117,8 @@ function selectImage(event: Event) {
 
   if (pendingImageUrl.value)
     URL.revokeObjectURL(pendingImageUrl.value)
-
+  pendingImageFile.value = file
   pendingImageUrl.value = URL.createObjectURL(file)
-  pendingImageName.value = file.name
   imageAlt.value = ''
   imageError.value = ''
   imageDialog.value?.showModal()
@@ -72,10 +127,9 @@ function selectImage(event: Event) {
 function resetPendingImage() {
   if (pendingImageUrl.value)
     URL.revokeObjectURL(pendingImageUrl.value)
+  pendingImageFile.value = null
   pendingImageUrl.value = ''
-  pendingImageName.value = ''
   imageAlt.value = ''
-  insertionRange = null
 }
 
 function cancelImage() {
@@ -89,78 +143,62 @@ function insertImage() {
     imageError.value = 'Teks alternatif gambar wajib diisi.'
     return
   }
-  if (!editor.value || !pendingImageUrl.value) return
+  if (!editor.value || !pendingImageFile.value || !pendingImageUrl.value) return
 
-  const image = document.createElement('img')
-  image.src = pendingImageUrl.value
-  image.alt = alt
-  image.dataset.localImageId = crypto.randomUUID()
-
-  const range = insertionRange && editor.value.contains(insertionRange.commonAncestorContainer)
-    ? insertionRange
-    : document.createRange()
-  if (!insertionRange || !editor.value.contains(range.commonAncestorContainer)) {
-    range.selectNodeContents(editor.value)
-    range.collapse(false)
+  const image: ArticleBodyImageDraft = {
+    id: crypto.randomUUID(),
+    file: pendingImageFile.value,
+    previewUrl: pendingImageUrl.value,
+    alt,
   }
+  drafts.value = [...drafts.value, image]
+  emit('update:images', drafts.value)
+  editor.value.chain().focus().insertContent({
+    type: 'image',
+    attrs: {
+      src: image.previewUrl,
+      alt: image.alt,
+      'data-local-image-id': image.id,
+    },
+  }).run()
 
-  range.deleteContents()
-  range.insertNode(image)
-  range.setStartAfter(image)
-  range.collapse(true)
-
-  const selection = window.getSelection()
-  selection?.removeAllRanges()
-  selection?.addRange(range)
-
-  activeImageUrls.add(pendingImageUrl.value)
+  pendingImageFile.value = null
   pendingImageUrl.value = ''
+  imageAlt.value = ''
   imageError.value = ''
   imageDialog.value?.close()
-  pendingImageName.value = ''
-  imageAlt.value = ''
-  insertionRange = null
-  editor.value.focus()
-  syncContent()
 }
 
-watch(() => props.modelValue, value => {
-  if (editor.value && editor.value.innerHTML !== value)
-    editor.value.innerHTML = value
+watch(() => props.modelValue, (value) => {
+  if (editor.value && editor.value.getHTML() !== value)
+    editor.value.commands.setContent(value, { emitUpdate: false })
+})
+
+watch(() => props.images, (value) => {
+  drafts.value = [...value]
 })
 
 onBeforeUnmount(() => {
-  if (pendingImageUrl.value)
-    URL.revokeObjectURL(pendingImageUrl.value)
-  activeImageUrls.forEach(url => URL.revokeObjectURL(url))
+  resetPendingImage()
+  drafts.value.forEach(image => URL.revokeObjectURL(image.previewUrl))
 })
 </script>
 
 <template>
   <div>
     <div role="toolbar" aria-label="Format isi artikel" class="flex flex-wrap items-center gap-1 border-b border-border-200 px-3 py-2 text-[12px] text-text-tertiary sm:px-5">
-      <button type="button" class="min-h-9 rounded px-2 hover:bg-bg-100 focus-visible:outline-2 focus-visible:outline-primary-500" @mousedown.prevent @click="format('formatBlock', 'p')">Paragraf</button>
-      <button type="button" class="min-h-9 rounded px-2 font-semibold hover:bg-bg-100 focus-visible:outline-2 focus-visible:outline-primary-500" @mousedown.prevent @click="format('formatBlock', 'h2')">H2</button>
-      <button type="button" class="min-h-9 rounded px-2 font-semibold hover:bg-bg-100 focus-visible:outline-2 focus-visible:outline-primary-500" @mousedown.prevent @click="format('formatBlock', 'h3')">H3</button>
+      <button type="button" :class="{ 'bg-bg-100 text-primary-500': editor?.isActive('paragraph') }" class="min-h-9 rounded px-2 hover:bg-bg-100 focus-visible:outline-2 focus-visible:outline-primary-500" @click="editor?.chain().focus().setParagraph().run()">Paragraf</button>
+      <button type="button" :class="{ 'bg-bg-100 text-primary-500': editor?.isActive('heading', { level: 2 }) }" class="min-h-9 rounded px-2 font-semibold hover:bg-bg-100 focus-visible:outline-2 focus-visible:outline-primary-500" @click="editor?.chain().focus().toggleHeading({ level: 2 }).run()">H2</button>
+      <button type="button" :class="{ 'bg-bg-100 text-primary-500': editor?.isActive('heading', { level: 3 }) }" class="min-h-9 rounded px-2 font-semibold hover:bg-bg-100 focus-visible:outline-2 focus-visible:outline-primary-500" @click="editor?.chain().focus().toggleHeading({ level: 3 }).run()">H3</button>
       <span class="mx-1 h-5 w-px bg-border-200" aria-hidden="true" />
-      <button type="button" aria-label="Tebal" class="min-h-9 min-w-9 rounded font-bold hover:bg-bg-100 focus-visible:outline-2 focus-visible:outline-primary-500" @mousedown.prevent @click="format('bold')">B</button>
-      <button type="button" aria-label="Miring" class="min-h-9 min-w-9 rounded italic hover:bg-bg-100 focus-visible:outline-2 focus-visible:outline-primary-500" @mousedown.prevent @click="format('italic')">I</button>
-      <button type="button" class="min-h-9 rounded px-2 hover:bg-bg-100 focus-visible:outline-2 focus-visible:outline-primary-500" @mousedown.prevent @click="format('insertLineBreak')">Baris baru</button>
-      <button type="button" class="min-h-9 rounded px-2 hover:bg-bg-100 focus-visible:outline-2 focus-visible:outline-primary-500" @mousedown.prevent @click="openImagePicker">Gambar</button>
+      <button type="button" aria-label="Tebal" :class="{ 'bg-bg-100 text-primary-500': editor?.isActive('bold') }" class="min-h-9 min-w-9 rounded font-bold hover:bg-bg-100 focus-visible:outline-2 focus-visible:outline-primary-500" @click="editor?.chain().focus().toggleBold().run()">B</button>
+      <button type="button" aria-label="Miring" :class="{ 'bg-bg-100 text-primary-500': editor?.isActive('italic') }" class="min-h-9 min-w-9 rounded italic hover:bg-bg-100 focus-visible:outline-2 focus-visible:outline-primary-500" @click="editor?.chain().focus().toggleItalic().run()">I</button>
+      <button type="button" class="min-h-9 rounded px-2 hover:bg-bg-100 focus-visible:outline-2 focus-visible:outline-primary-500" @click="editor?.chain().focus().setHardBreak().run()">Baris baru</button>
+      <button type="button" class="min-h-9 rounded px-2 hover:bg-bg-100 focus-visible:outline-2 focus-visible:outline-primary-500" @click="openImagePicker">Gambar</button>
       <input ref="imageInput" type="file" accept="image/jpeg,image/png,image/webp" class="sr-only" @change="selectImage">
     </div>
     <p v-if="imageError" role="alert" class="border-b border-border-200 px-5 py-2 text-[11px] text-error-600">{{ imageError }}</p>
-    <div
-      ref="editor"
-      contenteditable="true"
-      role="textbox"
-      aria-label="Isi artikel"
-      aria-multiline="true"
-      data-placeholder="Mulai tulis artikel di sini..."
-      class="article-editor min-h-[300px] px-5 py-5 text-[13px] leading-[1.75] text-text-secondary outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-primary-100 lg:min-h-[410px]"
-      @input="syncContent"
-      @paste="pastePlainText"
-    />
+    <EditorContent :editor="editor" class="article-editor min-h-[300px] px-5 py-5 text-[13px] leading-[1.75] text-text-secondary lg:min-h-[410px]" />
 
     <dialog
       ref="imageDialog"
@@ -171,7 +209,7 @@ onBeforeUnmount(() => {
       <form method="dialog" class="p-5" @submit.prevent="insertImage">
         <h3 id="body-image-title" class="text-base font-semibold text-primary-500">Tambahkan gambar</h3>
         <img v-if="pendingImageUrl" :src="pendingImageUrl" alt="Pratinjau gambar yang akan ditambahkan" class="mt-4 max-h-56 w-full rounded-lg bg-bg-100 object-contain">
-        <p class="mt-2 truncate text-[11px] text-text-disable">{{ pendingImageName }}</p>
+        <p class="mt-2 truncate text-[11px] text-text-disable">{{ pendingImageFile?.name }}</p>
         <label for="body-image-alt" class="mt-4 block text-[11px] font-semibold text-text-tertiary">Teks alternatif <span class="text-primary-500">*</span></label>
         <input
           id="body-image-alt"
@@ -193,8 +231,19 @@ onBeforeUnmount(() => {
 </template>
 
 <style scoped>
-.article-editor:empty::before {
+.article-editor :deep(.ProseMirror) {
+  min-height: inherit;
+  outline: none;
+}
+
+.article-editor :deep(.ProseMirror-focused) {
+  box-shadow: inset 0 0 0 2px var(--color-primary-100);
+}
+
+.article-editor :deep(p.is-editor-empty:first-child::before) {
   content: attr(data-placeholder);
+  float: left;
+  height: 0;
   color: var(--color-text-disable);
   pointer-events: none;
 }

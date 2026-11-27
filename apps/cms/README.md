@@ -55,12 +55,23 @@ di bagian secure session server, bukan localStorage atau state Vue. Cookie berna
 
 `/articles/create` menyediakan input judul, slug otomatis yang dapat dikoreksi,
 ringkasan, pratinjau sampul lokal, teks alternatif, isi artikel, poin utama,
-pengelompokan lokal, dan pratinjau artikel. Toolbar isi hanya memakai format yang
-direncanakan oleh API; Tiptap dan upload gambar isi dipasang saat integrasi.
+pengelompokan dari API, dan pratinjau artikel. Kategori/tag baru langsung disimpan
+melalui API; banner existing dapat dipilih atau banner baru dibuat bersama
+gambarnya. Isi artikel memakai Tiptap terbatas pada paragraf, H2, H3, bold,
+italic, line break, dan gambar dengan alt text.
 Tombol draft belum aktif karena API draft belum tersedia. Tombol terbitkan
-memvalidasi form lalu menampilkan status kesiapan, tanpa menyimpan artikel.
+memvalidasi form, mengunggah cover/body, mengganti gambar lokal dengan media ID,
+menerbitkan artikel, lalu memverifikasi hasil melalui public read API. Upload yang
+sudah berhasil disimpan selama halaman tetap terbuka agar retry tidak mengulang
+file yang sama.
 Halaman dashboard dan manajemen lain masih placeholder. Sidebar dan header
 berasal dari `app/layouts/dashboard.vue` untuk seluruh halaman dashboard.
+
+Belum ada delete asset atau garbage collector pada MVP. Jika publish dibatalkan
+setelah upload, audit `MediaAsset` yang tidak direferensikan artikel/banner pada
+database environment terkait, cocokkan `objectKey`, lalu hapus record dan object
+Spaces melalui prosedur operator yang terkontrol. Jangan menghapus prefix/folder
+secara massal atau memakai media dari environment lain.
 
 Provision user dilakukan di API/database, bukan dari CMS. User harus memiliki
 permission `CMS_ACCESS`. Nilai secret tidak boleh masuk repository atau log.

@@ -1,6 +1,7 @@
 import axios from 'axios'
 import { useQueryClient } from '@tanstack/vue-query'
-import type { ApiEnvelope, CmsUser } from '#shared/types/auth'
+import type { ApiEnvelope } from '#shared/types/api'
+import type { CmsUser } from '#shared/types/auth'
 
 function statusOf(error: unknown) {
   return axios.isAxiosError(error) ? error.response?.status : undefined

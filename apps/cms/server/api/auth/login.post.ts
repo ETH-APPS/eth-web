@@ -1,5 +1,6 @@
 import { createError, readBody, setHeader } from 'h3'
-import type { ApiEnvelope, AuthTokenData } from '../../../shared/types/auth'
+import type { ApiEnvelope } from '../../../shared/types/api'
+import type { AuthTokenData } from '../../../shared/types/auth'
 import { assertSameOrigin, backendApi, upstreamError } from '../../utils/api'
 import { createCmsSession } from '../../utils/auth'
 
