@@ -1,10 +1,10 @@
 import { createError, getRouterParam, setHeader } from 'h3'
 import type { ApiEnvelope } from '../../../shared/types/api'
-import type { ArticleBanner, ArticleTaxonomy } from '../../../shared/types/article'
+import type { ArticleTaxonomy } from '../../../shared/types/article'
 import { backendApi, upstreamError } from '../../utils/api'
 import { cmsAccessToken } from '../../utils/auth'
 
-const resources = ['categories', 'tags', 'banners'] as const
+const resources = ['categories', 'tags'] as const
 type Resource = typeof resources[number]
 
 function isResource(value: string): value is Resource {
@@ -19,7 +19,7 @@ export default defineEventHandler(async (event) => {
 
   const token = await cmsAccessToken(event)
   try {
-    const response = await backendApi(event).get<ApiEnvelope<ArticleTaxonomy[] | ArticleBanner[]>>(
+    const response = await backendApi(event).get<ApiEnvelope<ArticleTaxonomy[]>>(
       `/cms/${resource}`,
       { headers: { Authorization: `Bearer ${token}` } },
     )

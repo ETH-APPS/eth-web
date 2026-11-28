@@ -57,7 +57,7 @@ layout `dashboard` memuat sidebar/header CMS. Navigasi berasal dari satu daftar.
 | `/` | `pages/index.vue` | — | Redirect ke `/dashboard`; guard menangani sesi |
 | `/login` | `pages/login.vue` | auth | Login email/password |
 | `/dashboard` | `pages/dashboard.vue` | dashboard | Placeholder |
-| `/articles` | `pages/articles/index.vue` | dashboard | Placeholder daftar |
+| `/articles` | `pages/articles/index.vue` | dashboard | Daftar artikel terbit, pencarian, filter, dan pagination |
 | `/articles/create` | `pages/articles/create.vue` | dashboard | Create/publish |
 | `/articles/categories` | `pages/articles/categories.vue` | dashboard | Placeholder manajemen |
 | `/articles/tags` | `pages/articles/tags.vue` | dashboard | Placeholder manajemen |
@@ -142,6 +142,10 @@ ditangani toolbar/form. Forwarding `/api/cms/*` dibuat pada Fase 4 dan hanya
 mengizinkan pasangan method/path existing: upload assets, create artikel, serta
 GET/POST kategori/tag/banner. Jangan membuat open proxy atau meneruskan
 cookie/Authorization dari browser ke host bebas.
+
+Daftar `/articles` membaca endpoint publik GET `/articles` melalui BFF same-origin.
+Respons tetap dikelola Vue Query dan tidak diduplikasi ke global store. GET banner
+memakai route BFF eksplisit agar tidak berbenturan dengan route multipart POST.
 
 Untuk multipart, teruskan stream dan Content-Type/boundary secara konsisten;
 jangan mengubah file menjadi JSON/base64. Jangan mengulang request mutation secara

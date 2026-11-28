@@ -133,10 +133,12 @@ direct-load `/articles/create` tanpa session diarahkan ke `/login`.
   form serta ID upload yang sudah berhasil saat langkah berikutnya gagal.
 - [x] Setelah 201, tampilkan bukti tersimpan berupa judul, ID, dan slug; verifikasi
   lewat public read API. Jangan menganggap halaman web publik sudah memakai API.
+- [x] Hubungkan daftar CMS ke GET `/articles` dengan pencarian, filter kategori,
+  loading/error/empty state, dan pagination artikel terbit.
 - [x] Uji kasus berhasil, konflik slug, file gagal, banner/default tidak tersedia,
   profil penulis belum ada, dan sesi habis di tengah proses.
 - [x] **Fase 4 selesai:** akun CMS menerbitkan satu artikel lengkap melalui browser;
-  dashboard/list/manajemen tetap boleh placeholder.
+  daftar artikel sudah aktif; dashboard/manajemen lain tetap boleh placeholder.
 
 **Bukti Fase 4A, 28 November 2026:** GET kategori/tag/banner dan POST
 kategori/tag lulus melalui secure session Nuxt. Resource di luar allowlist
@@ -154,6 +156,11 @@ Backend e2e existing mencakup profil penulis yang hilang dan konflik slug; UI
 memetakan error profil/default/session. Type-check, production build, diff check,
 dan matriks viewport wajib lulus. Pengujian memakai API/storage fake sehingga
 database serta Spaces development/production tidak berubah.
+
+**Tambahan daftar artikel, 28 November 2026:** BFF GET `/articles` meneruskan
+pagination, pencarian, dan kategori ke public API. Route GET banner dibuat
+eksplisit agar tidak berbenturan dengan POST multipart; request tanpa sesi kini
+mendapat 401 yang benar, bukan 404 route.
 
 ### Fase 5 — Staging, merge, dan rilis CMS production
 

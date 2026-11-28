@@ -31,6 +31,36 @@ export interface ArticleAuthor {
   linkedinUrl: string
 }
 
+export interface ArticleCardAuthor {
+  id: string
+  name: string
+  slug: string
+}
+
+export interface ArticleCard {
+  id: string
+  slug: string
+  title: string
+  metaDescription: string
+  publishedAt: string
+  updatedAt: string
+  cover: ArticleMedia
+  coverImageAlt: string
+  category: ArticleTaxonomy
+  tags: ArticleTaxonomy[]
+  author: ArticleCardAuthor
+}
+
+export interface ArticleList {
+  items: ArticleCard[]
+  pagination: {
+    page: number
+    limit: number
+    total: number
+    totalPages: number
+  }
+}
+
 export interface CreatedArticle {
   id: string
   slug: string
