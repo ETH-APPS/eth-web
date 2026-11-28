@@ -175,6 +175,26 @@ mendapat 401 yang benar, bukan 404 route.
 - [ ] **Fase 5 selesai:** CMS production bisa login dan create melalui API
   production; website publik existing tetap sehat. Integrasi web belum diaktifkan.
 
+**Progress persiapan staging, 28 November 2026:**
+
+- [x] Audit VM selesai: disk menyisakan 68 GB (28% terpakai), build cache sudah
+  dibersihkan, runner GitHub Actions aktif, gateway healthy, Named Tunnel running,
+  dan network web existing tetap berisi tiga container.
+- [x] Direktori `/etc/eth-cms/staging` dibuat `root:root` mode `0700`. File
+  `postgres.env`, `api.env`, dan `cms.env` lengkap serta `root:root` mode `0600`;
+  nilai rahasia tidak dicatat di repository atau output verifikasi.
+- [x] Dockerfile CMS/API, health endpoint, dan Compose staging tersedia. Perbaikan
+  OpenSSL API serta type-check banner berada pada commit `64a649c` di branch
+  `codex/article-cms-plan` dan sudah didorong ke remote.
+- [x] Verifikasi lokal terakhir lulus: CMS type-check/build, API lint/build/
+  type-check, 58 tes E2E, pemeriksaan Dockerfile, dan `git diff --check`.
+- [x] Selama persiapan, container web, gateway, Named Tunnel, konfigurasi Caddy,
+  volume, dan domain production tidak diubah atau dibuat ulang.
+- [ ] Siapkan branch release `staging`, workflow, helper root-owned, serta sudoers
+  khusus staging sebelum menjalankan Compose di VM.
+- [ ] Build image dari exact commit SHA, jalankan database/migration/API/CMS dengan
+  project `eth-cms-staging`, lalu pasang route dan uji hostname staging.
+
 ### Fase 6 — Website publik mengonsumsi API
 
 **Prasyarat:** Fase 5 selesai, perubahan berada di `main`, API production siap.

@@ -76,6 +76,33 @@ apakah `NUXT_API_BASE_URL` di container CMS mengarah ke `http://api:3001` pada
 network internal. HTTP 200 dari `/api/health` hanya mengonfirmasi Nitro hidup,
 jadi verifikasi login dan artikel tetap dilakukan saat smoke test rilis.
 
+## Status persiapan staging — 28 November 2026
+
+Checklist ini mencatat bukti aktual yang sudah dilaporkan operator. Checklist
+utama di bawah tetap belum dicentang jika satu butir mencakup pekerjaan staging
+dan production yang belum seluruhnya selesai.
+
+- [x] Ruang VM dipulihkan dari 14 GB menjadi 68 GB kosong; penggunaan turun ke
+  28% dan Docker build cache menjadi 0 B. Tidak ada volume aplikasi yang dihapus.
+- [x] Runner `eth-apps-production` aktif. Gateway existing berstatus healthy,
+  Named Tunnel running, dan network `eth-web_default` aktif. Checkout
+  `/opt/eth-web` tertinggal dari remote dan sengaja tidak dipakai sebagai sumber
+  build CMS.
+- [x] `/etc/eth-cms/staging` adalah `root:root` mode `0700`. `postgres.env`,
+  `api.env`, dan `cms.env` adalah `root:root` mode `0600`; nama variabel lengkap
+  sudah diverifikasi tanpa menampilkan nilainya. Prefix Spaces staging adalah
+  `articles/staging`.
+- [x] Kandidat kode berada pada commit `64a649c` di remote branch
+  `codex/article-cms-plan`. CMS type-check/build, API lint/build/type-check,
+  seluruh 58 tes E2E, pemeriksaan Dockerfile, dan `git diff --check` lulus.
+- [x] Persiapan di atas tidak mengganti atau membuat ulang web, gateway, tunnel,
+  Caddy, volume, DNS, maupun container production.
+- [ ] Belum ada branch release `staging`, workflow deploy CMS, helper root-owned,
+  atau sudoers khusus staging. Jangan menjalankan `cms.compose.yaml` sebelum jalur
+  release ini dipasang dan ditinjau.
+- [ ] Image kandidat belum dibangun di VM; PostgreSQL/migration/API/CMS staging
+  belum dijalankan; Caddy, Cloudflare Tunnel, DNS, dan Access staging belum diubah.
+
 ## Persiapan dan bootstrap VM
 
 - [ ] Periksa kapasitas VM/disk, service existing, akses runner, DNS, dan tunnel.
