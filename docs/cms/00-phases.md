@@ -190,8 +190,12 @@ mendapat 401 yang benar, bukan 404 route.
   type-check, 58 tes E2E, pemeriksaan Dockerfile, dan `git diff --check`.
 - [x] Selama persiapan, container web, gateway, Named Tunnel, konfigurasi Caddy,
   volume, dan domain production tidak diubah atau dibuat ulang.
-- [ ] Siapkan branch release `staging`, workflow, helper root-owned, serta sudoers
-  khusus staging sebelum menjalankan Compose di VM.
+- [x] Workflow, helper no-argument, dan sudoers khusus staging tersedia di
+  repository. Helper menolak SHA yang berbeda dari head `origin/staging` dan
+  memeriksa container production tidak berubah. Sintaks Bash, workflow YAML,
+  sudoers, Compose, serta build/type-check CMS terbaru sudah divalidasi lokal.
+- [ ] Buat branch release `staging`, lalu pasang dan validasi salinan helper,
+  Compose, serta sudoers root-owned di VM sebelum menjalankan workflow.
 - [ ] Build image dari exact commit SHA, jalankan database/migration/API/CMS dengan
   project `eth-cms-staging`, lalu pasang route dan uji hostname staging.
 

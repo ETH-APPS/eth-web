@@ -268,6 +268,9 @@ cukup untuk mengetahui versi aplikasi yang sedang berjalan.
 | [`deploy/web.compose.yaml`](web.compose.yaml) | Spec web-only, disalin root-owned ke `/etc/eth-web/web.compose.yaml`. |
 | [`deploy/deploy-web.sh`](deploy-web.sh) | Helper, disalin root-owned ke `/usr/local/sbin/deploy-eth-web`. |
 | [`deploy/github-runner.sudoers`](github-runner.sudoers) | Disalin ke `/etc/sudoers.d/github-runner-deploy-eth-web`. |
+| [`deploy/cms.compose.yaml`](cms.compose.yaml) | Spec CMS/API/PostgreSQL bersama; untuk staging disalin ke `/etc/eth-cms/staging/cms.compose.yaml`. |
+| [`deploy/deploy-cms-staging.sh`](deploy-cms-staging.sh) | Helper staging, disalin root-owned ke `/usr/local/sbin/deploy-eth-cms-staging`. |
+| [`deploy/github-runner-cms-staging.sudoers`](github-runner-cms-staging.sudoers) | Disalin ke `/etc/sudoers.d/github-runner-deploy-eth-cms-staging`. |
 | `/etc/eth-web/site-url` | File root-owned di VM berisi satu origin HTTPS untuk `NUXT_PUBLIC_SITE_URL`; bukan file repository. |
 | `/etc/eth-web/ducking-signing-secret` | File root-owned mode 0600 di VM berisi signing secret Ducking satu baris; bukan file repository. |
 | `/etc/eth-web/ethcargo-tunnel-token` | Token Named Tunnel di VM saja, owner `root:65532`, mode `0440`; jangan tampilkan atau masukkan Git. |
@@ -289,6 +292,43 @@ karena kode yang di-push akan dibangun dan dijalankan di VM.
 Perubahan script/spec/sudoers di repository **tidak otomatis memperbarui salinan
 root-owned di VM**. Perlu pemasangan terpisah oleh operator setelah memeriksa diff
 serta memvalidasi sudoers. Push frontend biasa tidak memerlukan langkah itu.
+
+### Jalur deploy CMS staging
+
+Workflow `deploy-cms-staging.yml` hanya menerima branch `staging`. Workflow tidak
+checkout atau menjalankan kode repository sebagai root; ia mengirim exact
+`GITHUB_SHA` melalui stdin ke helper no-argument yang diizinkan sudoers. Helper
+fetch `origin/staging` dan berhenti bila head branch tidak sama dengan SHA pemicu,
+sehingga run lama tidak diam-diam men-deploy commit yang lebih baru.
+
+Helper memakai project `eth-cms-staging`, lock, worktree release, network internal,
+volume PostgreSQL, alias gateway, image, serta file environment khusus staging.
+Sebelum build, helper memeriksa bahwa salinan helper dan Compose root-owned sama
+persis dengan kandidat release. Perubahan kedua file tersebut harus dipasang dan
+divalidasi manual terlebih dahulu; bila belum, deployment berhenti sebelum image
+atau container diganti.
+
+Build staging tidak menyentuh container existing. Setelah image dan migration
+lulus, helper mengganti hanya service `api` dan `cms` di project staging. ID
+container production `web`, `gateway`, dan Named Tunnel dicatat sebelum proses
+serta harus tetap sama. Helper tidak menjalankan `docker compose down`, tidak
+menghapus volume, dan tidak mengubah Caddy, tunnel, atau DNS.
+
+Lokasi operasional staging yang harus root-owned:
+
+```text
+/usr/local/sbin/deploy-eth-cms-staging                         root:root 0755
+/etc/eth-cms/staging/cms.compose.yaml                          root:root 0644
+/etc/eth-cms/staging/postgres.env                              root:root 0600
+/etc/eth-cms/staging/api.env                                   root:root 0600
+/etc/eth-cms/staging/cms.env                                   root:root 0600
+/etc/sudoers.d/github-runner-deploy-eth-cms-staging            root:root 0440
+```
+
+Pemasangan helper, Compose, dan sudoers merupakan bootstrap manual. Jangan
+menjalankan workflow staging sebelum `bash -n`, `docker compose config`, dan
+`visudo -cf` lulus terhadap salinan yang akan dipasang. Instruksi operator dan
+status aktual dicatat di [deployment CMS](../docs/cms/02-deployment-plan.md).
 
 ### Healthcheck tanpa pencarian produk
 

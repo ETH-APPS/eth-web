@@ -92,14 +92,22 @@ dan production yang belum seluruhnya selesai.
   `api.env`, dan `cms.env` adalah `root:root` mode `0600`; nama variabel lengkap
   sudah diverifikasi tanpa menampilkan nilainya. Prefix Spaces staging adalah
   `articles/staging`.
-- [x] Kandidat kode berada pada commit `64a649c` di remote branch
+- [x] Kandidat awal tervalidasi pada commit `64a649c` di remote branch
   `codex/article-cms-plan`. CMS type-check/build, API lint/build/type-check,
   seluruh 58 tes E2E, pemeriksaan Dockerfile, dan `git diff --check` lulus.
 - [x] Persiapan di atas tidak mengganti atau membuat ulang web, gateway, tunnel,
   Caddy, volume, DNS, maupun container production.
-- [ ] Belum ada branch release `staging`, workflow deploy CMS, helper root-owned,
-  atau sudoers khusus staging. Jangan menjalankan `cms.compose.yaml` sebelum jalur
-  release ini dipasang dan ditinjau.
+- [x] Workflow, helper no-argument, serta sudoers staging sudah tersedia di
+  repository. Helper menerima exact SHA melalui stdin, memakai project/lock/
+  worktree staging, dan memeriksa ID container production tetap sama.
+- [x] Audit automation lokal lulus: `bash -n`, parsing workflow YAML,
+  `visudo -cf`, validasi Compose, dan `git diff --check`. Edge case bootstrap
+  tanpa container API/CMS existing sudah ditangani.
+- [x] Perubahan UI CMS pada commit `e21b9b8` sudah diverifikasi ulang dengan
+  type-check dan production build yang lulus.
+- [ ] Branch release `staging` belum dibuat. Salinan helper, Compose, dan sudoers
+  belum dipasang root-owned di VM; jangan menjalankan workflow sebelum bootstrap
+  manual dan validasi operator selesai.
 - [ ] Image kandidat belum dibangun di VM; PostgreSQL/migration/API/CMS staging
   belum dijalankan; Caddy, Cloudflare Tunnel, DNS, dan Access staging belum diubah.
 

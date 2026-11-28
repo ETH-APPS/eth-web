@@ -112,6 +112,7 @@ optional_container_id() {
   mapfile -t ids < <(container_ids "$service" "$project")
   [[ "${#ids[@]}" -le 1 ]] || fail "expected at most one running ${service} container in ${project}, found ${#ids[@]}"
   [[ "${#ids[@]}" -eq 1 ]] && printf '%s\n' "${ids[0]}"
+  return 0
 }
 
 wait_healthy() {
