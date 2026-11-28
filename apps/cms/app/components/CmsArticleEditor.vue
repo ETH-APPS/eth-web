@@ -236,10 +236,6 @@ onBeforeUnmount(() => {
   outline: none;
 }
 
-.article-editor :deep(.ProseMirror-focused) {
-  box-shadow: inset 0 0 0 2px var(--color-primary-100);
-}
-
 .article-editor :deep(p.is-editor-empty:first-child::before) {
   content: attr(data-placeholder);
   float: left;

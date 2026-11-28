@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import logoWhiteUrl from '../../../web/app/assets/images/brand/logo-white.png'
 import { cmsNavigation } from '~/constants/navigation'
 
 const route = useRoute()
@@ -30,7 +31,7 @@ watch(() => route.path, () => {
 </script>
 
 <template>
-  <div class="min-h-screen bg-bg-0 lg:grid lg:grid-cols-[224px_minmax(0,1fr)]">
+  <div class="min-h-screen bg-bg-0 lg:grid lg:grid-cols-[240px_minmax(0,1fr)]">
     <button
       v-if="menuOpen"
       type="button"
@@ -41,22 +42,21 @@ watch(() => route.path, () => {
 
     <aside
       id="cms-sidebar"
-      class="fixed inset-y-0 left-0 z-40 flex w-[224px] flex-col border-r border-border-200 bg-bg-0 px-4 pt-8 pb-5 transition-transform duration-200 motion-reduce:transition-none lg:sticky lg:top-0 lg:h-screen lg:translate-x-0 lg:visible lg:pointer-events-auto"
+      class="fixed inset-y-0 left-0 z-40 flex w-[240px] flex-col border-r border-border-200 bg-bg-0 px-4 pt-8 pb-5 transition-transform duration-200 motion-reduce:transition-none lg:sticky lg:top-0 lg:h-screen lg:translate-x-0 lg:visible lg:pointer-events-auto"
       :class="menuOpen ? 'translate-x-0 visible pointer-events-auto' : '-translate-x-full invisible pointer-events-none'"
       @keydown.esc="menuOpen = false"
     >
-      <NuxtLink to="/dashboard" aria-label="ETH Cargo CMS, halaman ringkasan" class="ml-5 inline-flex w-fit flex-col focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500">
-        <img src="/logo.png" alt="ETH Cargo" width="110" height="30" class="h-auto w-[110px]">
-        <span class="mt-1 text-[9px] font-semibold tracking-[0.25em] text-text-disable">CONTENT STUDIO</span>
+      <NuxtLink to="/dashboard" aria-label="ETH Cargo CMS, halaman ringkasan" class="mx-auto inline-flex w-fit focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500">
+        <img :src="logoWhiteUrl" alt="ETH Cargo" width="145" height="44" class="h-auto w-[145px]">
       </NuxtLink>
 
-      <div class="mt-16 min-h-0 flex-1 overflow-y-auto">
+      <div class="flex min-h-0 flex-1 overflow-y-auto py-6">
         <CmsNavigation />
       </div>
 
-      <div class="mt-5 border-t border-border-200 px-3 pt-4 text-[11px] leading-5 text-text-tertiary">
+      <div class="border-t border-border-200 px-3 pt-4 text-[11px] leading-5 text-text-tertiary">
         <p class="font-semibold text-text-secondary">ETH Cargo CMS</p>
-        <p>Content Studio · {{ new Date().getFullYear() }}</p>
+        <p>{{ new Date().getFullYear() }}</p>
       </div>
     </aside>
 
@@ -89,18 +89,18 @@ watch(() => route.path, () => {
             <input type="search" disabled aria-label="Cari konten, belum tersedia" placeholder="Cari konten..." class="min-w-0 flex-1 bg-transparent text-[11px] outline-none placeholder:text-text-disable">
           </label>
           <div class="hidden h-8 w-px bg-border-200 sm:block" aria-hidden="true" />
-          <div class="hidden text-right leading-4 sm:block">
-            <p class="text-[11px] font-semibold text-text-secondary">{{ userName }}</p>
-            <p class="text-[10px] text-text-disable">CMS</p>
-          </div>
-          <span class="flex size-9 items-center justify-center rounded-full bg-primary-500 text-[12px] font-semibold text-white" aria-hidden="true">{{ userInitial }}</span>
           <button
             type="button"
             :disabled="isLoggingOut"
-            class="min-h-9 rounded-lg px-2 text-[11px] font-semibold text-primary-500 hover:bg-primary-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500 disabled:cursor-not-allowed disabled:opacity-60"
+            :aria-label="isLoggingOut ? 'Sedang keluar dari CMS' : 'Keluar dari CMS'"
+            class="flex items-center gap-3 rounded-lg p-1 text-left hover:bg-primary-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500 disabled:cursor-wait disabled:opacity-60"
             @click="logout"
           >
-            {{ isLoggingOut ? 'Keluar...' : 'Keluar' }}
+            <div class="hidden leading-4 sm:block">
+              <p class="text-[11px] font-semibold text-text-secondary">{{ userName }}</p>
+              <p class="text-[10px] text-text-disable">{{ isLoggingOut ? 'Keluar...' : 'CMS' }}</p>
+            </div>
+            <span class="flex size-9 items-center justify-center rounded-full bg-primary-500 text-[12px] font-semibold text-white" aria-hidden="true">{{ userInitial }}</span>
           </button>
         </div>
       </header>
