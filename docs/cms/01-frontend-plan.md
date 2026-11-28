@@ -61,7 +61,7 @@ layout `dashboard` memuat sidebar/header CMS. Navigasi berasal dari satu daftar.
 | `/articles/create` | `pages/articles/create.vue` | dashboard | Create/publish |
 | `/articles/categories` | `pages/articles/categories.vue` | dashboard | Placeholder manajemen |
 | `/articles/tags` | `pages/articles/tags.vue` | dashboard | Placeholder manajemen |
-| `/articles/banners` | `pages/articles/banners.vue` | dashboard | Placeholder manajemen |
+| `/articles/banners` | `pages/articles/banners.vue` | dashboard | Daftar, pratinjau, dan buat banner CTA artikel |
 | `/media` | `pages/media.vue` | dashboard | Placeholder |
 | `/settings` | `pages/settings.vue` | dashboard | Placeholder |
 
@@ -151,6 +151,9 @@ cookie/Authorization dari browser ke host bebas.
 Daftar `/articles` membaca endpoint publik GET `/articles` melalui BFF same-origin.
 Respons tetap dikelola Vue Query dan tidak diduplikasi ke global store. GET banner
 memakai route BFF eksplisit agar tidak berbenturan dengan route multipart POST.
+Halaman Banner memakai query dan mutation yang sama dengan editor artikel.
+Form banner hanya menerima gambar, judul, dan deskripsi. Banner baru tersedia
+untuk dipilih di editor artikel setelah penyimpanan berhasil.
 
 Untuk multipart, teruskan stream dan Content-Type/boundary secara konsisten;
 jangan mengubah file menjadi JSON/base64. Jangan mengulang request mutation secara

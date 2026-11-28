@@ -26,6 +26,16 @@ describe('AppController (e2e)', () => {
       });
   });
 
+  it('/health (GET)', () => {
+    return request(app.getHttpServer())
+      .get('/health')
+      .expect(200)
+      .expect((response) => {
+        expect(response.body.data).toEqual({ status: 'ok' });
+        expect(response.body.request_id).toBe(response.headers['x-request-id']);
+      });
+  });
+
   afterEach(async () => {
     await app.close();
   });

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { Mail } from 'lucide-vue-next'
-import whatsappUrl from '~/assets/images/marketing/whatsapp.png'
+import whatsappUrl from '@eth/ui/whatsapp.png'
 
 const props = withDefaults(defineProps<{
   compact?: boolean

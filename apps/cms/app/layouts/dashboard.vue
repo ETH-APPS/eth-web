@@ -4,7 +4,7 @@ import { cmsNavigation } from '~/constants/navigation'
 
 const route = useRoute()
 const menuOpen = ref(false)
-const { user, logout, isLoggingOut } = useAuth()
+const { user } = useUserSession()
 
 const userName = computed(() => {
   if (!user.value)
@@ -89,19 +89,13 @@ watch(() => route.path, () => {
             <input type="search" disabled aria-label="Cari konten, belum tersedia" placeholder="Cari konten..." class="min-w-0 flex-1 bg-transparent text-[11px] outline-none placeholder:text-text-disable">
           </label>
           <div class="hidden h-8 w-px bg-border-200 sm:block" aria-hidden="true" />
-          <button
-            type="button"
-            :disabled="isLoggingOut"
-            :aria-label="isLoggingOut ? 'Sedang keluar dari CMS' : 'Keluar dari CMS'"
-            class="flex items-center gap-3 rounded-lg p-1 text-left hover:bg-primary-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500 disabled:cursor-wait disabled:opacity-60"
-            @click="logout"
-          >
+          <div class="flex items-center gap-3 p-1">
             <div class="hidden leading-4 sm:block">
               <p class="text-[11px] font-semibold text-text-secondary">{{ userName }}</p>
-              <p class="text-[10px] text-text-disable">{{ isLoggingOut ? 'Keluar...' : 'CMS' }}</p>
+              <p class="text-[10px] text-text-disable">CMS</p>
             </div>
             <span class="flex size-9 items-center justify-center rounded-full bg-primary-500 text-[12px] font-semibold text-white" aria-hidden="true">{{ userInitial }}</span>
-          </button>
+          </div>
         </div>
       </header>
 

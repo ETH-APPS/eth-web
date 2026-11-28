@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import whatsappIcon from '~/assets/images/marketing/whatsapp.png'
+import whatsappIcon from '@eth/ui/whatsapp.png'
 </script>
 
 <template>

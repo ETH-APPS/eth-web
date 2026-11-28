@@ -54,6 +54,28 @@ CMS; upstream API memakai `http://api:3001` pada network environment masing-masi
 Spaces tetap outbound dari NestJS. TLS publik ditangani Cloudflare; cookie Secure
 tetap aktif karena browser menggunakan HTTPS.
 
+## Health check CMS dan API
+
+[Docker Compose CMS](../../deploy/cms.compose.yaml) memakai dua pemeriksaan
+terpisah untuk setiap environment.
+
+| Service | Pemeriksaan dari dalam container | Arti HTTP 200 |
+| --- | --- | --- |
+| `cms` | `GET http://127.0.0.1:3000/api/health` | Nitro bisa merespons tanpa login dan tanpa memanggil API, database, atau Spaces. |
+| `api` | `GET http://127.0.0.1:3001/health` | NestJS siap menerima request dan Prisma berhasil menjalankan `SELECT 1` di PostgreSQL. |
+
+Saat stack pertama dijalankan, `migrate` menunggu PostgreSQL berstatus sehat,
+`api` menunggu migrasi selesai dengan sukses, lalu `cms` menunggu status sehat
+dari `api`. Health check CMS tetap dipakai Docker setelah startup. Karena itu,
+memindahkan atau menghapus `/api/health` perlu disertai pembaruan pemeriksaan
+di Compose.
+
+Jika CMS merespons `502 API unavailable` saat login atau mengambil artikel,
+cek log startup `api` dan `GET /health` terlebih dahulu. Jika API sehat, periksa
+apakah `NUXT_API_BASE_URL` di container CMS mengarah ke `http://api:3001` pada
+network internal. HTTP 200 dari `/api/health` hanya mengonfirmasi Nitro hidup,
+jadi verifikasi login dan artikel tetap dilakukan saat smoke test rilis.
+
 ## Persiapan dan bootstrap VM
 
 - [ ] Periksa kapasitas VM/disk, service existing, akses runner, DNS, dan tunnel.

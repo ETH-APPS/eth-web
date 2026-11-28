@@ -4,10 +4,12 @@
   "private": true,
   "exports": {
     ".": "./nuxt.config.ts",
-    "./styles.css": "./app/assets/css/main.css"
+    "./styles.css": "./app/assets/css/main.css",
+    "./whatsapp.png": "./app/assets/images/whatsapp.png"
   },
   "dependencies": {
-    "@fontsource/poppins": "^5.3.0"
+    "@fontsource/poppins": "^5.3.0",
+    "lucide-vue-next": "^1.0.0"
   },
   "devDependencies": {
     "nuxt": "^4.6.2"

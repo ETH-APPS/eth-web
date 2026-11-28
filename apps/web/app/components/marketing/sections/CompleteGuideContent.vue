@@ -9,7 +9,7 @@ import linkDark from '~/assets/images/marketing/Link-dark.png'
 import importHeroImage from '~/assets/images/marketing/multinational-cargo-hero.png'
 import threadsDark from '~/assets/images/marketing/Threads-dark.png'
 import tiktokDark from '~/assets/images/marketing/Tiktok-dark.png'
-import whatsappImage from '~/assets/images/marketing/whatsapp.png'
+import whatsappImage from '@eth/ui/whatsapp.png'
 import xDark from '~/assets/images/marketing/X-dark.png'
 
 const tableOfContents = [

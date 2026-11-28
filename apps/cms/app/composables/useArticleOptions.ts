@@ -1,20 +1,24 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/vue-query'
 import {
-  createBanner as createBannerRequest,
   createTaxonomy,
-  listBanners,
   listTaxonomy,
-  type CreateBannerInput,
 } from '~/services/api/articles'
-import type { ArticleBanner, ArticleTaxonomy } from '#shared/types/article'
+import type { ArticleTaxonomy } from '#shared/types/article'
 
 const categoryKey = ['articles', 'categories'] as const
 const tagKey = ['articles', 'tags'] as const
-const bannerKey = ['articles', 'banners'] as const
 
 export function useArticleOptions() {
   const { $api } = useNuxtApp()
   const queryClient = useQueryClient()
+  const {
+    banners,
+    isLoading: isLoadingBanners,
+    loadError: bannerLoadError,
+    isCreatingBanner,
+    bannerError,
+    createBanner,
+  } = useArticleBanners()
 
   const categoriesQuery = useQuery({
     queryKey: categoryKey,
@@ -24,11 +28,6 @@ export function useArticleOptions() {
   const tagsQuery = useQuery({
     queryKey: tagKey,
     queryFn: () => listTaxonomy($api, 'tags'),
-    staleTime: 5 * 60 * 1000,
-  })
-  const bannersQuery = useQuery({
-    queryKey: bannerKey,
-    queryFn: () => listBanners($api),
     staleTime: 5 * 60 * 1000,
   })
 
@@ -46,13 +45,6 @@ export function useArticleOptions() {
         .sort((left, right) => left.name.localeCompare(right.name))
     )),
   })
-  const bannerMutation = useMutation({
-    mutationFn: (input: CreateBannerInput) => createBannerRequest($api, input),
-    onSuccess: banner => queryClient.setQueryData<ArticleBanner[]>(bannerKey, values => [
-      banner,
-      ...(values ?? []).filter(item => item.id !== banner.id),
-    ]),
-  })
 
   async function createCategory(name: string) {
     categoryMutation.reset()
@@ -64,33 +56,28 @@ export function useArticleOptions() {
     return tagMutation.mutateAsync(name)
   }
 
-  async function addBanner(input: CreateBannerInput) {
-    bannerMutation.reset()
-    return bannerMutation.mutateAsync(input)
-  }
-
   return {
     categories: computed(() => categoriesQuery.data.value ?? []),
     tags: computed(() => tagsQuery.data.value ?? []),
-    banners: computed(() => bannersQuery.data.value ?? []),
+    banners,
     isLoading: computed(() => (
       categoriesQuery.isPending.value
       || tagsQuery.isPending.value
-      || bannersQuery.isPending.value
+      || isLoadingBanners.value
     )),
     loadError: computed(() => (
       categoriesQuery.error.value
       || tagsQuery.error.value
-      || bannersQuery.error.value
+      || bannerLoadError.value
     )),
     isCreatingCategory: computed(() => categoryMutation.isPending.value),
     isCreatingTag: computed(() => tagMutation.isPending.value),
-    isCreatingBanner: computed(() => bannerMutation.isPending.value),
+    isCreatingBanner,
     categoryError: computed(() => categoryMutation.error.value),
     tagError: computed(() => tagMutation.error.value),
-    bannerError: computed(() => bannerMutation.error.value),
+    bannerError,
     createCategory,
     createTag,
-    createBanner: addBanner,
+    createBanner,
   }
 }

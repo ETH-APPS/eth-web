@@ -27,11 +27,28 @@ Salin `.env.example` menjadi `.env`, lalu isi:
 - `NUXT_API_BASE_URL`: URL privat API NestJS, lokalnya `http://localhost:3001`.
 - `NUXT_CMS_ORIGIN`: origin CMS persis, lokalnya `http://localhost:3002`.
 - `NUXT_APP_SECRET`: secret session yang berbeda per environment, minimal 32
-  karakter di staging/production. Development lokal dapat membangkitkannya.
+  karakter di staging/production. Buat nilai tetap untuk lokal dengan
+  `openssl rand -base64 32` dan simpan hasilnya di `apps/cms/.env`. Nuxt dapat
+  membuat secret otomatis saat development jika nilainya belum diisi.
 
 Browser hanya memanggil `/api` pada origin CMS. Access dan refresh token disimpan
 di bagian secure session server, bukan localStorage atau state Vue. Cookie bernama
 `eth-cms-session`, host-only, HttpOnly, SameSite Lax, dan Secure pada HTTPS.
+
+### Diagnosis `502 API unavailable`
+
+Jika login atau daftar artikel mengembalikan 502, cek port API dan log `api:dev`.
+Warning `NUXT_APP_SECRET` berkaitan dengan sesi CMS. API yang gagal startup
+menyebabkan koneksi CMS ke port 3001 ditolak.
+
+```bash
+curl --fail --silent --show-error http://localhost:3001/health
+curl --fail --silent --show-error http://localhost:3002/api/health
+```
+
+Pemeriksaan pertama mencakup koneksi PostgreSQL. Pemeriksaan kedua mengecek
+respons server CMS. Keduanya juga dipakai dalam
+[deployment CMS](../../docs/cms/02-deployment-plan.md#health-check-cms-dan-api).
 
 ## Lokasi kerja UI
 

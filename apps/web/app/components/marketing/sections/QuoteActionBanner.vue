@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { Calculator, Mail } from 'lucide-vue-next'
-import whatsappUrl from '~/assets/images/marketing/whatsapp.png'
+import whatsappUrl from '@eth/ui/whatsapp.png'
 import type { MarketingFaqContent } from '~/constants/faq'
 
 const props = withDefaults(defineProps<{

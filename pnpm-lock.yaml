@@ -385,6 +385,9 @@ importers:
       '@fontsource/poppins':
         specifier: ^5.3.0
         version: 5.3.0
+      lucide-vue-next:
+        specifier: ^1.0.0
+        version: 1.0.0(vue@3.5.44(typescript@6.0.3))
     devDependencies:
       nuxt:
         specifier: ^4.6.2

@@ -1,0 +1,96 @@
+# Shared runtime definition for one CMS environment. Always select a fixed
+# Compose project name and provide environment-specific root-owned env files.
+services:
+  postgres:
+    image: postgres:17-bookworm
+    env_file:
+      - ${POSTGRES_ENV_FILE:?POSTGRES_ENV_FILE must be set}
+    restart: unless-stopped
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - internal
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 20s
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  migrate:
+    image: eth-cms-api-migrate:${IMAGE_TAG:?IMAGE_TAG must be set}
+    env_file:
+      - ${API_ENV_FILE:?API_ENV_FILE must be set}
+    restart: "no"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - internal
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  api:
+    image: eth-cms-api:${IMAGE_TAG:?IMAGE_TAG must be set}
+    env_file:
+      - ${API_ENV_FILE:?API_ENV_FILE must be set}
+    restart: unless-stopped
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+    networks:
+      - internal
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:3001/health').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  cms:
+    image: eth-cms-web:${IMAGE_TAG:?IMAGE_TAG must be set}
+    env_file:
+      - ${CMS_ENV_FILE:?CMS_ENV_FILE must be set}
+    restart: unless-stopped
+    depends_on:
+      api:
+        condition: service_healthy
+    networks:
+      internal: {}
+      gateway:
+        aliases:
+          - ${CMS_NETWORK_ALIAS:?CMS_NETWORK_ALIAS must be set}
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:3000/api/health').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+      start_period: 15s
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+volumes:
+  postgres_data:
+
+networks:
+  internal:
+    internal: true
+  gateway:
+    external: true
+    name: eth-web_default
