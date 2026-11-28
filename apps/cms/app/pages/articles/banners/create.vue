@@ -79,12 +79,12 @@ onBeforeUnmount(clearImage)
       <h1 class="mt-2 text-[28px] leading-tight font-semibold tracking-[-0.04em] text-text-secondary sm:text-[32px]">Buat banner</h1>
     </header>
 
-    <div class="grid min-w-0 items-start gap-5 xl:grid-cols-[minmax(0,1fr)_minmax(0,340px)] 2xl:grid-cols-[minmax(0,1fr)_minmax(0,365px)]">
+    <div class="grid min-w-0 items-start gap-5 xl:grid-cols-[minmax(0,1fr)_300px] 2xl:grid-cols-[minmax(0,1fr)_365px]">
       <section class="min-w-0 rounded-xl border border-border-200 bg-bg-0" aria-labelledby="banner-preview-title">
         <div class="border-b border-border-200 px-4 py-4 sm:px-6">
           <h2 id="banner-preview-title" class="text-[16px] font-semibold text-text-secondary">Pratinjau banner artikel</h2>
         </div>
-        <div class="p-3 sm:p-5">
+        <div class="p-3 2xl:p-5">
           <CmsBannerPreview :title="title.trim() || 'Judul banner'" :description="description.trim() || 'Deskripsi banner'" :image="imageUrl ? { url: imageUrl } : undefined" />
         </div>
       </section>

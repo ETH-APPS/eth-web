@@ -1,7 +1,7 @@
 export interface CmsNavigationItem {
   label: string
   to: string
-  icon: 'dashboard' | 'article' | 'banner' | 'category' | 'tag' | 'media' | 'settings'
+  icon: 'dashboard' | 'article' | 'banner' | 'category' | 'media' | 'settings'
 }
 
 export interface CmsNavigationGroup {
@@ -19,8 +19,7 @@ export const cmsNavigation: CmsNavigationGroup[] = [
     items: [
       { label: 'Artikel', to: '/articles', icon: 'article' },
       { label: 'Banner', to: '/articles/banners', icon: 'banner' },
-      { label: 'Kategori', to: '/articles/categories', icon: 'category' },
-      { label: 'Tag', to: '/articles/tags', icon: 'tag' },
+      { label: 'Kategori & Tag', to: '/articles/categories', icon: 'category' },
       { label: 'Media', to: '/media', icon: 'media' },
     ],
   },

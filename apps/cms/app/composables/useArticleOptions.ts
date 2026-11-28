@@ -1,16 +1,6 @@
-import { useMutation, useQuery, useQueryClient } from '@tanstack/vue-query'
-import {
-  createTaxonomy,
-  listTaxonomy,
-} from '~/services/api/articles'
-import type { ArticleTaxonomy } from '#shared/types/article'
-
-const categoryKey = ['articles', 'categories'] as const
-const tagKey = ['articles', 'tags'] as const
-
 export function useArticleOptions() {
-  const { $api } = useNuxtApp()
-  const queryClient = useQueryClient()
+  const categories = useArticleTaxonomy('categories')
+  const tags = useArticleTaxonomy('tags')
   const {
     banners,
     isLoading: isLoadingBanners,
@@ -20,64 +10,28 @@ export function useArticleOptions() {
     createBanner,
   } = useArticleBanners()
 
-  const categoriesQuery = useQuery({
-    queryKey: categoryKey,
-    queryFn: () => listTaxonomy($api, 'categories'),
-    staleTime: 5 * 60 * 1000,
-  })
-  const tagsQuery = useQuery({
-    queryKey: tagKey,
-    queryFn: () => listTaxonomy($api, 'tags'),
-    staleTime: 5 * 60 * 1000,
-  })
-
-  const categoryMutation = useMutation({
-    mutationFn: (name: string) => createTaxonomy($api, 'categories', name),
-    onSuccess: category => queryClient.setQueryData<ArticleTaxonomy[]>(categoryKey, values => (
-      [...(values ?? []).filter(item => item.id !== category.id), category]
-        .sort((left, right) => left.name.localeCompare(right.name))
-    )),
-  })
-  const tagMutation = useMutation({
-    mutationFn: (name: string) => createTaxonomy($api, 'tags', name),
-    onSuccess: tag => queryClient.setQueryData<ArticleTaxonomy[]>(tagKey, values => (
-      [...(values ?? []).filter(item => item.id !== tag.id), tag]
-        .sort((left, right) => left.name.localeCompare(right.name))
-    )),
-  })
-
-  async function createCategory(name: string) {
-    categoryMutation.reset()
-    return categoryMutation.mutateAsync(name)
-  }
-
-  async function createTag(name: string) {
-    tagMutation.reset()
-    return tagMutation.mutateAsync(name)
-  }
-
   return {
-    categories: computed(() => categoriesQuery.data.value ?? []),
-    tags: computed(() => tagsQuery.data.value ?? []),
+    categories: categories.items,
+    tags: tags.items,
     banners,
     isLoading: computed(() => (
-      categoriesQuery.isPending.value
-      || tagsQuery.isPending.value
+      categories.isLoading.value
+      || tags.isLoading.value
       || isLoadingBanners.value
     )),
     loadError: computed(() => (
-      categoriesQuery.error.value
-      || tagsQuery.error.value
+      categories.loadError.value
+      || tags.loadError.value
       || bannerLoadError.value
     )),
-    isCreatingCategory: computed(() => categoryMutation.isPending.value),
-    isCreatingTag: computed(() => tagMutation.isPending.value),
+    isCreatingCategory: categories.isCreating,
+    isCreatingTag: tags.isCreating,
     isCreatingBanner,
-    categoryError: computed(() => categoryMutation.error.value),
-    tagError: computed(() => tagMutation.error.value),
+    categoryError: categories.createError,
+    tagError: tags.createError,
     bannerError,
-    createCategory,
-    createTag,
+    createCategory: categories.create,
+    createTag: tags.create,
     createBanner,
   }
 }

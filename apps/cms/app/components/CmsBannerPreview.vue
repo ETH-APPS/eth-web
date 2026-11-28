@@ -28,7 +28,7 @@ watch(viewport, (element, _, onCleanup) => {
 
 <template>
   <div ref="viewport" class="mx-auto w-full max-w-[756px] overflow-hidden">
-    <div :style="{ width: `${articleColumnWidth}px`, zoom }" class="wrap-anywhere" inert>
+    <div :style="{ width: `${articleColumnWidth}px`, zoom }" class="text-[14px] leading-[1.65]" inert>
       <UiArticleCtaBanner
         :title="title"
         :description="description"

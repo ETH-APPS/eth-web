@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { Component } from 'vue'
-import { Folder, Image, Images, LayoutDashboard, LogOut, Newspaper, Settings, Tag } from 'lucide-vue-next'
+import { Folder, Image, Images, LayoutDashboard, LogOut, Newspaper, Settings } from 'lucide-vue-next'
 import type { CmsNavigationItem } from '~/constants/navigation'
 import { cmsNavigation } from '~/constants/navigation'
 
@@ -14,13 +14,12 @@ const navigationIcons: Record<CmsNavigationItem['icon'], Component> = {
   article: Newspaper,
   banner: Image,
   category: Folder,
-  tag: Tag,
   media: Images,
   settings: Settings,
 }
 
 function isCurrent(to: string) {
-  return route.path === to || (to === '/articles' && route.path === '/articles/create')
+  return route.path === to || route.path === `${to}/create`
 }
 </script>
 

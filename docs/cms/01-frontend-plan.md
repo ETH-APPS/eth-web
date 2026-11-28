@@ -59,14 +59,15 @@ layout `dashboard` memuat sidebar/header CMS. Navigasi berasal dari satu daftar.
 | `/dashboard` | `pages/dashboard.vue` | dashboard | Placeholder |
 | `/articles` | `pages/articles/index.vue` | dashboard | Daftar artikel terbit, pencarian, filter, dan pagination |
 | `/articles/create` | `pages/articles/create.vue` | dashboard | Create/publish |
-| `/articles/categories` | `pages/articles/categories.vue` | dashboard | Placeholder manajemen |
-| `/articles/tags` | `pages/articles/tags.vue` | dashboard | Placeholder manajemen |
-| `/articles/banners` | `pages/articles/banners.vue` | dashboard | Daftar, pratinjau, dan buat banner CTA artikel |
+| `/articles/categories` | `pages/articles/categories.vue` | dashboard | Daftar dan buat kategori serta tag artikel |
+| `/articles/tags` | `pages/articles/tags.vue` | — | Alihkan ke panel Tag di halaman Kategori & Tag |
+| `/articles/banners` | `pages/articles/banners/index.vue` | dashboard | Daftar, pencarian, dan pratinjau banner CTA artikel |
+| `/articles/banners/create` | `pages/articles/banners/create.vue` | dashboard | Buat banner CTA dengan pratinjau langsung |
 | `/media` | `pages/media.vue` | dashboard | Placeholder |
 | `/settings` | `pages/settings.vue` | dashboard | Placeholder |
 
 Tidak perlu parent `pages/articles.vue` tanpa kebutuhan nested wrapper. Sidebar
-memiliki Dashboard, Artikel (Daftar, Tulis, Kategori, Tag, Banner), Media, serta
+memiliki Dashboard, Artikel (Daftar, Tulis), Banner, Kategori & Tag, Media, serta
 Pengaturan. Placeholder Fase 1 hanya judul, keterangan, dan link; tidak meniru
 login berhasil atau memanggil API. Semua route dapat dibuka lokal untuk desain.
 Saat Fase 3 selesai, seluruh halaman dashboard dilindungi, termasuk placeholder.
@@ -154,6 +155,8 @@ memakai route BFF eksplisit agar tidak berbenturan dengan route multipart POST.
 Halaman Banner memakai query dan mutation yang sama dengan editor artikel.
 Form banner hanya menerima gambar, judul, dan deskripsi. Banner baru tersedia
 untuk dipilih di editor artikel setelah penyimpanan berhasil.
+Halaman Kategori & Tag memakai cache yang sama dengan editor artikel. Form
+mengirim nama, lalu daftar menampilkan slug yang dibentuk oleh API.
 
 Untuk multipart, teruskan stream dan Content-Type/boundary secara konsisten;
 jangan mengubah file menjadi JSON/base64. Jangan mengulang request mutation secara

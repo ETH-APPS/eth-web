@@ -1,7 +1,5 @@
 <script setup lang="ts">
-definePageMeta({ layout: 'dashboard' })
+definePageMeta({ redirect: '/articles/categories#tag-artikel' })
 </script>
 
-<template>
-  <CmsPagePlaceholder title="Tag" description="Halaman manajemen tag artikel." />
-</template>
+<template />

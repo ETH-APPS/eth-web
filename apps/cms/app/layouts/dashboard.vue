@@ -16,6 +16,7 @@ const userInitial = computed(() => user.value?.firstName?.charAt(0).toUpperCase(
 
 const breadcrumbs = computed(() => {
   if (route.path === '/articles/create') return ['Konten', 'Buat artikel']
+  if (route.path === '/articles/banners/create') return ['Konten', 'Banner', 'Buat banner']
 
   for (const group of cmsNavigation) {
     const item = group.items.find(entry => entry.to === route.path)

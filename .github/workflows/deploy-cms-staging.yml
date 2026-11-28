@@ -1,0 +1,39 @@
+name: Deploy CMS staging to VM
+
+on:
+  push:
+    branches:
+      - staging
+    paths:
+      - .github/workflows/deploy-cms-staging.yml
+      - apps/api/**
+      - apps/cms/**
+      - deploy/cms.compose.yaml
+      - package.json
+      - packages/ui/**
+      - pnpm-lock.yaml
+      - pnpm-workspace.yaml
+      - turbo.json
+  workflow_dispatch:
+
+permissions: {}
+
+concurrency:
+  group: staging-cms
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    name: Deploy CMS staging
+    if: github.repository == 'ETH-APPS/eth-web' && github.ref == 'refs/heads/staging'
+    runs-on:
+      - self-hosted
+      - Linux
+      - X64
+      - eth-web-production
+    timeout-minutes: 60
+
+    steps:
+      - name: Deploy the triggering staging revision
+        shell: bash
+        run: printf '%s\n' "$GITHUB_SHA" | sudo -n /usr/local/sbin/deploy-eth-cms-staging
