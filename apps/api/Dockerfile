@@ -1,6 +1,10 @@
 FROM node:24-slim AS build
 WORKDIR /repo
 
+RUN apt-get update \
+  && apt-get install --yes --no-install-recommends openssl \
+  && rm -rf /var/lib/apt/lists/*
+
 RUN corepack enable
 
 COPY . .
@@ -18,6 +22,10 @@ CMD ["pnpm", "db:migrate:deploy"]
 
 FROM node:24-slim AS runtime
 WORKDIR /app
+
+RUN apt-get update \
+  && apt-get install --yes --no-install-recommends openssl \
+  && rm -rf /var/lib/apt/lists/*
 
 ENV NODE_ENV=production
 ENV PORT=3001

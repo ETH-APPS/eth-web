@@ -18,7 +18,9 @@ watch(viewport, (element, _, onCleanup) => {
   }
 
   resize(element.clientWidth)
-  const observer = new ResizeObserver(([entry]) => resize(entry.contentRect.width))
+  const observer = new ResizeObserver(([entry]) => {
+    if (entry) resize(entry.contentRect.width)
+  })
   observer.observe(element)
   onCleanup(() => observer.disconnect())
 }, { flush: 'post' })
