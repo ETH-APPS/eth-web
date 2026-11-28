@@ -1,7 +1,6 @@
 import axios from 'axios'
 import { useQueryClient } from '@tanstack/vue-query'
-import type { ApiEnvelope } from '#shared/types/api'
-import type { CmsUser } from '#shared/types/auth'
+import { getCmsUser, loginCms, logoutCms } from '~/services/api/auth'
 
 function statusOf(error: unknown) {
   return axios.isAxiosError(error) ? error.response?.status : undefined
@@ -33,7 +32,7 @@ export function useAuth() {
     isLoggingIn.value = true
     loginError.value = ''
     try {
-      await $api.post<ApiEnvelope<CmsUser>>('/auth/login', { email, password })
+      await loginCms($api, email, password)
       await session.fetch()
     } catch (error) {
       loginError.value = messageOf(error)
@@ -44,15 +43,15 @@ export function useAuth() {
   }
 
   async function verify() {
-    const response = await $api.get<ApiEnvelope<CmsUser>>('/auth/me')
+    const user = await getCmsUser($api)
     await session.fetch()
-    return response.data.data
+    return user
   }
 
   async function logout() {
     isLoggingOut.value = true
     try {
-      await $api.post('/auth/logout')
+      await logoutCms($api)
     } finally {
       queryClient.clear()
       await session.clear()

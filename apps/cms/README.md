@@ -40,6 +40,8 @@ di bagian secure session server, bukan localStorage atau state Vue. Cookie berna
 - `app/pages/login.vue`: UI login.
 - `app/pages/articles/create.vue`: UI create artikel.
 - `app/composables/useAuth.ts`: satu pintu aksi login, verifikasi sesi, dan logout.
+- `app/services/api`: request Axios per domain; tidak menyimpan state UI atau cache.
+- `app/composables`: hooks Vue Query, session, dan state yang dipakai halaman.
 - `app/plugins/api.ts`: instance Axios browser dengan base URL `/api`.
 - `app/plugins/vue-query.ts`: konfigurasi TanStack Vue Query.
 - `app/middleware/auth.global.ts`: guard seluruh route dashboard.

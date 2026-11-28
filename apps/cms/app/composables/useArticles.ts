@@ -1,6 +1,5 @@
 import { keepPreviousData, useQuery } from '@tanstack/vue-query'
-import type { ApiEnvelope } from '#shared/types/api'
-import type { ArticleList, ArticleTaxonomy } from '#shared/types/article'
+import { listArticles, listTaxonomy } from '~/services/api/articles'
 
 export function useArticles() {
   const { $api } = useNuxtApp()
@@ -10,26 +9,18 @@ export function useArticles() {
 
   const articlesQuery = useQuery({
     queryKey: computed(() => ['articles', 'list', page.value, search.value, category.value]),
-    queryFn: async () => {
-      const response = await $api.get<ApiEnvelope<ArticleList>>('/articles', {
-        params: {
-          page: page.value,
-          limit: 12,
-          ...(search.value ? { q: search.value } : {}),
-          ...(category.value ? { category: category.value } : {}),
-        },
-      })
-      return response.data.data
-    },
+    queryFn: () => listArticles($api, {
+      page: page.value,
+      limit: 12,
+      ...(search.value ? { q: search.value } : {}),
+      ...(category.value ? { category: category.value } : {}),
+    }),
     placeholderData: keepPreviousData,
   })
 
   const categoriesQuery = useQuery({
     queryKey: ['articles', 'categories'],
-    queryFn: async () => {
-      const response = await $api.get<ApiEnvelope<ArticleTaxonomy[]>>('/cms/categories')
-      return response.data.data
-    },
+    queryFn: () => listTaxonomy($api, 'categories'),
     staleTime: 5 * 60 * 1000,
   })
 

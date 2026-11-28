@@ -1,12 +1,17 @@
 import axios from 'axios'
 import { useMutation } from '@tanstack/vue-query'
+import {
+  createArticle,
+  getArticle,
+  uploadArticleAsset,
+  type ArticleAssetKind,
+} from '~/services/api/articles'
 import type { ArticleDraft } from '~/types/article'
-import type { ApiEnvelope, ApiErrorResponse } from '#shared/types/api'
+import type { ApiErrorResponse } from '#shared/types/api'
 import type {
   ArticleMedia,
   CreateArticlePayload,
   CreatedArticle,
-  PublishedArticle,
 } from '#shared/types/article'
 
 type PublishStage = 'idle' | 'cover' | 'body' | 'article' | 'verify'
@@ -37,16 +42,13 @@ export function useCreateArticle() {
   const verificationWarning = ref('')
   const uploadedAssets = new WeakMap<File, ArticleMedia>()
 
-  async function uploadAsset(file: File, kind: 'ARTICLE_COVER' | 'ARTICLE_BODY') {
+  async function uploadAsset(file: File, kind: ArticleAssetKind) {
     const existing = uploadedAssets.get(file)
     if (existing) return existing
 
-    const form = new FormData()
-    form.append('file', file)
-    form.append('kind', kind)
-    const response = await $api.post<ApiEnvelope<ArticleMedia>>('/cms/articles/assets', form)
-    uploadedAssets.set(file, response.data.data)
-    return response.data.data
+    const asset = await uploadArticleAsset($api, file, kind)
+    uploadedAssets.set(file, asset)
+    return asset
   }
 
   function bodyWithMediaIds(
@@ -74,8 +76,7 @@ export function useCreateArticle() {
 
   async function verifyArticle(slug: string, title: string, authorId: string, bodyImageCount: number) {
     try {
-      const response = await $api.get<ApiEnvelope<PublishedArticle>>(`/articles/${encodeURIComponent(slug)}`)
-      const article = response.data.data
+      const article = await getArticle($api, slug)
       const body = new DOMParser().parseFromString(article.bodyHtml, 'text/html').body
       const images = [...body.querySelectorAll('img')]
       const bodyIsValid = Boolean(body.textContent?.trim() || images.length)
@@ -116,8 +117,7 @@ export function useCreateArticle() {
       stage.value = 'article'
       let article: CreatedArticle
       try {
-        const response = await $api.post<ApiEnvelope<CreatedArticle>>('/cms/articles', payload)
-        article = response.data.data
+        article = await createArticle($api, payload)
       } catch (error) {
         const mayHaveReachedApi = !axios.isAxiosError(error) || !error.response || error.response.status >= 500
         if (!mayHaveReachedApi) throw error

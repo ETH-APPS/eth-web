@@ -103,6 +103,11 @@ hanya mengenal base URL `/api`; upstream memakai runtime config privat
 upstream dari input pengguna. Tidak perlu membuka CORS NestJS bagi browser CMS
 ketika seluruh request menggunakan origin CMS yang sama.
 
+Request browser dikelompokkan per domain di `app/services/api`; service menerima
+instance Axios dari plugin dan hanya menangani kontrak HTTP. `app/composables`
+menjadi hooks untuk Vue Query, mutation, session, dan state UI. Page/component
+tidak memanggil Axios langsung.
+
 - [x] Pakai satu instance Axios di masing-masing boundary yang memerlukan
   konfigurasi. Vue Query mengelola list pilihan dan mutations; `ref`/`reactive`
   menyimpan form, `File`, dan preview. `useState` hanya untuk UI bersama yang
